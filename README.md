@@ -48,7 +48,7 @@
 
 ---
 
-**X:** [@Orangepillman](https://x.com/Orangepillman)  
+**X:** [@Bitcoinfta](https://x.com/Bitcoinfta)  
 **Email:** hello@bitcoinforthearts.org  
 
 ---
