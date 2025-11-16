@@ -1,0 +1,4 @@
+bc1qartsxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+# 3-of-5 Multisig | Sparrow Wallet | Coldcard + Trezor Safe 3
+# Signers: Chair, Treasurer, Secretary, treasurer #1, treasurer #2
+# LIVE: https://mempool.space/address/bc1qarts...
