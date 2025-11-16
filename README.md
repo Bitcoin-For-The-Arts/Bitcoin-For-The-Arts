@@ -1,3 +1,4 @@
+![Bitcoin For The Arts](BITCOIN-ARTS-LOGO-Gold%20(3))
 # Bitcoin-For-The-Arts 🟧
 
 **Bitcoin For The Arts, Inc. – 501(c)(3) Nonprofit**  
