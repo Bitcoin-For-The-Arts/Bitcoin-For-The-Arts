@@ -1,5 +1,6 @@
 ![Bitcoin For The Arts](BITCOIN-ARTS-LOGO-Gold%20(3))
-# Bitcoin-For-The-Arts 🟧
+
+# Bitcoin-For-The-Arts
 
 **Bitcoin For The Arts, Inc. – 501(c)(3) Nonprofit**  
 *The **first** nonprofit paying artists in Bitcoin.*  
@@ -14,7 +15,7 @@
 ---
 
 ### **What We Do**
-- **55%** of every sat → **direct BTC grants** to creators  
+- **55%**Staking art on sound money
 - **30%** → **workshops, residencies, co-productions** with BAM, Whitney, Carnegie  
 - **10%** → **operations**  
 - **5%** → **HODL Vault** (1 BTC by 2030)  
@@ -22,12 +23,20 @@
 ---
 
 ### **Live Treasury**
+[github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury](https://github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury)  
 - **HODL Vault:** `bc1qarts...` (3-of-5 multisig)  
 - **Live Balance:** Updated hourly  
 - **Grants Paid:** 0 → 750 artists by 2028  
 - **Donor Leaderboard:** Public or anonymous  
 
 **Donate BTC → `bc1qarts...`** *(tax-deductible Dec 2025)*
+
+---
+
+### **Donor Perks**
+- **All donors:** Named in [leaderboard.csv](donors/leaderboard.csv)  
+- **≥ 0.01 BTC:** Digital thank-you card  
+- **≥ 1 BTC:** Name a grant + steel seed backup
 
 ---
 
@@ -57,4 +66,4 @@
 > **“The NEA of the Bitcoin Era.”**  
 > **First. Transparent. Unstoppable.**
 
-**November 15, 2025 | 10:21 PM EST | New York, NY**
+**November 16, 2025 | 12:39 AM EST | New York, NY**
