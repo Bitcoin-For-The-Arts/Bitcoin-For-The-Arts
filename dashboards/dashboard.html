@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bitcoin For The Arts – Live Treasury</title>
+  <style>
+    body { font-family: monospace; text-align: center; margin-top: 50px; }
+    .balance { font-size: 3em; color: #f7931a; }
+  </style>
+</head>
+<body>
+  <h1>Live HODL Vault</h1>
+  <p class="balance">0 BTC</p>
+  <p><a href="https://mempool.space/address/bc1qarts...">View on mempool.space</a></p>
+  <script>
+    fetch('https://mempool.space/api/address/bc1qarts.../stats')
+      .then(r => r.json())
+      .then(d => {
+        const btc = (d.funded_txo_sum / 100000000).toFixed(8);
+        document.querySelector('.balance').innerText = btc + ' BTC';
+      });
+  </script>
+</body>
+</html>
