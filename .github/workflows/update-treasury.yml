@@ -1,0 +1,33 @@
+name: Update Treasury Live
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Every hour
+  push:
+    branches: [ main ]
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Fetch BTC Balance
+        run: |
+          curl -s https://mempool.space/api/address/bc1qarts.../stats > balance.json
+          BALANCE=$(jq -r .funded_txo_sum balance.json)
+          BTC=$(echo "scale=8; $BALANCE / 100000000" | bc)
+          echo "$BTC" > treasury/hodl-vault/balance.txt
+
+      - name: Update Dashboard
+        run: |
+          sed -i "s/0 BTC/$BTC BTC/" dashboards/dashboard.html
+
+      - name: Commit & Push
+        run: |
+          git config user.name "Orangepillman"
+          git config user.email "dion@bitcoinforthearts.org"
+          git add .
+          git commit -m "Live treasury update: $BTC BTC"
+          git push
