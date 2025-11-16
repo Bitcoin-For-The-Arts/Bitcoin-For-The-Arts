@@ -1,3 +1,5 @@
+# Bitcoin-For-The-Arts 🟧
+
 **Bitcoin For The Arts, Inc. – 501(c)(3) Nonprofit**  
 *The **first** nonprofit paying artists in Bitcoin.*  
 *55/30/10/5 Rule | 100% On-Chain | 100% Open-Source*
@@ -46,7 +48,7 @@
 
 ---
 
-**X:** [@Bitcoinfta](https://x.com/Bitcoinfta)  
+**X:** [@Orangepillman](https://x.com/Orangepillman)  
 **Email:** hello@bitcoinforthearts.org  
 
 ---
