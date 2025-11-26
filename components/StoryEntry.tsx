@@ -6,8 +6,8 @@ import { useState } from 'react';
 interface StoryEntryProps {
   title: string;
   subtitle: string;
-  imageSrc: string;
-  imageAlt: string;
+  imageSrc?: string;
+  imageAlt?: string;
   reverse?: boolean;
   isFirst?: boolean;
 }
@@ -32,10 +32,10 @@ export default function StoryEntry({
       </div>
       <div className="flex-1">
         <div className="relative w-full h-64 bg-gray-200">
-          {!imageError ? (
+          {imageSrc && !imageError ? (
             <Image
               src={imageSrc}
-              alt={imageAlt}
+              alt={imageAlt || 'Story image'}
               fill
               className="object-cover"
               onError={() => setImageError(true)}

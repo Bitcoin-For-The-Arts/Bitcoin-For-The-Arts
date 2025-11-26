@@ -7,22 +7,16 @@ export default function StoriesPage() {
         <StoryEntry
           title="FANTASTIC CAT, THE BAND THAT LIVES UP TO THE NAME"
           subtitle="TOPIC DISCUSSION"
-          imageSrc="/placeholder-cats.jpg"
-          imageAlt="Two anthropomorphic cats"
           isFirst
         />
         <StoryEntry
           title="A FANTASTIC CAT OFFICE HOLIDAY PARTY AT THE BOWERY BALLROOM"
           subtitle="TOPIC DISCUSSION"
-          imageSrc="/placeholder-concert.jpg"
-          imageAlt="Band performing on stage"
           reverse
         />
         <StoryEntry
           title="A MIAMI BREEZE, PROJECTOR SCREENS, AND NFTS"
           subtitle="BITCOIN FOR ART UPDATES"
-          imageSrc="/placeholder-projector.jpg"
-          imageAlt="Projector screen with cityscape"
         />
       </div>
     </main>
