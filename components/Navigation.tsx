@@ -19,7 +19,7 @@ export default function Navigation() {
   return (
     <nav className="flex flex-col md:flex-row items-center justify-between px-8 py-6 border-b border-gray-200 gap-4">
       <div className="text-2xl font-bold tracking-tight uppercase">
-        BITCOIN FOR ART
+        BITCOIN FOR THE ARTS
       </div>
       <div className="flex items-center gap-2 md:gap-4 flex-wrap justify-center">
         {navItems.map((item) => {

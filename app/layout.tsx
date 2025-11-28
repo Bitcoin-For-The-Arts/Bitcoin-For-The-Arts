@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Bitcoin for Art",
-  description: "Bitcoin for Art - Supporting artists through cryptocurrency",
+  title: "Bitcoin for Arts",
+  description: "Bitcoin for Arts - Supporting artists through bitcoin",
 };
 
 export default function RootLayout({

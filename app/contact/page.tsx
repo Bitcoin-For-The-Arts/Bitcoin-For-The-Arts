@@ -33,10 +33,10 @@ export default function ContactPage() {
               CONTACT US
             </h1>
             <a
-              href="mailto:info@bitcoinforart.org"
+              href="mailto:info@bitcoinforthearts.org"
               className="text-blue-600 hover:text-blue-700 text-lg"
             >
-              info@bitcoinforart.org
+              info@bitcoinforthearts.org
             </a>
           </div>
 

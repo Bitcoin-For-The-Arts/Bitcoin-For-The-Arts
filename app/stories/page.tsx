@@ -16,7 +16,7 @@ export default function StoriesPage() {
         />
         <StoryEntry
           title="A MIAMI BREEZE, PROJECTOR SCREENS, AND NFTS"
-          subtitle="BITCOIN FOR ART UPDATES"
+          subtitle="BITCOIN FOR ARTS UPDATES"
         />
       </div>
     </main>
