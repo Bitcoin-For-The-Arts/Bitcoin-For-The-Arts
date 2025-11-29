@@ -1,9 +1,28 @@
 import Image from "next/image";
 import logoImage from "../asset/BITCOIN-ARTS-LOGO-gold.jpg";
+import watermarklogo from "../asset/FreedomLab Logo.jpeg";
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white relative">
+      {/* Watermark */}
+      <div className="fixed bottom-4 right-4 z-10 opacity-20 hover:opacity-40 transition-opacity duration-300">
+      <a 
+        href="https://btcnyc.github.io/" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="block"
+      >
+        <Image
+          src={watermarklogo}
+          alt="Bitcoin for the Arts Watermark"
+          width={80}
+          height={80}
+          className="rounded-full"
+        />
+      </a>
+    </div>
+
       <div className="max-w-6xl mx-auto px-8 py-12">
         {/* Logo */}
         <div className="flex justify-center mb-12">
@@ -50,4 +69,3 @@ export default function AboutPage() {
     </main>
   );
 }
-
