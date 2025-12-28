@@ -1,3 +1,10 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Events',
+  description: 'Events and meetups connected to Bitcoin for the Arts.',
+};
+
 export default function EventsPage() {
   return (
     <main className="min-h-screen bg-white">

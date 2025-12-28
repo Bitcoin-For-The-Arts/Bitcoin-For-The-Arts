@@ -1,8 +1,89 @@
+import type { Metadata } from 'next';
+import BitcoinDonationCard from '@/components/BitcoinDonationCard';
+import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Donate',
+  description:
+    'Donate Bitcoin to support artists through micro-grants and programming.',
+};
+
 export default function DonatePage() {
+  const address =
+    process.env.NEXT_PUBLIC_BTC_DONATION_ADDRESS ?? 'bc1qarts...';
+
   return (
-    <main className="min-h-screen bg-white">
-      <div className="max-w-6xl mx-auto px-8 py-12">
-        {/* Content will be added here */}
+    <main className="bg-white">
+      <div className="mx-auto max-w-6xl px-6 py-14">
+        <div className="max-w-3xl">
+          <div className="text-xs font-semibold uppercase tracking-wide text-black/60">
+            Support artists with Bitcoin
+          </div>
+          <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
+            Donate to Bitcoin for the Arts.
+          </h1>
+          <p className="mt-5 text-base leading-relaxed text-black/70 sm:text-lg">
+            Your donation helps fund artist micro-grants, workshops, residencies, and
+            productions — and supports a long-term Bitcoin reserve.
+          </p>
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/grants"
+              className="inline-flex items-center justify-center rounded-md border border-black/15 px-6 py-3 text-sm font-semibold transition-colors hover:bg-black/5"
+            >
+              Learn about grants
+            </Link>
+            <a
+              href="https://github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-md border border-black/15 px-6 py-3 text-sm font-semibold transition-colors hover:bg-black/5"
+            >
+              View treasury
+            </a>
+          </div>
+        </div>
+
+        <div className="mt-12">
+          <BitcoinDonationCard address={address} />
+        </div>
+
+        <div className="mt-10 rounded-2xl border border-black/10 bg-black/[0.02] p-6">
+          <h2 className="text-lg font-semibold tracking-tight">
+            Where the money goes
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-black/70">
+            We follow a clear allocation model: 55% grants, 30% programs, 10%
+            operations, 5% long-term reserve.
+          </p>
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div className="rounded-lg border border-black/10 bg-white p-4 text-center">
+              <div className="text-xl font-semibold">55%</div>
+              <div className="mt-1 text-xs uppercase tracking-wide text-black/60">
+                Grants
+              </div>
+            </div>
+            <div className="rounded-lg border border-black/10 bg-white p-4 text-center">
+              <div className="text-xl font-semibold">30%</div>
+              <div className="mt-1 text-xs uppercase tracking-wide text-black/60">
+                Programs
+              </div>
+            </div>
+            <div className="rounded-lg border border-black/10 bg-white p-4 text-center">
+              <div className="text-xl font-semibold">10%</div>
+              <div className="mt-1 text-xs uppercase tracking-wide text-black/60">
+                Ops
+              </div>
+            </div>
+            <div className="rounded-lg border border-black/10 bg-white p-4 text-center">
+              <div className="text-xl font-semibold">5%</div>
+              <div className="mt-1 text-xs uppercase tracking-wide text-black/60">
+                Reserve
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   );
