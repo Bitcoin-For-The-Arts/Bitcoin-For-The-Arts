@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-gold.jpg';
 
 type NavItem = {
   label: string;
@@ -38,7 +40,17 @@ export default function Navigation() {
           aria-label="Bitcoin for the Arts — Home"
           onClick={() => setIsOpen(false)}
         >
-          <span className="text-base sm:text-lg uppercase">Bitcoin for the Arts</span>
+          <Image
+            src={logoImage}
+            alt=""
+            width={32}
+            height={32}
+            priority
+            className="rounded-full border border-black/10"
+          />
+          <span className="text-base sm:text-lg uppercase">
+            Bitcoin for the Arts
+          </span>
         </Link>
 
         <button
