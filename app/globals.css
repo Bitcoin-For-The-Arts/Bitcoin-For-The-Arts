@@ -2,33 +2,32 @@
 
 :root {
   /* Neutrals */
-  --background: #ffffff;
-  --foreground: #0b1220;
-  --muted: #6b7280;
-  --surface: #f8f9fa;
+  --background: #ffffff; /* neutral white */
+  --foreground: #333333; /* dark gray text */
+  --muted: rgba(51, 51, 51, 0.72);
+  --surface: #f8f9fa; /* light gray surface */
 
-  /* Brand colors */
-  --primary: #007bff; /* trust blue */
-  --accent: #ffb733; /* soft orange */
-  --success: #28a745; /* growth green */
+  /* Brand colors (Grok palette) */
+  --primary: #7e57c2; /* creativity / renaissance purple */
+  --accent: #f7931a; /* Bitcoin orange */
+  --success: #26a69a; /* teal growth / endowment */
 
-  --border: rgba(2, 6, 23, 0.12);
+  --border: rgba(51, 51, 51, 0.16);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Dark mode neutrals */
-    --background: #070b12;
-    --foreground: #f8f9fa;
-    --muted: rgba(248, 249, 250, 0.7);
-    --surface: rgba(248, 249, 250, 0.06);
+    /* Optional dark mode */
+    --background: #4a148c; /* deep purple background */
+    --foreground: #ffffff;
+    --muted: rgba(255, 255, 255, 0.78);
+    --surface: rgba(255, 255, 255, 0.08);
 
-    /* Dark mode option: primary becomes navy */
-    --primary: #001f3f;
-    --accent: #ffb733;
-    --success: #28a745;
+    --primary: #7e57c2;
+    --accent: #f7931a;
+    --success: #26a69a;
 
-    --border: rgba(248, 249, 250, 0.14);
+    --border: rgba(255, 255, 255, 0.18);
   }
 }
 

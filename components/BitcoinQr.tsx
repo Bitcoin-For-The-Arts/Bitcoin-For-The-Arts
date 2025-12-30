@@ -24,7 +24,7 @@ export default async function BitcoinQr({
       alt="Bitcoin donation QR code"
       width={size}
       height={size}
-      className="rounded-lg border border-black/10 bg-white"
+      className="rounded-lg border border-border bg-background"
     />
   );
 }

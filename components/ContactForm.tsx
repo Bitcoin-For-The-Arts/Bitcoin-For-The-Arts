@@ -40,7 +40,7 @@ export default function ContactForm() {
       <div>
         <label
           htmlFor="firstName"
-          className="block text-sm text-black/60 mb-2 uppercase tracking-wide"
+          className="block text-sm text-muted mb-2 uppercase tracking-wide"
         >
           First name
         </label>
@@ -50,14 +50,14 @@ export default function ContactForm() {
           name="firstName"
           value={formData.firstName}
           onChange={handleChange}
-          className="w-full border-b border-black/60 bg-transparent pb-2 focus:outline-none focus:border-black"
+          className="w-full border-b border-border bg-transparent pb-2 focus:outline-none focus:border-primary"
         />
       </div>
 
       <div>
         <label
           htmlFor="lastName"
-          className="block text-sm text-black/60 mb-2 uppercase tracking-wide"
+          className="block text-sm text-muted mb-2 uppercase tracking-wide"
         >
           Last name
         </label>
@@ -67,14 +67,14 @@ export default function ContactForm() {
           name="lastName"
           value={formData.lastName}
           onChange={handleChange}
-          className="w-full border-b border-black/60 bg-transparent pb-2 focus:outline-none focus:border-black"
+          className="w-full border-b border-border bg-transparent pb-2 focus:outline-none focus:border-primary"
         />
       </div>
 
       <div>
         <label
           htmlFor="email"
-          className="block text-sm text-black/60 mb-2 uppercase tracking-wide"
+          className="block text-sm text-muted mb-2 uppercase tracking-wide"
         >
           Email
         </label>
@@ -84,14 +84,14 @@ export default function ContactForm() {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          className="w-full border-b border-black/60 bg-transparent pb-2 focus:outline-none focus:border-black"
+          className="w-full border-b border-border bg-transparent pb-2 focus:outline-none focus:border-primary"
         />
       </div>
 
       <div>
         <label
           htmlFor="message"
-          className="block text-sm text-black/60 mb-2 uppercase tracking-wide"
+          className="block text-sm text-muted mb-2 uppercase tracking-wide"
         >
           Message
         </label>
@@ -101,13 +101,13 @@ export default function ContactForm() {
           value={formData.message}
           onChange={handleChange}
           rows={6}
-          className="w-full rounded-md border border-black/20 bg-transparent p-3 focus:outline-none focus:ring-2 focus:ring-black/20"
+          className="w-full rounded-md border border-border bg-transparent p-3 focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
 
       <button
         type="submit"
-        className="inline-flex items-center justify-center rounded-md bg-black px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-black/85"
+        className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
       >
         Send email
       </button>

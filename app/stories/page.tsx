@@ -8,8 +8,8 @@ export const metadata: Metadata = {
 
 export default function StoriesPage() {
   return (
-    <main className="min-h-screen bg-white">
-      <div className="max-w-6xl mx-auto px-8 py-12">
+    <main className="min-h-screen bg-background">
+      <div className="mx-auto max-w-6xl px-6 py-14">
         <StoryEntry
           title="FANTASTIC CAT, THE BAND THAT LIVES UP TO THE NAME"
           subtitle="TOPIC DISCUSSION"

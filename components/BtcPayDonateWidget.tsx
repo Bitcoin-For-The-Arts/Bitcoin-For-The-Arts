@@ -58,11 +58,11 @@ export default function BtcPayDonateWidget({
   };
 
   return (
-    <div className="rounded-2xl border border-black/10 bg-white p-6">
+    <div className="rounded-2xl border border-border bg-background p-6">
       <div className="text-sm font-semibold tracking-tight">
         Donate with BTCPay (BTC + Lightning)
       </div>
-      <p className="mt-2 text-sm leading-relaxed text-black/70">
+      <p className="mt-2 text-sm leading-relaxed text-muted">
         Choose an amount and you’ll be redirected to a secure BTCPay checkout that
         supports on-chain Bitcoin and Lightning.
       </p>
@@ -80,7 +80,7 @@ export default function BtcPayDonateWidget({
                 step={1}
                 value={Number.isFinite(amount) ? amount : ''}
                 onChange={(e) => setAmount(Number(e.target.value))}
-                className="mt-2 w-full rounded-md border border-black/15 px-3 py-2 text-sm"
+                className="mt-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
               />
               <div className="mt-3 flex flex-wrap gap-2">
                 {suggested.map((v) => (
@@ -88,7 +88,7 @@ export default function BtcPayDonateWidget({
                     key={v}
                     type="button"
                     onClick={() => setAmount(v)}
-                    className="rounded-md border border-black/15 px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-black/5"
+                    className="rounded-md border border-border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-surface"
                   >
                     {v}
                   </button>
@@ -103,14 +103,14 @@ export default function BtcPayDonateWidget({
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                className="mt-2 w-full rounded-md border border-black/15 px-3 py-2 text-sm"
+                className="mt-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
               >
                 <option value="USD">USD</option>
                 <option value="EUR">EUR</option>
                 <option value="GBP">GBP</option>
                 <option value="BTC">BTC</option>
               </select>
-              <div className="mt-2 text-xs text-black/60">
+              <div className="mt-2 text-xs text-muted">
                 Tip: USD/EUR/GBP lets BTCPay quote BTC + Lightning at checkout.
               </div>
             </div>
@@ -124,7 +124,7 @@ export default function BtcPayDonateWidget({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
-              className="mt-2 w-full rounded-md border border-black/15 px-3 py-2 text-sm"
+              className="mt-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
               placeholder="Optional note"
             />
           </div>
@@ -140,7 +140,7 @@ export default function BtcPayDonateWidget({
               type="button"
               disabled={isLoading}
               onClick={createInvoice}
-              className="inline-flex items-center justify-center rounded-md bg-black px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-black/85 disabled:opacity-60"
+              className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:opacity-60"
             >
               {isLoading ? 'Starting checkout…' : 'Continue to checkout'}
             </button>
@@ -148,8 +148,8 @@ export default function BtcPayDonateWidget({
         </div>
 
         <div className="md:col-span-5">
-          <div className="rounded-xl border border-black/10 bg-black/[0.02] p-5 text-sm text-black/70">
-            <div className="text-xs font-semibold uppercase tracking-wide text-black/60">
+          <div className="rounded-xl border border-border bg-surface p-5 text-sm text-muted">
+            <div className="text-xs font-semibold uppercase tracking-wide text-muted">
               Note
             </div>
             <p className="mt-2 leading-relaxed">
