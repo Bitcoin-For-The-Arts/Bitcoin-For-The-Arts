@@ -43,7 +43,11 @@ export default function AboutPage() {
         </div>
         <div className="mx-auto max-w-3xl">
           <p className="text-base leading-relaxed text-black/75 sm:text-lg mb-8">
-            Bitcoin For The Arts, Inc. is the first nonprofit funding artists across all disciplines — visual, theater, dance, and music — using Bitcoin. We provide BTC micro-grants, host performance workshops and residencies, and co-produce live and digital works with museums, theaters, and orchestras.
+            Bitcoin For The Arts, Inc. funds sovereign creators across visual arts,
+            theater, dance, music, writing, storytelling, and film — artists with
+            low time preference who craft timeless work, challenge censorship, and
+            explore Bitcoin-aligned innovation. We provide BTC micro-grants, host
+            workshops and residencies, and support live and digital productions.
           </p>
 
           <h2 className="text-2xl sm:text-3xl font-semibold mt-12 mb-4 tracking-tight">

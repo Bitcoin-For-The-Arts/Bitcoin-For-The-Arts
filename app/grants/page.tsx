@@ -4,7 +4,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Grants',
   description:
-    'Bitcoin micro-grants for artists across disciplines. Learn how to apply and what we fund.',
+    'Bitcoin micro-grants for sovereign creators across disciplines. Learn how to apply and what we fund.',
 };
 
 export default function GrantsPage() {
@@ -19,9 +19,9 @@ export default function GrantsPage() {
             Grants for working artists — paid in Bitcoin.
           </h1>
           <p className="mt-5 text-base leading-relaxed text-black/70 sm:text-lg">
-            We support artists across visual art, theater, dance, and music. Grants
-            are designed to be small, fast, and impactful — helping you keep
-            creating.
+            We support sovereign creators across visual arts, theater, dance, music,
+            writing, storytelling, and film. Grants are designed to be small, fast,
+            and impactful — helping you keep creating.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -58,7 +58,10 @@ export default function GrantsPage() {
             </div>
             <ul className="mt-4 space-y-2 text-sm leading-relaxed text-black/75">
               <li>Independent artists and small collectives</li>
-              <li>Any discipline: visual, theater, dance, music</li>
+              <li>
+                Any discipline: visual arts, theater, dance, music, writing,
+                storytelling, film
+              </li>
               <li>Working on a specific project with clear next steps</li>
               <li>Open to all geographies (subject to program capacity)</li>
             </ul>

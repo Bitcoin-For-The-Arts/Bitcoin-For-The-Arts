@@ -131,8 +131,10 @@ export default function Home() {
                 Built for artists. Built on Bitcoin.
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                We fund artists across visual art, theater, dance, and music — and
-                we do it with the hardest money ever known.
+                We fund sovereign creators across visual arts, theater, dance, music,
+                writing, storytelling, and film — backing low time preference work
+                that resists censorship and celebrates financial freedom through
+                Bitcoin-aligned innovation.
               </p>
             </div>
             <div className="md:col-span-7">
