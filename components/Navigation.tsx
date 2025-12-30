@@ -22,6 +22,7 @@ export default function Navigation() {
       { label: 'About', href: '/about' },
       { label: 'Grants', href: '/grants' },
       { label: 'Artists', href: '/artists' },
+      { label: 'Why Bitcoin', href: '/artists/why-bitcoin' },
       { label: 'Programming', href: '/programming' },
       { label: 'Events', href: '/events' },
       { label: 'Stories', href: '/stories' },

@@ -23,6 +23,15 @@ export default function ArtistsPage() {
             place to share updates from funded work.
           </p>
 
+          <div className="mt-6">
+            <Link
+              href="/artists/why-bitcoin"
+              className="inline-flex items-center justify-center rounded-md border border-border px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+            >
+              Why Bitcoin?
+            </Link>
+          </div>
+
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/grants"
