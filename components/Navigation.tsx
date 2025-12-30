@@ -32,7 +32,7 @@ export default function Navigation() {
   );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-black/10 bg-white/80 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link
           href="/"
@@ -55,7 +55,7 @@ export default function Navigation() {
 
         <button
           type="button"
-          className="inline-flex items-center justify-center rounded-md border border-black/15 px-3 py-2 text-sm font-medium sm:hidden"
+          className="inline-flex items-center justify-center rounded-md border border-border px-3 py-2 text-sm font-medium sm:hidden hover:bg-surface"
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={isOpen}
           onClick={() => setIsOpen((v) => !v)}
@@ -78,10 +78,10 @@ export default function Navigation() {
                 className={[
                   'whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium tracking-wide transition-colors uppercase',
                   isCta
-                    ? 'bg-orange-400 text-black hover:bg-orange-500'
+                    ? 'bg-accent text-black hover:opacity-90'
                     : isActive
-                      ? 'bg-black text-white'
-                      : 'text-black hover:bg-black/5',
+                      ? 'bg-primary text-white'
+                      : 'text-foreground hover:bg-surface',
                 ].join(' ')}
               >
                 {item.label}
@@ -92,7 +92,7 @@ export default function Navigation() {
       </nav>
 
       {isOpen ? (
-        <div className="border-t border-black/10 bg-white sm:hidden">
+        <div className="border-t border-border bg-background sm:hidden">
           <div className="mx-auto flex max-w-6xl flex-col gap-1 px-6 py-3">
             {navItems.map((item) => {
               const isActive =
@@ -109,10 +109,10 @@ export default function Navigation() {
                   className={[
                     'rounded-md px-3 py-3 text-sm font-medium tracking-wide transition-colors',
                     isCta
-                      ? 'bg-orange-400 text-black hover:bg-orange-500'
+                      ? 'bg-accent text-black hover:opacity-90'
                       : isActive
-                        ? 'bg-black text-white'
-                        : 'text-black hover:bg-black/5',
+                        ? 'bg-primary text-white'
+                        : 'text-foreground hover:bg-surface',
                   ].join(' ')}
                 >
                   {item.label}

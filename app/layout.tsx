@@ -38,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} antialiased bg-white text-black`}
+        className={`${inter.variable} antialiased bg-background text-foreground`}
       >
         <Navigation />
         <div className="min-h-[calc(100svh-64px)]">{children}</div>
