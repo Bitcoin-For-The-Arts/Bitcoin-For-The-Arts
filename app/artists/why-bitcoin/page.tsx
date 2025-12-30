@@ -48,7 +48,7 @@ export default function WhyBitcoinPage() {
                 at 21 million, so it can&apos;t be printed endlessly.
               </p>
               <p className="mt-3 text-sm leading-relaxed text-muted sm:text-base">
-                For you: sell a painting for $1,000 and save in Bitcoin—your
+                Sell a painting for $1,000 and save in Bitcoin—your
                 purchasing power may hold up better over the long run than cash.
                 Bitcoin is volatile, but it gives artists an alternative to a system
                 designed for debasement.
@@ -66,7 +66,7 @@ export default function WhyBitcoinPage() {
                 no middleman.
               </p>
               <p className="mt-3 text-sm leading-relaxed text-muted sm:text-base">
-                For you: a dancer censored on a platform can still be supported by
+                A dancer censored on a platform can still be supported by
                 direct payments. A writer can publish and receive support without
                 permission. On a Bitcoin standard, artists can own their work and
                 wealth—long-term.
@@ -84,7 +84,7 @@ export default function WhyBitcoinPage() {
                 chasing the next rent check.
               </p>
               <p className="mt-3 text-sm leading-relaxed text-muted sm:text-base">
-                For art&apos;s future: imagine funding a 5-year sculpture series or an
+                Imagine funding a 5-year sculpture series or an
                 epic film trilogy with staged Bitcoin grants. The Renaissance thrived
                 on sound money; the next one can thrive on Bitcoin.
               </p>
