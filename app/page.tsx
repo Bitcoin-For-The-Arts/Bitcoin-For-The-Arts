@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import logoImage from './asset/BITCOIN-ARTS-LOGO-gold.jpg';
 
 export default function Home() {
   return (
@@ -6,6 +8,16 @@ export default function Home() {
       <section className="mx-auto max-w-6xl px-6 pb-16 pt-14 sm:pb-20 sm:pt-18">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center">
           <div className="lg:col-span-7">
+            <div className="mb-6">
+              <Image
+                src={logoImage}
+                alt="Bitcoin for the Arts logo"
+                width={96}
+                height={96}
+                priority
+                className="rounded-full border border-black/10"
+              />
+            </div>
             <div className="inline-flex items-center rounded-full border border-black/10 bg-black/5 px-3 py-1 text-xs font-medium tracking-wide">
               Nonprofit • Bitcoin-native patronage
             </div>
