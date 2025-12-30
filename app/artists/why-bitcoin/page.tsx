@@ -127,7 +127,7 @@ export default function WhyBitcoinPage() {
             </Link>
             <Link
               href="/donate"
-              className="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+              className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
             >
               Donate
             </Link>
