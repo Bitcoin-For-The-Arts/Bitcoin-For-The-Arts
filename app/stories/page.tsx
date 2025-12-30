@@ -1,4 +1,10 @@
 import StoryEntry from "@/components/StoryEntry";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Stories",
+  description: "Stories and updates from Bitcoin for the Arts.",
+};
 
 export default function StoriesPage() {
   return (
