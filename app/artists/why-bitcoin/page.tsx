@@ -100,7 +100,7 @@ export default function WhyBitcoinPage() {
                 globally. It turns passive admirers into active patrons.
               </p>
               <p className="mt-3 text-sm leading-relaxed text-muted sm:text-base">
-                For you: small contributions from many supporters can add up to real,
+                Small contributions from many supporters can add up to real,
                 steady support—without asking permission.
               </p>
             </section>
