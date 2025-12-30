@@ -27,12 +27,22 @@ export async function POST(request: Request) {
     );
   }
 
-  // Vercel cannot reach .onion; require clearnet HTTPS.
+  // Vercel cannot reach Tor (.onion) or LAN-only (.local) endpoints.
   if (BTCPAY_URL.includes('.onion')) {
     return NextResponse.json(
       {
         error:
           'BTCPAY_URL is a .onion address. Vercel-hosted sites cannot reach Tor endpoints. Configure a public HTTPS BTCPay URL (e.g. https://pay.bitcoinforthearts.org).',
+      },
+      { status: 500 },
+    );
+  }
+
+  if (BTCPAY_URL.includes('.local')) {
+    return NextResponse.json(
+      {
+        error:
+          'BTCPAY_URL is a .local address (LAN-only). Your public website cannot reach it. Configure a public HTTPS BTCPay URL (e.g. https://pay.bitcoinforthearts.org).',
       },
       { status: 500 },
     );
