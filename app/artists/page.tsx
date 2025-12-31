@@ -14,7 +14,7 @@ export default function ArtistsPage() {
       {/* Background image (50% opacity) */}
       <div className="pointer-events-none absolute inset-0">
         <Image
-          src="/artists-background.jpg"
+          src="/image.jpg"
           alt=""
           fill
           priority={false}
