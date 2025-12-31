@@ -44,10 +44,10 @@ export default function Navigation() {
           <Image
             src={logoImage}
             alt=""
-            width={36}
-            height={36}
+            width={48}
+            height={48}
             priority
-            className="rounded-full border border-white/20"
+            className="h-9 w-9 sm:h-11 sm:w-11 rounded-full border border-white/20"
           />
           <span className="text-base sm:text-lg uppercase">
             Bitcoin for the Arts
