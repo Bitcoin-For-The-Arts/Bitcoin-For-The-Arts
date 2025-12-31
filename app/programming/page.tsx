@@ -13,12 +13,21 @@ export default function ProgrammingPage() {
     <main className="bg-background relative overflow-hidden min-h-screen">
       {/* Background image (same treatment as Artists / Get Involved / Grants) */}
       <div className="pointer-events-none absolute inset-0">
+        {/* Full-bleed fill (cropped) */}
         <Image
           src="/program-background.jpg"
           alt=""
           fill
           priority={false}
-          className="object-contain object-center opacity-50 bg-background"
+          className="object-cover object-center opacity-35 blur-md scale-110"
+        />
+        {/* Full-photo layer (minimal cropping) */}
+        <Image
+          src="/program-background.jpg"
+          alt=""
+          fill
+          priority={false}
+          className="object-contain object-center opacity-45"
         />
         <div className="absolute inset-0 bg-background/60" />
       </div>
