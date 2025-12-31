@@ -52,7 +52,7 @@ export default function AboutPage() {
 
           <div className="mt-10 grid grid-cols-1 gap-6 sm:mt-12">
             <section className="rounded-2xl border border-border bg-surface p-6">
-              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+              <div className="text-xs font-bold uppercase tracking-wide text-foreground">
                 Mission
               </div>
               <p className="mt-3 text-base leading-relaxed text-foreground/90 sm:text-lg italic">
@@ -61,7 +61,7 @@ export default function AboutPage() {
             </section>
 
             <section className="rounded-2xl border border-border bg-background p-6">
-              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+              <div className="text-xs font-bold uppercase tracking-wide text-foreground">
                 Vision
               </div>
               <p className="mt-3 text-base leading-relaxed text-foreground/90 sm:text-lg">
@@ -70,7 +70,7 @@ export default function AboutPage() {
             </section>
           </div>
 
-          <p className="text-base leading-relaxed text-muted sm:text-lg mb-6">
+          <p className="mt-10 text-base leading-relaxed text-muted sm:text-lg mb-6">
             Every donation in Bitcoin becomes a direct, instant grant that empowers a fine artist to create without gatekeepers — their work inscribed forever on the chain, their earnings protected from inflation and censorship.
           </p>
 
