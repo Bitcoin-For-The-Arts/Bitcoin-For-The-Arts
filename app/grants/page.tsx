@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'Grants',
@@ -9,8 +10,20 @@ export const metadata: Metadata = {
 
 export default function GrantsPage() {
   return (
-    <main className="bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-14">
+    <main className="bg-background relative overflow-hidden min-h-screen">
+      {/* Background image (same treatment as Artists / Get Involved) */}
+      <div className="pointer-events-none absolute inset-0">
+        <Image
+          src="/grants-background.jpg"
+          alt=""
+          fill
+          priority={false}
+          className="object-cover object-center opacity-50"
+        />
+        <div className="absolute inset-0 bg-background/60" />
+      </div>
+
+      <div className="relative mx-auto max-w-6xl px-6 py-14">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
             Bitcoin Micro-Grants
