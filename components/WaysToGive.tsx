@@ -62,7 +62,7 @@ const ways: Way[] = [
     description:
       'Make us a beneficiary or donate a policy to support the mission long-term.',
     ctaLabel: 'Guide',
-    href: 'mailto:hello@bitcoinforthearts.org?subject=Life%20insurance%20gift',
+    href: '/donate/guides/life-insurance',
   },
   {
     title: 'Real Estate, Vehicles, Or In-Kind Gifts',

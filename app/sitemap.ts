@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/events',
     '/stories',
     '/donate',
+    '/donate/guides/life-insurance',
     '/contact',
     '/privacy-policy',
   ];
