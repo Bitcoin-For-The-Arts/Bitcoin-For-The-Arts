@@ -27,6 +27,7 @@ export default function Navigation() {
         href: '/artists',
         children: [{ label: 'Why Bitcoin', href: '/artists/why-bitcoin' }],
       },
+      { label: 'Get involved', href: '/get-involved' },
       { label: 'Programming', href: '/programming' },
       { label: 'Events', href: '/events' },
       { label: 'Stories', href: '/stories' },
