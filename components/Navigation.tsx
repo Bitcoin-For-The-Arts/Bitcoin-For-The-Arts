@@ -22,7 +22,6 @@ export default function Navigation() {
       { label: 'About', href: '/about' },
       { label: 'Grants', href: '/grants' },
       { label: 'Artists', href: '/artists' },
-      { label: 'Why Bitcoin', href: '/artists/why-bitcoin' },
       { label: 'Programming', href: '/programming' },
       { label: 'Events', href: '/events' },
       { label: 'Stories', href: '/stories' },
@@ -37,7 +36,7 @@ export default function Navigation() {
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link
           href="/"
-          className="flex items-center gap-3 font-semibold tracking-tight"
+          className="flex items-center gap-3 font-semibold tracking-tight min-w-0"
           aria-label="Bitcoin for the Arts — Home"
           onClick={() => setIsOpen(false)}
         >
@@ -49,7 +48,7 @@ export default function Navigation() {
             priority
             className="rounded-full border border-white/20"
           />
-          <span className="text-base sm:text-lg uppercase">
+          <span className="text-base sm:text-lg uppercase whitespace-nowrap leading-none">
             Bitcoin for the Arts
           </span>
         </Link>
