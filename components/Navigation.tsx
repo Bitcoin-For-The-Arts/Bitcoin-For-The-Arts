@@ -121,24 +121,28 @@ export default function Navigation() {
                   </span>
                 </Link>
 
-                <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-opacity absolute left-0 mt-2 min-w-52 rounded-md border border-border bg-background text-foreground shadow-lg p-1">
-                  {item.children?.map((child) => {
-                    const isChildActive =
-                      pathname === child.href || pathname.startsWith(`${child.href}/`);
+                {/* Dropdown */}
+                <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-opacity absolute left-0 top-full pt-2 z-50">
+                  <div className="min-w-52 rounded-md border border-border bg-background text-foreground shadow-lg p-1">
+                    {item.children?.map((child) => {
+                      const isChildActive =
+                        pathname === child.href ||
+                        pathname.startsWith(`${child.href}/`);
 
-                    return (
-                      <Link
-                        key={child.href}
-                        href={child.href}
-                        className={[
-                          'block rounded-md px-3 py-2 text-sm font-semibold transition-colors',
-                          isChildActive ? 'bg-surface' : 'hover:bg-surface',
-                        ].join(' ')}
-                      >
-                        {child.label}
-                      </Link>
-                    );
-                  })}
+                      return (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          className={[
+                            'block rounded-md px-3 py-2 text-sm font-semibold transition-colors',
+                            isChildActive ? 'bg-surface' : 'hover:bg-surface',
+                          ].join(' ')}
+                        >
+                          {child.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             );
