@@ -128,7 +128,7 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:items-start">
             <div className="md:col-span-5">
               <h2 className="text-2xl font-semibold tracking-tight">
-                Built for artists. Built on Bitcoin.
+                Built for Artists. Built on Bitcoin.
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-muted">
                 We fund sovereign creators across visual arts, theater, dance, music,
