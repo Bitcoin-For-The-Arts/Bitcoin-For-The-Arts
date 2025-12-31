@@ -106,7 +106,7 @@ export default function GetInvolvedPage() {
             </div>
             <div className="mt-6">
               <a
-                href="mailto:hello@bitcoinforthearts.org?subject=Volunteer%20interest&body=Name%3A%0AHow%20I%20can%20help%3A%0AAvailability%3A%0ALinks%20(optional)%3A%0A"
+                href="mailto:volunteer@bitcoinforthearts.org?subject=Volunteer%20interest&body=Name%3A%0AHow%20I%20can%20help%3A%0AAvailability%3A%0ALinks%20(optional)%3A%0A"
                 className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
               >
                 Volunteer form (email)
@@ -135,7 +135,7 @@ export default function GetInvolvedPage() {
                 DIY fundraising guide
               </Link>
               <a
-                href="mailto:hello@bitcoinforthearts.org?subject=I%20want%20to%20host%20a%20fundraiser"
+                href="mailto:events@bitcoinforthearts.org?subject=I%20want%20to%20host%20a%20fundraiser"
                 className="inline-flex items-center justify-center rounded-md border border-border bg-surface px-6 py-3 text-sm font-semibold transition-colors hover:opacity-90"
               >
                 Get support
