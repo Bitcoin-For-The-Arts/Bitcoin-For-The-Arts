@@ -37,13 +37,6 @@ const ways: Way[] = [
     href: 'mailto:hello@bitcoinforthearts.org?subject=IRA%20QCD%20guide%20request',
   },
   {
-    title: 'Charitable Gift Annuities',
-    description:
-      'Explore lifetime payments with the remainder supporting our long-term reserve.',
-    ctaLabel: 'Details',
-    href: 'mailto:hello@bitcoinforthearts.org?subject=Charitable%20gift%20annuity%20info',
-  },
-  {
     title: 'Donor-Advised Funds (DAFs)',
     description:
       'Recommend a grant from your DAF to support our mission. We can convert proceeds to BTC.',
