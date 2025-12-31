@@ -26,7 +26,7 @@ export default function ArtistsPage() {
           <div className="mt-6">
             <Link
               href="/artists/why-bitcoin"
-              className="inline-flex items-center justify-center rounded-md border border-border px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+              className="inline-flex items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
             >
               Why Bitcoin?
             </Link>

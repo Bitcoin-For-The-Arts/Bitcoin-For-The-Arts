@@ -10,6 +10,7 @@ type NavItem = {
   label: string;
   href: string;
   variant?: 'default' | 'cta';
+  children?: NavItem[];
 };
 
 export default function Navigation() {
@@ -21,7 +22,11 @@ export default function Navigation() {
       { label: 'Home', href: '/' },
       { label: 'About', href: '/about' },
       { label: 'Grants', href: '/grants' },
-      { label: 'Artists', href: '/artists' },
+      {
+        label: 'Artists',
+        href: '/artists',
+        children: [{ label: 'Why Bitcoin', href: '/artists/why-bitcoin' }],
+      },
       { label: 'Programming', href: '/programming' },
       { label: 'Events', href: '/events' },
       { label: 'Stories', href: '/stories' },
@@ -70,22 +75,62 @@ export default function Navigation() {
                 ? pathname === '/'
                 : pathname === item.href || pathname.startsWith(`${item.href}/`);
             const isCta = item.variant === 'cta';
+            const hasChildren = Boolean(item.children?.length);
+
+            if (!hasChildren) {
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={[
+                    'whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium tracking-wide transition-colors uppercase',
+                    isCta
+                      ? 'bg-accent text-white hover:opacity-90'
+                      : isActive
+                        ? 'bg-white/15 text-white'
+                        : 'text-white/90 hover:bg-white/10 hover:text-white',
+                  ].join(' ')}
+                >
+                  {item.label}
+                </Link>
+              );
+            }
 
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={[
-                  'whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium tracking-wide transition-colors uppercase',
-                  isCta
-                    ? 'bg-accent text-white hover:opacity-90'
-                    : isActive
-                      ? 'bg-white/15 text-white'
-                      : 'text-white/90 hover:bg-white/10 hover:text-white',
-                ].join(' ')}
-              >
-                {item.label}
-              </Link>
+              <div key={item.href} className="relative group">
+                <Link
+                  href={item.href}
+                  className={[
+                    'whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium tracking-wide transition-colors uppercase inline-flex items-center gap-1',
+                    isActive ? 'bg-white/15 text-white' : 'text-white/90 hover:bg-white/10 hover:text-white',
+                  ].join(' ')}
+                >
+                  {item.label}
+                  <span className="text-[10px] opacity-80" aria-hidden="true">
+                    ▾
+                  </span>
+                </Link>
+
+                <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-opacity absolute left-0 mt-2 min-w-52 rounded-md border border-border bg-background text-foreground shadow-lg p-1">
+                  {item.children?.map((child) => {
+                    const isChildActive =
+                      pathname === child.href || pathname.startsWith(`${child.href}/`);
+
+                    return (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        className={[
+                          'block rounded-md px-3 py-2 text-sm font-semibold transition-colors',
+                          isChildActive ? 'bg-surface' : 'hover:bg-surface',
+                        ].join(' ')}
+                      >
+                        {child.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
             );
           })}
         </div>
@@ -94,14 +139,14 @@ export default function Navigation() {
       {isOpen ? (
         <div className="border-t border-white/15 bg-primary sm:hidden">
           <div className="mx-auto flex max-w-6xl flex-col gap-1 px-6 py-3">
-            {navItems.map((item) => {
+            {navItems.flatMap((item) => {
               const isActive =
                 item.href === '/'
                   ? pathname === '/'
                   : pathname === item.href || pathname.startsWith(`${item.href}/`);
               const isCta = item.variant === 'cta';
 
-              return (
+              const parentLink = (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -118,6 +163,29 @@ export default function Navigation() {
                   {item.label}
                 </Link>
               );
+
+              const childLinks =
+                item.children?.map((child) => {
+                  const isChildActive =
+                    pathname === child.href || pathname.startsWith(`${child.href}/`);
+                  return (
+                    <Link
+                      key={child.href}
+                      href={child.href}
+                      onClick={() => setIsOpen(false)}
+                      className={[
+                        'rounded-md px-3 py-2 text-sm font-medium transition-colors ml-3',
+                        isChildActive
+                          ? 'bg-white/15 text-white'
+                          : 'text-white/85 hover:bg-white/10 hover:text-white',
+                      ].join(' ')}
+                    >
+                      {child.label}
+                    </Link>
+                  );
+                }) ?? [];
+
+              return [parentLink, ...childLinks];
             })}
           </div>
         </div>
