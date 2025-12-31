@@ -20,14 +20,17 @@ export default function Navigation() {
   const navItems: NavItem[] = useMemo(
     () => [
       { label: 'Home', href: '/' },
-      { label: 'About', href: '/about' },
+      {
+        label: 'About',
+        href: '/about',
+        children: [{ label: 'Get involved', href: '/get-involved' }],
+      },
       { label: 'Grants', href: '/grants' },
       {
         label: 'Artists',
         href: '/artists',
         children: [{ label: 'Why Bitcoin', href: '/artists/why-bitcoin' }],
       },
-      { label: 'Get involved', href: '/get-involved' },
       { label: 'Programming', href: '/programming' },
       { label: 'Events', href: '/events' },
       { label: 'Stories', href: '/stories' },
@@ -71,12 +74,18 @@ export default function Navigation() {
 
         <div className="hidden items-center gap-2 sm:flex">
           {navItems.map((item) => {
-            const isActive =
+            const isActiveBase =
               item.href === '/'
                 ? pathname === '/'
                 : pathname === item.href || pathname.startsWith(`${item.href}/`);
             const isCta = item.variant === 'cta';
             const hasChildren = Boolean(item.children?.length);
+            const isChildActive = Boolean(
+              item.children?.some(
+                (c) => pathname === c.href || pathname.startsWith(`${c.href}/`),
+              ),
+            );
+            const isActive = hasChildren ? isActiveBase || isChildActive : isActiveBase;
 
             if (!hasChildren) {
               return (

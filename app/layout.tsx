@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bitcoinforthearts.org"),
@@ -38,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} antialiased bg-background text-foreground`}
+        className="antialiased bg-background text-foreground"
       >
         <Navigation />
         <div className="min-h-[calc(100svh-64px)]">{children}</div>
