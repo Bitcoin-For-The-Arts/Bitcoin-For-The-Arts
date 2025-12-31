@@ -13,7 +13,7 @@ export default function GrantsPage() {
       <div className="mx-auto max-w-6xl px-6 py-14">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Bitcoin micro-grants
+            Bitcoin Micro-Grants
           </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
             Grants for working artists — paid in Bitcoin.
@@ -43,7 +43,7 @@ export default function GrantsPage() {
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
           <div className="rounded-xl border border-border bg-background p-6">
             <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-              What we fund
+              What We Fund
             </div>
             <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
               <li>Creation costs (materials, studio time, rehearsal space)</li>
@@ -54,7 +54,7 @@ export default function GrantsPage() {
           </div>
           <div className="rounded-xl border border-border bg-background p-6">
             <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-              Who can apply
+              Who Can Apply
             </div>
             <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
               <li>Independent artists and small collectives</li>
@@ -68,7 +68,7 @@ export default function GrantsPage() {
           </div>
           <div className="rounded-xl border border-border bg-background p-6">
             <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-              What to send
+              What To Send
             </div>
             <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
               <li>Your name + links (website, portfolio, socials)</li>
@@ -83,7 +83,7 @@ export default function GrantsPage() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-12 md:items-center">
             <div className="md:col-span-8">
               <h2 className="text-xl font-semibold tracking-tight">
-                Transparent by default
+                Transparent By Default
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-muted">
                 Our goal is radical clarity: how funds are allocated, how grants are

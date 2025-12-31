@@ -23,7 +23,7 @@ export default function Navigation() {
       {
         label: 'About',
         href: '/about',
-        children: [{ label: 'Get involved', href: '/get-involved' }],
+        children: [{ label: 'Get Involved', href: '/get-involved' }],
       },
       { label: 'Grants', href: '/grants' },
       {

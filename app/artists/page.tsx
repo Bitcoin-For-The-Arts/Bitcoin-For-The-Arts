@@ -27,7 +27,7 @@ export default function ArtistsPage() {
       <div className="relative mx-auto max-w-6xl px-6 py-14">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Artist spotlights
+            Artist Spotlights
           </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
             Artists we support (coming soon).
@@ -56,7 +56,7 @@ export default function ArtistsPage() {
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="rounded-2xl border border-border bg-background p-6">
             <h2 className="text-lg font-semibold tracking-tight">
-              What we’ll feature here
+              What We’ll Feature Here
             </h2>
             <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
               <li>Artist profiles + portfolios</li>
@@ -67,7 +67,7 @@ export default function ArtistsPage() {
           </div>
           <div className="rounded-2xl border border-border bg-surface p-6">
             <h2 className="text-lg font-semibold tracking-tight">
-              Want to be featured?
+              Want To Be Featured?
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-muted">
               Send links to your work and a short project summary. If you’ve

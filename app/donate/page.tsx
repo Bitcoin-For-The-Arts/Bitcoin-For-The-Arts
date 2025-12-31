@@ -56,7 +56,7 @@ export default function DonatePage() {
 
         <div className="mt-10 rounded-2xl border border-border bg-surface p-6">
           <h2 className="text-lg font-semibold tracking-tight">
-            Where the money goes
+            Where The Money Goes
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-muted">
             We follow a clear allocation model: 55% grants, 30% programs, 10%

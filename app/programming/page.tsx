@@ -42,7 +42,7 @@ export default function ProgrammingPage() {
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
           <div className="rounded-xl border border-border bg-background p-6">
             <div className="text-sm font-semibold tracking-tight">
-              Bitcoin for artists workshops
+              Bitcoin For Artists Workshops
             </div>
             <p className="mt-2 text-sm leading-relaxed text-muted">
               Practical sessions on self-custody, receiving Bitcoin, and long-term
@@ -58,7 +58,7 @@ export default function ProgrammingPage() {
           </div>
           <div className="rounded-xl border border-border bg-background p-6">
             <div className="text-sm font-semibold tracking-tight">
-              Co-productions & showcases
+              Co-Productions & Showcases
             </div>
             <p className="mt-2 text-sm leading-relaxed text-muted">
               Live and digital productions that elevate artist work and bring
@@ -71,7 +71,7 @@ export default function ProgrammingPage() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-12 md:items-center">
             <div className="md:col-span-8">
               <h2 className="text-xl font-semibold tracking-tight">
-                Want to host something in your city?
+                Want To Host Something In Your City?
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-muted">
                 If you’re an artist, venue, or community organizer, we’d love to

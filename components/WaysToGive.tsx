@@ -9,7 +9,7 @@ type Way = {
 
 const ways: Way[] = [
   {
-    title: 'Cash & monthly gifts',
+    title: 'Cash & Monthly Gifts',
     description:
       'One-time or recurring via credit card/check (Stripe). Monthly patrons can opt into a public leaderboard spot.',
     ctaLabel: 'Donate (fiat)',
@@ -23,63 +23,63 @@ const ways: Way[] = [
     href: '/donate#bitcoin',
   },
   {
-    title: 'Stocks, bonds, mutual funds',
+    title: 'Stocks, Bonds, Mutual Funds',
     description:
       'Potentially avoid capital gains tax by donating appreciated securities. We can liquidate and convert to BTC.',
     ctaLabel: 'Learn more',
     href: 'mailto:hello@bitcoinforthearts.org?subject=Stock%20donation%20question',
   },
   {
-    title: 'IRA qualified charitable distributions (QCDs)',
+    title: 'IRA Qualified Charitable Distributions (QCDs)',
     description:
       'For eligible donors: give directly from an IRA and count toward RMD. We can convert proceeds to BTC.',
     ctaLabel: 'Get the guide',
     href: 'mailto:hello@bitcoinforthearts.org?subject=IRA%20QCD%20guide%20request',
   },
   {
-    title: 'Charitable gift annuities',
+    title: 'Charitable Gift Annuities',
     description:
       'Explore lifetime payments with the remainder supporting our long-term reserve.',
     ctaLabel: 'Details',
     href: 'mailto:hello@bitcoinforthearts.org?subject=Charitable%20gift%20annuity%20info',
   },
   {
-    title: 'Donor-advised funds (DAFs)',
+    title: 'Donor-Advised Funds (DAFs)',
     description:
       'Recommend a grant from your DAF to support our mission. We can convert proceeds to BTC.',
     ctaLabel: 'How to donate',
     href: 'mailto:hello@bitcoinforthearts.org?subject=DAF%20donation%20instructions',
   },
   {
-    title: 'Corporate matching & workplace giving',
+    title: 'Corporate Matching & Workplace Giving',
     description:
       'Some employers match donations. Ask if your company supports matching or workplace giving (Benevity/YourCause/etc.).',
     ctaLabel: 'Ask about matching',
     href: 'mailto:hello@bitcoinforthearts.org?subject=Employer%20matching%20donation',
   },
   {
-    title: 'Bequests & estate planning',
+    title: 'Bequests & Estate Planning',
     description:
       'Name us in your will or trust to create a future legacy for uncensorable art.',
     ctaLabel: 'Estate planning',
     href: 'mailto:hello@bitcoinforthearts.org?subject=Bequest%20and%20estate%20planning',
   },
   {
-    title: 'Life insurance policies',
+    title: 'Life Insurance Policies',
     description:
       'Make us a beneficiary or donate a policy to support the mission long-term.',
     ctaLabel: 'Guide',
     href: 'mailto:hello@bitcoinforthearts.org?subject=Life%20insurance%20gift',
   },
   {
-    title: 'Real estate, vehicles, or in-kind gifts',
+    title: 'Real Estate, Vehicles, Or In-Kind Gifts',
     description:
       'Donate property, vehicles, or goods. We can coordinate liquidation and convert proceeds to BTC.',
     ctaLabel: 'Contact us',
     href: '/contact',
   },
   {
-    title: 'Royalties/IP or other assets',
+    title: 'Royalties/IP Or Other Assets',
     description:
       'Assign royalties or other asset income to support artists over time.',
     ctaLabel: 'Details',
@@ -90,7 +90,7 @@ const ways: Way[] = [
 export default function WaysToGive() {
   return (
     <section className="mt-10 rounded-2xl border border-border bg-background p-6">
-      <h2 className="text-xl font-semibold tracking-tight">Ways to give</h2>
+      <h2 className="text-xl font-semibold tracking-tight">Ways To Give</h2>
       <p className="mt-2 text-sm leading-relaxed text-muted">
         Support uncensorable art—donate in Bitcoin, fiat, stocks, or planned gifts.
         Where possible, fiat contributions can be converted to BTC (volatility

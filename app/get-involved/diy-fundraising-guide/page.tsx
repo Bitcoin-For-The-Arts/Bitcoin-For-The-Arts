@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'DIY fundraising guide',
+  title: 'DIY Fundraising Guide',
   description:
     'Host your own fundraiser to stack sats for sovereign art. Templates and resources included.',
 };
@@ -45,10 +45,10 @@ export default function DiyFundraisingGuidePage() {
         <div className="max-w-3xl">
           <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted">
             <Link href="/get-involved" className="hover:underline">
-              Get involved
+              Get Involved
             </Link>
             <span aria-hidden="true">/</span>
-            <span className="text-foreground">DIY fundraising guide</span>
+            <span className="text-foreground">DIY Fundraising Guide</span>
           </div>
 
           <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -65,7 +65,7 @@ export default function DiyFundraisingGuidePage() {
           <div className="mt-10 space-y-10">
             <section className="rounded-2xl border border-border bg-surface p-6">
               <h2 className="text-xl font-semibold tracking-tight">
-                Why DIY fundraising?
+                Why DIY Fundraising?
               </h2>
               <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
                 <li>
@@ -89,7 +89,7 @@ export default function DiyFundraisingGuidePage() {
 
             <section className="rounded-2xl border border-border bg-background p-6">
               <h2 className="text-xl font-semibold tracking-tight">
-                Fundraising ideas (start small or go big)
+                Fundraising Ideas (Start Small Or Go Big)
               </h2>
               <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
                 <li>
@@ -120,7 +120,7 @@ export default function DiyFundraisingGuidePage() {
 
             <section className="rounded-2xl border border-border bg-surface p-6">
               <h2 className="text-xl font-semibold tracking-tight">
-                Step-by-step: how to run your fundraiser
+                Step-By-Step: How To Run Your Fundraiser
               </h2>
               <ol className="mt-4 space-y-2 text-sm leading-relaxed text-muted list-decimal pl-5">
                 <li>
@@ -151,7 +151,7 @@ export default function DiyFundraisingGuidePage() {
 
             <section className="rounded-2xl border border-border bg-background p-6">
               <h2 className="text-xl font-semibold tracking-tight">
-                Resources &amp; templates (downloads)
+                Resources &amp; Templates (Downloads)
               </h2>
               <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
                 {downloads.map((d) => (

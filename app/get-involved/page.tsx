@@ -13,7 +13,7 @@ export default function GetInvolvedPage() {
       <div className="mx-auto max-w-6xl px-6 py-14">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Get involved
+            Get Involved
           </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
             Join the sovereign art revolution.
@@ -29,7 +29,7 @@ export default function GetInvolvedPage() {
         <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-12">
           <section className="lg:col-span-7 rounded-2xl border border-border bg-surface p-6">
             <h2 className="text-xl font-semibold tracking-tight">
-              Donate BTC or fiat
+              Donate BTC Or Fiat
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-muted">
               Fuel artists directly—our policy targets the majority of every gift to
@@ -87,7 +87,7 @@ export default function GetInvolvedPage() {
               </div>
               <div className="rounded-xl border border-border bg-surface p-4">
                 <div className="font-semibold text-foreground">
-                  Nonprofits & arts orgs
+                  Nonprofits & Arts Orgs
                 </div>
                 <div className="mt-1">
                   Co-host events, share grant calls, collaborate on residencies and
@@ -116,7 +116,7 @@ export default function GetInvolvedPage() {
 
           <section className="lg:col-span-6 rounded-2xl border border-border bg-background p-6">
             <h2 className="text-xl font-semibold tracking-tight">
-              Fundraise your way (DIY events)
+              Fundraise Your Way (DIY Events)
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-muted">
               Create your own fundraiser—like a “BTC Art Night” or online auction—to
@@ -144,7 +144,7 @@ export default function GetInvolvedPage() {
           </section>
 
           <section className="lg:col-span-6 rounded-2xl border border-border bg-surface p-6">
-            <h2 className="text-xl font-semibold tracking-tight">Partner with us</h2>
+            <h2 className="text-xl font-semibold tracking-tight">Partner With Us</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted">
               Collaborate for bigger impact: joint grants, co-productions, residencies,
               and sponsorships that bring artists and Bitcoiners together.
@@ -175,7 +175,7 @@ export default function GetInvolvedPage() {
 
           <section className="lg:col-span-12 rounded-2xl border border-border bg-background p-6">
             <h2 className="text-xl font-semibold tracking-tight">
-              Advocate for sovereign art
+              Advocate For Sovereign Art
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-muted">
               Spread the word: share our mission, post about grants, or help educate
