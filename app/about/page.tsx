@@ -50,19 +50,25 @@ export default function AboutPage() {
             workshops and residencies, and support live and digital productions.
           </p>
 
-          <h2 className="text-2xl sm:text-3xl font-semibold mt-12 mb-4 tracking-tight">
-            Mission
-          </h2>
-          <p className="text-base leading-relaxed text-muted sm:text-lg mb-8 italic">
-            &ldquo;In the sovereign spirit of Bitcoin—uncensorable money for uncensorable minds—we ignite a self-sustaining global renaissance in arts. Through Bitcoin micro-grants, performance workshops, and visionary live and digital productions, we empower visual artists, playwrights, dancers, and musicians to break free from fiat decay. Every donation fuels direct support to creators, powers world-class exhibitions and residencies, and plants a seed in a permanent Bitcoin reserve—building an eternal endowment for human creativity that no institution or inflation can ever touch.&rdquo;
-          </p>
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:mt-12">
+            <section className="rounded-2xl border border-border bg-surface p-6">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                Mission
+              </div>
+              <p className="mt-3 text-base leading-relaxed text-foreground/90 sm:text-lg italic">
+                &ldquo;In the sovereign spirit of Bitcoin—uncensorable money for uncensorable minds—we ignite a self-sustaining global renaissance in arts. Through Bitcoin micro-grants, performance workshops, and visionary live and digital productions, we empower visual artists, playwrights, dancers, and musicians to break free from fiat decay. Every donation fuels direct support to creators, powers world-class exhibitions and residencies, and plants a seed in a permanent Bitcoin reserve—building an eternal endowment for human creativity that no institution or inflation can ever touch.&rdquo;
+              </p>
+            </section>
 
-          <h2 className="text-2xl sm:text-3xl font-semibold mt-12 mb-4 tracking-tight">
-            Vision
-          </h2>
-          <p className="text-base leading-relaxed text-muted sm:text-lg mb-8">
-            Be the NEA of the Bitcoin Era — the universal funder of interdisciplinary artists, powered by the hardest money ever known.
-          </p>
+            <section className="rounded-2xl border border-border bg-background p-6">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                Vision
+              </div>
+              <p className="mt-3 text-base leading-relaxed text-foreground/90 sm:text-lg">
+                Be the NEA of the Bitcoin Era — the universal funder of interdisciplinary artists, powered by the hardest money ever known.
+              </p>
+            </section>
+          </div>
 
           <p className="text-base leading-relaxed text-muted sm:text-lg mb-6">
             Every donation in Bitcoin becomes a direct, instant grant that empowers a fine artist to create without gatekeepers — their work inscribed forever on the chain, their earnings protected from inflation and censorship.
