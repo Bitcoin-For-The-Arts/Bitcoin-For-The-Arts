@@ -22,7 +22,7 @@ export default function Home() {
               Nonprofit • Bitcoin-native patronage
             </div>
             <h1 className="mt-5 whitespace-nowrap text-[clamp(1.75rem,4vw,2.75rem)] font-semibold tracking-tight leading-tight">
-              Stack Culture On Sound Money.
+              Stack Culture on Sound Money.
             </h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
               Bitcoin for the Arts supports artists across disciplines with Bitcoin
