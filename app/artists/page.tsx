@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'Artists',
@@ -9,8 +10,21 @@ export const metadata: Metadata = {
 
 export default function ArtistsPage() {
   return (
-    <main className="bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-14">
+    <main className="bg-background relative overflow-hidden">
+      {/* Background image (50% opacity) */}
+      <div className="pointer-events-none absolute inset-0">
+        <Image
+          src="/artists-background.jpg"
+          alt=""
+          fill
+          priority={false}
+          className="object-cover opacity-50"
+        />
+        {/* Soft blend layer for readability */}
+        <div className="absolute inset-0 bg-background/60" />
+      </div>
+
+      <div className="relative mx-auto max-w-6xl px-6 py-14">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
             Artist spotlights
