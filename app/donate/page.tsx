@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import BtcPayDonateWidget from '@/components/BtcPayDonateWidget';
 import BitcoinDonationCard from '@/components/BitcoinDonationCard';
+import WaysToGive from '@/components/WaysToGive';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -46,7 +47,9 @@ export default function DonatePage() {
           </div>
         </div>
 
-        <div className="mt-12 space-y-6">
+        <WaysToGive />
+
+        <div id="bitcoin" className="mt-12 space-y-6 scroll-mt-28">
           <BtcPayDonateWidget />
           <BitcoinDonationCard address={address} />
         </div>

@@ -71,7 +71,7 @@ export default function BtcPayDonateWidget({
         <div className="md:col-span-7">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide text-black/60">
+              <label className="block text-xs font-semibold uppercase tracking-wide text-muted">
                 Amount
               </label>
               <input
@@ -97,7 +97,7 @@ export default function BtcPayDonateWidget({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide text-black/60">
+              <label className="block text-xs font-semibold uppercase tracking-wide text-muted">
                 Currency
               </label>
               <select
@@ -117,7 +117,7 @@ export default function BtcPayDonateWidget({
           </div>
 
           <div className="mt-5">
-            <label className="block text-xs font-semibold uppercase tracking-wide text-black/60">
+            <label className="block text-xs font-semibold uppercase tracking-wide text-muted">
               Message (optional)
             </label>
             <textarea
