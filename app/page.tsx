@@ -21,7 +21,7 @@ export default function Home() {
             <div className="inline-flex items-center rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium tracking-wide">
               Nonprofit • Bitcoin-native patronage
             </div>
-            <h1 className="mt-5 whitespace-nowrap text-[clamp(1.85rem,4.2vw,2.9rem)] font-semibold tracking-tight leading-tight">
+            <h1 className="mt-5 whitespace-nowrap text-[clamp(1.75rem,4vw,2.75rem)] font-semibold tracking-tight leading-tight">
               Stack Culture On Sound Money.
             </h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
