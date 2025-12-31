@@ -8,6 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/',
     '/about',
     '/get-involved',
+    '/get-involved/diy-fundraising-guide',
     '/grants',
     '/programming',
     '/artists',

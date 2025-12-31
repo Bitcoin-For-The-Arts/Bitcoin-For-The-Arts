@@ -128,12 +128,12 @@ export default function GetInvolvedPage() {
               <li>Corporate matching drive</li>
             </ul>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="mailto:hello@bitcoinforthearts.org?subject=DIY%20fundraiser%20request"
+              <Link
+                href="/get-involved/diy-fundraising-guide"
                 className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
               >
                 DIY fundraising guide
-              </a>
+              </Link>
               <a
                 href="mailto:hello@bitcoinforthearts.org?subject=I%20want%20to%20host%20a%20fundraiser"
                 className="inline-flex items-center justify-center rounded-md border border-border bg-surface px-6 py-3 text-sm font-semibold transition-colors hover:opacity-90"
