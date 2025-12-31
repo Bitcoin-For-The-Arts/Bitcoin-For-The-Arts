@@ -14,7 +14,7 @@ export default function GetInvolvedPage() {
       {/* Background image (same treatment as Artists page) */}
       <div className="pointer-events-none absolute inset-0">
         <Image
-          src="/image.jpg"
+          src="/Get%20Involved%20-background.jpg"
           alt=""
           fill
           priority={false}
