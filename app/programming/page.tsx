@@ -18,7 +18,7 @@ export default function ProgrammingPage() {
           alt=""
           fill
           priority={false}
-          className="object-cover object-center opacity-50"
+          className="object-contain object-center opacity-50 bg-background"
         />
         <div className="absolute inset-0 bg-background/60" />
       </div>
