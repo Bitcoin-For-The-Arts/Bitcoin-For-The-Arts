@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-gold.jpg';
+import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-Gold.png';
 
 type NavItem = {
   label: string;
@@ -44,8 +44,8 @@ export default function Navigation() {
           <Image
             src={logoImage}
             alt=""
-            width={32}
-            height={32}
+            width={36}
+            height={36}
             priority
             className="rounded-full border border-white/20"
           />
