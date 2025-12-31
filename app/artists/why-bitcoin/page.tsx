@@ -36,6 +36,19 @@ export default function WhyBitcoinPage() {
             “Bitcoin standard” could mean for art&apos;s future.
           </p>
 
+          <div className="mt-6 rounded-xl border border-border bg-surface p-5 text-sm text-muted">
+            To learn more about Bitcoin, visit{' '}
+            <a
+              href="https://bitcoin.org/bitcoin.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold underline underline-offset-4"
+            >
+              the Bitcoin whitepaper
+            </a>
+            .
+          </div>
+
           <div className="mt-10 space-y-10">
             <section>
               <h2 className="text-xl font-semibold tracking-tight">
