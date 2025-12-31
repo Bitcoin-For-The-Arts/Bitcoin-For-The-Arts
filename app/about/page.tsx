@@ -11,7 +11,13 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="bg-background relative">
+    <main className="bg-background relative overflow-hidden">
+      {/* Subtle background (no image required) */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(247,147,26,0.22),transparent_45%),radial-gradient(circle_at_80%_30%,rgba(126,87,194,0.22),transparent_45%),radial-gradient(circle_at_40%_85%,rgba(38,166,154,0.14),transparent_55%)]" />
+        <div className="absolute inset-0 bg-background/55" />
+      </div>
+
       {/* Watermark */}
       <div className="fixed bottom-4 right-4 z-10 opacity-20 hover:opacity-40 transition-opacity duration-300">
       <a 
@@ -30,7 +36,7 @@ export default function AboutPage() {
       </a>
     </div>
 
-      <div className="mx-auto max-w-6xl px-6 py-14">
+      <div className="relative mx-auto max-w-6xl px-6 py-14">
         {/* Logo */}
         <div className="flex justify-center mb-12">
           <Image
