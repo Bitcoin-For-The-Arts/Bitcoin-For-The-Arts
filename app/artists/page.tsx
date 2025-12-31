@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ArtistsPage() {
   return (
-    <main className="bg-background relative overflow-hidden">
+    <main className="bg-background relative overflow-hidden min-h-screen">
       {/* Background image (50% opacity) */}
       <div className="pointer-events-none absolute inset-0">
         <Image
@@ -18,7 +18,7 @@ export default function ArtistsPage() {
           alt=""
           fill
           priority={false}
-          className="object-cover opacity-50"
+          className="object-cover object-center opacity-50"
         />
         {/* Soft blend layer for readability */}
         <div className="absolute inset-0 bg-background/60" />
