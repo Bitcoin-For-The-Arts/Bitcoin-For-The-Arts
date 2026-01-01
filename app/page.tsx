@@ -3,54 +3,70 @@ import Image from 'next/image';
 import logoImage from './asset/BITCOIN-ARTS-LOGO-gold.jpg';
 
 export default function Home() {
+  // Easy toggle for the fullscreen intro video.
+  // Set NEXT_PUBLIC_SHOW_HOME_INTRO=1 in Vercel to enable.
+  // Remove it (or set to 0) to disable and show the normal homepage only.
+  const showIntro = process.env.NEXT_PUBLIC_SHOW_HOME_INTRO === '1';
+
+  // You can swap the intro video file without code changes:
+  // e.g. NEXT_PUBLIC_HOME_INTRO_VIDEO_MP4=/my-intro.mp4
+  const introMp4 =
+    process.env.NEXT_PUBLIC_HOME_INTRO_VIDEO_MP4 ?? '/BFTA-home-page.mp4';
+  const introMov = process.env.NEXT_PUBLIC_HOME_INTRO_VIDEO_MOV ?? '';
+
   return (
     <main className="bg-background">
-      {/* Intro video section */}
-      <section className="relative h-[100svh] w-full overflow-hidden">
-        <video
-          className="absolute inset-0 h-full w-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-        >
-          <source src="/BFTA-home-page.mp4" type="video/mp4" />
-          <source src="/BFTA-home-page.MOV" type="video/quicktime" />
-        </video>
-        <div className="absolute inset-0 bg-black/40" />
+      {showIntro ? (
+        <>
+          {/* Intro video section */}
+          <section className="relative h-[100svh] w-full overflow-hidden">
+            <video
+              className="absolute inset-0 h-full w-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+            >
+              <source src={introMp4} type="video/mp4" />
+              {introMov ? <source src={introMov} type="video/quicktime" /> : null}
+              <source src="/BFTA-home-page.MOV" type="video/quicktime" />
+            </video>
+            <div className="absolute inset-0 bg-black/40" />
 
-        <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-center px-6 py-16">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium tracking-wide text-white">
-              Bitcoin For The Arts
+            <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-center px-6 py-16">
+              <div className="max-w-2xl">
+                <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium tracking-wide text-white">
+                  Bitcoin For The Arts
+                </div>
+                <h1 className="mt-5 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+                  Stack Culture on Sound Money.
+                </h1>
+                <p className="mt-4 text-sm leading-relaxed text-white/80 sm:text-base">
+                  Support sovereign creators with Bitcoin-native patronage.
+                </p>
+
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <a
+                    href="#main"
+                    className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  >
+                    Enter
+                  </a>
+                  <a
+                    href="/donate"
+                    className="inline-flex items-center justify-center rounded-md border border-white/25 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/15"
+                  >
+                    Donate
+                  </a>
+                </div>
+              </div>
             </div>
-            <h1 className="mt-5 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-              Stack Culture on Sound Money.
-            </h1>
-            <p className="mt-4 text-sm leading-relaxed text-white/80 sm:text-base">
-              Support sovereign creators with Bitcoin-native patronage.
-            </p>
+          </section>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <a
-                href="#main"
-                className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
-              >
-                Enter
-              </a>
-              <a
-                href="/donate"
-                className="inline-flex items-center justify-center rounded-md border border-white/25 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/15"
-              >
-                Donate
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div id="main" className="scroll-mt-28" />
+          <div id="main" className="scroll-mt-28" />
+        </>
+      ) : null}
 
       <section className="mx-auto max-w-6xl px-6 pb-16 pt-14 sm:pb-20 sm:pt-18">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center">
@@ -68,9 +84,15 @@ export default function Home() {
             <div className="inline-flex items-center rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium tracking-wide">
               Nonprofit • Bitcoin-native patronage
             </div>
-            <h1 className="mt-5 whitespace-nowrap text-[clamp(1.75rem,4vw,2.75rem)] font-semibold tracking-tight leading-tight">
-              Stack Culture on Sound Money.
-            </h1>
+            {showIntro ? (
+              <h2 className="mt-5 whitespace-nowrap text-[clamp(1.75rem,4vw,2.75rem)] font-semibold tracking-tight leading-tight">
+                Stack Culture on Sound Money.
+              </h2>
+            ) : (
+              <h1 className="mt-5 whitespace-nowrap text-[clamp(1.75rem,4vw,2.75rem)] font-semibold tracking-tight leading-tight">
+                Stack Culture on Sound Money.
+              </h1>
+            )}
             <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
               Bitcoin for the Arts supports artists across disciplines with Bitcoin
               micro-grants, workshops, residencies, and productions — with radical
