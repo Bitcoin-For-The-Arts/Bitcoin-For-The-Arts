@@ -63,6 +63,17 @@
 
 ---
 
+### **Homepage Intro Video (Easy Swap)**
+- **Turn it on/off (Vercel env var)**:
+  - `NEXT_PUBLIC_SHOW_HOME_INTRO=1` → show the fullscreen intro video
+  - remove it (or set to `0`) → disable the intro video
+- **Swap the video (no code changes)**:
+  - Upload/replace this file: `public/BFTA-home-page.MOV`
+  - Deploy (or run `npm run build`)
+  - The build will automatically convert it to: `public/BFTA-home-page.mp4` for browser playback
+
+---
+
 > **“The NEA of the Bitcoin Era.”**  
 > **First. Transparent. Unstoppable.**
 

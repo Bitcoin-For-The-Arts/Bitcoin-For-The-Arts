@@ -8,8 +8,13 @@ export default function Home() {
   // Remove it (or set to 0) to disable and show the normal homepage only.
   const showIntro = process.env.NEXT_PUBLIC_SHOW_HOME_INTRO === '1';
 
-  // You can swap the intro video file without code changes:
-  // e.g. NEXT_PUBLIC_HOME_INTRO_VIDEO_MP4=/my-intro.mp4
+  // Easy swap workflow (no code changes):
+  // - Replace `public/BFTA-home-page.MOV` with your new .MOV
+  // - On deploy, the build auto-converts it to `public/BFTA-home-page.mp4`
+  //
+  // Optional overrides:
+  // - NEXT_PUBLIC_HOME_INTRO_VIDEO_MP4=/my-intro.mp4
+  // - NEXT_PUBLIC_HOME_INTRO_VIDEO_MOV=/my-intro.mov
   const introMp4 =
     process.env.NEXT_PUBLIC_HOME_INTRO_VIDEO_MP4 ?? '/BFTA-home-page.mp4';
   const introMov = process.env.NEXT_PUBLIC_HOME_INTRO_VIDEO_MOV ?? '';
