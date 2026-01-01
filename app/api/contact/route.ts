@@ -23,6 +23,13 @@ function maskEmail(value?: string) {
   return `${value.slice(0, 2)}***${value.slice(at)}`;
 }
 
+function formatFrom(value: string) {
+  const trimmed = value.trim();
+  // Resend accepts "Name <email@domain>" as well as bare emails, but the former is safer.
+  if (trimmed.includes('<') && trimmed.includes('>')) return trimmed;
+  return `Bitcoin for the Arts <${trimmed}>`;
+}
+
 function getClientIp(req: NextRequest) {
   // Vercel sets x-forwarded-for as a comma-separated list (client, proxy1, ...)
   const xff = req.headers.get('x-forwarded-for');
@@ -63,6 +70,10 @@ export async function GET() {
       configured: {
         resend: Boolean(resendApiKey) && Boolean(resendFromEmail || fromEmail),
         smtp: Boolean(smtpUser) && Boolean(smtpPass) && Boolean(fromEmail),
+      },
+      vercel: {
+        env: process.env.VERCEL_ENV ?? null,
+        url: process.env.VERCEL_URL ?? null,
       },
       // Help you confirm you're on the right deployment/environment.
       env: {
@@ -177,7 +188,7 @@ export async function POST(req: NextRequest) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: resendFrom,
+          from: formatFrom(resendFrom),
           to: [toEmail],
           subject,
           text,
@@ -187,13 +198,12 @@ export async function POST(req: NextRequest) {
       });
 
       if (!res.ok) {
-        const body = await res.text().catch(() => '');
-        console.error('[contact] resend failed', res.status, body);
+        const bodyText = await res.text().catch(() => '');
+        console.error('[contact] resend failed', res.status, bodyText);
         return NextResponse.json(
           {
             ok: false,
-            error:
-              'Sorry — we could not send your message right now. Please email hello@bitcoinforthearts.org.',
+            error: `Resend rejected the email (HTTP ${res.status}). Please try again in a minute.`,
           },
           { status: 500 },
         );
@@ -222,11 +232,17 @@ export async function POST(req: NextRequest) {
     (getEnv('CONTACT_SMTP_SECURE') ?? 'true').toLowerCase() !== 'false';
 
   if (!smtpUser || !smtpPass || !fromEmail) {
+    const missing = [
+      !smtpUser ? 'CONTACT_SMTP_USER' : null,
+      !smtpPass ? 'CONTACT_SMTP_PASS' : null,
+      !fromEmail ? 'CONTACT_FROM_EMAIL' : null,
+      !getEnv('RESEND_API_KEY') ? 'RESEND_API_KEY' : null,
+      !getEnv('RESEND_FROM_EMAIL') ? 'RESEND_FROM_EMAIL' : null,
+    ].filter(Boolean);
     return NextResponse.json(
       {
         ok: false,
-        error:
-          'Contact form is not configured (missing SMTP credentials). Please email hello@bitcoinforthearts.org.',
+        error: `Contact form is not configured (missing: ${missing.join(', ')}).`,
       },
       { status: 503 },
     );
