@@ -16,6 +16,13 @@ function getEnv(name: string) {
   return value && value.trim().length > 0 ? value.trim() : undefined;
 }
 
+function maskEmail(value?: string) {
+  if (!value) return undefined;
+  const at = value.indexOf('@');
+  if (at <= 1) return '***';
+  return `${value.slice(0, 2)}***${value.slice(at)}`;
+}
+
 function getClientIp(req: NextRequest) {
   // Vercel sets x-forwarded-for as a comma-separated list (client, proxy1, ...)
   const xff = req.headers.get('x-forwarded-for');
@@ -37,6 +44,41 @@ function rateLimitOk(ip: string) {
   recent.push(now);
   rateLimit.set(ip, recent);
   return true;
+}
+
+// Safe config status endpoint (no secrets).
+export async function GET() {
+  const resendApiKey = getEnv('RESEND_API_KEY');
+  const resendFromEmail = getEnv('RESEND_FROM_EMAIL');
+
+  const smtpUser = getEnv('CONTACT_SMTP_USER');
+  const smtpPass = getEnv('CONTACT_SMTP_PASS');
+
+  const toEmail = getEnv('CONTACT_TO_EMAIL') ?? 'hello@bitcoinforthearts.org';
+  const fromEmail = getEnv('CONTACT_FROM_EMAIL');
+
+  return NextResponse.json(
+    {
+      ok: true,
+      configured: {
+        resend: Boolean(resendApiKey) && Boolean(resendFromEmail || fromEmail),
+        smtp: Boolean(smtpUser) && Boolean(smtpPass) && Boolean(fromEmail),
+      },
+      // Help you confirm you're on the right deployment/environment.
+      env: {
+        hasResendApiKey: Boolean(resendApiKey),
+        hasResendFromEmail: Boolean(resendFromEmail),
+        hasContactFromEmail: Boolean(fromEmail),
+        hasContactToEmail: Boolean(toEmail),
+        hasSmtpUser: Boolean(smtpUser),
+        hasSmtpPass: Boolean(smtpPass),
+        contactToEmail: maskEmail(toEmail),
+        contactFromEmail: maskEmail(fromEmail),
+        resendFromEmail: maskEmail(resendFromEmail),
+      },
+    },
+    { status: 200 },
+  );
 }
 
 export async function POST(req: NextRequest) {
@@ -121,7 +163,7 @@ export async function POST(req: NextRequest) {
         {
           ok: false,
           error:
-            'Contact form is not configured yet. Please email hello@bitcoinforthearts.org.',
+            'Contact form is not configured: missing RESEND_FROM_EMAIL (or CONTACT_FROM_EMAIL).',
         },
         { status: 503 },
       );
@@ -184,7 +226,7 @@ export async function POST(req: NextRequest) {
       {
         ok: false,
         error:
-          'Contact form is not configured yet. Please email hello@bitcoinforthearts.org.',
+          'Contact form is not configured (missing SMTP credentials). Please email hello@bitcoinforthearts.org.',
       },
       { status: 503 },
     );
