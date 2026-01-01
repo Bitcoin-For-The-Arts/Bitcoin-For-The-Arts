@@ -65,8 +65,8 @@
 
 ### **Homepage Intro Video (Easy Swap)**
 - **Turn it on/off (Vercel env var)**:
-  - `NEXT_PUBLIC_SHOW_HOME_INTRO=1` → show the fullscreen intro video
-  - remove it (or set to `0`) → disable the intro video
+  - default is **ON**
+  - `NEXT_PUBLIC_SHOW_HOME_INTRO=0` → disable the intro video
 - **Swap the video (no code changes)**:
   - Upload/replace this file: `public/BFTA-home-page.MOV`
   - Deploy (or run `npm run build`)

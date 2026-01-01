@@ -4,9 +4,9 @@ import logoImage from './asset/BITCOIN-ARTS-LOGO-gold.jpg';
 
 export default function Home() {
   // Easy toggle for the fullscreen intro video.
-  // Set NEXT_PUBLIC_SHOW_HOME_INTRO=1 in Vercel to enable.
-  // Remove it (or set to 0) to disable and show the normal homepage only.
-  const showIntro = process.env.NEXT_PUBLIC_SHOW_HOME_INTRO === '1';
+  // Default is ON (so you see it without configuring anything).
+  // To disable: set NEXT_PUBLIC_SHOW_HOME_INTRO=0 in Vercel.
+  const showIntro = process.env.NEXT_PUBLIC_SHOW_HOME_INTRO !== '0';
 
   // Easy swap workflow (no code changes):
   // - Replace `public/BFTA-home-page.MOV` with your new .MOV
