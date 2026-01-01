@@ -15,6 +15,7 @@ export default function Home() {
           playsInline
           preload="metadata"
         >
+          <source src="/BFTA-home-page.mp4" type="video/mp4" />
           <source src="/BFTA-home-page.MOV" type="video/quicktime" />
         </video>
         <div className="absolute inset-0 bg-black/40" />
