@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-Gold.png';
 
 export default function SiteFooter() {
   return (
@@ -6,8 +8,17 @@ export default function SiteFooter() {
       <div className="mx-auto max-w-6xl px-6 py-10">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-md">
-            <div className="text-sm font-semibold uppercase tracking-wide">
-              Bitcoin for the Arts
+            <div className="flex items-center gap-3">
+              <Image
+                src={logoImage}
+                alt=""
+                width={28}
+                height={28}
+                className="rounded-full border border-border"
+              />
+              <div className="text-sm font-semibold uppercase tracking-wide">
+                Bitcoin for the Arts
+              </div>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-muted">
               A nonprofit supporting artists with Bitcoin micro-grants, workshops,
