@@ -75,26 +75,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const smtpUser = getEnv('CONTACT_SMTP_USER');
-  const smtpPass = getEnv('CONTACT_SMTP_PASS');
-  const smtpHost = getEnv('CONTACT_SMTP_HOST') ?? 'smtp.zoho.com';
-  const smtpPort = Number(getEnv('CONTACT_SMTP_PORT') ?? '465');
-  const smtpSecure =
-    (getEnv('CONTACT_SMTP_SECURE') ?? 'true').toLowerCase() !== 'false';
-
   const toEmail = getEnv('CONTACT_TO_EMAIL') ?? 'hello@bitcoinforthearts.org';
-  const fromEmail = getEnv('CONTACT_FROM_EMAIL') ?? smtpUser;
-
-  if (!smtpUser || !smtpPass || !fromEmail) {
-    return NextResponse.json(
-      {
-        ok: false,
-        error:
-          'Contact form is not configured yet. Please email hello@bitcoinforthearts.org.',
-      },
-      { status: 503 },
-    );
-  }
+  const fromEmail = getEnv('CONTACT_FROM_EMAIL');
 
   const subjectPrefix = getEnv('CONTACT_SUBJECT_PREFIX') ?? 'Website contact';
   const subject = `${subjectPrefix}: ${email}`.slice(0, 200);
@@ -129,6 +111,84 @@ export async function POST(req: NextRequest) {
       )}</p>
     </div>
   `.trim();
+
+  // Option A (easiest): Resend API
+  const resendApiKey = getEnv('RESEND_API_KEY');
+  if (resendApiKey) {
+    const resendFrom = fromEmail ?? getEnv('RESEND_FROM_EMAIL');
+    if (!resendFrom) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            'Contact form is not configured yet. Please email hello@bitcoinforthearts.org.',
+        },
+        { status: 503 },
+      );
+    }
+
+    try {
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${resendApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: resendFrom,
+          to: [toEmail],
+          subject,
+          text,
+          html,
+          reply_to: email,
+        }),
+      });
+
+      if (!res.ok) {
+        const body = await res.text().catch(() => '');
+        console.error('[contact] resend failed', res.status, body);
+        return NextResponse.json(
+          {
+            ok: false,
+            error:
+              'Sorry — we could not send your message right now. Please email hello@bitcoinforthearts.org.',
+          },
+          { status: 500 },
+        );
+      }
+
+      return NextResponse.json({ ok: true }, { status: 200 });
+    } catch (err) {
+      console.error('[contact] resend exception', err);
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            'Sorry — we could not send your message right now. Please email hello@bitcoinforthearts.org.',
+        },
+        { status: 500 },
+      );
+    }
+  }
+
+  // Option B: SMTP (Zoho, etc.)
+  const smtpUser = getEnv('CONTACT_SMTP_USER');
+  const smtpPass = getEnv('CONTACT_SMTP_PASS');
+  const smtpHost = getEnv('CONTACT_SMTP_HOST') ?? 'smtp.zoho.com';
+  const smtpPort = Number(getEnv('CONTACT_SMTP_PORT') ?? '465');
+  const smtpSecure =
+    (getEnv('CONTACT_SMTP_SECURE') ?? 'true').toLowerCase() !== 'false';
+
+  if (!smtpUser || !smtpPass || !fromEmail) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error:
+          'Contact form is not configured yet. Please email hello@bitcoinforthearts.org.',
+      },
+      { status: 503 },
+    );
+  }
 
   try {
     const transporter = nodemailer.createTransport({

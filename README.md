@@ -77,6 +77,14 @@
 ### **Contact Form (Send Directly From the Website)**
 The Contact page now sends email directly (no “open your email app” prompt).
 
+#### Option A (recommended): Resend (no Zoho app password needed)
+Set these **Vercel environment variables**:
+- `RESEND_API_KEY`
+- `RESEND_FROM_EMAIL` (can start as `onboarding@resend.dev`, then switch to `hello@bitcoinforthearts.org` after you verify the domain in Resend)
+- `CONTACT_TO_EMAIL` (where you want submissions delivered, usually `hello@bitcoinforthearts.org`)
+- `CONTACT_FROM_EMAIL` (optional if you set `RESEND_FROM_EMAIL`)
+
+#### Option B: SMTP (Zoho, etc.)
 Set these **Vercel environment variables**:
 - `CONTACT_SMTP_USER` (example: `hello@bitcoinforthearts.org`)
 - `CONTACT_SMTP_PASS` (Zoho SMTP password or app password)
