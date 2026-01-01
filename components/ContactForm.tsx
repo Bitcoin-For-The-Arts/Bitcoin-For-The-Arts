@@ -29,10 +29,17 @@ export default function ContactForm() {
         body: JSON.stringify(formData),
       });
 
-      const data = (await res.json()) as { ok?: boolean; error?: string };
-      if (!res.ok || !data.ok) {
+      let data: { ok?: boolean; error?: string } | null = null;
+      try {
+        data = (await res.json()) as { ok?: boolean; error?: string };
+      } catch {
+        data = null;
+      }
+
+      if (!res.ok || !data?.ok) {
         setStatus('error');
-        setErrorMessage(data.error || 'Something went wrong. Please try again.');
+        const fallback = `Request failed (HTTP ${res.status}). Please try again.`;
+        setErrorMessage(data?.error || fallback);
         return;
       }
 
