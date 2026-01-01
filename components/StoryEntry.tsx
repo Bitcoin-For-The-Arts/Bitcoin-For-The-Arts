@@ -28,10 +28,10 @@ export default function StoryEntry({
     } ${reverse ? 'flex-row-reverse' : ''}`}>
       <div className="flex-1">
         <h2 className="text-2xl font-bold mb-2 tracking-tight uppercase">{title}</h2>
-        <p className="text-sm text-black uppercase">{subtitle}</p>
+        <p className="text-sm text-muted uppercase">{subtitle}</p>
       </div>
       <div className="flex-1">
-        <div className="relative w-full h-64 bg-gray-200">
+        <div className="relative w-full h-64 bg-surface border border-border rounded-lg overflow-hidden">
           {imageSrc && !imageError ? (
             <Image
               src={imageSrc}
@@ -41,7 +41,7 @@ export default function StoryEntry({
               onError={() => setImageError(true)}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
+            <div className="w-full h-full flex items-center justify-center bg-surface text-muted">
               <span className="text-sm">Image placeholder</span>
             </div>
           )}

@@ -1,15 +1,26 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-Gold.png';
 
 export default function SiteFooter() {
   return (
-    <footer className="border-t border-black/10 bg-white">
+    <footer className="border-t border-border bg-background">
       <div className="mx-auto max-w-6xl px-6 py-10">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-md">
-            <div className="text-sm font-semibold uppercase tracking-wide">
-              Bitcoin for the Arts
+            <div className="flex items-center gap-3">
+              <Image
+                src={logoImage}
+                alt=""
+                width={28}
+                height={28}
+                className="rounded-full border border-border"
+              />
+              <div className="text-sm font-semibold uppercase tracking-wide">
+                Bitcoin for the Arts
+              </div>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-black/70">
+            <p className="mt-3 text-sm leading-relaxed text-muted">
               A nonprofit supporting artists with Bitcoin micro-grants, workshops,
               residencies, and productions — with radical transparency.
             </p>
@@ -17,7 +28,7 @@ export default function SiteFooter() {
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
             <div>
-              <div className="text-xs font-semibold uppercase tracking-wide text-black/70">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                 Organization
               </div>
               <ul className="mt-3 space-y-2 text-sm">
@@ -40,7 +51,7 @@ export default function SiteFooter() {
             </div>
 
             <div>
-              <div className="text-xs font-semibold uppercase tracking-wide text-black/70">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                 Community
               </div>
               <ul className="mt-3 space-y-2 text-sm">
@@ -63,7 +74,7 @@ export default function SiteFooter() {
             </div>
 
             <div>
-              <div className="text-xs font-semibold uppercase tracking-wide text-black/70">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                 Legal
               </div>
               <ul className="mt-3 space-y-2 text-sm">
@@ -82,7 +93,7 @@ export default function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-black/10 pt-6 text-xs text-black/60 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-2 border-t border-border pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
           <div>
             © {new Date().getFullYear()} Bitcoin for the Arts. All rights reserved.
           </div>

@@ -7,13 +7,13 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <main className="bg-white">
+    <main className="bg-background">
       <div className="mx-auto max-w-6xl px-6 py-14">
         <div className="max-w-3xl">
           <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
             Privacy policy
           </h1>
-          <p className="mt-4 text-sm leading-relaxed text-black/70">
+          <p className="mt-4 text-sm leading-relaxed text-muted">
             This policy describes how bitcoinforthearts.org handles information.
             If you have questions, email{' '}
             <a
@@ -25,7 +25,7 @@ export default function PrivacyPolicyPage() {
             .
           </p>
 
-          <div className="prose prose-neutral mt-10 max-w-none">
+          <div className="prose prose-neutral dark:prose-invert mt-10 max-w-none">
             <h2>What we collect</h2>
             <ul>
               <li>

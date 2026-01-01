@@ -10,7 +10,7 @@
 
 ### **Our Mission**
 > **“In the sovereign spirit of Bitcoin—uncensorable money for uncensorable minds—we ignite a self-sustaining global renaissance in art.**  
-> **Through Bitcoin micro-grants, performance workshops, and visionary live and digital productions, we empower visual artists, playwrights, dancers, and musicians to break free from fiat decay. Every donation fuels direct support to creators, powers world-class exhibitions and residencies, and plants a seed in a permanent Bitcoin reserve—building an eternal endowment for human creativity that no institution or inflation can ever touch.”**
+> **Through Bitcoin micro-grants, performance workshops, and live + digital productions, we back sovereign creators across visual arts, theater, dance, music, writing, storytelling, and film. We favor low time preference work—timeless craft that resists censorship and celebrates financial freedom through Bitcoin-aligned innovation. Every donation fuels direct support to creators, powers exhibitions and residencies, and plants a seed in a permanent Bitcoin reserve—building an endowment for human creativity that no institution or inflation can touch.”**
 
 ---
 

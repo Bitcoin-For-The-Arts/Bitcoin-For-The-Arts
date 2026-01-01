@@ -7,12 +7,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     '/',
     '/about',
+    '/get-involved',
+    '/get-involved/diy-fundraising-guide',
     '/grants',
     '/programming',
     '/artists',
     '/events',
     '/stories',
     '/donate',
+    '/donate/guides/life-insurance',
     '/contact',
     '/privacy-policy',
   ];

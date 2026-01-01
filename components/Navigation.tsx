@@ -1,13 +1,16 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-Gold.png';
 
 type NavItem = {
   label: string;
   href: string;
   variant?: 'default' | 'cta';
+  children?: NavItem[];
 };
 
 export default function Navigation() {
@@ -17,9 +20,17 @@ export default function Navigation() {
   const navItems: NavItem[] = useMemo(
     () => [
       { label: 'Home', href: '/' },
-      { label: 'About', href: '/about' },
+      {
+        label: 'About',
+        href: '/about',
+        children: [{ label: 'Get Involved', href: '/get-involved' }],
+      },
       { label: 'Grants', href: '/grants' },
-      { label: 'Artists', href: '/artists' },
+      {
+        label: 'Artists',
+        href: '/artists',
+        children: [{ label: 'Why Bitcoin', href: '/artists/why-bitcoin' }],
+      },
       { label: 'Programming', href: '/programming' },
       { label: 'Events', href: '/events' },
       { label: 'Stories', href: '/stories' },
@@ -30,20 +41,30 @@ export default function Navigation() {
   );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-black/10 bg-white/80 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-border bg-primary text-white">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link
           href="/"
-          className="flex items-center gap-3 font-semibold tracking-tight"
+          className="flex items-center gap-3 font-semibold tracking-tight min-w-0"
           aria-label="Bitcoin for the Arts — Home"
           onClick={() => setIsOpen(false)}
         >
-          <span className="text-base sm:text-lg uppercase">Bitcoin for the Arts</span>
+          <Image
+            src={logoImage}
+            alt=""
+            width={36}
+            height={36}
+            priority
+            className="rounded-full border border-white/20"
+          />
+          <span className="text-base sm:text-lg uppercase whitespace-nowrap leading-none">
+            Bitcoin for the Arts
+          </span>
         </Link>
 
         <button
           type="button"
-          className="inline-flex items-center justify-center rounded-md border border-black/15 px-3 py-2 text-sm font-medium sm:hidden"
+          className="inline-flex items-center justify-center rounded-md border border-white/25 px-3 py-2 text-sm font-medium sm:hidden hover:bg-white/10"
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={isOpen}
           onClick={() => setIsOpen((v) => !v)}
@@ -53,43 +74,93 @@ export default function Navigation() {
 
         <div className="hidden items-center gap-2 sm:flex">
           {navItems.map((item) => {
-            const isActive =
+            const isActiveBase =
               item.href === '/'
                 ? pathname === '/'
                 : pathname === item.href || pathname.startsWith(`${item.href}/`);
             const isCta = item.variant === 'cta';
+            const hasChildren = Boolean(item.children?.length);
+            const isChildActive = Boolean(
+              item.children?.some(
+                (c) => pathname === c.href || pathname.startsWith(`${c.href}/`),
+              ),
+            );
+            const isActive = hasChildren ? isActiveBase || isChildActive : isActiveBase;
+
+            if (!hasChildren) {
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={[
+                    'whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium tracking-wide transition-colors uppercase',
+                    isCta
+                      ? 'bg-accent text-white hover:opacity-90'
+                      : isActive
+                        ? 'bg-white/15 text-white'
+                        : 'text-white/90 hover:bg-white/10 hover:text-white',
+                  ].join(' ')}
+                >
+                  {item.label}
+                </Link>
+              );
+            }
 
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={[
-                  'whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium tracking-wide transition-colors uppercase',
-                  isCta
-                    ? 'bg-orange-400 text-black hover:bg-orange-500'
-                    : isActive
-                      ? 'bg-black text-white'
-                      : 'text-black hover:bg-black/5',
-                ].join(' ')}
-              >
-                {item.label}
-              </Link>
+              <div key={item.href} className="relative group">
+                <Link
+                  href={item.href}
+                  className={[
+                    'whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium tracking-wide transition-colors uppercase inline-flex items-center gap-1',
+                    isActive ? 'bg-white/15 text-white' : 'text-white/90 hover:bg-white/10 hover:text-white',
+                  ].join(' ')}
+                >
+                  {item.label}
+                  <span className="text-[10px] opacity-80" aria-hidden="true">
+                    ▾
+                  </span>
+                </Link>
+
+                {/* Dropdown */}
+                <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-opacity absolute left-0 top-full pt-2 z-50">
+                  <div className="min-w-52 rounded-md border border-border bg-background text-foreground shadow-lg p-1">
+                    {item.children?.map((child) => {
+                      const isChildActive =
+                        pathname === child.href ||
+                        pathname.startsWith(`${child.href}/`);
+
+                      return (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          className={[
+                            'block rounded-md px-3 py-2 text-sm font-semibold transition-colors',
+                            isChildActive ? 'bg-surface' : 'hover:bg-surface',
+                          ].join(' ')}
+                        >
+                          {child.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>
       </nav>
 
       {isOpen ? (
-        <div className="border-t border-black/10 bg-white sm:hidden">
+        <div className="border-t border-white/15 bg-primary sm:hidden">
           <div className="mx-auto flex max-w-6xl flex-col gap-1 px-6 py-3">
-            {navItems.map((item) => {
+            {navItems.flatMap((item) => {
               const isActive =
                 item.href === '/'
                   ? pathname === '/'
                   : pathname === item.href || pathname.startsWith(`${item.href}/`);
               const isCta = item.variant === 'cta';
 
-              return (
+              const parentLink = (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -97,15 +168,38 @@ export default function Navigation() {
                   className={[
                     'rounded-md px-3 py-3 text-sm font-medium tracking-wide transition-colors',
                     isCta
-                      ? 'bg-orange-400 text-black hover:bg-orange-500'
+                      ? 'bg-accent text-white hover:opacity-90'
                       : isActive
-                        ? 'bg-black text-white'
-                        : 'text-black hover:bg-black/5',
+                        ? 'bg-white/15 text-white'
+                        : 'text-white/90 hover:bg-white/10 hover:text-white',
                   ].join(' ')}
                 >
                   {item.label}
                 </Link>
               );
+
+              const childLinks =
+                item.children?.map((child) => {
+                  const isChildActive =
+                    pathname === child.href || pathname.startsWith(`${child.href}/`);
+                  return (
+                    <Link
+                      key={child.href}
+                      href={child.href}
+                      onClick={() => setIsOpen(false)}
+                      className={[
+                        'rounded-md px-3 py-2 text-sm font-medium transition-colors ml-3',
+                        isChildActive
+                          ? 'bg-white/15 text-white'
+                          : 'text-white/85 hover:bg-white/10 hover:text-white',
+                      ].join(' ')}
+                    >
+                      {child.label}
+                    </Link>
+                  );
+                }) ?? [];
+
+              return [parentLink, ...childLinks];
             })}
           </div>
         </div>
