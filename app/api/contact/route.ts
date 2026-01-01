@@ -167,6 +167,9 @@ export async function POST(req: NextRequest) {
 
   // Option A (easiest): Resend API
   const resendApiKey = getEnv('RESEND_API_KEY');
+  const resendFromEnv = getEnv('RESEND_FROM_EMAIL');
+  const resendFrom = fromEmail ?? resendFromEnv;
+
   if (resendApiKey) {
     const resendFrom = fromEmail ?? getEnv('RESEND_FROM_EMAIL');
     if (!resendFrom) {
@@ -232,17 +235,28 @@ export async function POST(req: NextRequest) {
     (getEnv('CONTACT_SMTP_SECURE') ?? 'true').toLowerCase() !== 'false';
 
   if (!smtpUser || !smtpPass || !fromEmail) {
-    const missing = [
+    const missingResend = [
+      !resendApiKey ? 'RESEND_API_KEY' : null,
+      !resendFrom ? 'RESEND_FROM_EMAIL (or CONTACT_FROM_EMAIL)' : null,
+    ].filter(Boolean);
+
+    const missingSmtp = [
       !smtpUser ? 'CONTACT_SMTP_USER' : null,
       !smtpPass ? 'CONTACT_SMTP_PASS' : null,
       !fromEmail ? 'CONTACT_FROM_EMAIL' : null,
-      !getEnv('RESEND_API_KEY') ? 'RESEND_API_KEY' : null,
-      !getEnv('RESEND_FROM_EMAIL') ? 'RESEND_FROM_EMAIL' : null,
     ].filter(Boolean);
+
     return NextResponse.json(
       {
         ok: false,
-        error: `Contact form is not configured (missing: ${missing.join(', ')}).`,
+        error:
+          missingResend.length === 0
+            ? `Contact form is not configured (missing SMTP settings: ${missingSmtp.join(
+                ', ',
+              )}).`
+            : `Contact form is not configured. Configure Resend (recommended): missing ${missingResend.join(
+                ', ',
+              )}.`,
       },
       { status: 503 },
     );
