@@ -29,7 +29,7 @@ export default function GetInvolvedPage() {
             Get Involved
           </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Join the sovereign art revolution.
+            Join The Sovereign Art Revolution.
           </h1>
           <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
             Whether you&apos;re an artist, Bitcoiner, or supporter, there are many ways
