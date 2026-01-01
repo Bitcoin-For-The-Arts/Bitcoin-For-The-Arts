@@ -74,6 +74,23 @@
 
 ---
 
+### **Contact Form (Send Directly From the Website)**
+The Contact page now sends email directly (no “open your email app” prompt).
+
+Set these **Vercel environment variables**:
+- `CONTACT_SMTP_USER` (example: `hello@bitcoinforthearts.org`)
+- `CONTACT_SMTP_PASS` (Zoho SMTP password or app password)
+- `CONTACT_TO_EMAIL` (where you want submissions delivered, usually `hello@bitcoinforthearts.org`)
+- `CONTACT_FROM_EMAIL` (usually same as `CONTACT_SMTP_USER`)
+
+Optional:
+- `CONTACT_SMTP_HOST` (default `smtp.zoho.com`)
+- `CONTACT_SMTP_PORT` (default `465`)
+- `CONTACT_SMTP_SECURE` (default `true`)
+- `CONTACT_SUBJECT_PREFIX` (default `Website contact`)
+
+---
+
 > **“The NEA of the Bitcoin Era.”**  
 > **First. Transparent. Unstoppable.**
 

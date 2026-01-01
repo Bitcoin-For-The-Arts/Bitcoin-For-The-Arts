@@ -9,21 +9,45 @@ export default function ContactForm() {
     lastName: '',
     email: '',
     message: '',
+    // Honeypot (hidden)
+    company: '',
   });
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>(
+    'idle',
+  );
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent('Message from bitcoinforthearts.org');
-    const body = encodeURIComponent(
-      [
-        `Name: ${formData.firstName} ${formData.lastName}`.trim(),
-        `Email: ${formData.email}`,
-        '',
-        formData.message,
-      ].join('\n'),
-    );
+    setStatus('submitting');
+    setErrorMessage('');
 
-    window.location.href = `mailto:hello@bitcoinforthearts.org?subject=${subject}&body=${body}`;
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = (await res.json()) as { ok?: boolean; error?: string };
+      if (!res.ok || !data.ok) {
+        setStatus('error');
+        setErrorMessage(data.error || 'Something went wrong. Please try again.');
+        return;
+      }
+
+      setStatus('success');
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        message: '',
+        company: '',
+      });
+    } catch {
+      setStatus('error');
+      setErrorMessage('Something went wrong. Please try again.');
+    }
   };
 
   const handleChange = (
@@ -37,6 +61,20 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {/* Honeypot field (bots tend to fill it). Hidden from humans. */}
+      <div className="hidden" aria-hidden="true">
+        <label htmlFor="company">Company</label>
+        <input
+          id="company"
+          name="company"
+          type="text"
+          value={formData.company}
+          onChange={handleChange}
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
+
       <div>
         <label
           htmlFor="firstName"
@@ -50,6 +88,7 @@ export default function ContactForm() {
           name="firstName"
           value={formData.firstName}
           onChange={handleChange}
+          disabled={status === 'submitting'}
           className="w-full border-b border-border bg-transparent pb-2 focus:outline-none focus:border-primary"
         />
       </div>
@@ -67,6 +106,7 @@ export default function ContactForm() {
           name="lastName"
           value={formData.lastName}
           onChange={handleChange}
+          disabled={status === 'submitting'}
           className="w-full border-b border-border bg-transparent pb-2 focus:outline-none focus:border-primary"
         />
       </div>
@@ -84,6 +124,8 @@ export default function ContactForm() {
           name="email"
           value={formData.email}
           onChange={handleChange}
+          required
+          disabled={status === 'submitting'}
           className="w-full border-b border-border bg-transparent pb-2 focus:outline-none focus:border-primary"
         />
       </div>
@@ -101,15 +143,30 @@ export default function ContactForm() {
           value={formData.message}
           onChange={handleChange}
           rows={6}
+          required
+          disabled={status === 'submitting'}
           className="w-full rounded-md border border-border bg-transparent p-3 focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
 
+      {status === 'success' ? (
+        <div className="rounded-md border border-border bg-surface p-4 text-sm">
+          Thanks — your message was sent.
+        </div>
+      ) : null}
+
+      {status === 'error' ? (
+        <div className="rounded-md border border-border bg-surface p-4 text-sm text-foreground">
+          {errorMessage}
+        </div>
+      ) : null}
+
       <button
         type="submit"
+        disabled={status === 'submitting'}
         className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
       >
-        Send email
+        {status === 'submitting' ? 'Sending…' : 'Send message'}
       </button>
     </form>
   );
