@@ -59,8 +59,17 @@ const args = [
   '0:v:0',
   '-map',
   '0:a?',
+  // Mobile/browser-friendly H.264 output:
+  // - yuv420p + baseline improves compatibility (especially older iOS)
+  // - force even dimensions to avoid encoder failures on odd-sized sources
+  '-vf',
+  'scale=trunc(iw/2)*2:trunc(ih/2)*2',
   '-c:v',
   'libx264',
+  '-profile:v',
+  'baseline',
+  '-level',
+  '3.0',
   '-pix_fmt',
   'yuv420p',
   '-movflags',
