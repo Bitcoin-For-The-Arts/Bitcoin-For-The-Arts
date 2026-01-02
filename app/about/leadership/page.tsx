@@ -36,40 +36,40 @@ export default function LeadershipPage() {
             {leadership.map((p) => (
               <div
                 key={p.slug}
-                className="rounded-2xl border border-border bg-background p-6"
+                className="overflow-hidden rounded-2xl border border-border bg-background"
               >
-                <div className="flex items-start gap-5">
-                  <div className="relative h-24 w-24 overflow-hidden rounded-2xl border border-border bg-surface">
-                    <Image
-                      src={p.imageSrc}
-                      alt={p.imageAlt}
-                      fill
-                      className="object-cover object-center"
-                      sizes="96px"
-                    />
-                  </div>
+                <div className="relative aspect-[16/10] w-full">
+                  <Image
+                    src={p.imageSrc}
+                    alt={p.imageAlt}
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority={p.slug === 'dion-wilson'}
+                  />
+                  <div className="absolute inset-0 bg-black/15" />
+                </div>
 
-                  <div className="min-w-0">
+                <div className="p-6">
+                  <Link
+                    href={`/about/leadership/${p.slug}`}
+                    className="text-2xl font-semibold tracking-tight hover:underline"
+                  >
+                    {p.name}
+                  </Link>
+                  <div className="mt-2 text-sm font-semibold text-muted">
+                    {p.title}
+                  </div>
+                  <p className="mt-4 text-sm leading-relaxed text-muted">
+                    {p.shortBio}
+                  </p>
+                  <div className="mt-6">
                     <Link
                       href={`/about/leadership/${p.slug}`}
-                      className="text-lg font-semibold tracking-tight hover:underline"
+                      className="inline-flex items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
                     >
-                      {p.name}
+                      View full bio
                     </Link>
-                    <div className="mt-1 text-sm font-semibold text-muted">
-                      {p.title}
-                    </div>
-                    <p className="mt-3 text-sm leading-relaxed text-muted">
-                      {p.shortBio}
-                    </p>
-                    <div className="mt-5">
-                      <Link
-                        href={`/about/leadership/${p.slug}`}
-                        className="inline-flex items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
-                      >
-                        View full bio
-                      </Link>
-                    </div>
                   </div>
                 </div>
               </div>
