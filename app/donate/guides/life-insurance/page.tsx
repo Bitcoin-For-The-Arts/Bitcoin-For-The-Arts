@@ -60,7 +60,7 @@ export default function LifeInsuranceGuidePage() {
                     src="/art fair.jpg"
                     alt="Families and collectors walking through an art fair, representing legacy giving."
                     fill
-                    className="object-cover object-[50%_20%]"
+                    className="object-cover object-[50%_14%]"
                     priority={false}
                   />
                   <div className="absolute inset-0 bg-black/20" />
