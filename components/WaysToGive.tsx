@@ -41,7 +41,7 @@ const ways: Way[] = [
     description:
       'Recommend a grant from your DAF to support our mission. We can convert proceeds to BTC.',
     ctaLabel: 'How to donate',
-    href: 'mailto:hello@bitcoinforthearts.org?subject=DAF%20donation%20instructions',
+    href: '/donate/guides/daf',
   },
   {
     title: 'Corporate Matching & Workplace Giving',
