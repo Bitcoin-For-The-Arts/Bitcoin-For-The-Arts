@@ -75,7 +75,7 @@ export default function DafGuidePage() {
               <div className="overflow-hidden rounded-2xl border border-border bg-surface">
                 <div className="relative aspect-[16/10] w-full">
                   <Image
-                    src="/donor-image.jpg"
+                    src="/donor2.jpg"
                     alt="Donors at an arts event, representing giving through donor-advised funds."
                     fill
                     className="object-cover object-center"
