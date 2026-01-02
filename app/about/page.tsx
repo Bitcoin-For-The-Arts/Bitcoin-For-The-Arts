@@ -46,7 +46,7 @@ export default function AboutPage() {
       <div className="relative mx-auto max-w-6xl px-6 py-14">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start">
           <div className="lg:col-span-5">
-            <div className="rounded-3xl border border-border bg-surface p-6">
+            <div className="rounded-3xl border border-border bg-surface/80 p-6 shadow-sm">
               <div className="flex items-center gap-4">
                 <Image
                   src={logoImage}
@@ -60,7 +60,7 @@ export default function AboutPage() {
                   <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                     About
                   </div>
-                  <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
+                  <h1 className="mt-1 text-3xl font-semibold tracking-tight sm:text-4xl">
                     The NEA of the Bitcoin Era.
                   </h1>
                   <p className="mt-2 text-sm leading-relaxed text-muted">
@@ -122,47 +122,57 @@ export default function AboutPage() {
             </p>
 
             <div className="mt-8 grid grid-cols-1 gap-6">
-              <section className="rounded-2xl border border-border bg-surface p-6">
+              <section className="rounded-2xl border border-border bg-primary text-white p-6 shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="text-xs font-bold uppercase tracking-wide text-foreground">
+                  <div className="text-xs font-bold uppercase tracking-wide text-white">
                     Mission
                   </div>
-                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-white/80">
                     Uncensorable money • Uncensorable minds
                   </div>
                 </div>
 
                 <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-12 md:items-start">
                   <div className="md:col-span-4">
-                    <div className="rounded-xl border border-border bg-background p-5">
-                      <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    <div className="rounded-xl border border-white/15 bg-black/15 p-5">
+                      <div className="text-xs font-semibold uppercase tracking-wide text-white/80">
                         Our edge
                       </div>
-                      <ul className="mt-3 space-y-2 text-sm leading-relaxed text-muted">
+                      <ul className="mt-3 space-y-2 text-sm leading-relaxed text-white/85">
                         <li>
-                          <span className="font-semibold text-foreground">
+                          <span className="font-semibold text-white">
                             First:
                           </span>{' '}
                           paying artists exclusively in BTC.
                         </li>
                         <li>
-                          <span className="font-semibold text-foreground">
+                          <span className="font-semibold text-white">
                             Transparent:
                           </span>{' '}
                           open-source treasury culture.
                         </li>
                         <li>
-                          <span className="font-semibold text-foreground">
+                          <span className="font-semibold text-white">
                             Long-term:
                           </span>{' '}
                           an endowment mindset (HODL Vault).
+                        </li>
+                        <li>
+                          <span className="font-semibold text-white">Artist-first:</span>{' '}
+                          grants, workshops, residencies, productions.
                         </li>
                       </ul>
                     </div>
                   </div>
                   <div className="md:col-span-8">
-                    <blockquote className="rounded-xl border border-border bg-background p-5">
-                      <p className="text-base leading-relaxed text-foreground/90 sm:text-lg italic">
+                    <blockquote className="relative overflow-hidden rounded-xl border border-white/15 bg-black/15 p-6">
+                      <div
+                        className="pointer-events-none absolute -top-6 -left-3 text-[72px] font-semibold text-accent/35"
+                        aria-hidden="true"
+                      >
+                        “
+                      </div>
+                      <p className="relative text-base leading-relaxed text-white/95 sm:text-lg italic">
                         “In the sovereign spirit of Bitcoin—uncensorable money for
                         uncensorable minds—we ignite a self-sustaining global
                         renaissance in arts. Through Bitcoin micro-grants, performance
@@ -183,20 +193,21 @@ export default function AboutPage() {
                 <div className="text-xs font-bold uppercase tracking-wide text-foreground">
                   Vision
                 </div>
-                <p className="mt-3 text-base leading-relaxed text-foreground/90 sm:text-lg">
+                <p className="mt-3 text-lg leading-relaxed text-foreground/90 sm:text-xl">
                   Be the NEA of the Bitcoin Era — the universal funder of
                   interdisciplinary artists, powered by the hardest money ever known.
                 </p>
               </section>
             </div>
 
-            <section className="mt-10 rounded-2xl border border-border bg-surface p-6">
-              <h2 className="text-xl font-semibold tracking-tight">
+            <section className="mt-10 rounded-2xl border border-border bg-surface/80 p-6 shadow-sm">
+              <h2 className="text-2xl font-semibold tracking-tight">
                 What we&apos;re building
               </h2>
               <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="rounded-xl border border-border bg-background p-5">
-                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                  <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted">
+                    <span className="h-2 w-2 rounded-full bg-accent" aria-hidden="true" />
                     Grants that move
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-muted">
@@ -205,7 +216,8 @@ export default function AboutPage() {
                   </p>
                 </div>
                 <div className="rounded-xl border border-border bg-background p-5">
-                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                  <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted">
+                    <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
                     Patronage that lasts
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-muted">
@@ -214,7 +226,8 @@ export default function AboutPage() {
                   </p>
                 </div>
                 <div className="rounded-xl border border-border bg-background p-5">
-                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                  <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted">
+                    <span className="h-2 w-2 rounded-full bg-success" aria-hidden="true" />
                     Freedom for creators
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-muted">
@@ -223,7 +236,8 @@ export default function AboutPage() {
                   </p>
                 </div>
                 <div className="rounded-xl border border-border bg-background p-5">
-                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                  <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted">
+                    <span className="h-2 w-2 rounded-full bg-accent" aria-hidden="true" />
                     A creative edge
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-muted">
