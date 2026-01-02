@@ -62,8 +62,8 @@ export default function IraQcdGuidePage() {
               <div className="overflow-hidden rounded-2xl border border-border bg-surface">
                 <div className="relative aspect-[16/10] w-full">
                   <Image
-                    src="/event-background.jpg"
-                    alt="Senior donor signing a QCD form with an IRA statement and a Bitcoin logo, representing legacy giving."
+                    src="/donor-image.jpg"
+                    alt="Donors at an arts event, symbolizing legacy giving."
                     fill
                     className="object-cover object-center"
                     priority={false}
@@ -75,8 +75,7 @@ export default function IraQcdGuidePage() {
                     Legacy giving
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-muted">
-                    “Senior donor signing QCD form with IRA statement and Bitcoin
-                    logo, representing legacy giving.”
+                    A tax-smart gift today can fund sovereign art for years to come.
                   </p>
                 </div>
               </div>

@@ -58,8 +58,8 @@ export default function DonateSecuritiesGuidePage() {
               <div className="overflow-hidden rounded-2xl border border-border bg-surface">
                 <div className="relative aspect-[16/10] w-full">
                   <Image
-                    src="/event-background.jpg"
-                    alt="Diverse donors at a luxury arts event, symbolizing legacy giving through securities."
+                    src="/donor-image.jpg"
+                    alt="Donors at an arts event, symbolizing legacy giving through securities."
                     fill
                     className="object-cover object-center"
                     priority={false}
@@ -71,8 +71,8 @@ export default function DonateSecuritiesGuidePage() {
                     Legacy giving
                   </div>
                   <p className="mt-2 text-sm leading-relaxed text-muted">
-                    “Diverse donors at a luxury arts event, symbolizing legacy giving
-                    through securities.”
+                    Donors gathering at an arts event — a simple reminder that
+                    securities gifts can fund creators for the long term.
                   </p>
                 </div>
               </div>
