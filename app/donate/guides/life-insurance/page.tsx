@@ -55,12 +55,12 @@ export default function LifeInsuranceGuidePage() {
 
             <aside className="lg:col-span-5">
               <div className="overflow-hidden rounded-2xl border border-border bg-surface">
-                <div className="relative aspect-[16/10] w-full">
+                <div className="relative aspect-[4/5] w-full lg:aspect-[16/10]">
                   <Image
                     src="/art fair.jpg"
                     alt="Families and collectors walking through an art fair, representing legacy giving."
                     fill
-                    className="object-cover object-center"
+                    className="object-cover object-[50%_20%]"
                     priority={false}
                   />
                   <div className="absolute inset-0 bg-black/20" />
