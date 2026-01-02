@@ -16,6 +16,7 @@ type NavItem = {
 export default function Navigation() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [openMobileSection, setOpenMobileSection] = useState<string | null>(null);
 
   const navItems: NavItem[] = useMemo(
     () => [
@@ -50,7 +51,10 @@ export default function Navigation() {
           href="/"
           className="flex items-center gap-3 font-semibold tracking-tight min-w-0"
           aria-label="Bitcoin for the Arts — Home"
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            setIsOpen(false);
+            setOpenMobileSection(null);
+          }}
         >
           <Image
             src={logoImage}
@@ -70,7 +74,13 @@ export default function Navigation() {
           className="inline-flex items-center justify-center rounded-md border border-white/25 px-3 py-2 text-sm font-medium sm:hidden hover:bg-white/10"
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={isOpen}
-          onClick={() => setIsOpen((v) => !v)}
+          onClick={() => {
+            setIsOpen((v) => {
+              const next = !v;
+              if (!next) setOpenMobileSection(null);
+              return next;
+            });
+          }}
         >
           Menu
         </button>
@@ -156,53 +166,83 @@ export default function Navigation() {
       {isOpen ? (
         <div className="border-t border-white/15 bg-primary sm:hidden">
           <div className="mx-auto flex max-w-6xl flex-col gap-1 px-6 py-3">
-            {navItems.flatMap((item) => {
+            {navItems.map((item) => {
               const isActive =
                 item.href === '/'
                   ? pathname === '/'
                   : pathname === item.href || pathname.startsWith(`${item.href}/`);
               const isCta = item.variant === 'cta';
+              const hasChildren = Boolean(item.children?.length);
+              const isExpanded = openMobileSection === item.href;
 
-              const parentLink = (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsOpen(false)}
-                  className={[
-                    'rounded-md px-3 py-3 text-sm font-medium tracking-wide transition-colors',
-                    isCta
-                      ? 'bg-accent text-white hover:opacity-90'
-                      : isActive
-                        ? 'bg-white/15 text-white'
-                        : 'text-white/90 hover:bg-white/10 hover:text-white',
-                  ].join(' ')}
-                >
-                  {item.label}
-                </Link>
-              );
-
-              const childLinks =
-                item.children?.map((child) => {
-                  const isChildActive =
-                    pathname === child.href || pathname.startsWith(`${child.href}/`);
-                  return (
+              return (
+                <div key={item.href} className="flex flex-col">
+                  <div className="flex items-center gap-2">
                     <Link
-                      key={child.href}
-                      href={child.href}
-                      onClick={() => setIsOpen(false)}
+                      href={item.href}
+                      onClick={() => {
+                        setIsOpen(false);
+                        setOpenMobileSection(null);
+                      }}
                       className={[
-                        'rounded-md px-3 py-2 text-sm font-medium transition-colors ml-3',
-                        isChildActive
-                          ? 'bg-white/15 text-white'
-                          : 'text-white/85 hover:bg-white/10 hover:text-white',
+                        'flex-1 rounded-md px-3 py-3 text-sm font-medium tracking-wide transition-colors',
+                        isCta
+                          ? 'bg-accent text-white hover:opacity-90'
+                          : isActive
+                            ? 'bg-white/15 text-white'
+                            : 'text-white/90 hover:bg-white/10 hover:text-white',
                       ].join(' ')}
                     >
-                      {child.label}
+                      {item.label}
                     </Link>
-                  );
-                }) ?? [];
 
-              return [parentLink, ...childLinks];
+                    {hasChildren ? (
+                      <button
+                        type="button"
+                        className="rounded-md border border-white/20 px-3 py-3 text-sm font-medium text-white/90 hover:bg-white/10"
+                        aria-label={isExpanded ? `Collapse ${item.label}` : `Expand ${item.label}`}
+                        aria-expanded={isExpanded}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setOpenMobileSection((prev) =>
+                            prev === item.href ? null : item.href,
+                          );
+                        }}
+                      >
+                        {isExpanded ? '–' : '＋'}
+                      </button>
+                    ) : null}
+                  </div>
+
+                  {hasChildren && isExpanded ? (
+                    <div className="mt-1 ml-3 flex flex-col gap-1 border-l border-white/15 pl-3">
+                      {item.children!.map((child) => {
+                        const isChildActive =
+                          pathname === child.href || pathname.startsWith(`${child.href}/`);
+                        return (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            onClick={() => {
+                              setIsOpen(false);
+                              setOpenMobileSection(null);
+                            }}
+                            className={[
+                              'rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                              isChildActive
+                                ? 'bg-white/15 text-white'
+                                : 'text-white/85 hover:bg-white/10 hover:text-white',
+                            ].join(' ')}
+                          >
+                            {child.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  ) : null}
+                </div>
+              );
             })}
           </div>
         </div>
