@@ -17,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/donate',
     '/donate/guides/life-insurance',
     '/donate/guides/securities',
+    '/donate/guides/ira-qcd',
     '/contact',
     '/privacy-policy',
   ];

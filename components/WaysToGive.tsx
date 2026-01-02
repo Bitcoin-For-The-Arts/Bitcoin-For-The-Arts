@@ -34,7 +34,7 @@ const ways: Way[] = [
     description:
       'For eligible donors: give directly from an IRA and count toward RMD. We can convert proceeds to BTC.',
     ctaLabel: 'Get the guide',
-    href: 'mailto:hello@bitcoinforthearts.org?subject=IRA%20QCD%20guide%20request',
+    href: '/donate/guides/ira-qcd',
   },
   {
     title: 'Donor-Advised Funds (DAFs)',
