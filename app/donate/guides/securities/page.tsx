@@ -58,8 +58,8 @@ export default function DonateSecuritiesGuidePage() {
               <div className="overflow-hidden rounded-2xl border border-border bg-surface">
                 <div className="relative aspect-[16/10] w-full">
                   <Image
-                    src="/donor-image.jpg"
-                    alt="Donors at an arts event, symbolizing legacy giving through securities."
+                    src="/event-background.jpg"
+                    alt="Diverse donors at a luxury arts event, symbolizing legacy giving through securities."
                     fill
                     className="object-cover object-center"
                     priority={false}
