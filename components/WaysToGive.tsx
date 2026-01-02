@@ -76,7 +76,7 @@ const ways: Way[] = [
     description:
       'Assign royalties or other asset income to support artists over time.',
     ctaLabel: 'Details',
-    href: 'mailto:hello@bitcoinforthearts.org?subject=Royalties%2FIP%20gift',
+    href: '/donate/guides/royalties-ip',
   },
 ];
 
