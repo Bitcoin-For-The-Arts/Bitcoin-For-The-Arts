@@ -52,18 +52,30 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Mobile-only “pop” cards (adds subtle brand gradient). */
-.mobile-pop-card {
+/* Mobile-only “pop” cards (adds subtle brand gradient).
+   Enabled when <body> has class "mobile-vibrant". */
+body.mobile-vibrant .mobile-pop-card {
   background: linear-gradient(
     135deg,
-    rgba(126, 87, 194, 0.12),
-    rgba(247, 147, 26, 0.10),
+    rgba(126, 87, 194, 0.16),
+    rgba(247, 147, 26, 0.14),
     rgba(255, 255, 255, 0)
   );
 }
 
 @media (min-width: 640px) {
-  .mobile-pop-card {
+  body.mobile-vibrant .mobile-pop-card {
     background: var(--background);
+  }
+}
+
+/* Mobile-only “sunset” wash (white → orange → purple) */
+body.mobile-vibrant .mobile-vibrant-sunset {
+  display: block;
+}
+
+@media (min-width: 640px) {
+  body.mobile-vibrant .mobile-vibrant-sunset {
+    display: none;
   }
 }
