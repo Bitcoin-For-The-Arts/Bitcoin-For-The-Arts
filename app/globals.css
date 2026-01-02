@@ -1,4 +1,9 @@
 @import "tailwindcss";
+@import "@fontsource/roboto/400.css";
+@import "@fontsource/roboto/500.css";
+@import "@fontsource/roboto/700.css";
+@import "@fontsource/playfair-display/600.css";
+@import "@fontsource/playfair-display/700.css";
 
 :root {
   /* Neutrals */
@@ -42,14 +47,26 @@
   --color-success: var(--success);
 
   --color-border: var(--border);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-sans: "Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-display: "Playfair Display", ui-serif, Georgia, "Times New Roman", Times, serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+}
+
+/* Default hidden: enabled by body.mobile-vibrant on mobile. */
+.mobile-vibrant-sunset {
+  display: none;
 }
 
 /* Mobile-only “pop” cards (adds subtle brand gradient).

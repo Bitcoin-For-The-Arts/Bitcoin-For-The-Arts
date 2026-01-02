@@ -62,8 +62,8 @@ export default function IraQcdGuidePage() {
               <div className="overflow-hidden rounded-2xl border border-border bg-surface">
                 <div className="relative aspect-[16/10] w-full">
                   <Image
-                    src="/donor-image.jpg"
-                    alt="Donors at an arts event, symbolizing legacy giving."
+                    src="/elders.jpg"
+                    alt="A group of smiling elders together, representing legacy giving."
                     fill
                     className="object-cover object-center"
                     priority={false}

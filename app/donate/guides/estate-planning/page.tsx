@@ -75,8 +75,8 @@ export default function EstatePlanningGuidePage() {
               <div className="overflow-hidden rounded-2xl border border-border bg-surface">
                 <div className="relative aspect-[16/10] w-full">
                   <Image
-                    src="/music fair.jpg"
-                    alt="Supporters at a music festival, representing legacy giving through estate planning."
+                    src="/bench couple.jpg"
+                    alt="A couple planning together, representing thoughtful estate planning."
                     fill
                     className="object-cover object-center"
                     priority={false}
