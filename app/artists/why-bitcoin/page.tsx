@@ -74,7 +74,7 @@ export default function WhyBitcoinPage() {
           </div>
 
           <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-2xl border border-border bg-background p-6">
+            <div className="rounded-2xl border border-border mobile-pop-card p-6">
               <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                 Sound money
               </div>
@@ -83,7 +83,7 @@ export default function WhyBitcoinPage() {
                 diluted over time.
               </p>
             </div>
-            <div className="rounded-2xl border border-border bg-background p-6">
+            <div className="rounded-2xl border border-border mobile-pop-card p-6">
               <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                 Direct patronage
               </div>
@@ -92,7 +92,7 @@ export default function WhyBitcoinPage() {
                 bank approvals.
               </p>
             </div>
-            <div className="rounded-2xl border border-border bg-background p-6">
+            <div className="rounded-2xl border border-border mobile-pop-card p-6">
               <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                 Censorship resistance
               </div>
@@ -101,7 +101,7 @@ export default function WhyBitcoinPage() {
                 unpopular or inconvenient.
               </p>
             </div>
-            <div className="rounded-2xl border border-border bg-background p-6">
+            <div className="rounded-2xl border border-border mobile-pop-card p-6">
               <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                 Global by default
               </div>
@@ -110,7 +110,7 @@ export default function WhyBitcoinPage() {
                 without international payment friction.
               </p>
             </div>
-            <div className="rounded-2xl border border-border bg-background p-6">
+            <div className="rounded-2xl border border-border mobile-pop-card p-6">
               <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                 Self-custody
               </div>
@@ -119,7 +119,7 @@ export default function WhyBitcoinPage() {
                 no “permission” required.
               </p>
             </div>
-            <div className="rounded-2xl border border-border bg-background p-6">
+            <div className="rounded-2xl border border-border mobile-pop-card p-6">
               <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                 Low time preference
               </div>
@@ -158,7 +158,7 @@ export default function WhyBitcoinPage() {
               </ul>
             </section>
 
-            <section className="lg:col-span-5 rounded-2xl border border-border bg-background p-6">
+            <section className="lg:col-span-5 rounded-2xl border border-border mobile-pop-card p-6">
               <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                 The big idea
               </div>
@@ -176,7 +176,7 @@ export default function WhyBitcoinPage() {
           <section className="mt-12 rounded-2xl border border-border bg-surface p-6">
             <h2 className="text-xl font-semibold tracking-tight">How to start (3 steps)</h2>
             <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
-              <div className="rounded-xl border border-border bg-background p-5">
+              <div className="rounded-xl border border-border mobile-pop-card p-5">
                 <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                   1) Get a wallet
                 </div>
@@ -184,7 +184,7 @@ export default function WhyBitcoinPage() {
                   We can help you set up a wallet and receive your first sats safely.
                 </p>
               </div>
-              <div className="rounded-xl border border-border bg-background p-5">
+              <div className="rounded-xl border border-border mobile-pop-card p-5">
                 <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                   2) Receive support
                 </div>
@@ -192,7 +192,7 @@ export default function WhyBitcoinPage() {
                   Apply for a BTC micro-grant or share your address with patrons.
                 </p>
               </div>
-              <div className="rounded-xl border border-border bg-background p-5">
+              <div className="rounded-xl border border-border mobile-pop-card p-5">
                 <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                   3) Share your work
                 </div>

@@ -14,7 +14,10 @@ export const metadata: Metadata = {
     "A nonprofit supporting artists with Bitcoin micro-grants, workshops, residencies, and productions — with radical transparency.",
   applicationName: "Bitcoin for the Arts",
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon-48.png", type: "image/png", sizes: "48x48" },
+      { url: "/favicon.ico" },
+    ],
     apple: "/apple-icon.png",
   },
   alternates: {
