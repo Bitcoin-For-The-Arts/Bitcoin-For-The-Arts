@@ -122,6 +122,19 @@ export default function AboutPage() {
             </p>
 
             <div className="mt-8 grid grid-cols-1 gap-6">
+              <div className="rounded-2xl border border-border bg-background p-6">
+                <div className="inline-flex items-center rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted">
+                  Our north star
+                </div>
+                <p className="mt-3 text-xl font-semibold tracking-tight sm:text-2xl">
+                  Ignite the next renaissance in the arts — on sound money.
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-muted">
+                  A new patronage model for sovereign creators: direct funding, radical
+                  transparency, and a long-term Bitcoin endowment.
+                </p>
+              </div>
+
               <section className="rounded-2xl border border-border bg-primary text-white p-6 shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="text-xs font-bold uppercase tracking-wide text-white">
