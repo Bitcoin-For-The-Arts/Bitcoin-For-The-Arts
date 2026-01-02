@@ -40,7 +40,7 @@ export default function DonateSecuritiesGuidePage() {
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
-                  href="mailto:hello@bitcoinforthearts.org?subject=Donate%20securities%20(stocks%2Fbonds%2Ffunds)"
+                  href="mailto:donate@bitcoinforthearts.org?subject=Donate%20securities%20(stocks%2Fbonds%2Ffunds)"
                   className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
                 >
                   Donate securities (email us)
@@ -172,10 +172,10 @@ export default function DonateSecuritiesGuidePage() {
                 <span className="font-semibold text-foreground">Contact us:</span>{' '}
                 Email{' '}
                 <a
-                  href="mailto:hello@bitcoinforthearts.org?subject=Donate%20securities%20(stocks%2Fbonds%2Ffunds)"
+                  href="mailto:donate@bitcoinforthearts.org?subject=Donate%20securities%20(stocks%2Fbonds%2Ffunds)"
                   className="font-semibold underline underline-offset-4"
                 >
-                  hello@bitcoinforthearts.org
+                  donate@bitcoinforthearts.org
                 </a>{' '}
                 and we’ll provide our brokerage transfer details (DTC info, account
                 number, etc.).
@@ -241,7 +241,7 @@ export default function DonateSecuritiesGuidePage() {
               </div>
               <div className="md:col-span-4 md:text-right">
                 <a
-                  href="mailto:hello@bitcoinforthearts.org?subject=Donate%20securities%20(stocks%2Fbonds%2Ffunds)"
+                  href="mailto:donate@bitcoinforthearts.org?subject=Donate%20securities%20(stocks%2Fbonds%2Ffunds)"
                   className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
                 >
                   Donate securities
