@@ -24,7 +24,7 @@ export default function EstatePlanningGuidePage() {
           <div className="mt-6 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start">
             <div className="lg:col-span-7">
               <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-                Guide for Donors: Giving Through Bequests &amp; Estate Planning
+                Giving Through Bequests &amp; Estate Planning
               </h1>
               <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
                 If you&apos;re planning for the future and want to leave a lasting
