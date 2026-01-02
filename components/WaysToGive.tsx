@@ -27,7 +27,7 @@ const ways: Way[] = [
     description:
       'Potentially avoid capital gains tax by donating appreciated securities. We can liquidate and convert to BTC.',
     ctaLabel: 'Learn more',
-    href: 'mailto:hello@bitcoinforthearts.org?subject=Stock%20donation%20question',
+    href: '/donate/guides/securities',
   },
   {
     title: 'IRA Qualified Charitable Distributions (QCDs)',
