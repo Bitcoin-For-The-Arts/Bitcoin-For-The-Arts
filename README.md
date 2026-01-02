@@ -63,6 +63,42 @@
 
 ---
 
+### **Homepage Intro Video (Easy Swap)**
+- **Turn it on/off (Vercel env var)**:
+  - default is **ON**
+  - `NEXT_PUBLIC_SHOW_HOME_INTRO=0` → disable the intro video
+- **Swap the video (no code changes)**:
+  - Upload/replace this file: `public/BFTA-home-page.MOV`
+  - Deploy (or run `npm run build`)
+  - The build will automatically convert it to: `public/BFTA-home-page.mp4` for browser playback
+
+---
+
+### **Contact Form (Send Directly From the Website)**
+The Contact page now sends email directly (no “open your email app” prompt).
+
+#### Option A (recommended): Resend (no Zoho app password needed)
+Set these **Vercel environment variables**:
+- `RESEND_API_KEY`
+- `RESEND_FROM_EMAIL` (can start as `onboarding@resend.dev`, then switch to `hello@bitcoinforthearts.org` after you verify the domain in Resend)
+- `CONTACT_TO_EMAIL` (where you want submissions delivered, usually `hello@bitcoinforthearts.org`)
+- `CONTACT_FROM_EMAIL` (optional if you set `RESEND_FROM_EMAIL`)
+
+#### Option B: SMTP (Zoho, etc.)
+Set these **Vercel environment variables**:
+- `CONTACT_SMTP_USER` (example: `hello@bitcoinforthearts.org`)
+- `CONTACT_SMTP_PASS` (Zoho SMTP password or app password)
+- `CONTACT_TO_EMAIL` (where you want submissions delivered, usually `hello@bitcoinforthearts.org`)
+- `CONTACT_FROM_EMAIL` (usually same as `CONTACT_SMTP_USER`)
+
+Optional:
+- `CONTACT_SMTP_HOST` (default `smtp.zoho.com`)
+- `CONTACT_SMTP_PORT` (default `465`)
+- `CONTACT_SMTP_SECURE` (default `true`)
+- `CONTACT_SUBJECT_PREFIX` (default `Website contact`)
+
+---
+
 > **“The NEA of the Bitcoin Era.”**  
 > **First. Transparent. Unstoppable.**
 

@@ -38,7 +38,7 @@ export default function ProgrammingPage() {
             Workshops • residencies • productions
           </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Programming that brings artists and Bitcoiners together.
+            Programming that brings Artists and Bitcoiners together.
           </h1>
           <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
             Beyond grants, we build spaces for artists to learn, collaborate, and

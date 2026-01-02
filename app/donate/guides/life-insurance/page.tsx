@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -11,7 +12,7 @@ export default function LifeInsuranceGuidePage() {
   return (
     <main className="bg-background">
       <div className="mx-auto max-w-6xl px-6 py-14">
-        <div className="max-w-3xl">
+        <div className="max-w-5xl">
           <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted">
             <Link href="/donate" className="hover:underline">
               Donate
@@ -20,23 +21,99 @@ export default function LifeInsuranceGuidePage() {
             <span className="text-foreground">Life Insurance</span>
           </div>
 
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Giving Through Life Insurance
-          </h1>
+          <div className="mt-6 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start">
+            <div className="lg:col-span-7">
+              <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+                Giving Through Life Insurance
+              </h1>
+              <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
+                If you&apos;re looking for a simple way to create a lasting legacy for
+                sovereign art, donating a life insurance policy or naming Bitcoin For
+                The Arts as a beneficiary is an excellent option. This guide explains
+                how it works, the benefits, and easy steps to get started.
+              </p>
+              <p className="mt-4 text-base leading-relaxed text-muted sm:text-lg">
+                Where applicable, proceeds can be converted to Bitcoin (per policy) to
+                support artists long-term through our reserve.
+              </p>
 
-          <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
-            If you&apos;re looking for a simple way to create a lasting legacy for
-            sovereign art, donating a life insurance policy or naming Bitcoin For
-            The Arts as a beneficiary is an excellent option. This guide explains
-            how it works, the benefits, and easy steps to get started.
-          </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href="mailto:donate@bitcoinforthearts.org?subject=Life%20Insurance%20Gift"
+                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                >
+                  Contact donate@
+                </a>
+                <Link
+                  href="/donate"
+                  className="inline-flex items-center justify-center rounded-md border border-border bg-surface px-6 py-3 text-sm font-semibold transition-colors hover:opacity-90"
+                >
+                  Back to Donate
+                </Link>
+              </div>
+            </div>
 
-          <p className="mt-4 text-base leading-relaxed text-muted sm:text-lg">
-            Where applicable, proceeds can be converted to Bitcoin (per policy) to
-            support artists long-term through our reserve.
-          </p>
+            <aside className="lg:col-span-5">
+              <div className="overflow-hidden rounded-2xl border border-border bg-surface">
+                <div className="relative aspect-[4/5] w-full lg:aspect-[16/10]">
+                  <Image
+                    src="/art fair.jpg"
+                    alt="Families and collectors walking through an art fair, representing legacy giving."
+                    fill
+                    className="object-cover object-[50%_35%]"
+                    priority={false}
+                  />
+                  <div className="absolute inset-0 bg-black/20" />
+                </div>
+                <div className="p-5">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    Legacy giving
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">
+                    A long-term gift can help fund the next generation of sovereign
+                    creators.
+                  </p>
+                </div>
+              </div>
+            </aside>
+          </div>
 
-          <div className="mt-10 space-y-10">
+          <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-2xl border border-border bg-background p-6">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                Simple legacy
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-muted">
+                Name us as beneficiary or donate an existing policy.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-border bg-background p-6">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                Flexible
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-muted">
+                Works for many policy types; structure determines treatment.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-border bg-background p-6">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                Long-term impact
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-muted">
+                Proceeds can fund grants and programs for years to come.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-border bg-background p-6">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                Bitcoin tie-in
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-muted">
+                Where applicable, proceeds can be converted to BTC per policy.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-12 space-y-10">
             <section className="rounded-2xl border border-border bg-surface p-6">
               <h2 className="text-xl font-semibold tracking-tight">
                 What Is A Life Insurance Gift?
@@ -143,21 +220,6 @@ export default function LifeInsuranceGuidePage() {
                 </li>
               </ul>
             </section>
-          </div>
-
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="mailto:donate@bitcoinforthearts.org?subject=Life%20Insurance%20Gift"
-              className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
-            >
-              Contact Us
-            </a>
-            <Link
-              href="/donate"
-              className="inline-flex items-center justify-center rounded-md border border-border bg-surface px-6 py-3 text-sm font-semibold transition-colors hover:opacity-90"
-            >
-              Back To Donate
-            </Link>
           </div>
         </div>
       </div>

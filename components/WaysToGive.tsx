@@ -27,21 +27,21 @@ const ways: Way[] = [
     description:
       'Potentially avoid capital gains tax by donating appreciated securities. We can liquidate and convert to BTC.',
     ctaLabel: 'Learn more',
-    href: 'mailto:hello@bitcoinforthearts.org?subject=Stock%20donation%20question',
+    href: '/donate/guides/securities',
   },
   {
     title: 'IRA Qualified Charitable Distributions (QCDs)',
     description:
       'For eligible donors: give directly from an IRA and count toward RMD. We can convert proceeds to BTC.',
     ctaLabel: 'Get the guide',
-    href: 'mailto:hello@bitcoinforthearts.org?subject=IRA%20QCD%20guide%20request',
+    href: '/donate/guides/ira-qcd',
   },
   {
     title: 'Donor-Advised Funds (DAFs)',
     description:
       'Recommend a grant from your DAF to support our mission. We can convert proceeds to BTC.',
     ctaLabel: 'How to donate',
-    href: 'mailto:hello@bitcoinforthearts.org?subject=DAF%20donation%20instructions',
+    href: '/donate/guides/daf',
   },
   {
     title: 'Corporate Matching & Workplace Giving',
@@ -55,7 +55,7 @@ const ways: Way[] = [
     description:
       'Name us in your will or trust to create a future legacy for uncensorable art.',
     ctaLabel: 'Estate planning',
-    href: 'mailto:hello@bitcoinforthearts.org?subject=Bequest%20and%20estate%20planning',
+    href: '/donate/guides/estate-planning',
   },
   {
     title: 'Life Insurance Policies',
@@ -76,7 +76,7 @@ const ways: Way[] = [
     description:
       'Assign royalties or other asset income to support artists over time.',
     ctaLabel: 'Details',
-    href: 'mailto:hello@bitcoinforthearts.org?subject=Royalties%2FIP%20gift',
+    href: '/donate/guides/royalties-ip',
   },
 ];
 
