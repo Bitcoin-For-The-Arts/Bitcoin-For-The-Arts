@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   description:
     "A nonprofit supporting artists with Bitcoin micro-grants, workshops, residencies, and productions — with radical transparency.",
   applicationName: "Bitcoin for the Arts",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
   alternates: {
     canonical: "/",
   },
@@ -22,6 +26,21 @@ export const metadata: Metadata = {
     title: "Bitcoin for the Arts",
     description:
       "Supporting artists with Bitcoin micro-grants, workshops, residencies, and productions — with radical transparency.",
+    images: [
+      {
+        url: "/resources/logos/bitcoin-for-the-arts-logo-gold.png",
+        width: 512,
+        height: 512,
+        alt: "Bitcoin for the Arts logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "Bitcoin for the Arts",
+    description:
+      "Supporting artists with Bitcoin micro-grants, workshops, residencies, and productions — with radical transparency.",
+    images: ["/resources/logos/bitcoin-for-the-arts-logo-gold.png"],
   },
 };
 
@@ -30,11 +49,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Bitcoin For The Arts, Inc.",
+    url: "https://bitcoinforthearts.org",
+    logo: "https://bitcoinforthearts.org/resources/logos/bitcoin-for-the-arts-logo-gold.png",
+    sameAs: ["https://x.com/Orangepillman"],
+  };
+
   return (
     <html lang="en">
       <body
         className="antialiased bg-background text-foreground relative"
       >
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
         <SiteBackground />
         <Navigation />
         <div className="min-h-[calc(100svh-64px)]">{children}</div>
