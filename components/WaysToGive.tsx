@@ -55,7 +55,7 @@ const ways: Way[] = [
     description:
       'Name us in your will or trust to create a future legacy for uncensorable art.',
     ctaLabel: 'Estate planning',
-    href: 'mailto:hello@bitcoinforthearts.org?subject=Bequest%20and%20estate%20planning',
+    href: '/donate/guides/estate-planning',
   },
   {
     title: 'Life Insurance Policies',
