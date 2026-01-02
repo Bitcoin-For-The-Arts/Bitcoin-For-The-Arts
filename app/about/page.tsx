@@ -1,12 +1,13 @@
-import Image from "next/image";
-import type { Metadata } from "next";
-import logoImage from "../asset/BITCOIN-ARTS-LOGO-gold.jpg";
-import watermarklogo from "../asset/FreedomLab Logo.jpeg";
+import Image from 'next/image';
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import logoImage from '../asset/BITCOIN-ARTS-LOGO-gold.jpg';
+import watermarklogo from '../asset/FreedomLab Logo.jpeg';
 
 export const metadata: Metadata = {
-  title: "About",
+  title: 'About',
   description:
-    "Learn about Bitcoin for the Arts: mission, vision, and how we support artists with Bitcoin.",
+    'Learn about Bitcoin for the Arts: mission, vision, and how we support artists with Bitcoin.',
 };
 
 export default function AboutPage() {
@@ -25,78 +26,229 @@ export default function AboutPage() {
       </div>
 
       {/* Watermark */}
-      <div className="fixed bottom-4 right-4 z-10 opacity-20 hover:opacity-40 transition-opacity duration-300">
-      <a 
-        href="https://btcnyc.github.io/" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="block"
-      >
-        <Image
-          src={watermarklogo}
-          alt="Bitcoin for the Arts Watermark"
-          width={80}
-          height={80}
-          className="rounded-full"
-        />
-      </a>
-    </div>
-
-      <div className="relative mx-auto max-w-6xl px-6 py-14">
-        {/* Logo */}
-        <div className="flex justify-center mb-12">
+      <div className="fixed bottom-4 right-4 z-10 opacity-20 transition-opacity duration-300 hover:opacity-40">
+        <a
+          href="https://btcnyc.github.io/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block"
+        >
           <Image
-            src={logoImage}
-            alt="Bitcoin for the Arts Logo"
-            width={300}
-            height={300}
+            src={watermarklogo}
+            alt="Bitcoin for the Arts Watermark"
+            width={80}
+            height={80}
             className="rounded-full"
           />
-        </div>
-        <div className="mx-auto max-w-3xl">
-          <p className="text-base leading-relaxed text-muted sm:text-lg mb-8">
-            Bitcoin For The Arts, Inc. funds sovereign creators across visual arts,
-            theater, dance, music, writing, storytelling, and film — artists with
-            low time preference who craft timeless work, challenge censorship, and
-            explore Bitcoin-aligned innovation. We provide BTC micro-grants, host
-            workshops and residencies, and support live and digital productions.
-          </p>
+        </a>
+      </div>
 
-          <div className="mt-10 grid grid-cols-1 gap-6 sm:mt-12">
-            <section className="rounded-2xl border border-border bg-surface p-6">
-              <div className="text-xs font-bold uppercase tracking-wide text-foreground">
-                Mission
+      <div className="relative mx-auto max-w-6xl px-6 py-14">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start">
+          <div className="lg:col-span-5">
+            <div className="rounded-3xl border border-border bg-surface p-6">
+              <div className="flex items-center gap-4">
+                <Image
+                  src={logoImage}
+                  alt="Bitcoin for the Arts Logo"
+                  width={96}
+                  height={96}
+                  className="rounded-full border border-border bg-background"
+                  priority
+                />
+                <div className="min-w-0">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    About
+                  </div>
+                  <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
+                    The NEA of the Bitcoin Era.
+                  </h1>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">
+                    A nonprofit arts organization building Bitcoin-native patronage.
+                  </p>
+                </div>
               </div>
-              <p className="mt-3 text-base leading-relaxed text-foreground/90 sm:text-lg italic">
-                &ldquo;In the sovereign spirit of Bitcoin—uncensorable money for uncensorable minds—we ignite a self-sustaining global renaissance in arts. Through Bitcoin micro-grants, performance workshops, and visionary live and digital productions, we empower visual artists, playwrights, dancers, and musicians to break free from fiat decay. Every donation fuels direct support to creators, powers world-class exhibitions and residencies, and plants a seed in a permanent Bitcoin reserve—building an eternal endowment for human creativity that no institution or inflation can ever touch.&rdquo;
-              </p>
-            </section>
 
-            <section className="rounded-2xl border border-border bg-background p-6">
-              <div className="text-xs font-bold uppercase tracking-wide text-foreground">
-                Vision
+              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <div className="rounded-xl border border-border bg-background p-4">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    Paid in Bitcoin
+                  </div>
+                  <div className="mt-2 text-sm text-foreground/85">
+                    Micro-grants and patronage that move fast.
+                  </div>
+                </div>
+                <div className="rounded-xl border border-border bg-background p-4">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    Programs
+                  </div>
+                  <div className="mt-2 text-sm text-foreground/85">
+                    Workshops, residencies, and productions.
+                  </div>
+                </div>
+                <div className="rounded-xl border border-border bg-background p-4">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    Endowment
+                  </div>
+                  <div className="mt-2 text-sm text-foreground/85">
+                    A HODL Vault reserve for the long run.
+                  </div>
+                </div>
               </div>
-              <p className="mt-3 text-base leading-relaxed text-foreground/90 sm:text-lg">
-                Be the NEA of the Bitcoin Era — the universal funder of interdisciplinary artists, powered by the hardest money ever known.
-              </p>
-            </section>
+
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/donate"
+                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                >
+                  Donate
+                </Link>
+                <Link
+                  href="/artists/why-bitcoin"
+                  className="inline-flex items-center justify-center rounded-md border border-border bg-background px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+                >
+                  Why Bitcoin?
+                </Link>
+              </div>
+            </div>
           </div>
 
-          <p className="mt-10 text-base leading-relaxed text-muted sm:text-lg mb-6">
-            Every donation in Bitcoin becomes a direct, instant grant that empowers a fine artist to create without gatekeepers — their work inscribed forever on the chain, their earnings protected from inflation and censorship.
-          </p>
+          <div className="lg:col-span-7">
+            <p className="text-base leading-relaxed text-muted sm:text-lg">
+              Bitcoin For The Arts, Inc. funds sovereign creators across visual arts,
+              theater, dance, music, writing, storytelling, and film — artists with
+              low time preference who craft timeless work, challenge censorship, and
+              explore Bitcoin-aligned innovation.
+            </p>
 
-          <p className="text-base leading-relaxed text-muted sm:text-lg mb-6">
-            Bitcoin saves the arts by replacing dying fiat patronage with unbreakable, global, inflation-proof capital — turning every artist into a sovereign creator and every collector into a living Medici.
-          </p>
+            <div className="mt-8 grid grid-cols-1 gap-6">
+              <section className="rounded-2xl border border-border bg-surface p-6">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="text-xs font-bold uppercase tracking-wide text-foreground">
+                    Mission
+                  </div>
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    Uncensorable money • Uncensorable minds
+                  </div>
+                </div>
 
-          <p className="text-base leading-relaxed text-muted sm:text-lg mb-6">
-            We care because every artist we empower with Bitcoin is a soul we free — from fear, from gatekeepers, from a world that tells them their gift must beg to survive. Their art is sacred; their freedom is our mission.
-          </p>
+                <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-12 md:items-start">
+                  <div className="md:col-span-4">
+                    <div className="rounded-xl border border-border bg-background p-5">
+                      <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                        Our edge
+                      </div>
+                      <ul className="mt-3 space-y-2 text-sm leading-relaxed text-muted">
+                        <li>
+                          <span className="font-semibold text-foreground">
+                            First:
+                          </span>{' '}
+                          paying artists exclusively in BTC.
+                        </li>
+                        <li>
+                          <span className="font-semibold text-foreground">
+                            Transparent:
+                          </span>{' '}
+                          open-source treasury culture.
+                        </li>
+                        <li>
+                          <span className="font-semibold text-foreground">
+                            Long-term:
+                          </span>{' '}
+                          an endowment mindset (HODL Vault).
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="md:col-span-8">
+                    <blockquote className="rounded-xl border border-border bg-background p-5">
+                      <p className="text-base leading-relaxed text-foreground/90 sm:text-lg italic">
+                        “In the sovereign spirit of Bitcoin—uncensorable money for
+                        uncensorable minds—we ignite a self-sustaining global
+                        renaissance in arts. Through Bitcoin micro-grants, performance
+                        workshops, and visionary live and digital productions, we
+                        empower visual artists, playwrights, dancers, and musicians
+                        to break free from fiat decay. Every donation fuels direct
+                        support to creators, powers world-class exhibitions and
+                        residencies, and plants a seed in a permanent Bitcoin
+                        reserve—building an eternal endowment for human creativity
+                        that no institution or inflation can ever touch.”
+                      </p>
+                    </blockquote>
+                  </div>
+                </div>
+              </section>
 
-          <p className="text-base leading-relaxed text-muted sm:text-lg">
-            We don&apos;t just teach Bitcoin — we pay you to live it: stack sats, slow down, and create art that outlives empires.
-          </p>
+              <section className="rounded-2xl border border-border bg-background p-6">
+                <div className="text-xs font-bold uppercase tracking-wide text-foreground">
+                  Vision
+                </div>
+                <p className="mt-3 text-base leading-relaxed text-foreground/90 sm:text-lg">
+                  Be the NEA of the Bitcoin Era — the universal funder of
+                  interdisciplinary artists, powered by the hardest money ever known.
+                </p>
+              </section>
+            </div>
+
+            <section className="mt-10 rounded-2xl border border-border bg-surface p-6">
+              <h2 className="text-xl font-semibold tracking-tight">
+                What we&apos;re building
+              </h2>
+              <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="rounded-xl border border-border bg-background p-5">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    Grants that move
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">
+                    Every donation in Bitcoin becomes a direct, instant grant that
+                    empowers an artist to create without gatekeepers.
+                  </p>
+                </div>
+                <div className="rounded-xl border border-border bg-background p-5">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    Patronage that lasts
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">
+                    We replace dying fiat patronage with unbreakable, global, sound
+                    money — turning supporters into modern Medicis.
+                  </p>
+                </div>
+                <div className="rounded-xl border border-border bg-background p-5">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    Freedom for creators
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">
+                    Protect earnings from inflation and censorship, so artists can
+                    build a sovereign creative life.
+                  </p>
+                </div>
+                <div className="rounded-xl border border-border bg-background p-5">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    A creative edge
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">
+                    We don&apos;t just teach Bitcoin — we pay you to live it: stack sats,
+                    slow down, and create art that outlives empires.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/grants"
+                  className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                >
+                  Explore grants
+                </Link>
+                <Link
+                  href="/programming"
+                  className="inline-flex items-center justify-center rounded-md border border-border bg-background px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+                >
+                  Explore programming
+                </Link>
+              </div>
+            </section>
+          </div>
         </div>
       </div>
     </main>
