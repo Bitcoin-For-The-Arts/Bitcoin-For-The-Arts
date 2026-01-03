@@ -15,8 +15,9 @@ export default function ProgrammingPage() {
       title: 'Bitcoin For Artists Workshops',
       description:
         'Practical sessions on self-custody, receiving Bitcoin, and long-term financial sovereignty for creators.',
-      imageSrc: '/bitcoin gallery.jpg',
-      imageAlt: 'A gallery scene with Bitcoin imagery, representing workshops and learning.',
+      imageSrc: '/music fair.jpg',
+      imageAlt: 'A community arts scene, representing workshops and learning.',
+      imageClassName: 'object-cover object-center',
     },
     {
       title: 'Residencies',
@@ -24,6 +25,7 @@ export default function ProgrammingPage() {
         'Time and space to create — with light-touch support and community connection.',
       imageSrc: '/art fair.jpg',
       imageAlt: 'An art fair scene, representing creative work and community.',
+      imageClassName: 'object-cover object-[50%_65%]',
     },
     {
       title: 'Co-Productions & Showcases',
@@ -31,8 +33,15 @@ export default function ProgrammingPage() {
         'Live and digital productions that elevate artist work and bring patrons along for the process.',
       imageSrc: '/event-background.jpg',
       imageAlt: 'An event scene, representing showcases and community.',
+      imageClassName: 'object-cover object-center',
     },
-  ] as const;
+  ] as const satisfies ReadonlyArray<{
+    title: string;
+    description: string;
+    imageSrc: string;
+    imageAlt: string;
+    imageClassName: string;
+  }>;
 
   return (
     <main className="bg-background relative overflow-hidden min-h-screen">
@@ -88,7 +97,7 @@ export default function ProgrammingPage() {
 
         {/* Swipeable carousel (mobile + desktop) */}
         <div className="mt-12 -mx-8 px-8">
-          <MobileCarousel ariaLabel="Programming highlights">
+          <MobileCarousel ariaLabel="Programming highlights" dotsClassName="lg:hidden">
             {programCards.map((card) => (
               <div
                 key={card.title}
@@ -100,7 +109,7 @@ export default function ProgrammingPage() {
                     src={card.imageSrc}
                     alt={card.imageAlt}
                     fill
-                    className="object-cover object-center"
+                    className={card.imageClassName}
                     sizes="(max-width: 640px) 92vw, (max-width: 1024px) 70vw, 32vw"
                   />
                   <div className="absolute inset-0 bg-black/25" />

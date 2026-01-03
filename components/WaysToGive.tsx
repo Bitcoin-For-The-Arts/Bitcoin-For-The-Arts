@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { useState } from 'react';
 
 type Way = {
   title: string;
@@ -136,6 +139,8 @@ function FitMeter({
 }
 
 export default function WaysToGive() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
   return (
     <section className="mt-10 rounded-2xl border border-border bg-background p-6">
       <h2 className="text-xl font-semibold tracking-tight">Ways To Give</h2>
@@ -147,51 +152,60 @@ export default function WaysToGive() {
 
       {/* Mobile + Desktop: accordion “tabs” layout */}
       <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2">
-        {ways.map((w, idx) => (
-          <details
-            key={w.title}
-            className="rounded-xl border border-accent/40 bg-surface/80 p-4"
-            open={idx === 0}
-          >
-            <summary className="cursor-pointer list-none">
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold tracking-tight">
-                    {w.title}
+        {ways.map((w, idx) => {
+          const isOpen = openIndex === idx;
+          return (
+            <div
+              key={w.title}
+              className="rounded-xl border border-accent/40 bg-surface/80 p-4"
+            >
+              <button
+                type="button"
+                className="w-full text-left"
+                aria-expanded={isOpen}
+                onClick={() => setOpenIndex(isOpen ? null : idx)}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="text-sm font-semibold tracking-tight">
+                      {w.title}
+                    </div>
+                    <div className="mt-1 text-xs leading-relaxed text-muted">
+                      {w.description}
+                    </div>
                   </div>
-                  <div className="mt-1 text-xs leading-relaxed text-muted">
-                    {w.description}
+                  <div className="shrink-0 rounded-md border border-border bg-background px-3 py-2 text-xs font-semibold">
+                    {isOpen ? 'Close' : 'Open'}
                   </div>
                 </div>
-                <div className="shrink-0 rounded-md border border-border bg-background px-3 py-2 text-xs font-semibold">
-                  Open
+              </button>
+
+              {isOpen ? (
+                <div className="mt-4">
+                  {w.meter ? <FitMeter meter={w.meter} /> : null}
+
+                  <div className="mt-4">
+                    {w.href.startsWith('/') ? (
+                      <Link
+                        href={w.href}
+                        className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                      >
+                        {w.ctaLabel}
+                      </Link>
+                    ) : (
+                      <a
+                        href={w.href}
+                        className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                      >
+                        {w.ctaLabel}
+                      </a>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </summary>
-
-            <div className="mt-4">
-              {w.meter ? <FitMeter meter={w.meter} /> : null}
-
-              <div className="mt-4">
-                {w.href.startsWith('/') ? (
-                  <Link
-                    href={w.href}
-                    className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
-                  >
-                    {w.ctaLabel}
-                  </Link>
-                ) : (
-                  <a
-                    href={w.href}
-                    className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
-                  >
-                    {w.ctaLabel}
-                  </a>
-                )}
-              </div>
+              ) : null}
             </div>
-          </details>
-        ))}
+          );
+        })}
       </div>
 
       <p className="mt-6 text-xs leading-relaxed text-muted">

@@ -95,7 +95,7 @@ export default function GrantsPage() {
 
         {/* Swipeable carousel (mobile + desktop) */}
         <div className="mt-12 -mx-8 px-8">
-          <MobileCarousel ariaLabel="Grant program details">
+          <MobileCarousel ariaLabel="Grant program details" dotsClassName="lg:hidden">
             {infoCards.map((card) => (
               <div
                 key={card.title}

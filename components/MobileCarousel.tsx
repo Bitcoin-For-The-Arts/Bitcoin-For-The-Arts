@@ -7,6 +7,7 @@ type Props = {
   children: React.ReactNode;
   className?: string;
   showDots?: boolean;
+  dotsClassName?: string;
 };
 
 function clamp(n: number, min: number, max: number) {
@@ -18,6 +19,7 @@ export default function MobileCarousel({
   children,
   className = '',
   showDots = true,
+  dotsClassName = '',
 }: Props) {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const itemCount = useMemo(() => Children.count(children), [children]);
@@ -81,7 +83,9 @@ export default function MobileCarousel({
       </div>
 
       {showDots && itemCount > 1 ? (
-        <div className="mt-3 flex items-center justify-center gap-2">
+        <div
+          className={['mt-3 flex items-center justify-center gap-2', dotsClassName].join(' ')}
+        >
           {Array.from({ length: itemCount }).map((_, i) => {
             const isActive = i === activeIndex;
             return (
