@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import MobileCarousel from '@/components/MobileCarousel';
 
 export const metadata: Metadata = {
   title: 'Grants',
@@ -62,7 +63,7 @@ export default function GrantsPage() {
         <div className="absolute inset-0 bg-background/60" />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-6 py-14">
+      <div className="relative mx-auto max-w-6xl px-8 py-14 sm:px-6">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
             Bitcoin Micro-Grants
@@ -93,11 +94,12 @@ export default function GrantsPage() {
         </div>
 
         {/* Mobile: swipeable carousel */}
-        <div className="mt-12 md:hidden -mx-6 px-6">
-          <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory">
+        <div className="mt-12 md:hidden -mx-8 px-8">
+          <MobileCarousel ariaLabel="Grant program details">
             {infoCards.map((card) => (
               <div
                 key={card.title}
+                data-carousel-item="true"
                 className="snap-start shrink-0 w-[85%] rounded-2xl border border-border bg-surface/80 overflow-hidden"
               >
                 <div className="relative aspect-[16/9] w-full">
@@ -122,7 +124,7 @@ export default function GrantsPage() {
                 </div>
               </div>
             ))}
-          </div>
+          </MobileCarousel>
         </div>
 
         {/* Desktop: grid */}

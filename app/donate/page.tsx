@@ -16,7 +16,7 @@ export default function DonatePage() {
 
   return (
     <main className="bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-14">
+      <div className="mx-auto max-w-6xl px-8 py-14 sm:px-6">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
             Support artists with Bitcoin

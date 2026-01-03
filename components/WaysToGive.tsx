@@ -19,7 +19,7 @@ const ways: Way[] = [
     description:
       'One-time or recurring via credit card/check (Stripe). Monthly patrons can opt into a public leaderboard spot.',
     ctaLabel: 'Donate (fiat)',
-    href: 'mailto:hello@bitcoinforthearts.org?subject=Fiat%20donation%20(Stripe)%20setup',
+    href: 'mailto:donate@bitcoinforthearts.org?subject=Fiat%20donation%20(Stripe)%20setup',
     meter: { speed: 85, tax: 35, legacy: 45 },
   },
   {
@@ -59,7 +59,7 @@ const ways: Way[] = [
     description:
       'Some employers match donations. Ask if your company supports matching or workplace giving (Benevity/YourCause/etc.).',
     ctaLabel: 'Ask about matching',
-    href: 'mailto:hello@bitcoinforthearts.org?subject=Employer%20matching%20donation',
+    href: 'mailto:donate@bitcoinforthearts.org?subject=Employer%20matching%20donation',
     meter: { speed: 45, tax: 40, legacy: 50 },
   },
   {
@@ -226,10 +226,10 @@ export default function WaysToGive() {
       <p className="mt-6 text-xs leading-relaxed text-muted">
         Questions? Email{' '}
         <a
-          href="mailto:hello@bitcoinforthearts.org"
+          href="mailto:donate@bitcoinforthearts.org"
           className="font-semibold underline underline-offset-4"
         >
-          hello@bitcoinforthearts.org
+          donate@bitcoinforthearts.org
         </a>
         . Tax treatment depends on your jurisdiction and the organization’s status;
         consult your advisor.

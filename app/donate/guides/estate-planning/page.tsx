@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function EstatePlanningGuidePage() {
   return (
     <main className="bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-14">
+      <div className="mx-auto max-w-6xl px-8 py-14 sm:px-6">
         <div className="max-w-5xl">
           <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted">
             <Link href="/donate" className="hover:underline">
