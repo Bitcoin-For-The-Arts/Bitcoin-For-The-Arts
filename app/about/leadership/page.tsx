@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function LeadershipPage() {
   return (
-    <main className="bg-background">
+    <main className="bg-background md:bg-white">
       <div className="mx-auto max-w-6xl px-6 py-14">
         <div className="max-w-5xl">
           <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted">
@@ -66,7 +66,7 @@ export default function LeadershipPage() {
                   <div className="mt-6">
                     <Link
                       href={`/about/leadership/${p.slug}`}
-                      className="inline-flex items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                      className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
                     >
                       View full bio
                     </Link>

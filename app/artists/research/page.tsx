@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import MobileCarousel from '@/components/MobileCarousel';
 
 export const metadata: Metadata = {
   title: 'Research',
@@ -28,6 +29,33 @@ function SourceLink({
 }
 
 export default function ArtistsResearchPage() {
+  const charts = [
+    {
+      src: '/research/chart.png',
+      alt: 'Bar chart comparing growth rate: Arts Sector 6.6% vs Overall US Economy 2.5%.',
+      caption:
+        'Growth: the arts sector outpaced overall GDP growth (2023).',
+    },
+    {
+      src: '/research/chart-2.png',
+      alt: 'Bar chart of arts and culture value added: about $1.1T in 2022 and $1.17T in 2023.',
+      caption:
+        'Value added: arts and culture contribute over $1T to U.S. GDP.',
+    },
+    {
+      src: '/research/chart-3.png',
+      alt: 'Bar chart showing arts employment at 5.2 million jobs in 2022.',
+      caption:
+        'Employment: millions of jobs supported by arts and culture.',
+    },
+    {
+      src: '/research/chart-1.png',
+      alt: 'Pie chart showing arts and cultural sector as a small portion of the total economy.',
+      caption:
+        'Share: a meaningful slice of GDP — often underestimated.',
+    },
+  ] as const;
+
   return (
     <main className="bg-background">
       <div className="mx-auto max-w-6xl px-6 py-14">
@@ -179,70 +207,32 @@ export default function ArtistsResearchPage() {
             </section>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <figure className="overflow-hidden rounded-2xl border border-border bg-background">
-              <div className="relative aspect-[16/9] w-full">
-                <Image
-                  src="/research/chart.png"
-                  alt="Bar chart comparing growth rate: Arts Sector 6.6% vs Overall US Economy 2.5%."
-                  fill
-                  className="object-cover object-center"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
-              <figcaption className="p-5 text-sm text-muted">
-                <span className="font-semibold text-foreground">Growth:</span> the arts
-                sector outpaced overall GDP growth (2023).
-              </figcaption>
-            </figure>
-
-            <figure className="overflow-hidden rounded-2xl border border-border bg-background">
-              <div className="relative aspect-[16/9] w-full">
-                <Image
-                  src="/research/chart-2.png"
-                  alt="Bar chart of arts and culture value added: about $1.1T in 2022 and $1.17T in 2023."
-                  fill
-                  className="object-cover object-center"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
-              <figcaption className="p-5 text-sm text-muted">
-                <span className="font-semibold text-foreground">Value added:</span> arts
-                and culture contribute over $1T to U.S. GDP.
-              </figcaption>
-            </figure>
-
-            <figure className="overflow-hidden rounded-2xl border border-border bg-background">
-              <div className="relative aspect-[16/9] w-full">
-                <Image
-                  src="/research/chart-3.png"
-                  alt="Bar chart showing arts employment at 5.2 million jobs in 2022."
-                  fill
-                  className="object-cover object-center"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
-              <figcaption className="p-5 text-sm text-muted">
-                <span className="font-semibold text-foreground">Employment:</span> millions
-                of jobs supported by arts and culture.
-              </figcaption>
-            </figure>
-
-            <figure className="overflow-hidden rounded-2xl border border-border bg-background">
-              <div className="relative aspect-[16/9] w-full">
-                <Image
-                  src="/research/chart-1.png"
-                  alt="Pie chart showing arts and cultural sector as a small portion of the total economy."
-                  fill
-                  className="object-cover object-center"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
-              <figcaption className="p-5 text-sm text-muted">
-                <span className="font-semibold text-foreground">Share:</span> a meaningful
-                slice of GDP — often underestimated.
-              </figcaption>
-            </figure>
+          <div className="mt-12 -mx-6 px-6">
+            <MobileCarousel ariaLabel="Research charts carousel">
+              {charts.map((c) => (
+                <figure
+                  key={c.src}
+                  data-carousel-item="true"
+                  className="snap-start shrink-0 w-[92%] sm:w-[70%] lg:w-[48%] overflow-hidden rounded-2xl border border-border bg-background"
+                >
+                  <div className="relative aspect-[16/9] w-full">
+                    <Image
+                      src={c.src}
+                      alt={c.alt}
+                      fill
+                      className="object-cover object-center"
+                      sizes="(max-width: 640px) 92vw, (max-width: 1024px) 70vw, 48vw"
+                    />
+                  </div>
+                  <figcaption className="p-5 text-sm text-muted">
+                    <span className="font-semibold text-foreground">
+                      {c.caption.split(':')[0]}:
+                    </span>{' '}
+                    {c.caption.split(':').slice(1).join(':').trim()}
+                  </figcaption>
+                </figure>
+              ))}
+            </MobileCarousel>
           </div>
 
           <section className="mt-12 rounded-2xl border border-border bg-surface p-6">

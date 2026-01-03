@@ -93,14 +93,14 @@ export default function GrantsPage() {
           </div>
         </div>
 
-        {/* Mobile: swipeable carousel */}
-        <div className="mt-12 md:hidden -mx-8 px-8">
+        {/* Swipeable carousel (mobile + desktop) */}
+        <div className="mt-12 -mx-8 px-8">
           <MobileCarousel ariaLabel="Grant program details">
             {infoCards.map((card) => (
               <div
                 key={card.title}
                 data-carousel-item="true"
-                className="snap-start shrink-0 w-[85%] rounded-2xl border border-border bg-surface/80 overflow-hidden"
+                className="snap-start shrink-0 w-[92%] sm:w-[70%] lg:w-[32%] rounded-2xl border border-border bg-surface/80 overflow-hidden"
               >
                 <div className="relative aspect-[16/9] w-full">
                   <Image
@@ -108,7 +108,7 @@ export default function GrantsPage() {
                     alt={card.imageAlt}
                     fill
                     className="object-cover object-center"
-                    sizes="85vw"
+                    sizes="(max-width: 640px) 92vw, (max-width: 1024px) 70vw, 32vw"
                   />
                   <div className="absolute inset-0 bg-black/25" />
                 </div>
@@ -125,22 +125,6 @@ export default function GrantsPage() {
               </div>
             ))}
           </MobileCarousel>
-        </div>
-
-        {/* Desktop: grid */}
-        <div className="mt-12 hidden md:grid grid-cols-1 gap-6 md:grid-cols-3">
-          {infoCards.map((card) => (
-            <div key={card.title} className={`rounded-xl border border-border ${card.surface} p-6`}>
-              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-                {card.title}
-              </div>
-              <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
-                {card.items.map((it) => (
-                  <li key={it}>{it}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
         </div>
 
         <div className="mt-12 rounded-2xl border border-border bg-surface p-6">

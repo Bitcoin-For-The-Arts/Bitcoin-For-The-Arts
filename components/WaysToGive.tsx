@@ -145,12 +145,13 @@ export default function WaysToGive() {
         policy applies).
       </p>
 
-      {/* Mobile: accordion list (keeps page shorter) */}
-      <div className="mt-6 flex flex-col gap-3 md:hidden">
-        {ways.map((w) => (
+      {/* Mobile + Desktop: accordion “tabs” layout */}
+      <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2">
+        {ways.map((w, idx) => (
           <details
             key={w.title}
             className="rounded-xl border border-accent/40 bg-surface/80 p-4"
+            open={idx === 0}
           >
             <summary className="cursor-pointer list-none">
               <div className="flex items-center justify-between gap-3">
@@ -190,36 +191,6 @@ export default function WaysToGive() {
               </div>
             </div>
           </details>
-        ))}
-      </div>
-
-      {/* Desktop: grid cards */}
-      <div className="mt-6 hidden grid-cols-1 gap-4 md:grid md:grid-cols-2">
-        {ways.map((w) => (
-          <div
-            key={w.title}
-            className="rounded-xl border border-border bg-surface p-5"
-          >
-            <div className="text-sm font-semibold tracking-tight">{w.title}</div>
-            <p className="mt-2 text-sm leading-relaxed text-muted">{w.description}</p>
-            <div className="mt-4">
-              {w.href.startsWith('/') ? (
-                <Link
-                  href={w.href}
-                  className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
-                >
-                  {w.ctaLabel}
-                </Link>
-              ) : (
-                <a
-                  href={w.href}
-                  className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
-                >
-                  {w.ctaLabel}
-                </a>
-              )}
-            </div>
-          </div>
         ))}
       </div>
 

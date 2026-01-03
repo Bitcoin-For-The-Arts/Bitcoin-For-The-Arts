@@ -37,7 +37,7 @@ export default function LeadershipProfilePage({
   ];
 
   return (
-    <main className="bg-background">
+    <main className="bg-background md:bg-white">
       <div className="mx-auto max-w-6xl px-6 py-14">
         <div className="max-w-5xl">
           <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted">
@@ -102,8 +102,8 @@ export default function LeadershipProfilePage({
                   {person.title}
                 </p>
 
-                {/* Mobile: collapse long bios into sections */}
-                <div className="mt-6 md:hidden space-y-3">
+                {/* Mobile + Desktop: collapse long bios into sections */}
+                <div className="mt-6 space-y-3">
                   {sections.map((section) => (
                     <details
                       key={section.title}
@@ -126,13 +126,6 @@ export default function LeadershipProfilePage({
                         ))}
                       </div>
                     </details>
-                  ))}
-                </div>
-
-                {/* Desktop: full bio */}
-                <div className="mt-6 hidden md:block space-y-4 text-sm leading-relaxed text-muted sm:text-base">
-                  {person.fullBio.map((para) => (
-                    <p key={para}>{para}</p>
                   ))}
                 </div>
               </div>

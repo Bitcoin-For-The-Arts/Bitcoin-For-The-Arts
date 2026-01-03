@@ -86,14 +86,14 @@ export default function ProgrammingPage() {
           </div>
         </div>
 
-        {/* Mobile: swipeable carousel */}
-        <div className="mt-12 md:hidden -mx-8 px-8">
+        {/* Swipeable carousel (mobile + desktop) */}
+        <div className="mt-12 -mx-8 px-8">
           <MobileCarousel ariaLabel="Programming highlights">
             {programCards.map((card) => (
               <div
                 key={card.title}
                 data-carousel-item="true"
-                className="snap-start shrink-0 w-[85%] overflow-hidden rounded-2xl border border-border bg-surface/80"
+                className="snap-start shrink-0 w-[92%] sm:w-[70%] lg:w-[32%] overflow-hidden rounded-2xl border border-border bg-surface/80"
               >
                 <div className="relative aspect-[16/9] w-full">
                   <Image
@@ -101,7 +101,7 @@ export default function ProgrammingPage() {
                     alt={card.imageAlt}
                     fill
                     className="object-cover object-center"
-                    sizes="85vw"
+                    sizes="(max-width: 640px) 92vw, (max-width: 1024px) 70vw, 32vw"
                   />
                   <div className="absolute inset-0 bg-black/25" />
                 </div>
@@ -112,16 +112,6 @@ export default function ProgrammingPage() {
               </div>
             ))}
           </MobileCarousel>
-        </div>
-
-        {/* Desktop: grid */}
-        <div className="mt-12 hidden md:grid grid-cols-1 gap-6 md:grid-cols-3">
-          {programCards.map((card) => (
-            <div key={card.title} className="rounded-xl border border-border bg-background p-6">
-              <div className="text-sm font-semibold tracking-tight">{card.title}</div>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{card.description}</p>
-            </div>
-          ))}
         </div>
 
         <div className="mt-12 rounded-2xl border border-border bg-surface p-6">
