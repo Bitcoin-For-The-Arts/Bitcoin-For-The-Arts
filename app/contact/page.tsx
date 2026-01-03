@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import ContactForm from '@/components/ContactForm';
+import { socialLinks } from '@/lib/socials';
 
 export const metadata: Metadata = {
   title: 'Contact',
@@ -29,6 +30,25 @@ export default function ContactPage() {
               >
                 hello@bitcoinforthearts.org
               </a>
+            </div>
+
+            <div className="mt-8 rounded-2xl border border-border bg-surface p-5">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                Follow
+              </div>
+              <div className="mt-3 flex flex-wrap gap-3">
+                {socialLinks.map((s) => (
+                  <a
+                    key={s.key}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-12 items-center justify-center rounded-md border border-border bg-background px-4 text-sm font-semibold transition-colors hover:bg-surface"
+                  >
+                    {s.label}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
 

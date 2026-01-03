@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-Gold.png';
+import { socialLinks } from '@/lib/socials';
 
 export default function SiteFooter() {
   return (
@@ -26,7 +27,7 @@ export default function SiteFooter() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
             <div>
               <div className="text-xs font-semibold uppercase tracking-wide text-white/80 sm:text-muted">
                 Organization
@@ -88,6 +89,26 @@ export default function SiteFooter() {
                     Donate
                   </Link>
                 </li>
+              </ul>
+            </div>
+
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-white/80 sm:text-muted">
+                Follow
+              </div>
+              <ul className="mt-3 space-y-2 text-sm">
+                {socialLinks.map((s) => (
+                  <li key={s.key}>
+                    <a
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline text-white/90 sm:text-foreground"
+                    >
+                      {s.label}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
