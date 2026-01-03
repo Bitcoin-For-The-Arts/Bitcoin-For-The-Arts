@@ -15,24 +15,24 @@ export default function ProgrammingPage() {
       title: 'Bitcoin For Artists Workshops',
       description:
         'Practical sessions on self-custody, receiving Bitcoin, and long-term financial sovereignty for creators.',
-      imageSrc: '/music fair.jpg',
-      imageAlt: 'A community arts scene, representing workshops and learning.',
+      imageSrc: '/bitcoin gallery.jpg',
+      imageAlt: 'A gallery space featuring Bitcoin-themed art, representing workshops and learning.',
       imageClassName: 'object-cover object-center',
     },
     {
       title: 'Residencies',
       description:
         'Time and space to create — with light-touch support and community connection.',
-      imageSrc: '/art fair.jpg',
-      imageAlt: 'An art fair scene, representing creative work and community.',
-      imageClassName: 'object-cover object-[50%_70%]',
+      imageSrc: '/art studio.jpg',
+      imageAlt: 'An artist working in a studio, representing residencies and creative practice.',
+      imageClassName: 'object-cover object-[50%_25%]',
     },
     {
       title: 'Co-Productions & Showcases',
       description:
         'Live and digital productions that elevate artist work and bring patrons along for the process.',
-      imageSrc: '/event-background.jpg',
-      imageAlt: 'An event scene, representing showcases and community.',
+      imageSrc: '/scene design.jpg',
+      imageAlt: 'Artists collaborating on a stage design, representing co-productions and showcases.',
       imageClassName: 'object-cover object-center',
     },
   ] as const satisfies ReadonlyArray<{
