@@ -140,6 +140,7 @@ function FitMeter({
 
 export default function WaysToGive() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   return (
     <section className="mt-10 rounded-2xl border border-border bg-background p-6">
@@ -150,8 +151,8 @@ export default function WaysToGive() {
         policy applies).
       </p>
 
-      {/* Mobile + Desktop: accordion “tabs” layout */}
-      <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2">
+      {/* Mobile: accordion list */}
+      <div className="mt-6 flex flex-col gap-3 md:hidden">
         {ways.map((w, idx) => {
           const isOpen = openIndex === idx;
           return (
@@ -206,6 +207,63 @@ export default function WaysToGive() {
             </div>
           );
         })}
+      </div>
+
+      {/* Desktop: true tab panel (prevents “side opening” artifacts) */}
+      <div className="mt-6 hidden md:grid md:grid-cols-12 md:gap-4">
+        <div className="md:col-span-5">
+          <div className="space-y-2">
+            {ways.map((w, idx) => {
+              const isActive = idx === activeIndex;
+              return (
+                <button
+                  key={w.title}
+                  type="button"
+                  onClick={() => setActiveIndex(idx)}
+                  className={[
+                    'w-full text-left rounded-xl border bg-surface/80 p-4 transition-colors',
+                    isActive ? 'border-accent/60' : 'border-border hover:border-accent/35',
+                  ].join(' ')}
+                  aria-pressed={isActive}
+                >
+                  <div className="text-sm font-semibold tracking-tight">{w.title}</div>
+                  <div className="mt-1 text-xs leading-relaxed text-muted">
+                    {w.description}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="md:col-span-7 rounded-2xl border border-accent/40 bg-surface/80 p-6">
+          <div className="text-lg font-semibold tracking-tight">
+            {ways[activeIndex]?.title}
+          </div>
+          <p className="mt-2 text-sm leading-relaxed text-muted">
+            {ways[activeIndex]?.description}
+          </p>
+
+          {ways[activeIndex]?.meter ? <FitMeter meter={ways[activeIndex].meter} /> : null}
+
+          <div className="mt-5">
+            {ways[activeIndex]?.href?.startsWith('/') ? (
+              <Link
+                href={ways[activeIndex].href}
+                className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+              >
+                {ways[activeIndex].ctaLabel}
+              </Link>
+            ) : (
+              <a
+                href={ways[activeIndex]?.href}
+                className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+              >
+                {ways[activeIndex]?.ctaLabel}
+              </a>
+            )}
+          </div>
+        </div>
       </div>
 
       <p className="mt-6 text-xs leading-relaxed text-muted">

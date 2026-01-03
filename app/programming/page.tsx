@@ -25,7 +25,7 @@ export default function ProgrammingPage() {
         'Time and space to create — with light-touch support and community connection.',
       imageSrc: '/art fair.jpg',
       imageAlt: 'An art fair scene, representing creative work and community.',
-      imageClassName: 'object-cover object-[50%_65%]',
+      imageClassName: 'object-cover object-[50%_82%]',
     },
     {
       title: 'Co-Productions & Showcases',
