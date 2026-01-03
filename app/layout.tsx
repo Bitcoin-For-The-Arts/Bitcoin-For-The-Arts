@@ -52,6 +52,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Mobile styling toggle:
+  // Default ON (more vibrant mobile color). Set NEXT_PUBLIC_MOBILE_VIBRANT=0 to revert.
+  const mobileVibrant = process.env.NEXT_PUBLIC_MOBILE_VIBRANT !== '0';
+
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -64,7 +68,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className="antialiased bg-background text-foreground relative"
+        className={[
+          'antialiased bg-background text-foreground relative',
+          mobileVibrant ? 'mobile-vibrant' : '',
+        ].join(' ')}
       >
         <script
           type="application/ld+json"

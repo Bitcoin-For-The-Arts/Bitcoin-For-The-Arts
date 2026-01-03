@@ -60,8 +60,8 @@ export default function RoyaltiesIpGuidePage() {
               <div className="overflow-hidden rounded-2xl border border-border bg-surface">
                 <div className="relative aspect-[4/5] w-full lg:aspect-[16/10]">
                   <Image
-                    src="/artfest.jpg"
-                    alt="An art festival with musicians and community, representing creative legacy gifts."
+                    src="/paintbrush kids.jpg"
+                    alt="Kids holding paintbrushes and smiling, representing creativity and future generations."
                     fill
                     className="object-cover object-center"
                     priority={false}
