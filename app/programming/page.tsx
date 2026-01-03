@@ -25,7 +25,7 @@ export default function ProgrammingPage() {
         'Time and space to create — with light-touch support and community connection.',
       imageSrc: '/art fair.jpg',
       imageAlt: 'An art fair scene, representing creative work and community.',
-      imageClassName: 'object-cover object-[50%_82%]',
+      imageClassName: 'object-cover object-[50%_70%]',
     },
     {
       title: 'Co-Productions & Showcases',
@@ -82,7 +82,7 @@ export default function ProgrammingPage() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/events"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 border border-accent/60"
             >
               Upcoming events
             </Link>

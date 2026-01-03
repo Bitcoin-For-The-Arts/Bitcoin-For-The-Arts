@@ -48,7 +48,7 @@ export default function EventsPage() {
                 href="https://luma.com/user/dion"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block bg-primary hover:opacity-90 text-white px-8 py-3 rounded-md transition-colors uppercase tracking-wide font-medium"
+                className="inline-block bg-primary hover:opacity-90 text-white px-8 py-3 rounded-md transition-colors uppercase tracking-wide font-medium border border-accent/60"
               >
                 View Events on Luma
               </a>

@@ -80,7 +80,7 @@ export default function GrantsPage() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a
               href="mailto:grants@bitcoinforthearts.org?subject=Grant%20application"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 border border-accent/60"
             >
               Apply via email
             </a>
