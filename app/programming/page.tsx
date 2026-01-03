@@ -23,9 +23,9 @@ export default function ProgrammingPage() {
       title: 'Residencies',
       description:
         'Time and space to create — with light-touch support and community connection.',
-      imageSrc: '/art studio.jpg',
-      imageAlt: 'An artist working in a studio, representing residencies and creative practice.',
-      imageClassName: 'object-cover object-[50%_25%]',
+      imageSrc: '/amphitheater .jpg',
+      imageAlt: 'Artists gathered in an outdoor amphitheater, representing residencies and collaborative creation.',
+      imageClassName: 'object-cover object-[50%_30%]',
     },
     {
       title: 'Co-Productions & Showcases',
