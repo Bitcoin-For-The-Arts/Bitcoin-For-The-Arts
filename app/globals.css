@@ -5,6 +5,15 @@
 @import "@fontsource/playfair-display/600.css";
 @import "@fontsource/playfair-display/700.css";
 
+/* Hide scrollbars for mobile carousels (still scrollable). */
+.snap-carousel {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.snap-carousel::-webkit-scrollbar {
+  display: none;
+}
+
 :root {
   /* Neutrals */
   --background: #ffffff; /* neutral white */

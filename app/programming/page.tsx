@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import MobileCarousel from '@/components/MobileCarousel';
 
 export const metadata: Metadata = {
   title: 'Programming',
@@ -9,6 +10,39 @@ export const metadata: Metadata = {
 };
 
 export default function ProgrammingPage() {
+  const programCards = [
+    {
+      title: 'Bitcoin For Artists Workshops',
+      description:
+        'Practical sessions on self-custody, receiving Bitcoin, and long-term financial sovereignty for creators.',
+      imageSrc: '/bitcoin gallery.jpg',
+      imageAlt: 'A gallery space featuring Bitcoin-themed art, representing workshops and learning.',
+      imageClassName: 'object-cover object-center',
+    },
+    {
+      title: 'Residencies',
+      description:
+        'Time and space to create — with light-touch support and community connection.',
+      imageSrc: '/amphitheater .jpg',
+      imageAlt: 'Artists gathered in an outdoor amphitheater, representing residencies and collaborative creation.',
+      imageClassName: 'object-cover object-[50%_30%]',
+    },
+    {
+      title: 'Co-Productions & Showcases',
+      description:
+        'Live and digital productions that elevate artist work and bring patrons along for the process.',
+      imageSrc: '/scene design.jpg',
+      imageAlt: 'Artists collaborating on a stage design, representing co-productions and showcases.',
+      imageClassName: 'object-cover object-center',
+    },
+  ] as const satisfies ReadonlyArray<{
+    title: string;
+    description: string;
+    imageSrc: string;
+    imageAlt: string;
+    imageClassName: string;
+  }>;
+
   return (
     <main className="bg-background relative overflow-hidden min-h-screen">
       {/* Background image (same treatment as Artists / Get Involved / Grants) */}
@@ -32,7 +66,7 @@ export default function ProgrammingPage() {
         <div className="absolute inset-0 bg-background/60" />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-6 py-14">
+      <div className="relative mx-auto max-w-6xl px-8 py-14 sm:px-6">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
             Workshops • residencies • productions
@@ -48,7 +82,7 @@ export default function ProgrammingPage() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/events"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 border border-accent/60"
             >
               Upcoming events
             </Link>
@@ -61,32 +95,32 @@ export default function ProgrammingPage() {
           </div>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-          <div className="rounded-xl border border-border bg-background p-6">
-            <div className="text-sm font-semibold tracking-tight">
-              Bitcoin For Artists Workshops
-            </div>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
-              Practical sessions on self-custody, receiving Bitcoin, and long-term
-              financial sovereignty for creators.
-            </p>
-          </div>
-          <div className="rounded-xl border border-border bg-background p-6">
-            <div className="text-sm font-semibold tracking-tight">Residencies</div>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
-              Time and space to create — with light-touch support and community
-              connection.
-            </p>
-          </div>
-          <div className="rounded-xl border border-border bg-background p-6">
-            <div className="text-sm font-semibold tracking-tight">
-              Co-Productions & Showcases
-            </div>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
-              Live and digital productions that elevate artist work and bring
-              patrons along for the process.
-            </p>
-          </div>
+        {/* Swipeable carousel (mobile + desktop) */}
+        <div className="mt-12 -mx-8 px-8">
+          <MobileCarousel ariaLabel="Programming highlights" dotsClassName="lg:hidden">
+            {programCards.map((card) => (
+              <div
+                key={card.title}
+                data-carousel-item="true"
+                className="snap-start shrink-0 w-[92%] sm:w-[70%] lg:w-[32%] overflow-hidden rounded-2xl border border-border bg-surface/80"
+              >
+                <div className="relative aspect-[16/9] w-full">
+                  <Image
+                    src={card.imageSrc}
+                    alt={card.imageAlt}
+                    fill
+                    className={card.imageClassName}
+                    sizes="(max-width: 640px) 92vw, (max-width: 1024px) 70vw, 32vw"
+                  />
+                  <div className="absolute inset-0 bg-black/25" />
+                </div>
+                <div className="p-6">
+                  <div className="text-sm font-semibold tracking-tight">{card.title}</div>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">{card.description}</p>
+                </div>
+              </div>
+            ))}
+          </MobileCarousel>
         </div>
 
         <div className="mt-12 rounded-2xl border border-border bg-surface p-6">

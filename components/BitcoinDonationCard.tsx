@@ -30,7 +30,7 @@ export default function BitcoinDonationCard({ address }: { address: string }) {
             <CopyButton text={address} />
             <a
               href={`bitcoin:${address}`}
-              className="inline-flex items-center justify-center rounded-md border border-border px-4 py-2 text-sm font-semibold transition-colors hover:bg-surface"
+              className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-4 py-2 text-sm font-semibold transition-colors hover:bg-surface"
             >
               Open in wallet
             </a>

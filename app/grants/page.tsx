@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import MobileCarousel from '@/components/MobileCarousel';
 
 export const metadata: Metadata = {
   title: 'Grants',
@@ -9,6 +10,45 @@ export const metadata: Metadata = {
 };
 
 export default function GrantsPage() {
+  const infoCards = [
+    {
+      title: 'What We Fund',
+      items: [
+        'Creation costs (materials, studio time, rehearsal space)',
+        'Production costs (recording, staging, print, fabrication)',
+        'Travel tied to a specific project or performance',
+        'Artist-led community programming',
+      ],
+      imageSrc: '/paintbrush kids.jpg',
+      imageAlt: 'Kids holding paintbrushes, representing creative work.',
+      surface: 'bg-background',
+    },
+    {
+      title: 'Who Can Apply',
+      items: [
+        'Independent artists and small collectives',
+        'Any discipline: visual arts, theater, dance, music, writing, storytelling, film',
+        'Working on a specific project with clear next steps',
+        'Open to all geographies (subject to program capacity)',
+      ],
+      imageSrc: '/artfest.jpg',
+      imageAlt: 'An art festival scene, representing community arts.',
+      surface: 'bg-background',
+    },
+    {
+      title: 'What To Send',
+      items: [
+        'Your name + links (website, portfolio, socials)',
+        'Project description (what, why, and timeline)',
+        'Budget + requested amount',
+        'A Bitcoin address to receive funds',
+      ],
+      imageSrc: '/event-background.jpg',
+      imageAlt: 'An event scene, representing grants and community support.',
+      surface: 'bg-background',
+    },
+  ] as const;
+
   return (
     <main className="bg-background relative overflow-hidden min-h-screen">
       {/* Background image (same treatment as Artists / Get Involved) */}
@@ -23,7 +63,7 @@ export default function GrantsPage() {
         <div className="absolute inset-0 bg-background/60" />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-6 py-14">
+      <div className="relative mx-auto max-w-6xl px-8 py-14 sm:px-6">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
             Bitcoin Micro-Grants
@@ -40,7 +80,7 @@ export default function GrantsPage() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a
               href="mailto:grants@bitcoinforthearts.org?subject=Grant%20application"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 border border-accent/60"
             >
               Apply via email
             </a>
@@ -53,43 +93,38 @@ export default function GrantsPage() {
           </div>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-          <div className="rounded-xl border border-border bg-background p-6">
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-              What We Fund
-            </div>
-            <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
-              <li>Creation costs (materials, studio time, rehearsal space)</li>
-              <li>Production costs (recording, staging, print, fabrication)</li>
-              <li>Travel tied to a specific project or performance</li>
-              <li>Artist-led community programming</li>
-            </ul>
-          </div>
-          <div className="rounded-xl border border-border bg-background p-6">
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-              Who Can Apply
-            </div>
-            <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
-              <li>Independent artists and small collectives</li>
-              <li>
-                Any discipline: visual arts, theater, dance, music, writing,
-                storytelling, film
-              </li>
-              <li>Working on a specific project with clear next steps</li>
-              <li>Open to all geographies (subject to program capacity)</li>
-            </ul>
-          </div>
-          <div className="rounded-xl border border-border bg-background p-6">
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-              What To Send
-            </div>
-            <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
-              <li>Your name + links (website, portfolio, socials)</li>
-              <li>Project description (what, why, and timeline)</li>
-              <li>Budget + requested amount</li>
-              <li>A Bitcoin address to receive funds</li>
-            </ul>
-          </div>
+        {/* Swipeable carousel (mobile + desktop) */}
+        <div className="mt-12 -mx-8 px-8">
+          <MobileCarousel ariaLabel="Grant program details" dotsClassName="lg:hidden">
+            {infoCards.map((card) => (
+              <div
+                key={card.title}
+                data-carousel-item="true"
+                className="snap-start shrink-0 w-[92%] sm:w-[70%] lg:w-[32%] rounded-2xl border border-border bg-surface/80 overflow-hidden"
+              >
+                <div className="relative aspect-[16/9] w-full">
+                  <Image
+                    src={card.imageSrc}
+                    alt={card.imageAlt}
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 640px) 92vw, (max-width: 1024px) 70vw, 32vw"
+                  />
+                  <div className="absolute inset-0 bg-black/25" />
+                </div>
+                <div className="p-6">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    {card.title}
+                  </div>
+                  <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
+                    {card.items.map((it) => (
+                      <li key={it}>{it}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </MobileCarousel>
         </div>
 
         <div className="mt-12 rounded-2xl border border-border bg-surface p-6">

@@ -10,8 +10,20 @@ export const metadata: Metadata = {
 
 export default function LeadershipPage() {
   return (
-    <main className="bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-14">
+    <main className="bg-background relative overflow-hidden min-h-screen">
+      {/* Match About page background treatment */}
+      <div className="pointer-events-none absolute inset-0">
+        <Image
+          src="/about-background.jpg"
+          alt=""
+          fill
+          priority={false}
+          className="object-cover object-center opacity-60"
+        />
+        <div className="absolute inset-0 bg-background/60" />
+      </div>
+
+      <div className="relative mx-auto max-w-6xl px-6 py-14">
         <div className="max-w-5xl">
           <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted">
             <Link href="/about" className="hover:underline">
@@ -66,7 +78,7 @@ export default function LeadershipPage() {
                   <div className="mt-6">
                     <Link
                       href={`/about/leadership/${p.slug}`}
-                      className="inline-flex items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                      className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
                     >
                       View full bio
                     </Link>
