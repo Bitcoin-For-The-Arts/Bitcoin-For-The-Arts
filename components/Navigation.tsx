@@ -33,7 +33,10 @@ export default function Navigation() {
       {
         label: 'Artists',
         href: '/artists',
-        children: [{ label: 'Why Bitcoin', href: '/artists/why-bitcoin' }],
+        children: [
+          { label: 'Why Bitcoin', href: '/artists/why-bitcoin' },
+          { label: 'Research', href: '/artists/research' },
+        ],
       },
       { label: 'Programming', href: '/programming' },
       { label: 'Events', href: '/events' },
