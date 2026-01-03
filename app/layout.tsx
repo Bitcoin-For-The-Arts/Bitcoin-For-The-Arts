@@ -3,6 +3,7 @@ import "./globals.css";
 import Navigation from "@/components/Navigation";
 import SiteFooter from "@/components/SiteFooter";
 import SiteBackground from "@/components/SiteBackground";
+import { socialLinks } from "@/lib/socials";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bitcoinforthearts.org"),
@@ -62,7 +63,7 @@ export default function RootLayout({
     name: "Bitcoin For The Arts, Inc.",
     url: "https://bitcoinforthearts.org",
     logo: "https://bitcoinforthearts.org/resources/logos/bitcoin-for-the-arts-logo-gold.png",
-    sameAs: ["https://x.com/Orangepillman"],
+    ...(socialLinks.length ? { sameAs: socialLinks.map((s) => s.href) } : {}),
   };
 
   return (
