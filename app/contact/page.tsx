@@ -8,6 +8,8 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
+  const hasSocials = socialLinks.length > 0;
+
   return (
     <main className="bg-background">
       <div className="mx-auto max-w-6xl px-6 py-14">
@@ -32,24 +34,26 @@ export default function ContactPage() {
               </a>
             </div>
 
-            <div className="mt-8 rounded-2xl border border-border bg-surface p-5">
-              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-                Follow
+            {hasSocials ? (
+              <div className="mt-8 rounded-2xl border border-border bg-surface p-5">
+                <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                  Follow
+                </div>
+                <div className="mt-3 flex flex-wrap gap-3">
+                  {socialLinks.map((s) => (
+                    <a
+                      key={s.key}
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-12 items-center justify-center rounded-md border border-border bg-background px-4 text-sm font-semibold transition-colors hover:bg-surface"
+                    >
+                      {s.label}
+                    </a>
+                  ))}
+                </div>
               </div>
-              <div className="mt-3 flex flex-wrap gap-3">
-                {socialLinks.map((s) => (
-                  <a
-                    key={s.key}
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex min-h-12 items-center justify-center rounded-md border border-border bg-background px-4 text-sm font-semibold transition-colors hover:bg-surface"
-                  >
-                    {s.label}
-                  </a>
-                ))}
-              </div>
-            </div>
+            ) : null}
           </div>
 
           <div>

@@ -15,7 +15,7 @@ const socialLinksRaw = [
   {
     key: 'x',
     label: 'X',
-    href: env('NEXT_PUBLIC_SOCIAL_X') ?? 'https://x.com/Orangepillman',
+    href: env('NEXT_PUBLIC_SOCIAL_X') ?? '',
   },
   {
     key: 'tiktok',

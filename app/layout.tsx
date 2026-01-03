@@ -63,7 +63,7 @@ export default function RootLayout({
     name: "Bitcoin For The Arts, Inc.",
     url: "https://bitcoinforthearts.org",
     logo: "https://bitcoinforthearts.org/resources/logos/bitcoin-for-the-arts-logo-gold.png",
-    sameAs: socialLinks.map((s) => s.href),
+    ...(socialLinks.length ? { sameAs: socialLinks.map((s) => s.href) } : {}),
   };
 
   return (
