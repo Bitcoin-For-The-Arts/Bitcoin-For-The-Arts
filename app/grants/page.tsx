@@ -9,6 +9,45 @@ export const metadata: Metadata = {
 };
 
 export default function GrantsPage() {
+  const infoCards = [
+    {
+      title: 'What We Fund',
+      items: [
+        'Creation costs (materials, studio time, rehearsal space)',
+        'Production costs (recording, staging, print, fabrication)',
+        'Travel tied to a specific project or performance',
+        'Artist-led community programming',
+      ],
+      imageSrc: '/paintbrush kids.jpg',
+      imageAlt: 'Kids holding paintbrushes, representing creative work.',
+      surface: 'bg-background',
+    },
+    {
+      title: 'Who Can Apply',
+      items: [
+        'Independent artists and small collectives',
+        'Any discipline: visual arts, theater, dance, music, writing, storytelling, film',
+        'Working on a specific project with clear next steps',
+        'Open to all geographies (subject to program capacity)',
+      ],
+      imageSrc: '/artfest.jpg',
+      imageAlt: 'An art festival scene, representing community arts.',
+      surface: 'bg-background',
+    },
+    {
+      title: 'What To Send',
+      items: [
+        'Your name + links (website, portfolio, socials)',
+        'Project description (what, why, and timeline)',
+        'Budget + requested amount',
+        'A Bitcoin address to receive funds',
+      ],
+      imageSrc: '/event-background.jpg',
+      imageAlt: 'An event scene, representing grants and community support.',
+      surface: 'bg-background',
+    },
+  ] as const;
+
   return (
     <main className="bg-background relative overflow-hidden min-h-screen">
       {/* Background image (same treatment as Artists / Get Involved) */}
@@ -53,43 +92,53 @@ export default function GrantsPage() {
           </div>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-          <div className="rounded-xl border border-border bg-background p-6">
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-              What We Fund
-            </div>
-            <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
-              <li>Creation costs (materials, studio time, rehearsal space)</li>
-              <li>Production costs (recording, staging, print, fabrication)</li>
-              <li>Travel tied to a specific project or performance</li>
-              <li>Artist-led community programming</li>
-            </ul>
+        {/* Mobile: swipeable carousel */}
+        <div className="mt-12 md:hidden -mx-6 px-6">
+          <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory">
+            {infoCards.map((card) => (
+              <div
+                key={card.title}
+                className="snap-start shrink-0 w-[85%] rounded-2xl border border-border bg-surface/80 overflow-hidden"
+              >
+                <div className="relative aspect-[16/9] w-full">
+                  <Image
+                    src={card.imageSrc}
+                    alt={card.imageAlt}
+                    fill
+                    className="object-cover object-center"
+                    sizes="85vw"
+                  />
+                  <div className="absolute inset-0 bg-black/25" />
+                </div>
+                <div className="p-6">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    {card.title}
+                  </div>
+                  <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
+                    {card.items.map((it) => (
+                      <li key={it}>{it}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="rounded-xl border border-border bg-background p-6">
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-              Who Can Apply
+        </div>
+
+        {/* Desktop: grid */}
+        <div className="mt-12 hidden md:grid grid-cols-1 gap-6 md:grid-cols-3">
+          {infoCards.map((card) => (
+            <div key={card.title} className={`rounded-xl border border-border ${card.surface} p-6`}>
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                {card.title}
+              </div>
+              <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
+                {card.items.map((it) => (
+                  <li key={it}>{it}</li>
+                ))}
+              </ul>
             </div>
-            <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
-              <li>Independent artists and small collectives</li>
-              <li>
-                Any discipline: visual arts, theater, dance, music, writing,
-                storytelling, film
-              </li>
-              <li>Working on a specific project with clear next steps</li>
-              <li>Open to all geographies (subject to program capacity)</li>
-            </ul>
-          </div>
-          <div className="rounded-xl border border-border bg-background p-6">
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-              What To Send
-            </div>
-            <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
-              <li>Your name + links (website, portfolio, socials)</li>
-              <li>Project description (what, why, and timeline)</li>
-              <li>Budget + requested amount</li>
-              <li>A Bitcoin address to receive funds</li>
-            </ul>
-          </div>
+          ))}
         </div>
 
         <div className="mt-12 rounded-2xl border border-border bg-surface p-6">

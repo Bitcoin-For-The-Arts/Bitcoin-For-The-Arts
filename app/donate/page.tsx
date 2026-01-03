@@ -32,7 +32,7 @@ export default function DonatePage() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/grants"
-              className="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+              className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
             >
               Learn about grants
             </Link>
@@ -40,7 +40,7 @@ export default function DonatePage() {
               href="https://github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+              className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
             >
               View treasury
             </a>

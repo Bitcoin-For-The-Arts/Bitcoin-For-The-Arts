@@ -9,6 +9,30 @@ export const metadata: Metadata = {
 };
 
 export default function ProgrammingPage() {
+  const programCards = [
+    {
+      title: 'Bitcoin For Artists Workshops',
+      description:
+        'Practical sessions on self-custody, receiving Bitcoin, and long-term financial sovereignty for creators.',
+      imageSrc: '/bitcoin gallery.jpg',
+      imageAlt: 'A gallery scene with Bitcoin imagery, representing workshops and learning.',
+    },
+    {
+      title: 'Residencies',
+      description:
+        'Time and space to create — with light-touch support and community connection.',
+      imageSrc: '/art fair.jpg',
+      imageAlt: 'An art fair scene, representing creative work and community.',
+    },
+    {
+      title: 'Co-Productions & Showcases',
+      description:
+        'Live and digital productions that elevate artist work and bring patrons along for the process.',
+      imageSrc: '/event-background.jpg',
+      imageAlt: 'An event scene, representing showcases and community.',
+    },
+  ] as const;
+
   return (
     <main className="bg-background relative overflow-hidden min-h-screen">
       {/* Background image (same treatment as Artists / Get Involved / Grants) */}
@@ -61,32 +85,41 @@ export default function ProgrammingPage() {
           </div>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-          <div className="rounded-xl border border-border bg-background p-6">
-            <div className="text-sm font-semibold tracking-tight">
-              Bitcoin For Artists Workshops
+        {/* Mobile: swipeable carousel */}
+        <div className="mt-12 md:hidden -mx-6 px-6">
+          <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory">
+            {programCards.map((card) => (
+              <div
+                key={card.title}
+                className="snap-start shrink-0 w-[85%] overflow-hidden rounded-2xl border border-border bg-surface/80"
+              >
+                <div className="relative aspect-[16/9] w-full">
+                  <Image
+                    src={card.imageSrc}
+                    alt={card.imageAlt}
+                    fill
+                    className="object-cover object-center"
+                    sizes="85vw"
+                  />
+                  <div className="absolute inset-0 bg-black/25" />
+                </div>
+                <div className="p-6">
+                  <div className="text-sm font-semibold tracking-tight">{card.title}</div>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">{card.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop: grid */}
+        <div className="mt-12 hidden md:grid grid-cols-1 gap-6 md:grid-cols-3">
+          {programCards.map((card) => (
+            <div key={card.title} className="rounded-xl border border-border bg-background p-6">
+              <div className="text-sm font-semibold tracking-tight">{card.title}</div>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{card.description}</p>
             </div>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
-              Practical sessions on self-custody, receiving Bitcoin, and long-term
-              financial sovereignty for creators.
-            </p>
-          </div>
-          <div className="rounded-xl border border-border bg-background p-6">
-            <div className="text-sm font-semibold tracking-tight">Residencies</div>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
-              Time and space to create — with light-touch support and community
-              connection.
-            </p>
-          </div>
-          <div className="rounded-xl border border-border bg-background p-6">
-            <div className="text-sm font-semibold tracking-tight">
-              Co-Productions & Showcases
-            </div>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
-              Live and digital productions that elevate artist work and bring
-              patrons along for the process.
-            </p>
-          </div>
+          ))}
         </div>
 
         <div className="mt-12 rounded-2xl border border-border bg-surface p-6">
