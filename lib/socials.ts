@@ -4,47 +4,36 @@ export type SocialLink = {
   href: string;
 };
 
-function env(name: string): string | null {
-  const v = process.env[name];
-  if (!v) return null;
-  const trimmed = v.trim();
-  return trimmed ? trimmed : null;
-}
-
-const socialLinksRaw = [
+export const socialLinks: SocialLink[] = [
   {
     key: 'x',
     label: 'X',
-    href: env('NEXT_PUBLIC_SOCIAL_X') ?? '',
+    href: 'https://x.com/Bitcoinfta',
   },
   {
     key: 'tiktok',
     label: 'TikTok',
-    href: env('NEXT_PUBLIC_SOCIAL_TIKTOK') ?? '',
+    href: 'https://www.tiktok.com/@bitcoinfta',
   },
   {
     key: 'facebook',
     label: 'Facebook',
-    href: env('NEXT_PUBLIC_SOCIAL_FACEBOOK') ?? '',
+    href: 'https://www.facebook.com/profile.php?id=61585838829727',
   },
   {
     key: 'nostr',
     label: 'Nostr',
-    href: env('NEXT_PUBLIC_SOCIAL_NOSTR') ?? '',
+    href: 'https://njump.me/npub15rnn220qfdyhpgv9apjt38nadc0dzj8a7zpcrd2q4spq5apvvt2suswnaw',
   },
   {
     key: 'linkedin',
     label: 'LinkedIn',
-    href: env('NEXT_PUBLIC_SOCIAL_LINKEDIN') ?? '',
+    href: 'https://www.linkedin.com/company/bitcoin-for-the-arts/',
   },
   {
     key: 'instagram',
     label: 'Instagram',
-    href: env('NEXT_PUBLIC_SOCIAL_INSTAGRAM') ?? '',
+    href: 'https://www.instagram.com/bitcoin_for_the_arts/',
   },
- ] satisfies ReadonlyArray<SocialLink>;
-
-export const socialLinks: SocialLink[] = socialLinksRaw.filter((s): s is SocialLink =>
-  Boolean(s.href),
-);
+];
 

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { socialLinks } from '@/lib/socials';
 import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-Gold.png';
+import SocialIconLinks from '@/components/SocialIconLinks';
 
 export default function SiteFooter() {
   const hasSocials = socialLinks.length > 0;
@@ -99,20 +100,9 @@ export default function SiteFooter() {
                 <div className="text-xs font-semibold uppercase tracking-wide text-white/80 sm:text-muted">
                   Follow
                 </div>
-                <ul className="mt-3 space-y-2 text-sm">
-                  {socialLinks.map((s) => (
-                    <li key={s.key}>
-                      <a
-                        href={s.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:underline text-white/90 sm:text-foreground"
-                      >
-                        {s.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+                <div className="mt-3">
+                  <SocialIconLinks variant="footer" />
+                </div>
               </div>
             ) : null}
           </div>
