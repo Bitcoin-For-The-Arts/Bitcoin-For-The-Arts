@@ -3,6 +3,7 @@ import BtcPayDonateWidget from '@/components/BtcPayDonateWidget';
 import BitcoinDonationCard from '@/components/BitcoinDonationCard';
 import WaysToGive from '@/components/WaysToGive';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'Donate',
@@ -16,14 +17,46 @@ export default function DonatePage() {
 
   return (
     <main className="bg-background">
+      {/* Full-bleed hero image */}
+      <section className="relative w-full overflow-hidden">
+        <div className="relative h-[240px] w-full sm:h-[320px] lg:h-[380px]">
+          <Image
+            src="/donor-image.jpg"
+            alt="Support artists with Bitcoin."
+            fill
+            priority={false}
+            className="object-cover object-center"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-black/35" />
+        </div>
+
+        <div className="absolute inset-0 flex items-end">
+          <div className="mx-auto w-full max-w-6xl px-8 pb-10 sm:px-6">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                Donate
+              </div>
+              <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                Fund artists. Strengthen sovereign creativity.
+              </h1>
+              <p className="mt-3 text-sm leading-relaxed text-white/85 sm:text-base">
+                Give in Bitcoin, fiat, stocks, or planned gifts — and help build a
+                long-term reserve for creators.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <div className="mx-auto max-w-6xl px-8 py-14 sm:px-6">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
             Support artists with Bitcoin
           </div>
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
+          <h2 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
             Donate to Bitcoin for the Arts.
-          </h1>
+          </h2>
           <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
             Your donation helps fund artist micro-grants, workshops, residencies, and
             productions — and supports a long-term Bitcoin reserve.
