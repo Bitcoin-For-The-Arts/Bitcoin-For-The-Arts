@@ -24,6 +24,13 @@ export default function AutoDonatePopup() {
   const closeBtnRef = useRef<HTMLButtonElement | null>(null);
 
   const amounts = useMemo(() => [10, 25, 50, 100], []);
+  const popupImageSrc = useMemo(() => {
+    const src =
+      process.env.NEXT_PUBLIC_DONATE_POPUP_IMAGE ||
+      process.env.NEXT_PUBLIC_HERO_DONATE_IMAGE ||
+      '/bitcoin band.JPG';
+    return src;
+  }, []);
 
   useEffect(() => {
     if (!enabled) return;
@@ -130,6 +137,18 @@ export default function AutoDonatePopup() {
       >
         <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-border bg-background shadow-2xl">
           <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_30%_20%,rgba(126,87,194,0.18),transparent_55%),radial-gradient(circle_at_80%_0%,rgba(247,147,26,0.14),transparent_50%)]" />
+
+          <div className="relative h-36 w-full">
+            <Image
+              src={popupImageSrc}
+              alt="Artists and community supported by Bitcoin For The Arts"
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 100vw, 512px"
+              priority={false}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/10 to-transparent" />
+          </div>
 
           <div className="relative p-6">
             <div className="flex items-start justify-between gap-4">
