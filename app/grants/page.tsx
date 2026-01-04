@@ -80,6 +80,16 @@ export default function GrantsPage() {
             and impactful — helping you keep creating.
           </p>
 
+          <div className="mt-6 rounded-2xl border border-accent/40 bg-surface/80 p-5">
+            <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+              Temporary notice
+            </div>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              We’re collecting applications now, but we won’t begin processing grant
+              applications until <span className="font-semibold text-foreground">Q3 2026</span>.
+            </p>
+          </div>
+
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/donate"
