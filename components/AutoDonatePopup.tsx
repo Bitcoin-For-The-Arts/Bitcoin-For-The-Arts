@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 
 const STORAGE_KEY = 'bfta_donate_popup_dismissed_session';
+const HOME_SCROLL_KEY = 'bfta_donate_popup_home_scrolled_session';
 
 function isSuppressedPath(pathname: string) {
   // Don’t interrupt the donation flow or internal routes.
@@ -16,6 +17,7 @@ function isSuppressedPath(pathname: string) {
 export default function AutoDonatePopup() {
   const pathname = usePathname() ?? '/';
   const enabled = process.env.NEXT_PUBLIC_SHOW_DONATE_POPUP !== '0';
+  const homeHasIntro = process.env.NEXT_PUBLIC_SHOW_HOME_INTRO !== '0';
   const [open, setOpen] = useState(false);
   const closeBtnRef = useRef<HTMLButtonElement | null>(null);
 
@@ -32,9 +34,52 @@ export default function AutoDonatePopup() {
       // ignore
     }
 
-    const t = window.setTimeout(() => setOpen(true), 5000);
-    return () => window.clearTimeout(t);
-  }, [enabled, pathname]);
+    // If the homepage intro video is enabled, only start the timer after the user
+    // begins to scroll (so we don’t pop over the video).
+    const shouldWaitForScroll = pathname === '/' && homeHasIntro;
+
+    const startTimer = () => {
+      const t = window.setTimeout(() => setOpen(true), 5000);
+      return () => window.clearTimeout(t);
+    };
+
+    if (!shouldWaitForScroll) {
+      return startTimer();
+    }
+
+    // If they already scrolled this session, behave normally.
+    try {
+      if (window.sessionStorage.getItem(HOME_SCROLL_KEY) === '1') {
+        return startTimer();
+      }
+    } catch {
+      // ignore
+    }
+
+    let cleanupTimer: (() => void) | null = null;
+    const onFirstScroll = () => {
+      try {
+        window.sessionStorage.setItem(HOME_SCROLL_KEY, '1');
+      } catch {
+        // ignore
+      }
+      window.removeEventListener('scroll', onFirstScroll);
+      window.removeEventListener('wheel', onFirstScroll as any);
+      window.removeEventListener('touchmove', onFirstScroll as any);
+      cleanupTimer = startTimer();
+    };
+
+    window.addEventListener('scroll', onFirstScroll, { passive: true });
+    window.addEventListener('wheel', onFirstScroll as any, { passive: true });
+    window.addEventListener('touchmove', onFirstScroll as any, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', onFirstScroll);
+      window.removeEventListener('wheel', onFirstScroll as any);
+      window.removeEventListener('touchmove', onFirstScroll as any);
+      cleanupTimer?.();
+    };
+  }, [enabled, pathname, homeHasIntro]);
 
   useEffect(() => {
     if (!open) return;
