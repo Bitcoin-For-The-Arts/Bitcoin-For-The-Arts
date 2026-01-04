@@ -138,6 +138,29 @@ function FitMeter({
   );
 }
 
+function HeartBadge() {
+  return (
+    <span
+      className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[linear-gradient(135deg,rgba(126,87,194,0.98),rgba(247,147,26,0.95))] shadow-sm ring-1 ring-white/20"
+      aria-hidden="true"
+      title="Ways to give"
+    >
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M12 21s-7.5-4.6-9.6-8.6C.8 9.6 2.2 6.8 5 6c1.7-.5 3.6.1 5 1.6C11.4 6.1 13.3 5.5 15 6c2.8.8 4.2 3.6 2.6 6.4C19.5 16.4 12 21 12 21z"
+          fill="white"
+        />
+      </svg>
+    </span>
+  );
+}
+
 export default function WaysToGive() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -168,8 +191,11 @@ export default function WaysToGive() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <div className="text-sm font-semibold tracking-tight">
-                      {w.title}
+                    <div className="flex items-center gap-2">
+                      <HeartBadge />
+                      <div className="text-sm font-semibold tracking-tight">
+                        {w.title}
+                      </div>
                     </div>
                     <div className="mt-1 text-xs leading-relaxed text-muted">
                       {w.description}
@@ -226,7 +252,10 @@ export default function WaysToGive() {
                   ].join(' ')}
                   aria-pressed={isActive}
                 >
-                  <div className="text-sm font-semibold tracking-tight">{w.title}</div>
+                  <div className="flex items-center gap-2">
+                    <HeartBadge />
+                    <div className="text-sm font-semibold tracking-tight">{w.title}</div>
+                  </div>
                   <div className="mt-1 text-xs leading-relaxed text-muted">
                     {w.description}
                   </div>
@@ -237,8 +266,11 @@ export default function WaysToGive() {
         </div>
 
         <div className="md:col-span-7 rounded-2xl border border-accent/40 bg-surface/80 p-6">
-          <div className="text-lg font-semibold tracking-tight">
-            {ways[activeIndex]?.title}
+          <div className="flex items-center gap-2">
+            <HeartBadge />
+            <div className="text-lg font-semibold tracking-tight">
+              {ways[activeIndex]?.title}
+            </div>
           </div>
           <p className="mt-2 text-sm leading-relaxed text-muted">
             {ways[activeIndex]?.description}
