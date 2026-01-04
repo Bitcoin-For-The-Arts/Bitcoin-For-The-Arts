@@ -66,13 +66,13 @@ export default function Navigation() {
           }}
         >
           <Image
-            src={logoImage}
-            alt=""
-            width={36}
-            height={36}
-            priority
-            className="rounded-full border border-white/20"
-          />
+          src={logoImage}
+          alt=""
+          width={36}
+          height={36}
+          priority
+          className="rounded-full border border-white/20"
+        />
           <span className="text-base sm:text-lg uppercase whitespace-nowrap leading-none">
             Bitcoin for the Arts
           </span>

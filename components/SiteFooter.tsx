@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-Gold.png';
 import { socialLinks } from '@/lib/socials';
+import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-Gold.png';
 
 export default function SiteFooter() {
   const hasSocials = socialLinks.length > 0;
