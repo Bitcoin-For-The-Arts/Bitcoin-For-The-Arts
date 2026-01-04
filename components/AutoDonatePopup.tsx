@@ -94,8 +94,7 @@ export default function AutoDonatePopup() {
                   Want to make a quick gift?
                 </div>
                 <p className="mt-2 text-sm leading-relaxed text-muted">
-                  Choose an amount and we’ll take you to a secure checkout (BTC +
-                  Lightning via BTCPay).
+                  Choose an amount and we’ll take you to a secure checkout.
                 </p>
               </div>
 
@@ -110,6 +109,9 @@ export default function AutoDonatePopup() {
               </button>
             </div>
 
+            <div className="mt-4 text-xs font-semibold uppercase tracking-wide text-muted">
+              Suggested amounts (USD)
+            </div>
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {amounts.map((a) => (
                 <Link
@@ -118,7 +120,7 @@ export default function AutoDonatePopup() {
                   className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-4 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
                   onClick={dismiss}
                 >
-                  ${a}
+                  {a}
                 </Link>
               ))}
             </div>
