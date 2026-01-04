@@ -138,6 +138,14 @@ function FitMeter({
   );
 }
 
+function HeartBadge() {
+  return (
+    <span className="text-lg leading-none" aria-hidden="true" title="Donate">
+      🧡
+    </span>
+  );
+}
+
 export default function WaysToGive() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -168,8 +176,11 @@ export default function WaysToGive() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <div className="text-sm font-semibold tracking-tight">
-                      {w.title}
+                    <div className="flex items-center gap-2">
+                      <HeartBadge />
+                      <div className="text-sm font-semibold tracking-tight">
+                        {w.title}
+                      </div>
                     </div>
                     <div className="mt-1 text-xs leading-relaxed text-muted">
                       {w.description}
@@ -226,7 +237,10 @@ export default function WaysToGive() {
                   ].join(' ')}
                   aria-pressed={isActive}
                 >
-                  <div className="text-sm font-semibold tracking-tight">{w.title}</div>
+                  <div className="flex items-center gap-2">
+                    <HeartBadge />
+                    <div className="text-sm font-semibold tracking-tight">{w.title}</div>
+                  </div>
                   <div className="mt-1 text-xs leading-relaxed text-muted">
                     {w.description}
                   </div>
@@ -237,8 +251,11 @@ export default function WaysToGive() {
         </div>
 
         <div className="md:col-span-7 rounded-2xl border border-accent/40 bg-surface/80 p-6">
-          <div className="text-lg font-semibold tracking-tight">
-            {ways[activeIndex]?.title}
+          <div className="flex items-center gap-2">
+            <HeartBadge />
+            <div className="text-lg font-semibold tracking-tight">
+              {ways[activeIndex]?.title}
+            </div>
           </div>
           <p className="mt-2 text-sm leading-relaxed text-muted">
             {ways[activeIndex]?.description}
