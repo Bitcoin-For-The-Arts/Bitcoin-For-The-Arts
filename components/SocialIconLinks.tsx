@@ -39,15 +39,23 @@ function Icon({
         </svg>
       );
     case 'nostr':
-      // Ostrich icon (Nostr)
+      // Nostr icon (uploaded ostrich), rendered as a mask so it inherits currentColor.
       return (
         <span
-          className="text-[18px] leading-none"
+          className={`inline-block ${className}`}
           aria-hidden="true"
-          title="Nostr"
-        >
-          🦤
-        </span>
+          style={{
+            WebkitMaskImage: "url('/nostr.PNG')",
+            maskImage: "url('/nostr.PNG')",
+            WebkitMaskRepeat: 'no-repeat',
+            maskRepeat: 'no-repeat',
+            WebkitMaskPosition: 'center',
+            maskPosition: 'center',
+            WebkitMaskSize: 'contain',
+            maskSize: 'contain',
+            backgroundColor: 'currentColor',
+          }}
+        />
       );
     case 'linkedin':
       return (
