@@ -171,7 +171,7 @@ export default function GrantsFaqPage() {
                   For more details, review our grant terms and agreement.
                 </p>
                 <a
-                  href="/resources/sample-grant-agreement.md"
+                  href="/resources/grants/grant-terms.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-4 inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-surface px-6 py-3 text-sm font-semibold transition-colors hover:opacity-90"
