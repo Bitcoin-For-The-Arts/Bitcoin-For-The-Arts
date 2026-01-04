@@ -3,6 +3,7 @@ import BtcPayDonateWidget from '@/components/BtcPayDonateWidget';
 import BitcoinDonationCard from '@/components/BitcoinDonationCard';
 import WaysToGive from '@/components/WaysToGive';
 import Link from 'next/link';
+import FullBleedHero from '@/components/FullBleedHero';
 
 export const metadata: Metadata = {
   title: 'Donate',
@@ -13,17 +14,26 @@ export const metadata: Metadata = {
 export default function DonatePage() {
   const address =
     process.env.NEXT_PUBLIC_BTC_DONATION_ADDRESS ?? 'bc1qarts...';
+  const heroImage = process.env.NEXT_PUBLIC_HERO_DONATE_IMAGE ?? '/donor-image.jpg';
 
   return (
     <main className="bg-background">
+      <FullBleedHero
+        imageSrc={heroImage}
+        imageAlt="Support artists with Bitcoin."
+        label="Donate"
+        title="Fund artists. Strengthen sovereign creativity."
+        description="Give in Bitcoin, fiat, stocks, or planned gifts — and help build a long-term reserve for creators."
+      />
+
       <div className="mx-auto max-w-6xl px-8 py-14 sm:px-6">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
             Support artists with Bitcoin
           </div>
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
+          <h2 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
             Donate to Bitcoin for the Arts.
-          </h1>
+          </h2>
           <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
             Your donation helps fund artist micro-grants, workshops, residencies, and
             productions — and supports a long-term Bitcoin reserve.

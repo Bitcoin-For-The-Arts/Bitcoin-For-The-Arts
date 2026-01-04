@@ -45,7 +45,7 @@ export default function ProgrammingPage() {
 
   return (
     <main className="bg-background relative overflow-hidden min-h-screen">
-      {/* Background image (same treatment as Artists / Get Involved / Grants) */}
+      {/* Background image (same treatment as before) */}
       <div className="pointer-events-none absolute inset-0">
         {/* Full-bleed fill (cropped) */}
         <Image
