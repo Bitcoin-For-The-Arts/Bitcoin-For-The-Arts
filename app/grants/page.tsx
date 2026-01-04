@@ -81,20 +81,6 @@ export default function GrantsPage() {
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a
-              href={applyForm}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 border border-accent/60"
-            >
-              Apply now (Google Form)
-            </a>
-            <a
-              href="/resources/grants/grant-application.pdf"
-              className="inline-flex items-center justify-center rounded-md border border-border bg-background px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
-            >
-              Download PDF application
-            </a>
             <Link
               href="/donate"
               className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
@@ -104,9 +90,43 @@ export default function GrantsPage() {
           </div>
         </div>
 
+        {/* Swipeable carousel (mobile + desktop) */}
+        <div className="mt-12 -mx-8 px-8">
+          <MobileCarousel ariaLabel="Grant program details" dotsClassName="lg:hidden">
+            {infoCards.map((card) => (
+              <div
+                key={card.title}
+                data-carousel-item="true"
+                className="snap-start shrink-0 w-[92%] sm:w-[70%] lg:w-[32%] rounded-2xl border border-border bg-surface/80 overflow-hidden"
+              >
+                <div className="relative aspect-[16/9] w-full">
+                  <Image
+                    src={card.imageSrc}
+                    alt={card.imageAlt}
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 640px) 92vw, (max-width: 1024px) 70vw, 32vw"
+                  />
+                  <div className="absolute inset-0 bg-black/25" />
+                </div>
+                <div className="p-6">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    {card.title}
+                  </div>
+                  <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
+                    {card.items.map((it) => (
+                      <li key={it}>{it}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </MobileCarousel>
+        </div>
+
         <div
           id="apply"
-          className="mt-10 rounded-2xl border border-border bg-surface p-6 scroll-mt-28"
+          className="mt-12 rounded-2xl border border-border bg-surface p-6 scroll-mt-28"
         >
           <div className="grid grid-cols-1 gap-6 md:grid-cols-12 md:items-start">
             <div className="md:col-span-8">
@@ -161,40 +181,6 @@ export default function GrantsPage() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Swipeable carousel (mobile + desktop) */}
-        <div className="mt-12 -mx-8 px-8">
-          <MobileCarousel ariaLabel="Grant program details" dotsClassName="lg:hidden">
-            {infoCards.map((card) => (
-              <div
-                key={card.title}
-                data-carousel-item="true"
-                className="snap-start shrink-0 w-[92%] sm:w-[70%] lg:w-[32%] rounded-2xl border border-border bg-surface/80 overflow-hidden"
-              >
-                <div className="relative aspect-[16/9] w-full">
-                  <Image
-                    src={card.imageSrc}
-                    alt={card.imageAlt}
-                    fill
-                    className="object-cover object-center"
-                    sizes="(max-width: 640px) 92vw, (max-width: 1024px) 70vw, 32vw"
-                  />
-                  <div className="absolute inset-0 bg-black/25" />
-                </div>
-                <div className="p-6">
-                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-                    {card.title}
-                  </div>
-                  <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
-                    {card.items.map((it) => (
-                      <li key={it}>{it}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </MobileCarousel>
         </div>
 
         <div className="mt-12 rounded-2xl border border-border bg-background p-6">

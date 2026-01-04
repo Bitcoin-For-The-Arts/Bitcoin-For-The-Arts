@@ -33,7 +33,6 @@ export default function Navigation() {
         label: 'Grants',
         href: '/grants',
         children: [
-          { label: 'Apply', href: '/grants#apply' },
           { label: 'FAQ', href: '/grants/faq' },
           { label: 'Why Bitcoin', href: '/artists/why-bitcoin' },
         ],
