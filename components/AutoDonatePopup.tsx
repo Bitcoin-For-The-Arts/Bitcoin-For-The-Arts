@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import logoImage from '@/app/asset/BITCOIN-ARTS-LOGO-Gold.png';
 
 const STORAGE_KEY = 'bfta_donate_popup_dismissed_session';
 const HOME_SCROLL_KEY = 'bfta_donate_popup_home_scrolled_session';
@@ -132,14 +134,24 @@ export default function AutoDonatePopup() {
           <div className="relative p-6">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="inline-flex items-center rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted">
-                  Support artists
+                <div className="flex items-center gap-3">
+                  <Image
+                    src={logoImage}
+                    alt="Bitcoin For The Arts logo"
+                    width={36}
+                    height={36}
+                    className="rounded-full border border-white/15"
+                  />
+                  <div className="inline-flex items-center rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted">
+                    Bitcoin For The Arts
+                  </div>
                 </div>
                 <div className="mt-3 text-xl font-semibold tracking-tight">
-                  Want to make a quick gift?
+                  Help fund the next renaissance in the arts.
                 </div>
                 <p className="mt-2 text-sm leading-relaxed text-muted">
-                  Choose an amount and we’ll take you to a secure checkout.
+                  Your gift helps us pay artists in Bitcoin through micro-grants, workshops, and
+                  our HODL Vault endowment—so creative work can thrive for generations.
                 </p>
               </div>
 
