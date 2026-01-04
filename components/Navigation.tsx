@@ -29,12 +29,19 @@ export default function Navigation() {
           { label: 'Leadership', href: '/about/leadership' },
         ],
       },
-      { label: 'Grants', href: '/grants' },
+      {
+        label: 'Grants',
+        href: '/grants',
+        children: [
+          { label: 'Apply', href: '/grants#apply' },
+          { label: 'FAQ', href: '/grants/faq' },
+          { label: 'Why Bitcoin', href: '/artists/why-bitcoin' },
+        ],
+      },
       {
         label: 'Artists',
         href: '/artists',
         children: [
-          { label: 'Why Bitcoin', href: '/artists/why-bitcoin' },
           { label: 'Research', href: '/artists/research' },
         ],
       },

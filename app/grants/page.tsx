@@ -10,6 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default function GrantsPage() {
+  const applyForm =
+    'https://docs.google.com/forms/d/e/1FAIpQLScErzhYqHskUF90oZegSW-Zlw82_P-khCpxzlgPFL_n6Y6FKw/viewform?usp=header';
+
   const infoCards = [
     {
       title: 'What We Fund',
@@ -79,10 +82,18 @@ export default function GrantsPage() {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a
-              href="mailto:grants@bitcoinforthearts.org?subject=Grant%20application"
+              href={applyForm}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 border border-accent/60"
             >
-              Apply via email
+              Apply now (Google Form)
+            </a>
+            <a
+              href="/resources/grants/grant-application.pdf"
+              className="inline-flex items-center justify-center rounded-md border border-border bg-background px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+            >
+              Download PDF application
             </a>
             <Link
               href="/donate"
@@ -90,6 +101,65 @@ export default function GrantsPage() {
             >
               Fund a grant
             </Link>
+          </div>
+        </div>
+
+        <div
+          id="apply"
+          className="mt-10 rounded-2xl border border-border bg-surface p-6 scroll-mt-28"
+        >
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-12 md:items-start">
+            <div className="md:col-span-8">
+              <h2 className="text-xl font-semibold tracking-tight">How to apply</h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted">
+                Submit our online form (preferred) or download the PDF and email it to{' '}
+                <a
+                  href="mailto:grants@bitcoinforthearts.org"
+                  className="font-semibold underline underline-offset-4"
+                >
+                  grants@bitcoinforthearts.org
+                </a>
+                . Applications are simple—no lengthy proposals required.
+              </p>
+              <div className="mt-4 text-sm leading-relaxed text-muted">
+                <span className="font-semibold text-foreground">Review cadence:</span>{' '}
+                applications are reviewed quarterly.
+              </div>
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href={applyForm}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-12 items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 border border-accent/60"
+                >
+                  Open the application form
+                </a>
+                <a
+                  href="/resources/grants/grant-application.pdf"
+                  className="inline-flex min-h-12 items-center justify-center rounded-md border border-border bg-background px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+                >
+                  Download the PDF
+                </a>
+              </div>
+            </div>
+            <div className="md:col-span-4">
+              <div className="rounded-2xl border border-border bg-background p-6">
+                <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                  Terms & agreement
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-muted">
+                  For more details, review our grant terms and agreement before applying.
+                </p>
+                <a
+                  href="/resources/sample-grant-agreement.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-surface px-6 py-3 text-sm font-semibold transition-colors hover:opacity-90"
+                >
+                  View terms & agreement
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -125,6 +195,31 @@ export default function GrantsPage() {
               </div>
             ))}
           </MobileCarousel>
+        </div>
+
+        <div className="mt-12 rounded-2xl border border-border bg-background p-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="text-xl font-semibold tracking-tight">Grants FAQ</h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted">
+                Quick answers about eligibility, funding, and Bitcoin payouts.
+              </p>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/grants/faq"
+                className="inline-flex min-h-12 items-center justify-center rounded-md border border-border bg-surface px-6 py-3 text-sm font-semibold transition-colors hover:opacity-90"
+              >
+                Read the FAQ
+              </Link>
+              <Link
+                href="/artists/why-bitcoin"
+                className="inline-flex min-h-12 items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 border border-accent/60"
+              >
+                Why Bitcoin?
+              </Link>
+            </div>
+          </div>
         </div>
 
         <div className="mt-12 rounded-2xl border border-border bg-surface p-6">
