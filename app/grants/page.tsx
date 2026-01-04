@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import MobileCarousel from '@/components/MobileCarousel';
+import FullBleedHero from '@/components/FullBleedHero';
 
 export const metadata: Metadata = {
   title: 'Grants',
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 export default function GrantsPage() {
   const applyForm =
     'https://docs.google.com/forms/d/e/1FAIpQLScErzhYqHskUF90oZegSW-Zlw82_P-khCpxzlgPFL_n6Y6FKw/viewform?usp=header';
+  const heroImage = process.env.NEXT_PUBLIC_HERO_GRANTS_IMAGE ?? '/grants-background.jpg';
 
   const infoCards = [
     {
@@ -53,50 +55,33 @@ export default function GrantsPage() {
   ] as const;
 
   return (
-    <main className="bg-background relative overflow-hidden min-h-screen">
-      {/* Background image (same treatment as Artists / Get Involved) */}
-      <div className="pointer-events-none absolute inset-0">
-        <Image
-          src="/grants-background.jpg"
-          alt=""
-          fill
-          priority={false}
-          className="object-cover object-center opacity-50"
-        />
-        <div className="absolute inset-0 bg-background/60" />
-      </div>
+    <main className="bg-background min-h-screen">
+      <FullBleedHero
+        imageSrc={heroImage}
+        imageAlt=""
+        label="Grants"
+        title="Grants for working artists — paid in Bitcoin."
+        description="We support sovereign creators across disciplines with small, fast, impactful micro-grants."
+      >
+        <Link
+          href="/donate"
+          className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+        >
+          Fund a grant
+        </Link>
+      </FullBleedHero>
 
-      <div className="relative mx-auto max-w-6xl px-8 py-14 sm:px-6">
+      <div className="mx-auto max-w-6xl px-8 py-14 sm:px-6">
         <div className="max-w-3xl">
-          <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Bitcoin Micro-Grants
-          </div>
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Grants for working artists — paid in Bitcoin.
-          </h1>
-          <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
-            We support sovereign creators across visual arts, theater, dance, music,
-            writing, storytelling, and film. Grants are designed to be small, fast,
-            and impactful — helping you keep creating.
-          </p>
-
-          <div className="mt-6 rounded-2xl border border-accent/40 bg-surface/80 p-5">
+          <div className="rounded-2xl border border-accent/40 bg-surface/80 p-5">
             <div className="text-xs font-semibold uppercase tracking-wide text-muted">
               Temporary notice
             </div>
             <p className="mt-2 text-sm leading-relaxed text-muted">
               We’re collecting applications now, but we won’t begin processing grant
-              applications until <span className="font-semibold text-foreground">Q3 2026</span>.
+              applications until{' '}
+              <span className="font-semibold text-foreground">Q3 2026</span>.
             </p>
-          </div>
-
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/donate"
-              className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
-            >
-              Fund a grant
-            </Link>
           </div>
         </div>
 

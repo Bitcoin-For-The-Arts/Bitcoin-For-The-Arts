@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import FullBleedHero from '@/components/FullBleedHero';
 
 export const metadata: Metadata = {
   title: 'Artists',
@@ -9,48 +10,45 @@ export const metadata: Metadata = {
 };
 
 export default function ArtistsPage() {
-  return (
-    <main className="bg-background relative overflow-hidden min-h-screen">
-      {/* Background image (50% opacity) */}
-      <div className="pointer-events-none absolute inset-0">
-        <Image
-          src="/image.jpg"
-          alt=""
-          fill
-          priority={false}
-          className="object-cover object-center opacity-50"
-        />
-        {/* Soft blend layer for readability */}
-        <div className="absolute inset-0 bg-background/60" />
-      </div>
+  const heroImage = process.env.NEXT_PUBLIC_HERO_ARTISTS_IMAGE ?? '/image.jpg';
 
-      <div className="relative mx-auto max-w-6xl px-6 py-14">
+  return (
+    <main className="bg-background min-h-screen">
+      <FullBleedHero
+        imageSrc={heroImage}
+        imageAlt=""
+        label="Artists"
+        title="Artists we support (coming soon)."
+        description="We’re building a public archive of artists, projects, and grants — and a place to share updates from funded work."
+      >
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Link
+            href="/grants"
+            className="inline-flex min-h-12 items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 border border-accent/60"
+          >
+            Apply for a grant
+          </Link>
+          <a
+            href="mailto:hello@bitcoinforthearts.org?subject=Artist%20spotlight%20submission"
+            className="inline-flex min-h-12 items-center justify-center rounded-md border border-white/25 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/15"
+          >
+            Submit your work
+          </a>
+        </div>
+      </FullBleedHero>
+
+      <div className="mx-auto max-w-6xl px-6 py-14">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
             Artist Spotlights
           </div>
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Artists we support (coming soon).
-          </h1>
-          <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
-            We’re building a public archive of artists, projects, and grants — and a
-            place to share updates from funded work.
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+            What to expect here
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-muted sm:text-lg">
+            As our grant program expands, we’ll feature artist profiles, portfolios,
+            and updates from funded work.
           </p>
-
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/grants"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 border border-accent/60"
-            >
-              Apply for a grant
-            </Link>
-            <a
-              href="mailto:hello@bitcoinforthearts.org?subject=Artist%20spotlight%20submission"
-              className="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
-            >
-              Submit your work
-            </a>
-          </div>
         </div>
 
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">

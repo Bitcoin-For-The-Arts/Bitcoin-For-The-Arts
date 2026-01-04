@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import MobileCarousel from '@/components/MobileCarousel';
+import FullBleedHero from '@/components/FullBleedHero';
 
 export const metadata: Metadata = {
   title: 'Programming',
@@ -10,6 +11,9 @@ export const metadata: Metadata = {
 };
 
 export default function ProgrammingPage() {
+  const heroImage =
+    process.env.NEXT_PUBLIC_HERO_PROGRAMMING_IMAGE ?? '/program-background.jpg';
+
   const programCards = [
     {
       title: 'Bitcoin For Artists Workshops',
@@ -44,56 +48,31 @@ export default function ProgrammingPage() {
   }>;
 
   return (
-    <main className="bg-background relative overflow-hidden min-h-screen">
-      {/* Background image (same treatment as Artists / Get Involved / Grants) */}
-      <div className="pointer-events-none absolute inset-0">
-        {/* Full-bleed fill (cropped) */}
-        <Image
-          src="/program-background.jpg"
-          alt=""
-          fill
-          priority={false}
-          className="object-cover object-center opacity-35 blur-md scale-110"
-        />
-        {/* Full-photo layer (minimal cropping) */}
-        <Image
-          src="/program-background.jpg"
-          alt=""
-          fill
-          priority={false}
-          className="object-contain object-center opacity-45"
-        />
-        <div className="absolute inset-0 bg-background/60" />
-      </div>
-
-      <div className="relative mx-auto max-w-6xl px-8 py-14 sm:px-6">
-        <div className="max-w-3xl">
-          <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Workshops • residencies • productions
-          </div>
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Programming that brings Artists and Bitcoiners together.
-          </h1>
-          <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
-            Beyond grants, we build spaces for artists to learn, collaborate, and
-            present work — from intimate workshops to public performances.
-          </p>
-
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/events"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 border border-accent/60"
-            >
-              Upcoming events
-            </Link>
-            <a
-              href="mailto:hello@bitcoinforthearts.org?subject=Programming%20proposal"
-              className="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
-            >
-              Propose a program
-            </a>
-          </div>
+    <main className="bg-background min-h-screen">
+      <FullBleedHero
+        imageSrc={heroImage}
+        imageAlt=""
+        label="Programming"
+        title="Programming that brings Artists and Bitcoiners together."
+        description="Workshops, residencies, and productions — from intimate sessions to public performances."
+      >
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Link
+            href="/events"
+            className="inline-flex min-h-12 items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 border border-accent/60"
+          >
+            Upcoming events
+          </Link>
+          <a
+            href="mailto:hello@bitcoinforthearts.org?subject=Programming%20proposal"
+            className="inline-flex min-h-12 items-center justify-center rounded-md border border-white/25 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/15"
+          >
+            Propose a program
+          </a>
         </div>
+      </FullBleedHero>
+
+      <div className="mx-auto max-w-6xl px-8 py-14 sm:px-6">
 
         {/* Swipeable carousel (mobile + desktop) */}
         <div className="mt-12 -mx-8 px-8">
