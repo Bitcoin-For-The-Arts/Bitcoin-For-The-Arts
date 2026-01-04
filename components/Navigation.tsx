@@ -33,15 +33,15 @@ export default function Navigation() {
         label: 'Grants',
         href: '/grants',
         children: [
-          { label: 'FAQ', href: '/grants/faq' },
           { label: 'Why Bitcoin', href: '/artists/why-bitcoin' },
+          { label: 'Research', href: '/artists/research' },
+          { label: 'FAQ', href: '/grants/faq' },
         ],
       },
       {
         label: 'Artists',
         href: '/artists',
         children: [
-          { label: 'Research', href: '/artists/research' },
         ],
       },
       { label: 'Programming', href: '/programming' },
