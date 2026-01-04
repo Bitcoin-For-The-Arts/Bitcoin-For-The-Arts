@@ -140,23 +140,8 @@ function FitMeter({
 
 function HeartBadge() {
   return (
-    <span
-      className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[linear-gradient(135deg,rgba(126,87,194,0.98),rgba(247,147,26,0.95))] shadow-sm ring-1 ring-white/20"
-      aria-hidden="true"
-      title="Ways to give"
-    >
-      <svg
-        width="14"
-        height="14"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M12 21s-7.5-4.6-9.6-8.6C.8 9.6 2.2 6.8 5 6c1.7-.5 3.6.1 5 1.6C11.4 6.1 13.3 5.5 15 6c2.8.8 4.2 3.6 2.6 6.4C19.5 16.4 12 21 12 21z"
-          fill="white"
-        />
-      </svg>
+    <span className="text-lg leading-none" aria-hidden="true" title="Donate">
+      🧡
     </span>
   );
 }

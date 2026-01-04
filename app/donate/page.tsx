@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function DonatePage() {
   const address =
     process.env.NEXT_PUBLIC_BTC_DONATION_ADDRESS ?? 'bc1qarts...';
-  const heroImage = process.env.NEXT_PUBLIC_HERO_DONATE_IMAGE ?? '/Donor banner.jpg';
+  const heroImage = process.env.NEXT_PUBLIC_HERO_DONATE_IMAGE ?? '/bitcoin band.JPG';
 
   return (
     <main className="bg-background">
