@@ -23,7 +23,7 @@ export default function ProgrammingPage() {
       title: 'Residencies',
       description:
         'Time and space to create — with light-touch support and community connection.',
-      imageSrc: '/amphitheater .jpg',
+      imageSrc: '/amphitheater.jpg',
       imageAlt: 'Artists gathered in an outdoor amphitheater, representing residencies and collaborative creation.',
       imageClassName: 'object-cover object-[50%_30%]',
     },
