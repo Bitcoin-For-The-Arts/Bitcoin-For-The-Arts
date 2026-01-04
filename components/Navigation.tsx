@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useMemo, useState } from 'react';
-const logoSrc = '/resources/logos/exports/bfta-logo-gold-512.png';
+import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-Gold.png';
 
 type NavItem = {
   label: string;
@@ -66,13 +66,13 @@ export default function Navigation() {
           }}
         >
           <Image
-            src={logoSrc}
-            alt=""
-            width={36}
-            height={36}
-            priority
-            className="rounded-full border border-white/20"
-          />
+          src={logoImage}
+          alt=""
+          width={36}
+          height={36}
+          priority
+          className="rounded-full border border-white/20"
+        />
           <span className="text-base sm:text-lg uppercase whitespace-nowrap leading-none">
             Bitcoin for the Arts
           </span>
