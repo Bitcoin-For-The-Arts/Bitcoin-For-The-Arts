@@ -46,8 +46,8 @@ export default function GrantsPage() {
         'Budget + requested amount',
         'A Bitcoin address to receive funds',
       ],
-      imageSrc: '/event-background.jpg',
-      imageAlt: 'An event scene, representing grants and community support.',
+      imageSrc: '/bitcoin carnival.JPG',
+      imageAlt: 'Artists and community at a vibrant event, representing grant applications and creative support.',
       surface: 'bg-background',
     },
   ] as const;
