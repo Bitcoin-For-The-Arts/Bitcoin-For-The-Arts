@@ -11,10 +11,20 @@ export const metadata: Metadata = {
     'Donate Bitcoin to support artists through micro-grants and programming.',
 };
 
-export default function DonatePage() {
+export default function DonatePage({
+  searchParams,
+}: {
+  searchParams?: { amount?: string };
+}) {
   const address =
     process.env.NEXT_PUBLIC_BTC_DONATION_ADDRESS ?? 'bc1qarts...';
   const heroImage = process.env.NEXT_PUBLIC_HERO_DONATE_IMAGE ?? '/bitcoin band.JPG';
+  const prefillAmountRaw = searchParams?.amount;
+  const prefillAmount = prefillAmountRaw ? Number(prefillAmountRaw) : undefined;
+  const defaultAmount =
+    Number.isFinite(prefillAmount) && (prefillAmount as number) > 0
+      ? (prefillAmount as number)
+      : undefined;
 
   return (
     <main className="bg-background">
@@ -60,7 +70,7 @@ export default function DonatePage() {
         <WaysToGive />
 
         <div id="bitcoin" className="mt-12 space-y-6 scroll-mt-28">
-          <BtcPayDonateWidget />
+          <BtcPayDonateWidget defaultAmount={defaultAmount} />
           <BitcoinDonationCard address={address} />
         </div>
 
