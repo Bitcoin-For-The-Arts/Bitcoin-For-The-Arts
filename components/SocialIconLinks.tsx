@@ -39,14 +39,15 @@ function Icon({
         </svg>
       );
     case 'nostr':
-      // Monogram icon for Nostr
+      // Ostrich icon (Nostr)
       return (
-        <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-          <path
-            fill="currentColor"
-            d="M7 18V6h2.2l5.6 7.9V6H17v12h-2.1L9.2 10.2V18H7Z"
-          />
-        </svg>
+        <span
+          className="text-[18px] leading-none"
+          aria-hidden="true"
+          title="Nostr"
+        >
+          🦤
+        </span>
       );
     case 'linkedin':
       return (

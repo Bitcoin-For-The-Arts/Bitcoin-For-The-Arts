@@ -23,7 +23,7 @@ export const socialLinks: SocialLink[] = [
   {
     key: 'nostr',
     label: 'Nostr',
-    href: 'https://njump.me/npub15rnn220qfdyhpgv9apjt38nadc0dzj8a7zpcrd2q4spq5apvvt2suswnaw',
+    href: 'https://primal.net/p/npub15rnn220qfdyhpgv9apjt38nadc0dzj8a7zpcrd2q4spq5apvvt2suswnaw',
   },
   {
     key: 'linkedin',
