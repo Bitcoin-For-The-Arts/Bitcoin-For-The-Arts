@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-Gold.png';
 import { socialLinks } from '@/lib/socials';
+const logoSrc = '/resources/logos/exports/bfta-logo-gold-512.png';
 
 export default function SiteFooter() {
   const hasSocials = socialLinks.length > 0;
@@ -13,7 +13,7 @@ export default function SiteFooter() {
           <div className="max-w-md">
             <div className="flex items-center gap-3">
               <Image
-                src={logoImage}
+                src={logoSrc}
                 alt=""
                 width={28}
                 height={28}
