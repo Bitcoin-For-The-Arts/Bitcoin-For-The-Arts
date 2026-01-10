@@ -418,11 +418,30 @@ export async function POST(req: NextRequest) {
     };
 
     if (!result.ok) {
+      console.warn('[grants] turnstile failed', {
+        ip,
+        hostname: result.hostname,
+        action: result.action,
+        errorCodes: result.errorCodes,
+      });
       await Promise.allSettled(uploads.map((u) => bucket.delete(u.fileId)));
+      const debug =
+        (getEnv('TURNSTILE_DEBUG') ?? '').toLowerCase() === '1' ||
+        (getEnv('TURNSTILE_DEBUG') ?? '').toLowerCase() === 'true' ||
+        (process.env.VERCEL_ENV ?? '').toLowerCase() !== 'production';
       return NextResponse.json(
         {
           ok: false,
           error: 'Anti-spam verification failed. Please reload the page and try again.',
+          ...(debug
+            ? {
+                turnstile: {
+                  errorCodes: result.errorCodes,
+                  hostname: result.hostname,
+                  action: result.action,
+                },
+              }
+            : null),
         },
         { status: 403 },
       );
@@ -604,6 +623,7 @@ export async function POST(req: NextRequest) {
     // Email summary (safe: no file contents, but include download URLs by id).
     const to = getEnv('GRANTS_TO_EMAIL') ?? 'grants@bitcoinforthearts.org';
     const baseUrl = getBaseUrl(req);
+    const adminLink = `${baseUrl}/admin/applications/${applicationId.toString()}`;
     const downloadLinks = uploads
       .map(
         (u) =>
@@ -625,6 +645,7 @@ export async function POST(req: NextRequest) {
       'New grant application submitted via bitcoinforthearts.org',
       '',
       `Application ID: ${applicationId.toString()}`,
+      `Admin view: ${adminLink}`,
       `Name/DBA: ${legalName}`,
       `Applicant type: ${applicantType}`,
       `US-based activities: yes`,
@@ -649,6 +670,9 @@ export async function POST(req: NextRequest) {
       <div style="font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; line-height: 1.5;">
         <h2 style="margin: 0 0 12px;">New grant application</h2>
         <p style="margin: 0 0 6px;"><strong>Application ID:</strong> ${escapeHtml(applicationId.toString())}</p>
+        <p style="margin: 0 0 12px;"><strong>Admin view:</strong> <a href="${escapeHtml(
+          adminLink,
+        )}" target="_blank" rel="noopener noreferrer">${escapeHtml(adminLink)}</a></p>
         <p style="margin: 0 0 6px;"><strong>Name/DBA:</strong> ${escapeHtml(legalName)}</p>
         <p style="margin: 0 0 6px;"><strong>Applicant type:</strong> ${escapeHtml(applicantType)}</p>
         <p style="margin: 0 0 6px;"><strong>US-based activities:</strong> yes</p>
