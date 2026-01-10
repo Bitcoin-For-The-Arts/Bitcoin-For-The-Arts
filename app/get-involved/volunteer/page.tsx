@@ -95,7 +95,7 @@ export default function VolunteerPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border">
                     <Image
-                      src="/paintbrush%20kids.jpg"
+                      src="/painting-class.JPG"
                       alt="A painting class scene representing creative learning and community."
                       fill
                       className="object-cover object-center"
