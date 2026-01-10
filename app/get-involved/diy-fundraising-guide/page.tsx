@@ -85,7 +85,7 @@ export default function DiyFundraisingGuidePage() {
       {/* Background image (match Get Involved styling) */}
       <div className="pointer-events-none absolute inset-0">
         <Image
-          src="/Get%20Involved%20-background.jpg"
+          src="/photo-workshop.JPG"
           alt=""
           fill
           priority={false}
