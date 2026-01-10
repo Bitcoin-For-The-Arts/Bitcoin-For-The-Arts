@@ -31,7 +31,7 @@ export default function VolunteerPage() {
     <main className="bg-background relative overflow-hidden min-h-screen">
       <div className="pointer-events-none absolute inset-0">
         <Image
-          src="/volunteer-bg.JPG"
+          src="/support%20artist.JPG"
           alt=""
           fill
           priority={false}
@@ -95,8 +95,8 @@ export default function VolunteerPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border">
                     <Image
-                      src="/support%20artist.JPG"
-                      alt="Volunteers supporting artists and creative work."
+                      src="/paintbrush%20kids.jpg"
+                      alt="A painting class scene representing creative learning and community."
                       fill
                       className="object-cover object-center"
                       sizes="(max-width: 768px) 45vw, 240px"
