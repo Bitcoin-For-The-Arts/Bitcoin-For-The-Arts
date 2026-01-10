@@ -91,7 +91,11 @@ async function sendVolunteerEmail(args: { subject: string; text: string; replyTo
 
   if (!smtpUser || !smtpPass || !fromEmail) {
     console.warn('[volunteer] email not configured; skipping notification');
-    return;
+    return {
+      ok: false as const,
+      skipped: true as const,
+      to: getEnv('VOLUNTEER_TO_EMAIL') ?? 'volunteers@bitcoinforthearts.org',
+    };
   }
 
   const to = getEnv('VOLUNTEER_TO_EMAIL') ?? 'volunteers@bitcoinforthearts.org';
@@ -110,6 +114,8 @@ async function sendVolunteerEmail(args: { subject: string; text: string; replyTo
     text: args.text,
     replyTo: args.replyTo,
   });
+
+  return { ok: true as const, skipped: false as const, to };
 }
 
 export async function POST(req: NextRequest) {
@@ -146,7 +152,7 @@ export async function POST(req: NextRequest) {
 
     const now = new Date();
     const db = await getMongoDb();
-    await db.collection('volunteers').insertOne({
+    const insertRes = await db.collection('volunteers').insertOne({
       createdAt: now,
       name,
       email,
@@ -170,17 +176,88 @@ export async function POST(req: NextRequest) {
       `IP: ${ip}`,
     ].join('\n');
 
-    // Non-blocking email
-    sendVolunteerEmail({ subject, text, replyTo: email }).catch((err) => {
-      console.error('[volunteer] email send failed', err);
-    });
+    let emailResult:
+      | { ok: true; skipped: false; to: string }
+      | { ok: false; skipped: true; to: string }
+      | { ok: false; skipped: false; to: string; error: string } = {
+      ok: false,
+      skipped: true,
+      to: getEnv('VOLUNTEER_TO_EMAIL') ?? 'volunteers@bitcoinforthearts.org',
+    };
 
-    return NextResponse.json({ ok: true }, { status: 200 });
+    try {
+      emailResult = await sendVolunteerEmail({ subject, text, replyTo: email });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Unknown email error';
+      console.error('[volunteer] email send failed', err);
+      emailResult = {
+        ok: false,
+        skipped: false,
+        to: getEnv('VOLUNTEER_TO_EMAIL') ?? 'volunteers@bitcoinforthearts.org',
+        error: msg,
+      };
+    }
+
+    await db.collection('volunteers').updateOne(
+      { _id: insertRes.insertedId },
+      {
+        $set: {
+          emailNotification: {
+            ...emailResult,
+            checkedAt: new Date(),
+          },
+        },
+      },
+    );
+
+    return NextResponse.json(
+      {
+        ok: true,
+        emailOk: emailResult.ok,
+        emailTo: emailResult.to,
+      },
+      { status: 200 },
+    );
   } catch (err) {
     return NextResponse.json(
       { ok: false, error: err instanceof Error ? err.message : 'Invalid submission.' },
       { status: 400 },
     );
   }
+}
+
+// Safe config status endpoint (no secrets).
+export async function GET() {
+  const smtpUser =
+    getEnv('VOLUNTEER_SMTP_USER') ?? getEnv('GRANTS_SMTP_USER') ?? getEnv('CONTACT_SMTP_USER');
+  const smtpPass =
+    getEnv('VOLUNTEER_SMTP_PASS') ?? getEnv('GRANTS_SMTP_PASS') ?? getEnv('CONTACT_SMTP_PASS');
+  const fromEmail =
+    getEnv('VOLUNTEER_FROM_EMAIL') ?? getEnv('GRANTS_FROM_EMAIL') ?? getEnv('CONTACT_FROM_EMAIL');
+  const to = getEnv('VOLUNTEER_TO_EMAIL') ?? 'volunteers@bitcoinforthearts.org';
+
+  let mongoOk = false;
+  try {
+    await getMongoDb();
+    mongoOk = true;
+  } catch {
+    mongoOk = false;
+  }
+
+  return NextResponse.json(
+    {
+      ok: true,
+      configured: {
+        mongo: mongoOk,
+        email: Boolean(smtpUser) && Boolean(smtpPass) && Boolean(fromEmail),
+      },
+      email: {
+        to,
+        fromEmail: fromEmail ?? null,
+        smtpUser: smtpUser ?? null,
+      },
+    },
+    { status: 200 },
+  );
 }
 

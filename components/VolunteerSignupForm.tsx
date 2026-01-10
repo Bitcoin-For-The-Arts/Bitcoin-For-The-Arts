@@ -5,7 +5,7 @@ import { useState } from 'react';
 type State =
   | { status: 'idle' }
   | { status: 'submitting' }
-  | { status: 'success' }
+  | { status: 'success'; emailOk?: boolean; emailTo?: string }
   | { status: 'error'; message: string };
 
 export default function VolunteerSignupForm() {
@@ -31,11 +31,13 @@ export default function VolunteerSignupForm() {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      const data = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+      const data = (await res.json().catch(() => null)) as
+        | { ok?: boolean; error?: string; emailOk?: boolean; emailTo?: string }
+        | null;
       if (!res.ok || !data?.ok) {
         throw new Error(data?.error || `Submission failed (HTTP ${res.status}).`);
       }
-      setState({ status: 'success' });
+      setState({ status: 'success', emailOk: data.emailOk, emailTo: data.emailTo });
       form.reset();
     } catch (err) {
       const msg = err && typeof err === 'object' && 'message' in err ? String((err as any).message) : '';
@@ -47,7 +49,15 @@ export default function VolunteerSignupForm() {
     return (
       <div className="rounded-xl border border-border bg-background p-4 text-sm">
         <div className="font-semibold">Thanks — we got your volunteer request.</div>
-        <div className="mt-1 text-xs text-muted">We’ll follow up by email soon.</div>
+        {state.emailOk === false ? (
+          <div className="mt-1 text-xs text-muted">
+            Your signup was saved, but our notification email didn’t send. Please email{' '}
+            <span className="font-semibold">volunteers@bitcoinforthearts.org</span> if time-sensitive.
+            {state.emailTo ? ` (Configured inbox: ${state.emailTo})` : null}
+          </div>
+        ) : (
+          <div className="mt-1 text-xs text-muted">We’ll follow up by email soon.</div>
+        )}
         <button
           type="button"
           onClick={() => setState({ status: 'idle' })}
