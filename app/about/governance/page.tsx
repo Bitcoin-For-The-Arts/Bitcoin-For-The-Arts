@@ -59,7 +59,7 @@ export default function GovernancePage() {
     <main className="bg-background min-h-screen">
       <section className="relative h-[320px] w-full overflow-hidden border-b border-border bg-black sm:h-[420px]">
         <Image
-          src="/governance-photo.jpg"
+          src="/bitcoin-court.JPG"
           alt="Bitcoin For The Arts governance"
           fill
           priority
@@ -76,7 +76,7 @@ export default function GovernancePage() {
             <span className="text-white">Governance</span>
           </div>
           <h1 className="mt-3 max-w-4xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-            Governance & transparency.
+            Governance & Transparency.
           </h1>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/85 sm:text-lg">
             How we structure decision-making, safeguard integrity, and steward long-term sustainability—aligned with
