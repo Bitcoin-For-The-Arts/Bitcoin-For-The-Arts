@@ -108,6 +108,20 @@ async function sendEducationEmail(args: { subject: string; text: string; replyTo
   return { ok: true as const, skipped: false as const, to };
 }
 
+function getFallbackEducationToEmail() {
+  return (
+    getEnv('EDU_FALLBACK_TO_EMAIL') ??
+    getEnv('GRANTS_TO_EMAIL') ??
+    getEnv('CONTACT_TO_EMAIL') ??
+    null
+  );
+}
+
+function looksLikeInvalidRecipient(err: unknown) {
+  const msg = err instanceof Error ? err.message : String(err ?? '');
+  return /550\s+5\.1\.(1|10)\b/i.test(msg) || /invalid email recipients/i.test(msg);
+}
+
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
   if (!rateLimitOk(ip)) {
@@ -165,7 +179,13 @@ export async function POST(req: NextRequest) {
     ].join('\n');
 
     // Attempt email; don't block signup on email failures, but record the result.
-    let emailResult: { ok: boolean; skipped?: boolean; to?: string; error?: string } = {
+    let emailResult: {
+      ok: boolean;
+      skipped?: boolean;
+      to?: string;
+      error?: string;
+      attemptedFallback?: boolean;
+    } = {
       ok: false,
     };
     try {
@@ -174,7 +194,80 @@ export async function POST(req: NextRequest) {
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Unknown email error';
       console.error('[education] email send failed', err);
-      emailResult = { ok: false, skipped: false, to: getEnv('EDU_TO_EMAIL') ?? 'education@bitcoinforthearts.org', error: msg };
+      const primaryTo = getEnv('EDU_TO_EMAIL') ?? 'education@bitcoinforthearts.org';
+      const fallbackTo = getFallbackEducationToEmail();
+
+      if (fallbackTo && fallbackTo !== primaryTo && looksLikeInvalidRecipient(err)) {
+        try {
+          const smtpUser =
+            getEnv('EDU_SMTP_USER') ?? getEnv('GRANTS_SMTP_USER') ?? getEnv('CONTACT_SMTP_USER');
+          const smtpPass =
+            getEnv('EDU_SMTP_PASS') ?? getEnv('GRANTS_SMTP_PASS') ?? getEnv('CONTACT_SMTP_PASS');
+          const smtpHost =
+            getEnv('EDU_SMTP_HOST') ??
+            getEnv('GRANTS_SMTP_HOST') ??
+            getEnv('CONTACT_SMTP_HOST') ??
+            'smtp.zoho.com';
+          const smtpPort = Number(
+            getEnv('EDU_SMTP_PORT') ??
+              getEnv('GRANTS_SMTP_PORT') ??
+              getEnv('CONTACT_SMTP_PORT') ??
+              '465',
+          );
+          const smtpSecure =
+            (getEnv('EDU_SMTP_SECURE') ??
+              getEnv('GRANTS_SMTP_SECURE') ??
+              getEnv('CONTACT_SMTP_SECURE') ??
+              'true').toLowerCase() !== 'false';
+
+          const fromEmail =
+            getEnv('EDU_FROM_EMAIL') ?? getEnv('GRANTS_FROM_EMAIL') ?? getEnv('CONTACT_FROM_EMAIL');
+
+          if (smtpUser && smtpPass && fromEmail) {
+            const transporter = nodemailer.createTransport({
+              host: smtpHost,
+              port: smtpPort,
+              secure: smtpSecure,
+              auth: { user: smtpUser, pass: smtpPass },
+            });
+
+            await transporter.sendMail({
+              from: fromEmail,
+              to: fallbackTo,
+              subject,
+              text: `${text}\n\n[Note] Primary education inbox (${primaryTo}) rejected this email; delivered to fallback (${fallbackTo}).`,
+              replyTo: email,
+            });
+
+            emailResult = { ok: true, skipped: false, to: fallbackTo, attemptedFallback: true };
+          } else {
+            emailResult = {
+              ok: false,
+              skipped: false,
+              to: primaryTo,
+              attemptedFallback: true,
+              error: `${msg} (fallback skipped: email not configured)`,
+            };
+          }
+        } catch (fallbackErr) {
+          const fbMsg = fallbackErr instanceof Error ? fallbackErr.message : 'Unknown fallback email error';
+          console.error('[education] fallback email send failed', fallbackErr);
+          emailResult = {
+            ok: false,
+            skipped: false,
+            to: primaryTo,
+            attemptedFallback: true,
+            error: `${msg} (fallback to ${fallbackTo} failed: ${fbMsg})`,
+          };
+        }
+      } else {
+        emailResult = {
+          ok: false,
+          skipped: false,
+          to: primaryTo,
+          error: msg,
+        };
+      }
     }
 
     try {
@@ -187,6 +280,7 @@ export async function POST(req: NextRequest) {
               skipped: Boolean(emailResult.skipped),
               to: emailResult.to ?? null,
               error: emailResult.error ?? null,
+              attemptedFallback: Boolean(emailResult.attemptedFallback),
               attemptedAt: new Date(),
             },
           },
@@ -222,6 +316,7 @@ export async function GET() {
   const fromEmail =
     getEnv('EDU_FROM_EMAIL') ?? getEnv('GRANTS_FROM_EMAIL') ?? getEnv('CONTACT_FROM_EMAIL');
   const to = getEnv('EDU_TO_EMAIL') ?? 'education@bitcoinforthearts.org';
+  const fallbackTo = getFallbackEducationToEmail();
 
   let mongoOk = false;
   try {
@@ -240,6 +335,7 @@ export async function GET() {
       },
       email: {
         to,
+        fallbackTo,
         from: fromEmail ?? null,
         host:
           getEnv('EDU_SMTP_HOST') ??
