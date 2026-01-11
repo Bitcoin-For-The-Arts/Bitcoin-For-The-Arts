@@ -65,6 +65,14 @@ export default function SiteFooter() {
                   </Link>
                 </li>
                 <li>
+                  <Link
+                    href="/get-involved/feedback"
+                    className="hover:underline text-white/90 sm:text-foreground"
+                  >
+                    Feedback
+                  </Link>
+                </li>
+                <li>
                   <Link href="/stories" className="hover:underline text-white/90 sm:text-foreground">
                     Stories
                   </Link>

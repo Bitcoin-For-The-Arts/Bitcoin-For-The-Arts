@@ -36,6 +36,7 @@ export default function Navigation() {
         children: [
           { label: 'Volunteer', href: '/get-involved/volunteer' },
           { label: 'DIY Fundraising Guide', href: '/get-involved/diy-fundraising-guide' },
+          { label: 'Feedback', href: '/get-involved/feedback' },
         ],
       },
       {
