@@ -95,9 +95,17 @@ export default function GovernancePage() {
         <div className="max-w-5xl">
           <div className="rounded-3xl border border-border bg-surface/80 p-8 shadow-sm">
             <div className="rounded-2xl border border-border bg-background p-5 text-sm text-muted">
-              <span className="font-semibold text-foreground">Nonprofit status:</span> Bitcoin For The Arts, Inc. has a{' '}
-              <span className="font-semibold text-foreground">501(c)(3) determination pending</span>. We will publish updates
-              here as status changes.
+              <div className="flex items-start gap-3">
+                <span
+                  className="mt-1 inline-flex h-3 w-3 shrink-0 rounded-full bg-accent ring-4 ring-accent/15"
+                  aria-hidden="true"
+                />
+                <div>
+                  <span className="font-semibold text-foreground">Nonprofit status:</span> Bitcoin For The Arts, Inc. has a{' '}
+                  <span className="font-semibold text-foreground">501(c)(3) determination pending</span>. We will publish
+                  updates here as status changes.
+                </div>
+              </div>
             </div>
 
             <div className="text-xs font-semibold uppercase tracking-wide text-muted">
