@@ -57,13 +57,13 @@ function DocCard(props: { title: string; description: string; href: string }) {
 export default function GovernancePage() {
   return (
     <main className="bg-background min-h-screen">
-      <section className="relative h-[320px] w-full overflow-hidden border-b border-border bg-black sm:h-[420px]">
+      <section className="relative h-[320px] w-full overflow-hidden border-b border-border sm:h-[420px]">
         <Image
           src="/bitcoin-court.JPG"
           alt="Bitcoin For The Arts governance"
           fill
           priority
-          className="object-contain object-center"
+          className="object-cover object-center"
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-black/40" />
