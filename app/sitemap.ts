@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/get-involved',
     '/get-involved/diy-fundraising-guide',
     '/get-involved/volunteer',
+    '/get-involved/feedback',
     '/grants',
     '/grants/guidelines',
     '/grants/faq',

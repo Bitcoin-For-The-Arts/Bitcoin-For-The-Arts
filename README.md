@@ -194,6 +194,23 @@ Spam protection:
   - `NEXT_PUBLIC_TURNSTILE_SITE_KEY`
   - `TURNSTILE_SECRET_KEY`
 
+---
+
+### **Feedback Survey (First-Party)**
+- **Page:** `/get-involved/feedback`
+- **API:** `/api/feedback`
+
+Routing:
+- `FEEDBACK_TO_EMAIL` (defaults to `CONTACT_TO_EMAIL` / `hello@bitcoinforthearts.org`)
+
+Sender:
+- `FEEDBACK_FROM_EMAIL` (optional; falls back to `RESEND_FROM_EMAIL`)
+
+Spam protection:
+- Uses Turnstile when configured:
+  - `NEXT_PUBLIC_TURNSTILE_SITE_KEY`
+  - `TURNSTILE_SECRET_KEY`
+
 #### Reviewer share links (read-only)
 To email applications to reviewers **without giving them admin credentials**:
 
