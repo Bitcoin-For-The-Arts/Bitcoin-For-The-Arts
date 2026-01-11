@@ -5,6 +5,7 @@ import { ObjectId } from 'mongodb';
 import nodemailer from 'nodemailer';
 import { getMongoDb } from '@/lib/mongodb';
 import { createReviewToken, hashReviewToken } from '@/lib/reviewLinks';
+import { sendResendEmail } from '@/lib/resend';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -41,6 +42,18 @@ function isEmail(value: string) {
 }
 
 async function sendMail(args: { to: string[]; subject: string; text: string; html: string }) {
+  // Prefer Resend when configured.
+  const resendFrom =
+    getEnv('GRANTS_FROM_EMAIL') ?? getEnv('CONTACT_FROM_EMAIL') ?? getEnv('RESEND_FROM_EMAIL');
+  const resendAttempt = await sendResendEmail({
+    to: args.to,
+    subject: args.subject,
+    text: args.text,
+    html: args.html,
+    fromEmail: resendFrom,
+  });
+  if (resendAttempt.ok) return;
+
   const smtpUser = getEnv('GRANTS_SMTP_USER') ?? getEnv('CONTACT_SMTP_USER');
   const smtpPass = getEnv('GRANTS_SMTP_PASS') ?? getEnv('CONTACT_SMTP_PASS');
   const smtpHost =

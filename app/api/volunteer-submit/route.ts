@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { getMongoDb } from '@/lib/mongodb';
+import { sendResendEmail } from '@/lib/resend';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -86,8 +87,25 @@ async function sendVolunteerEmail(args: { subject: string; text: string; replyTo
 
   const fromEmail =
     getEnv('VOLUNTEER_FROM_EMAIL') ??
+    getEnv('RESEND_FROM_EMAIL') ??
     getEnv('GRANTS_FROM_EMAIL') ??
     getEnv('CONTACT_FROM_EMAIL');
+
+  // Prefer Resend when configured (more reliable than raw SMTP).
+  const resendAttempt = await sendResendEmail({
+    to: getEnv('VOLUNTEER_TO_EMAIL') ?? 'volunteers@bitcoinforthearts.org',
+    subject: args.subject,
+    text: args.text,
+    replyTo: args.replyTo,
+    fromEmail,
+  });
+  if (resendAttempt.ok) {
+    return {
+      ok: true as const,
+      skipped: false as const,
+      to: getEnv('VOLUNTEER_TO_EMAIL') ?? 'volunteers@bitcoinforthearts.org',
+    };
+  }
 
   if (!smtpUser || !smtpPass || !fromEmail) {
     console.warn('[volunteer] email not configured; skipping notification');
@@ -325,9 +343,13 @@ export async function GET() {
   const smtpPass =
     getEnv('VOLUNTEER_SMTP_PASS') ?? getEnv('GRANTS_SMTP_PASS') ?? getEnv('CONTACT_SMTP_PASS');
   const fromEmail =
-    getEnv('VOLUNTEER_FROM_EMAIL') ?? getEnv('GRANTS_FROM_EMAIL') ?? getEnv('CONTACT_FROM_EMAIL');
+    getEnv('VOLUNTEER_FROM_EMAIL') ??
+    getEnv('RESEND_FROM_EMAIL') ??
+    getEnv('GRANTS_FROM_EMAIL') ??
+    getEnv('CONTACT_FROM_EMAIL');
   const to = getEnv('VOLUNTEER_TO_EMAIL') ?? 'volunteers@bitcoinforthearts.org';
   const fallbackTo = getFallbackVolunteerToEmail();
+  const resendApiKey = getEnv('RESEND_API_KEY');
 
   let mongoOk = false;
   try {
@@ -342,7 +364,11 @@ export async function GET() {
       ok: true,
       configured: {
         mongo: mongoOk,
-        email: Boolean(smtpUser) && Boolean(smtpPass) && Boolean(fromEmail),
+        email:
+          (Boolean(resendApiKey) && Boolean(fromEmail)) ||
+          (Boolean(smtpUser) && Boolean(smtpPass) && Boolean(fromEmail)),
+        resend: Boolean(resendApiKey) && Boolean(fromEmail),
+        smtp: Boolean(smtpUser) && Boolean(smtpPass) && Boolean(fromEmail),
       },
       email: {
         to,
