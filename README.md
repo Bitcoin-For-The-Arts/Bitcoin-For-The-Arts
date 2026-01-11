@@ -141,6 +141,24 @@ Optional debugging (shows Turnstile error codes in responses):
 
 If `ADMIN_USER`/`ADMIN_PASS` are not set, `/admin/*` returns 404.
 
+---
+
+### **Volunteer Signup (Send Directly From the Website)**
+- **Page:** `/get-involved/volunteer`
+- **API:** `/api/volunteer-submit`
+
+Email settings (optional — submissions are still saved to MongoDB even if email fails):
+- `VOLUNTEER_TO_EMAIL` (defaults to `volunteers@bitcoinforthearts.org`)
+- `VOLUNTEER_FALLBACK_TO_EMAIL` (optional; if the primary recipient bounces, retry once to this inbox)
+
+SMTP settings (optional; falls back to grants/contact SMTP):
+- `VOLUNTEER_FROM_EMAIL`
+- `VOLUNTEER_SMTP_USER`
+- `VOLUNTEER_SMTP_PASS`
+- `VOLUNTEER_SMTP_HOST`
+- `VOLUNTEER_SMTP_PORT`
+- `VOLUNTEER_SMTP_SECURE`
+
 #### Reviewer share links (read-only)
 To email applications to reviewers **without giving them admin credentials**:
 
