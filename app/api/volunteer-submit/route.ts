@@ -118,6 +118,24 @@ async function sendVolunteerEmail(args: { subject: string; text: string; replyTo
   return { ok: true as const, skipped: false as const, to };
 }
 
+function getFallbackVolunteerToEmail() {
+  // Explicit volunteer fallback, otherwise reuse grants/contact destinations.
+  return (
+    getEnv('VOLUNTEER_FALLBACK_TO_EMAIL') ??
+    getEnv('GRANTS_TO_EMAIL') ??
+    getEnv('CONTACT_TO_EMAIL') ??
+    null
+  );
+}
+
+function looksLikeInvalidRecipient(err: unknown) {
+  const msg = err instanceof Error ? err.message : String(err ?? '');
+  // Zoho common permanent failures:
+  // - "550 5.1.1 Invalid email recipients"
+  // - "550 5.1.10 Invalid Address"
+  return /550\s+5\.1\.(1|10)\b/i.test(msg) || /invalid email recipients/i.test(msg);
+}
+
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
   if (!rateLimitOk(ip)) {
@@ -179,7 +197,7 @@ export async function POST(req: NextRequest) {
     let emailResult:
       | { ok: true; skipped: false; to: string }
       | { ok: false; skipped: true; to: string }
-      | { ok: false; skipped: false; to: string; error: string } = {
+      | { ok: false; skipped: false; to: string; error: string; attemptedFallback?: boolean } = {
       ok: false,
       skipped: true,
       to: getEnv('VOLUNTEER_TO_EMAIL') ?? 'volunteers@bitcoinforthearts.org',
@@ -190,12 +208,86 @@ export async function POST(req: NextRequest) {
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Unknown email error';
       console.error('[volunteer] email send failed', err);
-      emailResult = {
-        ok: false,
-        skipped: false,
-        to: getEnv('VOLUNTEER_TO_EMAIL') ?? 'volunteers@bitcoinforthearts.org',
-        error: msg,
-      };
+      const primaryTo = getEnv('VOLUNTEER_TO_EMAIL') ?? 'volunteers@bitcoinforthearts.org';
+      const fallbackTo = getFallbackVolunteerToEmail();
+
+      // Harden: if the volunteer inbox bounces (common 550 recipient invalid), retry once to a fallback.
+      if (fallbackTo && fallbackTo !== primaryTo && looksLikeInvalidRecipient(err)) {
+        try {
+          const smtpUser =
+            getEnv('VOLUNTEER_SMTP_USER') ??
+            getEnv('GRANTS_SMTP_USER') ??
+            getEnv('CONTACT_SMTP_USER');
+          const smtpPass =
+            getEnv('VOLUNTEER_SMTP_PASS') ??
+            getEnv('GRANTS_SMTP_PASS') ??
+            getEnv('CONTACT_SMTP_PASS');
+          const smtpHost =
+            getEnv('VOLUNTEER_SMTP_HOST') ??
+            getEnv('GRANTS_SMTP_HOST') ??
+            getEnv('CONTACT_SMTP_HOST') ??
+            'smtp.zoho.com';
+          const smtpPort = Number(
+            getEnv('VOLUNTEER_SMTP_PORT') ??
+              getEnv('GRANTS_SMTP_PORT') ??
+              getEnv('CONTACT_SMTP_PORT') ??
+              '465',
+          );
+          const smtpSecure =
+            (getEnv('VOLUNTEER_SMTP_SECURE') ??
+              getEnv('GRANTS_SMTP_SECURE') ??
+              getEnv('CONTACT_SMTP_SECURE') ??
+              'true').toLowerCase() !== 'false';
+
+          const fromEmail =
+            getEnv('VOLUNTEER_FROM_EMAIL') ??
+            getEnv('GRANTS_FROM_EMAIL') ??
+            getEnv('CONTACT_FROM_EMAIL');
+
+          if (smtpUser && smtpPass && fromEmail) {
+            const transporter = nodemailer.createTransport({
+              host: smtpHost,
+              port: smtpPort,
+              secure: smtpSecure,
+              auth: { user: smtpUser, pass: smtpPass },
+            });
+            await transporter.sendMail({
+              from: fromEmail,
+              to: fallbackTo,
+              subject,
+              text: `${text}\n\n[Note] Primary volunteer inbox (${primaryTo}) rejected this email; delivered to fallback (${fallbackTo}).`,
+              replyTo: email,
+            });
+
+            emailResult = { ok: true, skipped: false, to: fallbackTo };
+          } else {
+            emailResult = {
+              ok: false,
+              skipped: false,
+              to: primaryTo,
+              attemptedFallback: true,
+              error: `${msg} (fallback skipped: email not configured)`,
+            };
+          }
+        } catch (fallbackErr) {
+          const fbMsg = fallbackErr instanceof Error ? fallbackErr.message : 'Unknown fallback email error';
+          console.error('[volunteer] fallback email send failed', fallbackErr);
+          emailResult = {
+            ok: false,
+            skipped: false,
+            to: primaryTo,
+            attemptedFallback: true,
+            error: `${msg} (fallback to ${fallbackTo} failed: ${fbMsg})`,
+          };
+        }
+      } else {
+        emailResult = {
+          ok: false,
+          skipped: false,
+          to: primaryTo,
+          error: msg,
+        };
+      }
     }
 
     await db.collection('volunteers').updateOne(
@@ -235,6 +327,7 @@ export async function GET() {
   const fromEmail =
     getEnv('VOLUNTEER_FROM_EMAIL') ?? getEnv('GRANTS_FROM_EMAIL') ?? getEnv('CONTACT_FROM_EMAIL');
   const to = getEnv('VOLUNTEER_TO_EMAIL') ?? 'volunteers@bitcoinforthearts.org';
+  const fallbackTo = getFallbackVolunteerToEmail();
 
   let mongoOk = false;
   try {
@@ -253,6 +346,7 @@ export async function GET() {
       },
       email: {
         to,
+        fallbackTo,
         fromEmail: fromEmail ?? null,
         smtpUser: smtpUser ?? null,
       },
