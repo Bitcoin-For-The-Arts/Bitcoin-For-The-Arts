@@ -177,6 +177,23 @@ SMTP settings (optional; falls back to grants/contact SMTP):
 - `EDU_SMTP_PORT`
 - `EDU_SMTP_SECURE`
 
+---
+
+### **Governance Board Nominations (First-Party)**
+- **Page:** `/about/governance`
+- **API:** `/api/governance/board-nomination`
+
+Routing:
+- `GOVERNANCE_TO_EMAIL` (or `BOARD_NOMINATION_TO_EMAIL`; defaults to `hello@bitcoinforthearts.org`)
+
+Sender:
+- `GOVERNANCE_FROM_EMAIL` (optional; falls back to `RESEND_FROM_EMAIL`)
+
+Spam protection:
+- Uses the same Turnstile vars as the grant application:
+  - `NEXT_PUBLIC_TURNSTILE_SITE_KEY`
+  - `TURNSTILE_SECRET_KEY`
+
 #### Reviewer share links (read-only)
 To email applications to reviewers **without giving them admin credentials**:
 

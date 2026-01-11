@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import BoardNominationForm from '@/components/BoardNominationForm';
 
 export const metadata: Metadata = {
   title: 'Governance',
@@ -113,8 +114,9 @@ export default function GovernancePage() {
                   </li>
                   <li>
                     <span className="font-semibold text-foreground">Board structure:</span> As BFTA matures, the goal is a
-                    diverse board (artists, Bitcoin experts, legal/finance) with clear terms and responsibilities. Founding
-                    trustees include Avi Burra (Treasurer) and Cheryl McGinnis (Secretary).
+                    diverse board of <span className="font-semibold text-foreground">5–9 members</span> (artists, Bitcoin
+                    experts, legal/finance) with clear terms and responsibilities. Founding trustees include Avi Burra
+                    (Treasurer) and Cheryl McGinnis (Secretary).
                   </li>
                   <li>
                     <span className="font-semibold text-foreground">Decision-making:</span> Clear agendas, documented votes,
@@ -145,6 +147,22 @@ export default function GovernancePage() {
                 {DOCS.map((d) => (
                   <DocCard key={d.href} title={d.title} description={d.description} href={d.href} />
                 ))}
+              </div>
+            </div>
+
+            <div className="mt-10">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                Board member nominations
+              </div>
+              <h2 className="mt-2 text-xl font-semibold tracking-tight">
+                Nominate a board member
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted">
+                Help us build a diverse board of sovereign creators, Bitcoin experts, and arts advocates. Nominations are
+                reviewed internally; nominees are contacted only if shortlisted.
+              </p>
+              <div className="mt-5">
+                <BoardNominationForm />
               </div>
             </div>
 
