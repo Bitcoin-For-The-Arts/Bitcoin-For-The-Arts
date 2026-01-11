@@ -88,6 +88,9 @@ export default function BoardNominationForm() {
         <div className="mt-2 text-sm text-muted">
           Thanks for helping build BFTA’s governance. If the nominee is shortlisted, we’ll reach out.
         </div>
+        <div className="mt-2 text-xs text-muted">
+          If time-sensitive, email <span className="font-semibold">trustees@bitcoinforthearts.org</span>.
+        </div>
         <button
           type="button"
           onClick={() => setState({ status: 'idle' })}

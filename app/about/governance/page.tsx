@@ -56,6 +56,11 @@ function DocCard(props: { title: string; description: string; href: string }) {
 }
 
 export default function GovernancePage() {
+  const trusteesEmail = (
+    process.env.GOVERNANCE_TO_EMAIL ??
+    process.env.BOARD_NOMINATION_TO_EMAIL ??
+    'trustees@bitcoinforthearts.org'
+  ).trim();
   return (
     <main className="bg-background min-h-screen">
       <section className="relative h-[320px] w-full overflow-hidden border-b border-border sm:h-[420px]">
@@ -167,6 +172,16 @@ export default function GovernancePage() {
                 Help us build a diverse board of sovereign creators, Bitcoin experts, and arts advocates. Nominations are
                 reviewed internally; nominees are contacted only if shortlisted.
               </p>
+              <div className="mt-3 text-xs text-muted">
+                Submissions are routed to{' '}
+                <a
+                  className="font-semibold underline underline-offset-4"
+                  href={`mailto:${trusteesEmail}?subject=BFTA%20board%20nomination`}
+                >
+                  {trusteesEmail}
+                </a>
+                .
+              </div>
               <div className="mt-5">
                 <BoardNominationForm />
               </div>
