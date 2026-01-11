@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { getMongoDb } from '@/lib/mongodb';
+import { sendResendEmail } from '@/lib/resend';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -81,7 +82,10 @@ async function sendEducationEmail(args: { subject: string; text: string; replyTo
       'true').toLowerCase() !== 'false';
 
   const fromEmail =
-    getEnv('EDU_FROM_EMAIL') ?? getEnv('GRANTS_FROM_EMAIL') ?? getEnv('CONTACT_FROM_EMAIL');
+    getEnv('EDU_FROM_EMAIL') ??
+    getEnv('RESEND_FROM_EMAIL') ??
+    getEnv('GRANTS_FROM_EMAIL') ??
+    getEnv('CONTACT_FROM_EMAIL');
 
   if (!smtpUser || !smtpPass || !fromEmail) {
     console.warn('[education] email not configured; skipping notification');
@@ -89,6 +93,18 @@ async function sendEducationEmail(args: { subject: string; text: string; replyTo
   }
 
   const to = getEnv('EDU_TO_EMAIL') ?? 'education@bitcoinforthearts.org';
+
+  // Prefer Resend when configured.
+  const resendAttempt = await sendResendEmail({
+    to,
+    subject: args.subject,
+    text: args.text,
+    replyTo: args.replyTo,
+    fromEmail,
+  });
+  if (resendAttempt.ok) {
+    return { ok: true as const, skipped: false as const, to };
+  }
 
   const transporter = nodemailer.createTransport({
     host: smtpHost,
@@ -314,9 +330,13 @@ export async function GET() {
   const smtpPass =
     getEnv('EDU_SMTP_PASS') ?? getEnv('GRANTS_SMTP_PASS') ?? getEnv('CONTACT_SMTP_PASS');
   const fromEmail =
-    getEnv('EDU_FROM_EMAIL') ?? getEnv('GRANTS_FROM_EMAIL') ?? getEnv('CONTACT_FROM_EMAIL');
+    getEnv('EDU_FROM_EMAIL') ??
+    getEnv('RESEND_FROM_EMAIL') ??
+    getEnv('GRANTS_FROM_EMAIL') ??
+    getEnv('CONTACT_FROM_EMAIL');
   const to = getEnv('EDU_TO_EMAIL') ?? 'education@bitcoinforthearts.org';
   const fallbackTo = getFallbackEducationToEmail();
+  const resendApiKey = getEnv('RESEND_API_KEY');
 
   let mongoOk = false;
   try {
@@ -331,7 +351,11 @@ export async function GET() {
       ok: true,
       configured: {
         mongo: mongoOk,
-        email: Boolean(smtpUser) && Boolean(smtpPass) && Boolean(fromEmail),
+        email:
+          (Boolean(resendApiKey) && Boolean(fromEmail)) ||
+          (Boolean(smtpUser) && Boolean(smtpPass) && Boolean(fromEmail)),
+        resend: Boolean(resendApiKey) && Boolean(fromEmail),
+        smtp: Boolean(smtpUser) && Boolean(smtpPass) && Boolean(fromEmail),
       },
       email: {
         to,
