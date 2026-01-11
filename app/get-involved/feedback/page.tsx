@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default function FeedbackPage() {
+  const feedbackEmail = (process.env.FEEDBACK_TO_EMAIL ?? 'feedback@bitcoinforthearts.org').trim();
   return (
     <main className="bg-background relative overflow-hidden min-h-screen">
       <div className="pointer-events-none absolute inset-0">
@@ -53,10 +54,10 @@ export default function FeedbackPage() {
           <div className="mt-6 text-xs text-muted">
             Prefer email?{' '}
             <a
-              href="mailto:hello@bitcoinforthearts.org?subject=BFTA%20feedback"
+              href={`mailto:${feedbackEmail}?subject=BFTA%20feedback`}
               className="font-semibold underline underline-offset-4"
             >
-              hello@bitcoinforthearts.org
+              {feedbackEmail}
             </a>
             .
           </div>
