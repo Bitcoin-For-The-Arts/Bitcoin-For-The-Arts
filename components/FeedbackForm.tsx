@@ -158,21 +158,32 @@ export default function FeedbackForm() {
             <span className="text-xs font-normal text-muted">(1 = Poor, 5 = Excellent)</span>
           </legend>
           <div className="mt-3 grid grid-cols-5 gap-2">
-            {['1', '2', '3', '4', '5'].map((v) => (
-              <label
-                key={v}
-                className="flex cursor-pointer items-center justify-center rounded-xl border border-border bg-surface px-3 py-2 text-sm font-semibold text-foreground hover:opacity-90"
-              >
-                <input
-                  type="radio"
-                  name="satisfaction"
-                  value={v}
-                  required={v === '1'}
-                  className="sr-only"
-                />
-                {v}
-              </label>
-            ))}
+            {['1', '2', '3', '4', '5'].map((v) => {
+              const id = `satisfaction-${v}`;
+              return (
+                <div key={v}>
+                  <input
+                    id={id}
+                    type="radio"
+                    name="satisfaction"
+                    value={v}
+                    required={v === '1'}
+                    className="peer sr-only"
+                  />
+                  <label
+                    htmlFor={id}
+                    className={[
+                      'flex cursor-pointer items-center justify-center rounded-xl border border-border bg-surface px-3 py-2 text-sm font-semibold text-foreground transition-colors',
+                      'hover:opacity-90',
+                      'peer-checked:border-accent peer-checked:bg-accent peer-checked:text-white',
+                      'peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent',
+                    ].join(' ')}
+                  >
+                    {v}
+                  </label>
+                </div>
+              );
+            })}
           </div>
         </fieldset>
 
@@ -205,21 +216,32 @@ export default function FeedbackForm() {
               { label: 'Yes', value: 'yes' },
               { label: 'No', value: 'no' },
               { label: 'Maybe', value: 'maybe' },
-            ].map((o) => (
-              <label
-                key={o.value}
-                className="flex cursor-pointer items-center justify-center rounded-xl border border-border bg-surface px-3 py-2 text-sm font-semibold text-foreground hover:opacity-90"
-              >
-                <input
-                  type="radio"
-                  name="recommend"
-                  value={o.value}
-                  required={o.value === 'yes'}
-                  className="sr-only"
-                />
-                {o.label}
-              </label>
-            ))}
+            ].map((o) => {
+              const id = `recommend-${o.value}`;
+              return (
+                <div key={o.value}>
+                  <input
+                    id={id}
+                    type="radio"
+                    name="recommend"
+                    value={o.value}
+                    required={o.value === 'yes'}
+                    className="peer sr-only"
+                  />
+                  <label
+                    htmlFor={id}
+                    className={[
+                      'flex cursor-pointer items-center justify-center rounded-xl border border-border bg-surface px-3 py-2 text-sm font-semibold text-foreground transition-colors',
+                      'hover:opacity-90',
+                      'peer-checked:border-accent peer-checked:bg-accent peer-checked:text-white',
+                      'peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent',
+                    ].join(' ')}
+                  >
+                    {o.label}
+                  </label>
+                </div>
+              );
+            })}
           </div>
         </fieldset>
 
