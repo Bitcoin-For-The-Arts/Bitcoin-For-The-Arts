@@ -159,6 +159,24 @@ SMTP settings (optional; falls back to grants/contact SMTP):
 - `VOLUNTEER_SMTP_PORT`
 - `VOLUNTEER_SMTP_SECURE`
 
+---
+
+### **Education Workshop Waitlist (Send Directly From the Website)**
+- **Page:** `/education`
+- **API:** `/api/education/workshop-interest`
+
+Email settings (optional — submissions are still saved to MongoDB even if email fails):
+- `EDU_TO_EMAIL` (defaults to `education@bitcoinforthearts.org`)
+- `EDU_FALLBACK_TO_EMAIL` (optional; if the primary recipient bounces, retry once to this inbox)
+
+SMTP settings (optional; falls back to grants/contact SMTP):
+- `EDU_FROM_EMAIL`
+- `EDU_SMTP_USER`
+- `EDU_SMTP_PASS`
+- `EDU_SMTP_HOST`
+- `EDU_SMTP_PORT`
+- `EDU_SMTP_SECURE`
+
 #### Reviewer share links (read-only)
 To email applications to reviewers **without giving them admin credentials**:
 
