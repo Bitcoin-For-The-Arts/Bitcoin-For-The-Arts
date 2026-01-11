@@ -27,6 +27,7 @@ export default function Navigation() {
         href: '/about',
         children: [
           { label: 'Leadership', href: '/about/leadership' },
+          { label: 'Governance', href: '/about/governance' },
         ],
       },
       {
