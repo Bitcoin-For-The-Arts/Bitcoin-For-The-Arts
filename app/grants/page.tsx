@@ -230,14 +230,12 @@ export default function GrantsPage() {
               </p>
             </div>
             <div className="md:col-span-4 md:text-right">
-              <a
-                href="https://github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/about/governance"
                 className="inline-flex items-center justify-center rounded-md border border-border bg-background px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface"
               >
-                View treasury
-              </a>
+                Governance & reporting
+              </Link>
             </div>
           </div>
         </div>

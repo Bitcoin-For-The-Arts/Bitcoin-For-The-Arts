@@ -62,7 +62,7 @@ const faqs = [
   },
   {
     q: 'How is the program funded?',
-    a: 'Through donations in Bitcoin. Our treasury is transparent.',
+    a: 'Through donations in Bitcoin. We publish governance and policy documents plus aggregated reporting for transparency, while keeping sensitive reserves (like the HODL Vault) non-public for security.',
   },
 ] as const;
 
@@ -118,14 +118,12 @@ export default function GrantsFaqPage() {
                       {f.q === 'How is the program funded?' ? (
                         <>
                           {f.a}{' '}
-                          <a
-                            href="https://github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <Link
+                            href="/about/governance"
                             className="font-semibold underline underline-offset-4"
                           >
-                            View it here
-                          </a>
+                            See governance & reporting
+                          </Link>
                           .
                         </>
                       ) : (

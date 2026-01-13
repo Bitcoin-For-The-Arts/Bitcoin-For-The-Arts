@@ -162,13 +162,13 @@ export default function AboutPage() {
                           <span className="font-semibold text-white">
                             Transparent:
                           </span>{' '}
-                          open-source treasury culture.
+                          governance + aggregated reporting (without exposing sensitive addresses).
                         </li>
                         <li>
                           <span className="font-semibold text-white">
                             Long-term:
                           </span>{' '}
-                          an endowment mindset (HODL Vault).
+                          a secure endowment mindset (HODL Vault; address not public).
                         </li>
                         <li>
                           <span className="font-semibold text-white">Artist-first:</span>{' '}
