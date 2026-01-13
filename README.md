@@ -18,18 +18,15 @@
 - **55%**Staking art on sound money
 - **30%** → **workshops, residencies, co-productions** with BAM, Whitney, Carnegie  
 - **10%** → **operations**  
-- **5%** → **HODL Vault** (1 BTC by 2030)  
+- **5%** → **HODL Vault** (secure, non-public endowment reserve)  
 
 ---
 
-### **Live Treasury**
-[github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury](https://github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury)  
-- **HODL Vault:** `bc1qarts...` (3-of-5 multisig)  
-- **Live Balance:** Updated hourly  
-- **Grants Paid:** 0 → 750 artists by 2028  
-- **Donor Leaderboard:** Public or anonymous  
+### **Reserve (HODL Vault)**
+- **HODL Vault**: secure multisig endowment reserve (**address not public** for safety)
+- **Transparency**: we share **aggregated reporting** and publish governance/policy documents on the website
 
-**Donate BTC → `bc1qarts...`** *(tax-deductible Dec 2025)*
+**Donate**: see `bitcoinforthearts.org/donate`
 
 ---
 

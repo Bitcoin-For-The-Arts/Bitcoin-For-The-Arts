@@ -28,7 +28,7 @@ const ways: Way[] = [
   {
     title: 'Bitcoin & Lightning',
     description:
-      'Donate on-chain to our wallet or use BTCPay (BTC + Lightning). On-chain proof can be reflected in our public treasury.',
+      'Donate on-chain to our wallet or use BTCPay (BTC + Lightning). We share governance documents and aggregated reporting for transparency, while keeping sensitive reserves non-public for security.',
     ctaLabel: 'Donate BTC',
     href: '/donate#bitcoin',
     meter: { speed: 90, tax: 30, legacy: 70 },

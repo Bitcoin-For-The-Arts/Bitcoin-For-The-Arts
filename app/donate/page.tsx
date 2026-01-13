@@ -56,14 +56,12 @@ export default function DonatePage({
             >
               Learn about grants
             </Link>
-            <a
-              href="https://github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/about/governance"
               className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
             >
-              View treasury
-            </a>
+              Governance & reporting
+            </Link>
           </div>
         </div>
 
