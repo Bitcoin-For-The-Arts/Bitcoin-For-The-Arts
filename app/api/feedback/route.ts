@@ -343,7 +343,7 @@ export async function GET() {
         from: fromEmail ?? null,
       },
     },
-    { status: 200 },
+    { status: 200, headers: { 'Cache-Control': 'no-store' } },
   );
 }
 

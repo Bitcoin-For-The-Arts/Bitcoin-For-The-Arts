@@ -838,7 +838,7 @@ export async function GET() {
         url: process.env.VERCEL_URL ?? null,
       },
     },
-    { status: 200 },
+    { status: 200, headers: { 'Cache-Control': 'no-store' } },
   );
 }
 

@@ -377,7 +377,7 @@ export async function GET() {
         smtpUser: smtpUser ?? null,
       },
     },
-    { status: 200 },
+    { status: 200, headers: { 'Cache-Control': 'no-store' } },
   );
 }
 
