@@ -14,8 +14,14 @@ const paragraphs = [
 
 export default function ReasonForFormationScroll() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [layout, setLayout] = useState({
+    viewportHeight: 0,
+    contentHeight: 0,
+    containerHeight: 0,
+  });
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -26,13 +32,45 @@ export default function ReasonForFormationScroll() {
   }, []);
 
   useEffect(() => {
+    const updateLayout = () => {
+      const viewportHeight = window.innerHeight || 1;
+      const contentHeight = contentRef.current?.offsetHeight ?? 0;
+      const containerHeight = Math.max(
+        viewportHeight * 3.5,
+        contentHeight + viewportHeight * 2.2,
+      );
+
+      setLayout({ viewportHeight, contentHeight, containerHeight });
+    };
+
+    updateLayout();
+
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined' && contentRef.current) {
+      resizeObserver = new ResizeObserver(updateLayout);
+      resizeObserver.observe(contentRef.current);
+    }
+
+    window.addEventListener('resize', updateLayout);
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', updateLayout);
+    };
+  }, []);
+
+  useEffect(() => {
     let frame = 0;
 
     const updateProgress = () => {
       const container = containerRef.current;
       if (!container) return;
       const rect = container.getBoundingClientRect();
-      const totalScroll = Math.max(rect.height - window.innerHeight, 1);
+      const viewportHeight = layout.viewportHeight || window.innerHeight || 1;
+      const totalScroll = Math.max(
+        (layout.containerHeight || rect.height) - viewportHeight,
+        1,
+      );
       const scrolled = Math.min(Math.max(-rect.top, 0), totalScroll);
       setScrollProgress(scrolled / totalScroll);
     };
@@ -54,14 +92,17 @@ export default function ReasonForFormationScroll() {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
     };
-  }, []);
+  }, [layout.containerHeight, layout.viewportHeight]);
 
-  const translateY = 60 - scrollProgress * 180;
-  const scale = 0.65 + Math.min(scrollProgress / 0.55, 1) * 0.6;
+  const viewportHeight = layout.viewportHeight || 1;
+  const startY = viewportHeight * 0.65;
+  const endY = -layout.contentHeight * 0.9;
+  const translateY = startY + (endY - startY) * scrollProgress;
+  const scale = 0.9 + Math.min(scrollProgress / 0.55, 1) * 0.45;
 
   const crawlTransform = reduceMotion
     ? 'none'
-    : `translate3d(0, ${translateY}vh, 0) scale(${scale}) rotateX(18deg)`;
+    : `translate3d(0, ${translateY}px, 0) scale(${scale}) rotateX(18deg)`;
 
   return (
     <main className="relative overflow-hidden bg-background text-foreground">
@@ -83,7 +124,13 @@ export default function ReasonForFormationScroll() {
         </Link>
       </div>
 
-      <section ref={containerRef} className="relative mt-8 min-h-[320vh]">
+      <section
+        ref={containerRef}
+        className="relative mt-8"
+        style={{
+          minHeight: layout.containerHeight ? `${layout.containerHeight}px` : '320vh',
+        }}
+      >
         <div
           className="sticky top-0 flex h-screen items-center justify-center overflow-hidden bg-black/90 px-6"
           style={{
@@ -94,14 +141,15 @@ export default function ReasonForFormationScroll() {
           }}
         >
           <div
-            className="mx-auto max-w-3xl text-center text-base font-medium leading-relaxed text-accent drop-shadow-[0_10px_30px_rgba(247,147,26,0.35)] sm:text-lg md:text-xl"
+            ref={contentRef}
+            className="mx-auto max-w-4xl text-center text-lg font-medium leading-relaxed text-accent drop-shadow-[0_10px_30px_rgba(247,147,26,0.35)] sm:text-xl md:text-2xl"
             style={{
               transform: crawlTransform,
               transformOrigin: 'center top',
               transformStyle: 'preserve-3d',
             }}
           >
-            <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-4xl">
+            <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-5xl md:text-6xl">
               Why I Founded Bitcoin for the Arts (BFTA)
             </h1>
 
@@ -111,17 +159,17 @@ export default function ReasonForFormationScroll() {
               </p>
             ))}
 
-            <div className="mt-10 space-y-1 text-white">
-              <p className="text-lg font-semibold sm:text-xl">Sincerely,</p>
-              <p className="text-lg font-semibold sm:text-xl">Orange Piller ⚡️</p>
-              <p className="text-sm font-semibold uppercase tracking-wide text-white/80">
+            <div className="mt-12 space-y-1 text-white">
+              <p className="text-xl font-semibold sm:text-2xl">Sincerely,</p>
+              <p className="text-xl font-semibold sm:text-2xl">Orange Piller ⚡️</p>
+              <p className="text-base font-semibold uppercase tracking-wide text-white/80">
                 Founder &amp; Director
               </p>
-              <p className="text-sm font-semibold uppercase tracking-wide text-white/80">
+              <p className="text-base font-semibold uppercase tracking-wide text-white/80">
                 Bitcoin for the Arts, Inc.
               </p>
-              <p className="text-sm font-semibold text-white/80">@Orangepillman</p>
-              <p className="text-xs font-semibold text-white/70 break-all">
+              <p className="text-base font-semibold text-white/80">@Orangepillman</p>
+              <p className="text-sm font-semibold text-white/70 break-all">
                 npub:npub1r53a5pazpuwlrpdf576uz58zq8q85jhyycsxx9m8wu00fvefrktsvy5wyx
               </p>
             </div>
