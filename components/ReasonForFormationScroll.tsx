@@ -1,7 +1,4 @@
-'use client';
-
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
 
 const paragraphs = [
   'As Orange Piller ⚡️, a former professional dancer and proud Bitcoiner based in New York City, my journey to founding Bitcoin for the Arts, Inc. (BFTA) in 2025 stems from a deeply personal intersection of creativity, financial hardship, and a revolutionary vision for empowerment. Having toured nationally with Disney\'s The Lion King as a concert dancer with multiple dance companies, I experienced firsthand the exhilarating highs of artistic expression and the crushing lows of an economic system stacked against creators. BFTA was born from these struggles, aiming to ignite a self-sustaining global renaissance in the arts through Bitcoin micro-grants, workshops, residencies, and productions. Our mission, "Uncensorable money • Uncensorable minds," is a direct response to the systemic failures of the fiat world, positioning BFTA as the "NEA of the Bitcoin Era" with radical transparency, a 55/30/10/5 donation allocation rule, and a permanent Bitcoin endowment.',
@@ -13,180 +10,68 @@ const paragraphs = [
 ];
 
 export default function ReasonForFormationScroll() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [reduceMotion, setReduceMotion] = useState(false);
-  const [layout, setLayout] = useState({
-    viewportHeight: 0,
-    contentHeight: 0,
-    containerHeight: 0,
-  });
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const handleReduceMotion = () => setReduceMotion(mediaQuery.matches);
-    handleReduceMotion();
-    mediaQuery.addEventListener('change', handleReduceMotion);
-    return () => mediaQuery.removeEventListener('change', handleReduceMotion);
-  }, []);
-
-  useEffect(() => {
-    const updateLayout = () => {
-      const viewportHeight = window.innerHeight || 1;
-      const contentHeight = contentRef.current?.offsetHeight ?? 0;
-      const containerHeight = Math.max(
-        viewportHeight * 3.5,
-        contentHeight + viewportHeight * 2.2,
-      );
-
-      setLayout({ viewportHeight, contentHeight, containerHeight });
-    };
-
-    updateLayout();
-
-    let resizeObserver: ResizeObserver | null = null;
-    if (typeof ResizeObserver !== 'undefined' && contentRef.current) {
-      resizeObserver = new ResizeObserver(updateLayout);
-      resizeObserver.observe(contentRef.current);
-    }
-
-    window.addEventListener('resize', updateLayout);
-
-    return () => {
-      resizeObserver?.disconnect();
-      window.removeEventListener('resize', updateLayout);
-    };
-  }, []);
-
-  useEffect(() => {
-    let frame = 0;
-
-    const updateProgress = () => {
-      const container = containerRef.current;
-      if (!container) return;
-      const rect = container.getBoundingClientRect();
-      const viewportHeight = layout.viewportHeight || window.innerHeight || 1;
-      const totalScroll = Math.max(
-        (layout.containerHeight || rect.height) - viewportHeight,
-        1,
-      );
-      const scrolled = Math.min(Math.max(-rect.top, 0), totalScroll);
-      setScrollProgress(scrolled / totalScroll);
-    };
-
-    const handleScroll = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        frame = 0;
-        updateProgress();
-      });
-    };
-
-    updateProgress();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleScroll);
-
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame);
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
-    };
-  }, [layout.containerHeight, layout.viewportHeight]);
-
-  const viewportHeight = layout.viewportHeight || 1;
-  const startY = viewportHeight * 0.65;
-  const endY = -layout.contentHeight * 0.9;
-  const translateY = startY + (endY - startY) * scrollProgress;
-  const scale = 0.9 + Math.min(scrollProgress / 0.55, 1) * 0.45;
-
-  const crawlTransform = reduceMotion
-    ? 'none'
-    : `translate3d(0, ${translateY}px, 0) scale(${scale}) rotateX(18deg)`;
-
   return (
     <main className="relative overflow-hidden bg-background text-foreground">
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/20" />
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-background to-background" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(126,87,194,0.25),_transparent_65%)]" />
 
-      <div className="relative mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 pt-10">
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted">
-          <Link href="/about" className="hover:underline">
-            About
-          </Link>
-          <span aria-hidden="true">/</span>
-          <span className="text-foreground">Reason for Formation</span>
-        </div>
-        <Link
-          href="/about/leadership/dion-wilson"
-          className="inline-flex items-center justify-center rounded-md border border-border bg-background px-4 py-2 text-xs font-semibold uppercase tracking-wide text-foreground transition-colors hover:bg-surface"
-        >
-          Founder bio
-        </Link>
-      </div>
-
-      <section
-        ref={containerRef}
-        className="relative mt-8"
-        style={{
-          minHeight: layout.containerHeight ? `${layout.containerHeight}px` : '320vh',
-        }}
-      >
-        <div
-          className="sticky top-0 flex h-screen items-center justify-center overflow-hidden bg-black/90 px-6"
-          style={{
-            WebkitMaskImage:
-              'linear-gradient(180deg, transparent 0%, black 12%, black 88%, transparent 100%)',
-            maskImage:
-              'linear-gradient(180deg, transparent 0%, black 12%, black 88%, transparent 100%)',
-          }}
-        >
-          <div
-            ref={contentRef}
-            className="mx-auto max-w-4xl text-center text-lg font-medium leading-relaxed text-accent drop-shadow-[0_10px_30px_rgba(247,147,26,0.35)] sm:text-xl md:text-2xl"
-            style={{
-              transform: crawlTransform,
-              transformOrigin: 'center top',
-              transformStyle: 'preserve-3d',
-            }}
+      <div className="relative mx-auto max-w-5xl px-6 pb-16 pt-10">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted">
+            <Link href="/about" className="hover:underline">
+              About
+            </Link>
+            <span aria-hidden="true">/</span>
+            <span className="text-foreground">Reason for Formation</span>
+          </div>
+          <Link
+            href="/about/leadership/dion-wilson"
+            className="inline-flex items-center justify-center rounded-md border border-border bg-background/80 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-foreground transition-colors hover:bg-surface"
           >
-            <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-5xl md:text-6xl">
+            Founder bio
+          </Link>
+        </div>
+
+        <section className="mt-10 rounded-3xl border border-border bg-background/80 p-8 shadow-sm backdrop-blur sm:p-10">
+          <div className="mx-auto max-w-3xl text-left text-lg leading-relaxed text-foreground sm:text-xl md:text-2xl">
+            <h1 className="text-3xl font-semibold tracking-tight text-primary sm:text-5xl">
               Why I Founded Bitcoin for the Arts (BFTA)
             </h1>
 
             {paragraphs.map((paragraph) => (
-              <p key={paragraph.slice(0, 12)} className="mt-6">
+              <p key={paragraph.slice(0, 12)} className="mt-6 text-foreground/90">
                 {paragraph}
               </p>
             ))}
 
-            <div className="mt-12 space-y-1 text-white">
+            <div className="mt-10 space-y-1 text-foreground">
               <p className="text-xl font-semibold sm:text-2xl">Sincerely,</p>
               <p className="text-xl font-semibold sm:text-2xl">Orange Piller ⚡️</p>
-              <p className="text-base font-semibold uppercase tracking-wide text-white/80">
+              <p className="text-base font-semibold uppercase tracking-wide text-muted">
                 Founder &amp; Director
               </p>
-              <p className="text-base font-semibold uppercase tracking-wide text-white/80">
+              <p className="text-base font-semibold uppercase tracking-wide text-muted">
                 Bitcoin for the Arts, Inc.
               </p>
-              <p className="text-base font-semibold text-white/80">@Orangepillman</p>
-              <p className="text-sm font-semibold text-white/70 break-all">
+              <p className="text-base font-semibold text-muted">@Orangepillman</p>
+              <p className="text-sm font-semibold text-muted break-all">
                 npub:npub1r53a5pazpuwlrpdf576uz58zq8q85jhyycsxx9m8wu00fvefrktsvy5wyx
               </p>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <div className="relative mx-auto max-w-3xl px-6 pb-16 text-center">
-        <p className="text-sm text-muted">
-          Read the full founder bio for the story behind the mission.
-        </p>
-        <Link
-          href="/about/leadership/dion-wilson"
-          className="mt-4 inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
-        >
-          View founder bio
-        </Link>
+        <div className="mt-8 text-center">
+          <p className="text-sm text-muted">
+            Read the full founder bio for the story behind the mission.
+          </p>
+          <Link
+            href="/about/leadership/dion-wilson"
+            className="mt-4 inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+          >
+            View founder bio
+          </Link>
+        </div>
       </div>
     </main>
   );
