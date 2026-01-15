@@ -33,7 +33,10 @@ export default function ReasonForFormationScroll() {
         </div>
 
         <section className="mt-10 rounded-3xl border border-border bg-background/80 p-8 shadow-sm backdrop-blur sm:p-10">
-          <div className="mx-auto max-w-3xl text-left text-lg leading-relaxed text-foreground sm:text-xl md:text-2xl">
+          <div
+            className="mx-auto max-w-3xl text-left text-lg leading-relaxed text-foreground sm:text-xl md:text-2xl"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
             <h1 className="text-3xl font-semibold tracking-tight text-primary sm:text-5xl">
               Why I Founded Bitcoin for the Arts (BFTA)
             </h1>
