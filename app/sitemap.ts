@@ -7,6 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     '/',
     '/about',
+    '/about/reason-for-formation',
     '/about/governance',
     '/about/leadership',
     '/about/leadership/dion-wilson',
