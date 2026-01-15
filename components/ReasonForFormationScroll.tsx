@@ -59,7 +59,7 @@ export default function ReasonForFormationScroll() {
                 rel="noopener noreferrer"
                 className="text-base font-semibold text-primary hover:underline"
               >
-                @Orangepillman
+                X: @Orangepillman
               </a>
               <a
                 href="https://primal.net/DionWilson"
@@ -67,7 +67,7 @@ export default function ReasonForFormationScroll() {
                 rel="noopener noreferrer"
                 className="text-sm font-semibold text-primary break-all hover:underline"
               >
-                npub:npub1r53a5pazpuwlrpdf576uz58zq8q85jhyycsxx9m8wu00fvefrktsvy5wyx
+                Nostr: npub1r53a5pazpuwlrpdf576uz58zq8q85jhyycsxx9m8wu00fvefrktsvy5wyx
               </a>
             </div>
           </div>
