@@ -53,10 +53,22 @@ export default function ReasonForFormationScroll() {
               <p className="text-base font-semibold uppercase tracking-wide text-muted">
                 Bitcoin for the Arts, Inc.
               </p>
-              <p className="text-base font-semibold text-muted">@Orangepillman</p>
-              <p className="text-sm font-semibold text-muted break-all">
+              <a
+                href="https://x.com/Orangepillman"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-base font-semibold text-primary hover:underline"
+              >
+                @Orangepillman
+              </a>
+              <a
+                href="https://primal.net/DionWilson"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-semibold text-primary break-all hover:underline"
+              >
                 npub:npub1r53a5pazpuwlrpdf576uz58zq8q85jhyycsxx9m8wu00fvefrktsvy5wyx
-              </p>
+              </a>
             </div>
           </div>
         </section>
