@@ -27,7 +27,6 @@ export default function Navigation() {
         href: '/about',
         children: [
           { label: 'Leadership', href: '/about/leadership' },
-          { label: 'Reason for Formation', href: '/about/reason-for-formation' },
           { label: 'Governance', href: '/about/governance' },
         ],
       },
