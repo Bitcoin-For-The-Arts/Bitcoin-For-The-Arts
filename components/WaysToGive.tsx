@@ -186,6 +186,7 @@ export default function WaysToGive() {
       <div className="mt-6 flex flex-col gap-3 md:hidden">
         {ways.map((w, idx) => {
           const isOpen = openIndex === idx;
+          const href = w.href ?? '';
           return (
             <div
               key={w.title}
@@ -220,18 +221,18 @@ export default function WaysToGive() {
                   {w.meter ? <FitMeter meter={w.meter} /> : null}
 
                   <div className="mt-4">
-                    {w.href.startsWith('/') ? (
+                    {href.startsWith('/') ? (
                       <Link
-                        href={w.href}
+                        href={href}
                         className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
                       >
                         {w.ctaLabel}
                       </Link>
                     ) : (
                       <a
-                        href={w.href}
-                        target={isExternalHref(w.href) ? '_blank' : undefined}
-                        rel={isExternalHref(w.href) ? 'noopener noreferrer' : undefined}
+                        href={href}
+                        target={isExternalHref(href) ? '_blank' : undefined}
+                        rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
                         className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
                       >
                         {w.ctaLabel}
