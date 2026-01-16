@@ -21,8 +21,8 @@ const ways: Way[] = [
     title: 'Cash & Monthly Gifts',
     description:
       'One-time or recurring via credit card/check (Stripe). Monthly patrons can opt into a public leaderboard spot.',
-    ctaLabel: 'Donate (fiat)',
-    href: 'mailto:donate@bitcoinforthearts.org?subject=Fiat%20donation%20(Stripe)%20setup',
+    ctaLabel: 'Donate by card',
+    href: '/donate#card',
     meter: { speed: 85, tax: 35, legacy: 45 },
   },
   {

@@ -21,6 +21,8 @@ export default function DonatePage({
   const heroImage = process.env.NEXT_PUBLIC_HERO_DONATE_IMAGE ?? '/bitcoin band.JPG';
   const prefillAmountRaw = searchParams?.amount;
   const prefillAmount = prefillAmountRaw ? Number(prefillAmountRaw) : undefined;
+  const stripeOneTimeUrl = process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK;
+  const stripeMonthlyUrl = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_LINK;
   const defaultAmount =
     Number.isFinite(prefillAmount) && (prefillAmount as number) > 0
       ? (prefillAmount as number)
@@ -67,6 +69,51 @@ export default function DonatePage({
               Governance & reporting
             </Link>
           </div>
+        </div>
+
+        <div id="card" className="mt-10 rounded-2xl border border-border bg-background p-6">
+          <h2 className="text-xl font-semibold tracking-tight">
+            Donate by card (Stripe)
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted">
+            Give securely by card through Stripe. Choose one-time or monthly support
+            to fuel artist grants and programming.
+          </p>
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+            {stripeOneTimeUrl ? (
+              <a
+                href={stripeOneTimeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+              >
+                Give once
+              </a>
+            ) : (
+              <a
+                href="mailto:donate@bitcoinforthearts.org?subject=Credit%20card%20donation"
+                className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+              >
+                Email to donate
+              </a>
+            )}
+
+            {stripeMonthlyUrl ? (
+              <a
+                href={stripeMonthlyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+              >
+                Give monthly
+              </a>
+            ) : null}
+          </div>
+          {!stripeOneTimeUrl ? (
+            <p className="mt-3 text-xs leading-relaxed text-muted">
+              Add a Stripe payment link to enable instant card donations.
+            </p>
+          ) : null}
         </div>
 
         <WaysToGive />
