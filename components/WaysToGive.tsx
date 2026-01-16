@@ -16,13 +16,13 @@ type Way = {
   };
 };
 
-const ways: Way[] = [
+const baseWays: Way[] = [
   {
     title: 'Cash & Monthly Gifts',
     description:
       'One-time or recurring via credit card/check (Stripe). Monthly patrons can opt into a public leaderboard spot.',
     ctaLabel: 'Donate by card',
-    href: '/donate#card',
+    href: '#card',
     meter: { speed: 85, tax: 35, legacy: 45 },
   },
   {
@@ -149,6 +149,13 @@ function HeartBadge() {
 export default function WaysToGive() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [activeIndex, setActiveIndex] = useState(0);
+  const stripeOneTimeUrl = process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK;
+
+  const ways = stripeOneTimeUrl
+    ? baseWays.map((way, index) =>
+        index === 0 ? { ...way, href: stripeOneTimeUrl } : way,
+      )
+    : baseWays;
 
   return (
     <section className="mt-10 rounded-2xl border border-border bg-background p-6">
