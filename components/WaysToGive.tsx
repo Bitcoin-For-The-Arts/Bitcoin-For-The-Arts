@@ -166,6 +166,17 @@ export default function WaysToGive() {
   );
   const hasStripeOneTime = Boolean(stripeOneTimeUrl);
   const isExternalHref = (href: string) => href.startsWith('http');
+  const resolveHref = (way?: Way) => way?.href ?? '#';
+  const renderCta = (href: string, label: string, className: string) => (
+    <a
+      href={href}
+      target={isExternalHref(href) ? '_blank' : undefined}
+      rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
+      className={className}
+    >
+      {label}
+    </a>
+  );
 
   const ways = hasStripeOneTime
     ? baseWays.map((way, index) =>
@@ -186,7 +197,7 @@ export default function WaysToGive() {
       <div className="mt-6 flex flex-col gap-3 md:hidden">
         {ways.map((w, idx) => {
           const isOpen = openIndex === idx;
-          const href = w.href ?? '';
+          const href = resolveHref(w);
           return (
             <div
               key={w.title}
@@ -221,22 +232,10 @@ export default function WaysToGive() {
                   {w.meter ? <FitMeter meter={w.meter} /> : null}
 
                   <div className="mt-4">
-                    {href.startsWith('/') ? (
-                      <Link
-                        href={href}
-                        className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
-                      >
-                        {w.ctaLabel}
-                      </Link>
-                    ) : (
-                      <a
-                        href={href}
-                        target={isExternalHref(href) ? '_blank' : undefined}
-                        rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
-                        className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
-                      >
-                        {w.ctaLabel}
-                      </a>
+                    {renderCta(
+                      href,
+                      w.ctaLabel,
+                      'inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90',
                     )}
                   </div>
                 </div>
@@ -290,30 +289,10 @@ export default function WaysToGive() {
           {ways[activeIndex]?.meter ? <FitMeter meter={ways[activeIndex].meter} /> : null}
 
           <div className="mt-5">
-            {ways[activeIndex]?.href?.startsWith('/') ? (
-              <Link
-                href={ways[activeIndex].href}
-                className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
-              >
-                {ways[activeIndex].ctaLabel}
-              </Link>
-            ) : (
-              <a
-                href={ways[activeIndex]?.href}
-                target={
-                  ways[activeIndex]?.href && isExternalHref(ways[activeIndex].href)
-                    ? '_blank'
-                    : undefined
-                }
-                rel={
-                  ways[activeIndex]?.href && isExternalHref(ways[activeIndex].href)
-                    ? 'noopener noreferrer'
-                    : undefined
-                }
-                className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
-              >
-                {ways[activeIndex]?.ctaLabel}
-              </a>
+            {renderCta(
+              resolveHref(ways[activeIndex]),
+              ways[activeIndex]?.ctaLabel ?? 'Learn more',
+              'inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90',
             )}
           </div>
         </div>
