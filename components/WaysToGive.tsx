@@ -149,9 +149,13 @@ function HeartBadge() {
 export default function WaysToGive() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [activeIndex, setActiveIndex] = useState(0);
-  const stripeOneTimeUrl = process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK;
+  const stripeOneTimeUrl = process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK?.trim();
+  const hasStripeOneTime = Boolean(
+    stripeOneTimeUrl && stripeOneTimeUrl.startsWith('http'),
+  );
+  const isExternalHref = (href: string) => href.startsWith('http');
 
-  const ways = stripeOneTimeUrl
+  const ways = hasStripeOneTime
     ? baseWays.map((way, index) =>
         index === 0 ? { ...way, href: stripeOneTimeUrl } : way,
       )
@@ -214,6 +218,8 @@ export default function WaysToGive() {
                     ) : (
                       <a
                         href={w.href}
+                        target={isExternalHref(w.href) ? '_blank' : undefined}
+                        rel={isExternalHref(w.href) ? 'noopener noreferrer' : undefined}
                         className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
                       >
                         {w.ctaLabel}
@@ -281,6 +287,16 @@ export default function WaysToGive() {
             ) : (
               <a
                 href={ways[activeIndex]?.href}
+                target={
+                  ways[activeIndex]?.href && isExternalHref(ways[activeIndex].href)
+                    ? '_blank'
+                    : undefined
+                }
+                rel={
+                  ways[activeIndex]?.href && isExternalHref(ways[activeIndex].href)
+                    ? 'noopener noreferrer'
+                    : undefined
+                }
                 className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
               >
                 {ways[activeIndex]?.ctaLabel}

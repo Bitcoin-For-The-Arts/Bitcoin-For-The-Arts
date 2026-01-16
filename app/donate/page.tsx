@@ -21,8 +21,14 @@ export default function DonatePage({
   const heroImage = process.env.NEXT_PUBLIC_HERO_DONATE_IMAGE ?? '/bitcoin band.JPG';
   const prefillAmountRaw = searchParams?.amount;
   const prefillAmount = prefillAmountRaw ? Number(prefillAmountRaw) : undefined;
-  const stripeOneTimeUrl = process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK;
-  const stripeMonthlyUrl = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_LINK;
+  const stripeOneTimeUrl = process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK?.trim();
+  const stripeMonthlyUrl = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_LINK?.trim();
+  const hasStripeOneTime = Boolean(
+    stripeOneTimeUrl && stripeOneTimeUrl.startsWith('http'),
+  );
+  const hasStripeMonthly = Boolean(
+    stripeMonthlyUrl && stripeMonthlyUrl.startsWith('http'),
+  );
   const defaultAmount =
     Number.isFinite(prefillAmount) && (prefillAmount as number) > 0
       ? (prefillAmount as number)
@@ -80,7 +86,7 @@ export default function DonatePage({
             to fuel artist grants and programming.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-            {stripeOneTimeUrl ? (
+            {hasStripeOneTime ? (
               <a
                 href={stripeOneTimeUrl}
                 target="_blank"
@@ -98,7 +104,7 @@ export default function DonatePage({
               </a>
             )}
 
-            {stripeMonthlyUrl ? (
+            {hasStripeMonthly ? (
               <a
                 href={stripeMonthlyUrl}
                 target="_blank"
@@ -109,7 +115,7 @@ export default function DonatePage({
               </a>
             ) : null}
           </div>
-          {!stripeOneTimeUrl ? (
+          {!hasStripeOneTime ? (
             <p className="mt-3 text-xs leading-relaxed text-muted">
               Add a Stripe payment link to enable instant card donations.
             </p>
