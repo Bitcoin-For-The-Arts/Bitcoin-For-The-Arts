@@ -48,6 +48,10 @@ export default function DonatePage({
             Your donation helps fund artist micro-grants, workshops, residencies, and
             productions — and supports a long-term Bitcoin reserve.
           </p>
+          <div className="mt-5 rounded-2xl border border-border bg-surface/80 p-4 text-sm text-muted">
+            501(c)(3) status is pending with the IRS. We will update this page once the
+            determination letter is approved.
+          </div>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
