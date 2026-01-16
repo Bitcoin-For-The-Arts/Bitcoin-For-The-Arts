@@ -178,9 +178,10 @@ export default function WaysToGive() {
     </a>
   );
 
-  const ways = hasStripeOneTime
+  const stripeHref = stripeOneTimeUrl ?? '/donate#card';
+  const ways: Way[] = hasStripeOneTime
     ? baseWays.map((way, index) =>
-        index === 0 ? { ...way, href: stripeOneTimeUrl } : way,
+        index === 0 ? { ...way, href: stripeHref } : way,
       )
     : baseWays;
 
