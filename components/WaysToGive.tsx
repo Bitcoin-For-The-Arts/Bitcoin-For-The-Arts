@@ -22,7 +22,7 @@ const baseWays: Way[] = [
     description:
       'One-time or recurring via credit card/check (Stripe). Monthly patrons can opt into a public leaderboard spot.',
     ctaLabel: 'Donate by card',
-    href: '#card',
+    href: '/donate#card',
     meter: { speed: 85, tax: 35, legacy: 45 },
   },
   {
@@ -149,10 +149,22 @@ function HeartBadge() {
 export default function WaysToGive() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [activeIndex, setActiveIndex] = useState(0);
-  const stripeOneTimeUrl = process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK?.trim();
-  const hasStripeOneTime = Boolean(
-    stripeOneTimeUrl && stripeOneTimeUrl.startsWith('http'),
+  const normalizeStripeUrl = (value?: string) => {
+    const trimmed = value?.trim();
+    if (!trimmed) return undefined;
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed;
+    }
+    if (trimmed.startsWith('buy.stripe.com')) {
+      return `https://${trimmed}`;
+    }
+    return undefined;
+  };
+
+  const stripeOneTimeUrl = normalizeStripeUrl(
+    process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK,
   );
+  const hasStripeOneTime = Boolean(stripeOneTimeUrl);
   const isExternalHref = (href: string) => href.startsWith('http');
 
   const ways = hasStripeOneTime
