@@ -152,6 +152,18 @@ export default function LeadershipProfilePage({
                   serve artists, donors, and the mission with transparency, courage,
                   and long-term conviction.
                 </p>
+                <div className="mt-5 rounded-xl border border-border bg-background/70 p-4">
+                  <Link
+                    href="/about/reason-for-formation"
+                    className="text-sm font-semibold text-primary hover:underline"
+                  >
+                    Read the reason for formation
+                  </Link>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">
+                    A heartfelt founder message on why Bitcoin for the Arts exists and
+                    the impact it is built to make.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
