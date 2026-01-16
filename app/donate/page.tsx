@@ -21,14 +21,26 @@ export default function DonatePage({
   const heroImage = process.env.NEXT_PUBLIC_HERO_DONATE_IMAGE ?? '/bitcoin band.JPG';
   const prefillAmountRaw = searchParams?.amount;
   const prefillAmount = prefillAmountRaw ? Number(prefillAmountRaw) : undefined;
-  const stripeOneTimeUrl = process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK?.trim();
-  const stripeMonthlyUrl = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_LINK?.trim();
-  const hasStripeOneTime = Boolean(
-    stripeOneTimeUrl && stripeOneTimeUrl.startsWith('http'),
+  const normalizeStripeUrl = (value?: string) => {
+    const trimmed = value?.trim();
+    if (!trimmed) return undefined;
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed;
+    }
+    if (trimmed.startsWith('buy.stripe.com')) {
+      return `https://${trimmed}`;
+    }
+    return undefined;
+  };
+
+  const stripeOneTimeUrl = normalizeStripeUrl(
+    process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK,
   );
-  const hasStripeMonthly = Boolean(
-    stripeMonthlyUrl && stripeMonthlyUrl.startsWith('http'),
+  const stripeMonthlyUrl = normalizeStripeUrl(
+    process.env.NEXT_PUBLIC_STRIPE_MONTHLY_LINK,
   );
+  const hasStripeOneTime = Boolean(stripeOneTimeUrl);
+  const hasStripeMonthly = Boolean(stripeMonthlyUrl);
   const defaultAmount =
     Number.isFinite(prefillAmount) && (prefillAmount as number) > 0
       ? (prefillAmount as number)

@@ -22,7 +22,7 @@ const baseWays: Way[] = [
     description:
       'One-time or recurring via credit card/check (Stripe). Monthly patrons can opt into a public leaderboard spot.',
     ctaLabel: 'Donate by card',
-    href: '#card',
+    href: '/donate#card',
     meter: { speed: 85, tax: 35, legacy: 45 },
   },
   {
@@ -149,10 +149,22 @@ function HeartBadge() {
 export default function WaysToGive() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [activeIndex, setActiveIndex] = useState(0);
-  const stripeOneTimeUrl = process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK?.trim();
-  const hasStripeOneTime = Boolean(
-    stripeOneTimeUrl && stripeOneTimeUrl.startsWith('http'),
+  const normalizeStripeUrl = (value?: string) => {
+    const trimmed = value?.trim();
+    if (!trimmed) return undefined;
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed;
+    }
+    if (trimmed.startsWith('buy.stripe.com')) {
+      return `https://${trimmed}`;
+    }
+    return undefined;
+  };
+
+  const stripeOneTimeUrl = normalizeStripeUrl(
+    process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK,
   );
+  const hasStripeOneTime = Boolean(stripeOneTimeUrl);
   const isExternalHref = (href: string) => href.startsWith('http');
 
   const ways = hasStripeOneTime
@@ -174,6 +186,7 @@ export default function WaysToGive() {
       <div className="mt-6 flex flex-col gap-3 md:hidden">
         {ways.map((w, idx) => {
           const isOpen = openIndex === idx;
+          const href = w.href ?? '';
           return (
             <div
               key={w.title}
@@ -208,18 +221,18 @@ export default function WaysToGive() {
                   {w.meter ? <FitMeter meter={w.meter} /> : null}
 
                   <div className="mt-4">
-                    {w.href.startsWith('/') ? (
+                    {href.startsWith('/') ? (
                       <Link
-                        href={w.href}
+                        href={href}
                         className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
                       >
                         {w.ctaLabel}
                       </Link>
                     ) : (
                       <a
-                        href={w.href}
-                        target={isExternalHref(w.href) ? '_blank' : undefined}
-                        rel={isExternalHref(w.href) ? 'noopener noreferrer' : undefined}
+                        href={href}
+                        target={isExternalHref(href) ? '_blank' : undefined}
+                        rel={isExternalHref(href) ? 'noopener noreferrer' : undefined}
                         className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
                       >
                         {w.ctaLabel}
