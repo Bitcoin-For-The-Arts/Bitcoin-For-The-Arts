@@ -23,7 +23,7 @@ export default function AutoDonatePopup() {
   const [open, setOpen] = useState(false);
   const closeBtnRef = useRef<HTMLButtonElement | null>(null);
 
-  const amounts = useMemo(() => [10, 25, 50, 100], []);
+  const amounts = useMemo(() => [11, 21, 51, 101], []);
   const dismiss = useCallback(() => {
     setOpen(false);
     try {
