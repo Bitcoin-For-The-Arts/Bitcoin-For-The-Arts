@@ -5,6 +5,7 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteBackground from "@/components/SiteBackground";
 import { socialLinks } from "@/lib/socials";
 import AutoDonatePopup from "@/components/AutoDonatePopup";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bitcoinforthearts.org"),
@@ -85,6 +86,7 @@ export default function RootLayout({
         <AutoDonatePopup />
         <div className="min-h-[calc(100svh-64px)]">{children}</div>
         <SiteFooter />
+        <Analytics />
       </body>
     </html>
   );
