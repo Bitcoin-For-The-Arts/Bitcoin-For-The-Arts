@@ -51,8 +51,8 @@ export default function MonthlyDonatePage() {
 
   return (
     <main className="relative overflow-hidden bg-background">
-      <div className="pointer-events-none absolute inset-0 bg-[url('/coin-holders.JPG')] bg-cover bg-center opacity-20" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/70 via-background/90 to-background" />
+      <div className="pointer-events-none absolute inset-0 bg-[url('/coin-holders.JPG')] bg-cover bg-center opacity-50" />
+      <div className="pointer-events-none absolute inset-0 bg-background/50" />
       <FullBleedHero
         imageSrc={heroImage}
         imageAlt="Monthly donations support artists."
