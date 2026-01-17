@@ -17,7 +17,7 @@ export default function BtcPayDonateWidget({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const suggested = useMemo(() => [11, 21.51, 101], []);
+  const suggested = useMemo(() => [11, 21, 51, 101], []);
 
   const createInvoice = async () => {
     setIsLoading(true);
