@@ -13,7 +13,7 @@ const tiers = [
     name: 'Satoshi Supporter',
     amount: '$5',
     sats: '5,258 sats / mo',
-    perk: 'Monthly impact updates + digital badge for your X profile.',
+    perk: 'Monthly impact updates.',
     href: 'https://buy.stripe.com/4gMbJ21LU9RHgGo6rn83C05',
   },
   {
