@@ -3,16 +3,13 @@
 import { useEffect, useMemo, useState } from 'react';
 
 type Props = {
-  defaultCurrency?: string;
   defaultAmount?: number;
 };
 
 export default function BtcPayDonateWidget({
-  defaultCurrency = 'USD',
   defaultAmount = 25,
 }: Props) {
   const [amount, setAmount] = useState<number>(defaultAmount);
-  const [currency, setCurrency] = useState<string>(defaultCurrency);
   const [message, setMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +27,7 @@ export default function BtcPayDonateWidget({
     setError(null);
 
     try {
+      const currency = 'USD';
       const res = await fetch('/api/btcpay/create-invoice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -78,7 +76,7 @@ export default function BtcPayDonateWidget({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wide text-muted">
-                Amount
+                Amount (USD)
               </label>
               <input
                 type="number"
@@ -96,28 +94,12 @@ export default function BtcPayDonateWidget({
                     onClick={() => setAmount(v)}
                     className="min-h-12 rounded-md border border-border px-4 py-2 text-sm font-semibold transition-colors hover:bg-surface"
                   >
-                    {v}
+                    ${v}
                   </button>
                 ))}
               </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide text-muted">
-                Currency
-              </label>
-              <select
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value)}
-                className="mt-2 min-h-12 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-              >
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="GBP">GBP</option>
-                <option value="BTC">BTC</option>
-              </select>
               <div className="mt-2 text-xs text-muted">
-                Tip: USD/EUR/GBP lets BTCPay quote BTC + Lightning at checkout.
+                We convert USD to BTC/Lightning at checkout.
               </div>
             </div>
           </div>
