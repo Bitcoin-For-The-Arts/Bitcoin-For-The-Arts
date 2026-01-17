@@ -17,6 +17,14 @@ export default function BtcPayDonateWidget({
   const suggested = useMemo(() => [11, 21, 51, 101], []);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const raw = new URLSearchParams(window.location.search).get('amount');
+      const parsed = raw ? Number(raw) : Number.NaN;
+      if (Number.isFinite(parsed) && parsed > 0) {
+        setAmount(parsed);
+        return;
+      }
+    }
     if (Number.isFinite(defaultAmount) && defaultAmount > 0) {
       setAmount(defaultAmount);
     }
