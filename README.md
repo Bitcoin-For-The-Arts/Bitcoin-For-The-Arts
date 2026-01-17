@@ -55,7 +55,7 @@ Donate BTC → `bc1qarts...` (tax-deductible Dec 2025)
 - No inflation
 - No gatekeepers
 
-X: @Orangepillman
+X: @Bitcoinfta
 
 Email: hello@bitcoinforthearts.org
 
