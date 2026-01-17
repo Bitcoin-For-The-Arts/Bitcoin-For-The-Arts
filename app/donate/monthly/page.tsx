@@ -47,10 +47,12 @@ const tiers = [
 ];
 
 export default function MonthlyDonatePage() {
-  const heroImage = process.env.NEXT_PUBLIC_HERO_DONATE_IMAGE ?? '/bitcoin band.JPG';
+  const heroImage = '/donor-hype.JPG';
 
   return (
-    <main className="bg-background">
+    <main className="relative overflow-hidden bg-background">
+      <div className="pointer-events-none absolute inset-0 bg-[url('/coin-holders.JPG')] bg-cover bg-center opacity-20" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/70 via-background/90 to-background" />
       <FullBleedHero
         imageSrc={heroImage}
         imageAlt="Monthly donations support artists."
@@ -59,7 +61,7 @@ export default function MonthlyDonatePage() {
         description="Join the Sovereign Circle and power steady support for artist grants, workshops, and residencies."
       />
 
-      <div className="mx-auto max-w-6xl px-8 py-14 sm:px-6">
+      <div className="relative mx-auto max-w-6xl px-8 py-14 sm:px-6">
         <div className="max-w-4xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
             Become a monthly donor
@@ -84,6 +86,25 @@ export default function MonthlyDonatePage() {
           </p>
         </div>
 
+        <section className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-4">
+          {[
+            { label: 'Grants', value: '55%' },
+            { label: 'Programs', value: '30%' },
+            { label: 'Operations', value: '10%' },
+            { label: 'HODL Vault', value: '5%' },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className="rounded-2xl border border-border bg-background/90 p-5 text-center shadow-sm"
+            >
+              <div className="text-2xl font-semibold text-primary">{item.value}</div>
+              <div className="mt-1 text-xs font-semibold uppercase tracking-wide text-muted">
+                {item.label}
+              </div>
+            </div>
+          ))}
+        </section>
+
         <section className="mt-10 rounded-2xl border border-border bg-surface/80 p-6">
           <h2 className="text-xl font-semibold tracking-tight">Why go monthly?</h2>
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -106,7 +127,30 @@ export default function MonthlyDonatePage() {
           </div>
         </section>
 
-        <section className="mt-10">
+        <section className="mt-10 rounded-2xl border border-border bg-background/90 p-6 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-xl font-semibold tracking-tight">
+              See the monthly impact
+            </h2>
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted">
+              Donor spotlight
+            </span>
+          </div>
+          <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-black">
+            <video
+              src="/BFTA-donor-vid.MP4"
+              controls
+              playsInline
+              preload="metadata"
+              className="h-full w-full"
+            />
+          </div>
+          <p className="mt-3 text-sm leading-relaxed text-muted">
+            Every month keeps the lights on for artists building uncensorable work.
+          </p>
+        </section>
+
+        <section id="tiers" className="mt-10 scroll-mt-28">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-2xl font-semibold tracking-tight">
               Monthly donation tiers
@@ -154,6 +198,25 @@ export default function MonthlyDonatePage() {
             retroactively upon approval. Receipts are provided automatically.
           </p>
         </div>
+
+        <section className="mt-6 rounded-2xl border border-border bg-primary text-white p-6 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="text-sm font-semibold uppercase tracking-wide text-white/80">
+                Sovereign Circle pledge
+              </div>
+              <div className="mt-2 text-xl font-semibold">
+                Your monthly gift keeps art free and artists paid in sound money.
+              </div>
+            </div>
+            <Link
+              href="#tiers"
+              className="inline-flex min-h-12 items-center justify-center rounded-md bg-white px-5 py-3 text-sm font-semibold text-primary transition-colors hover:opacity-90"
+            >
+              Choose a tier
+            </Link>
+          </div>
+        </section>
 
         <div className="mt-6 rounded-2xl border border-border bg-surface/80 p-6">
           <h2 className="text-lg font-semibold tracking-tight">On-chain transparency</h2>
