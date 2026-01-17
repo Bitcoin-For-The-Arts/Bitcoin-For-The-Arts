@@ -86,12 +86,10 @@ export default function DonatePage({
         </div>
 
         <div id="card" className="mt-10 rounded-2xl border border-border bg-background p-6">
-          <h2 className="text-xl font-semibold tracking-tight">
-            Donate by card (Stripe)
-          </h2>
+          <h2 className="text-xl font-semibold tracking-tight">Donate by card</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted">
-            Give securely by card through Stripe. Choose one-time or monthly support
-            to fuel artist grants and programming.
+            Give securely by card. Choose one-time or monthly support to fuel artist
+            grants and programming.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             {hasStripeOneTime ? (
@@ -116,7 +114,7 @@ export default function DonatePage({
               href="/donate/monthly"
               className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
             >
-              Monthly options
+              Give monthly
             </Link>
           </div>
           {!hasStripeOneTime ? (
