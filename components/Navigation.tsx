@@ -65,7 +65,12 @@ export default function Navigation() {
       },
       { label: 'Stories', href: '/stories' },
       { label: 'Contact', href: '/contact' },
-      { label: 'Donate', href: '/donate', variant: 'cta' },
+      {
+        label: 'Donate',
+        href: '/donate',
+        variant: 'cta',
+        children: [{ label: 'Monthly giving', href: '/donate/monthly' }],
+      },
     ],
     [],
   );
@@ -195,7 +200,11 @@ export default function Navigation() {
                   onClick={() => setOpenDesktopDropdown(null)}
                   className={[
                     'whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium tracking-wide transition-colors uppercase inline-flex items-center gap-1',
-                    isActive ? 'bg-white/15 text-white' : 'text-white/90 hover:bg-white/10 hover:text-white',
+                    isCta
+                      ? 'bg-accent text-white hover:opacity-90'
+                      : isActive
+                        ? 'bg-white/15 text-white'
+                        : 'text-white/90 hover:bg-white/10 hover:text-white',
                   ].join(' ')}
                 >
                   {item.label}
