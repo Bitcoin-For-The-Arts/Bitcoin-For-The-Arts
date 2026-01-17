@@ -24,6 +24,14 @@ const tiers = [
     href: 'https://buy.stripe.com/6oU5kE8aibZP3TCbLH83C06',
   },
   {
+    name: 'Hard Cap Hero',
+    amount: '$21',
+    sats: '21,000 sats / mo',
+    perk:
+      'Honor the 21M cap — custom stickers, exclusive 21 Club reports, and artist priority.',
+    href: 'https://buy.stripe.com/cNi8wQ9em5Br75OeXT83C0a',
+  },
+  {
     name: 'Sovereign Stacker',
     amount: '$51',
     sats: '53,636 sats / mo',
