@@ -139,7 +139,9 @@ export default function MonthlyDonatePage() {
           <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-black">
             <video
               src="/BFTA-donor-vid.MP4"
-              controls
+              autoPlay
+              muted
+              loop
               playsInline
               preload="metadata"
               className="h-full w-full"
