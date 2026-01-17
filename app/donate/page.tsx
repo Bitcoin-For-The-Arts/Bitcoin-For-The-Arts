@@ -36,11 +36,7 @@ export default function DonatePage({
   const stripeOneTimeUrl = normalizeStripeUrl(
     process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK,
   );
-  const stripeMonthlyUrl = normalizeStripeUrl(
-    process.env.NEXT_PUBLIC_STRIPE_MONTHLY_LINK,
-  );
   const hasStripeOneTime = Boolean(stripeOneTimeUrl);
-  const hasStripeMonthly = Boolean(stripeMonthlyUrl);
   const defaultAmount =
     Number.isFinite(prefillAmount) && (prefillAmount as number) > 0
       ? (prefillAmount as number)
@@ -116,16 +112,12 @@ export default function DonatePage({
               </a>
             )}
 
-            {hasStripeMonthly ? (
-              <a
-                href={stripeMonthlyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
-              >
-                Give monthly
-              </a>
-            ) : null}
+            <Link
+              href="/donate/monthly"
+              className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+            >
+              Monthly options
+            </Link>
           </div>
           {!hasStripeOneTime ? (
             <p className="mt-3 text-xs leading-relaxed text-muted">

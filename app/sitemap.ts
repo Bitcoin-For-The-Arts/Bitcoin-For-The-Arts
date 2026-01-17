@@ -25,6 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/events',
     '/stories',
     '/donate',
+    '/donate/monthly',
     '/donate/guides/life-insurance',
     '/donate/guides/securities',
     '/donate/guides/ira-qcd',
