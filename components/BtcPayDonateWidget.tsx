@@ -96,7 +96,7 @@ export default function BtcPayDonateWidget({
                     onClick={() => setAmount(v)}
                     className="min-h-12 rounded-md border border-border px-4 py-2 text-sm font-semibold transition-colors hover:bg-surface"
                   >
-                    {v}
+                    ${v}
                   </button>
                 ))}
               </div>
