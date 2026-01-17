@@ -27,8 +27,7 @@ const tiers = [
     name: 'Hard Cap Hero',
     amount: '$21',
     sats: '21,000 sats / mo',
-    perk:
-      'Honor the 21M cap — custom stickers, exclusive 21 Club reports, and artist priority.',
+    perk: 'Honor the 21M cap — custom stickers + artist priority.',
     href: 'https://buy.stripe.com/cNi8wQ9em5Br75OeXT83C0a',
   },
   {
