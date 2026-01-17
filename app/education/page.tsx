@@ -44,7 +44,7 @@ export default function EducationPage() {
             Education
           </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Bitcoin education for artists.
+            Bitcoin Education for Artists.
           </h1>
           <p className="mt-5 max-w-3xl text-base leading-relaxed text-muted sm:text-lg">
             We’re building an education program that helps artists adopt Bitcoin with confidence: self-custody,
