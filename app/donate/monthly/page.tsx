@@ -8,46 +8,89 @@ export const metadata: Metadata = {
     'Join the Sovereign Circle with a monthly donation that funds artist grants, workshops, and residencies.',
 };
 
-const tiers = [
+type Tier = {
+  name: string;
+  amount: string;
+  perk: string;
+  href: string;
+  impact: string[];
+  meter: {
+    grants: number;
+    programs: number;
+    reserve: number;
+  };
+};
+
+const tiers: Tier[] = [
   {
     name: 'Satoshi Supporter',
     amount: '$5',
-    sats: '5,258 sats / mo',
     perk: 'Monthly impact updates.',
     href: 'https://buy.stripe.com/4gMbJ21LU9RHgGo6rn83C05',
+    impact: [
+      'Helps cover a portion of a micro-grant over the year.',
+      'Supports one workshop seat for an emerging creator.',
+      'Strengthens the long-term reserve for artist payments.',
+    ],
+    meter: { grants: 35, programs: 30, reserve: 25 },
   },
   {
     name: 'Orange Piller Patron',
     amount: '$11',
-    sats: '11,568 sats / mo',
     perk: 'Shoutouts in our newsletter + early access to webinar recordings.',
     href: 'https://buy.stripe.com/6oU5kE8aibZP3TCbLH83C06',
+    impact: [
+      'Enables roughly half to one micro-grant per year.',
+      'Covers materials for 2-4 workshop participants.',
+      'Builds reserve capacity for future grants.',
+    ],
+    meter: { grants: 50, programs: 45, reserve: 35 },
   },
   {
     name: 'Hard Cap Hero',
     amount: '$21',
-    sats: '21,000 sats / mo',
     perk: 'Honor the 21M cap — custom stickers + artist priority.',
     href: 'https://buy.stripe.com/cNi8wQ9em5Br75OeXT83C0a',
+    impact: [
+      'Powers one micro-grant over the course of a year.',
+      'Funds up to five workshop spots or a residency boost.',
+      'Grows the mission reserve for artist-first funding.',
+    ],
+    meter: { grants: 60, programs: 55, reserve: 45 },
   },
   {
     name: 'Sovereign Stacker',
     amount: '$51',
-    sats: '53,636 sats / mo',
     perk: 'Personalized thank-you from an artist + invite to virtual meetups.',
     href: 'https://buy.stripe.com/aFa3cw2PYd3TeygdTP83C08',
+    impact: [
+      'Delivers 1-3 micro-grants per year for working artists.',
+      'Supports 6-12 workshop or residency seats annually.',
+      'Keeps the reserve growing for long-horizon support.',
+    ],
+    meter: { grants: 75, programs: 70, reserve: 55 },
   },
   {
     name: 'Renaissance Guardian',
     amount: '$101',
-    sats: '106,220 sats+ / mo',
     perk: 'Name a grant + board shoutout.',
     href: 'https://buy.stripe.com/3cIaEY4Y6fc1cq8bLH83C09',
+    impact: [
+      'Fuels 4+ micro-grants annually for bold creators.',
+      'Sponsors full workshops or co-production moments.',
+      'Accelerates the reserve that sustains the mission.',
+    ],
+    meter: { grants: 90, programs: 85, reserve: 70 },
   },
 ];
 
 export default function MonthlyDonatePage() {
   const heroImage = '/donor-hype.JPG';
+  const meterItems = [
+    { key: 'grants', label: 'Grants' },
+    { key: 'programs', label: 'Programs' },
+    { key: 'reserve', label: 'Reserve' },
+  ] as const;
 
   return (
     <main className="relative overflow-hidden bg-background">
@@ -130,13 +173,29 @@ export default function MonthlyDonatePage() {
         <section className="mt-10 rounded-2xl border border-border bg-background/90 p-6 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-xl font-semibold tracking-tight">
+              See your impact multiply
+            </h2>
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted">
+              Monthly momentum
+            </span>
+          </div>
+          <p className="mt-3 text-sm leading-relaxed text-muted">
+            Monthly giving turns steady support into bold outcomes. A $21 Hard Cap Hero
+            gift can fund an artist&apos;s first Bitcoin wallet and spark sovereignty.
+            Track the momentum in quarterly updates and on-chain reports.
+          </p>
+        </section>
+
+        <section className="mt-10 rounded-2xl border border-border bg-background/90 p-6 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-xl font-semibold tracking-tight">
               See the monthly impact
             </h2>
             <span className="text-xs font-semibold uppercase tracking-wide text-muted">
               Donor spotlight
             </span>
           </div>
-          <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-black">
+          <div className="mt-4 mx-auto w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-black">
             <video
               src="/BFTA-donor-vid.MP4"
               autoPlay
@@ -172,7 +231,7 @@ export default function MonthlyDonatePage() {
                   <div>
                     <div className="text-lg font-semibold">{tier.name}</div>
                     <div className="mt-1 text-sm text-muted">
-                      {tier.amount} | {tier.sats}
+                      {tier.amount} monthly
                     </div>
                   </div>
                   <span className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted">
@@ -180,6 +239,53 @@ export default function MonthlyDonatePage() {
                   </span>
                 </div>
                 <p className="mt-4 text-sm leading-relaxed text-muted">{tier.perk}</p>
+
+                <div className="mt-4 rounded-xl border border-border bg-surface/80 p-4">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    Impact metrics
+                  </div>
+                  <ul className="mt-3 space-y-2 text-sm text-muted">
+                    {tier.impact.map((item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <svg
+                          viewBox="0 0 24 24"
+                          className="mt-0.5 h-4 w-4 text-primary"
+                          aria-hidden="true"
+                        >
+                          <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.16" />
+                          <path
+                            d="M12 7.5v9M9.5 9.5h5"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-4 space-y-3">
+                    {meterItems.map((metric) => {
+                      const value = tier.meter[metric.key];
+                      return (
+                        <div key={metric.key}>
+                          <div className="flex items-center justify-between text-[11px] text-muted">
+                            <span>{metric.label}</span>
+                            <span className="tabular-nums">{value}%</span>
+                          </div>
+                          <div className="mt-1 h-2 w-full overflow-hidden rounded-full border border-border bg-background">
+                            <div
+                              className="h-full rounded-full bg-[linear-gradient(90deg,rgba(126,87,194,0.95),rgba(247,147,26,0.9))]"
+                              style={{ width: `${value}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <a
                   href={tier.href}
                   target="_blank"
@@ -192,6 +298,11 @@ export default function MonthlyDonatePage() {
             ))}
           </div>
         </section>
+
+        <p className="mt-6 text-xs leading-relaxed text-muted">
+          Impact metrics are illustrative estimates based on our allocation model and
+          will evolve as data grows.
+        </p>
 
         <div className="mt-10 rounded-2xl border border-border bg-background p-6">
           <h2 className="text-lg font-semibold tracking-tight">Tax perks</h2>
