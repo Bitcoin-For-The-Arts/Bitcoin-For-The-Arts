@@ -34,7 +34,7 @@ const tiers = [
     name: 'Renaissance Guardian',
     amount: '$101',
     sats: '106,220 sats+ / mo',
-    perk: 'Name a grant + custom Ordinal NFT artwork + board shoutout.',
+    perk: 'Name a grant + board shoutout.',
     href: 'https://buy.stripe.com/3cIaEY4Y6fc1cq8bLH83C09',
   },
 ];
