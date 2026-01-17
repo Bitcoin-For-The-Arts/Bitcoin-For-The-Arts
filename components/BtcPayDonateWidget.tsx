@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 type Props = {
   defaultCurrency?: string;
@@ -18,6 +18,12 @@ export default function BtcPayDonateWidget({
   const [error, setError] = useState<string | null>(null);
 
   const suggested = useMemo(() => [11, 21, 51, 101], []);
+
+  useEffect(() => {
+    if (Number.isFinite(defaultAmount) && defaultAmount > 0) {
+      setAmount(defaultAmount);
+    }
+  }, [defaultAmount]);
 
   const createInvoice = async () => {
     setIsLoading(true);
