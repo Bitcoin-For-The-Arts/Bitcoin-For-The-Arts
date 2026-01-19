@@ -85,11 +85,6 @@ export default function GrantGuidelinesPage() {
                 <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
                   BFTA Grant Guidelines
                 </h1>
-                <div className="mt-4 text-sm text-muted">
-                  <span className="font-semibold text-foreground">Version:</span> {VERSION}{' '}
-                  <span className="text-muted">•</span>{' '}
-                  <span className="font-semibold text-foreground">Effective:</span> {EFFECTIVE_DATE}
-                </div>
                 <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted sm:text-lg">
                   This document provides detailed guidelines for applying to BFTA’s Bitcoin-native micro-grant program.
                   It expands beyond the online application form to include eligibility details, do’s and don’ts,
