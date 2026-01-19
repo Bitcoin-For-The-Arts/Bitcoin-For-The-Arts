@@ -93,12 +93,8 @@ export default function GrantGuidelinesPage() {
                 <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted sm:text-lg">
                   This document provides detailed guidelines for applying to BFTA’s Bitcoin-native micro-grant program.
                   It expands beyond the online application form to include eligibility details, do’s and don’ts,
-                  evaluation rubrics, and more. For the application form, visit{' '}
-                  <Link href="/grants/apply" className="font-semibold underline underline-offset-4">
-                    bitcoinforthearts.org/grants/apply
-                  </Link>
-                  . Applications are reviewed quarterly, with processing beginning in Q3 2026. Grants are disbursed in
-                  Bitcoin (BTC).
+                  evaluation rubrics, and more. Applications are reviewed quarterly, with processing beginning in Q3
+                  2026. Grants are disbursed in Bitcoin (BTC).
                 </p>
               </div>
 
