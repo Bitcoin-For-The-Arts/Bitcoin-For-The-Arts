@@ -21,6 +21,10 @@ const faqs = [
     a: 'Grant sizes vary based on program capacity and reserves. Grants are disbursed in BTC to the wallet address you provide. We prioritize clear budgets, realistic timelines, and strong Bitcoin alignment.',
   },
   {
+    q: 'What if BTC value changes?',
+    a: 'Grants are fixed in BTC, so plan accordingly for volatility.',
+  },
+  {
     q: 'What types of projects do you fund?',
     a: 'We support creative projects in visual arts, performing arts (dance, theater), music, literature/writing, film/media, crafts/traditional arts, and multidisciplinary/other innovative arts. Projects should focus on artistic creation and impact.',
   },
@@ -33,8 +37,16 @@ const faqs = [
     a: 'We review applications quarterly. We are collecting applications now, but processing begins in Q3 2026.',
   },
   {
+    q: 'How are reviews conducted?',
+    a: 'Applications are reviewed by an expert panel using the published evaluation rubric.',
+  },
+  {
     q: 'Can international artists apply?',
     a: 'Yes. Applicants are open worldwide. The key requirement is that the project activities funded by the grant must be performed in the United States.',
+  },
+  {
+    q: 'What counts as “US-based”?',
+    a: 'Primary activities, deliverables, and impact must take place in the United States (for example, exhibitions in the US or a US-focused audience).',
   },
   {
     q: 'What if I’m selected?',

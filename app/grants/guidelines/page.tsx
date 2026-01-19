@@ -246,12 +246,10 @@ export default function GrantGuidelinesPage() {
                 <li>Provide a valid Bitcoin wallet address for disbursement (Lightning Network preferred for efficiency).</li>
                 <li>Agree to post-grant reporting for radical transparency.</li>
                 <li>
-                  Have a track record of artistic work (at least one prior project or portfolio sample).{' '}
-                  <span className="font-semibold text-foreground">
-                    Emerging and aspiring artists without extensive experience may also apply on a case-by-case basis;
-                    applications will be evaluated based on demonstrated passion, potential, and alignment with our
-                    mission.
-                  </span>
+                  Have a track record of artistic work (at least one prior project or portfolio sample). Emerging and
+                  aspiring artists without extensive experience may also apply on a case-by-case basis; applications
+                  will be evaluated based on demonstrated passion, potential, and alignment with our mission to ensure
+                  inclusivity across all levels of artistic development.
                 </li>
               </ul>
 
@@ -502,31 +500,12 @@ export default function GrantGuidelinesPage() {
             </Section>
 
             <Section id="faqs" title="9. Frequently Asked Questions (FAQs)">
-              <ul className="space-y-3 text-sm text-muted">
-                <li>
-                  <span className="font-semibold text-foreground">Q: What if BTC value changes?</span> A: Grants are fixed
-                  in BTC; plan accordingly.
-                </li>
-                <li>
-                  <span className="font-semibold text-foreground">Q: Can international artists apply?</span> A: Yes—artists
-                  worldwide are eligible, but the project must be US-based.
-                </li>
-                <li>
-                  <span className="font-semibold text-foreground">Q: What counts as “US-based”?</span> A: Primary
-                  activities/deliverables/impact in the US (e.g., exhibition in US, US audience focus).
-                </li>
-                <li>
-                  <span className="font-semibold text-foreground">Q: How are reviews conducted?</span> A: By expert panel
-                  using the rubric above.
-                </li>
-              </ul>
-              <p>
-                For more, contact us via the{' '}
-                <Link href="/contact" className="font-semibold underline underline-offset-4">
-                  website
-                </Link>
-                .
-              </p>
+              <Link
+                href="/grants/faq"
+                className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-5 py-2 text-sm font-semibold transition-colors hover:opacity-90"
+              >
+                Go to Grants FAQ
+              </Link>
             </Section>
           </div>
         </div>
