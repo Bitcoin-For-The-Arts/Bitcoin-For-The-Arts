@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import BtcPayDonateWidget from '@/components/BtcPayDonateWidget';
-import BitcoinDonationCard from '@/components/BitcoinDonationCard';
 import WaysToGive from '@/components/WaysToGive';
 import Link from 'next/link';
 import FullBleedHero from '@/components/FullBleedHero';
@@ -16,8 +15,6 @@ export default function DonatePage({
 }: {
   searchParams?: { amount?: string };
 }) {
-  const address =
-    process.env.NEXT_PUBLIC_BTC_DONATION_ADDRESS ?? 'bc1qarts...';
   const heroImage = process.env.NEXT_PUBLIC_HERO_DONATE_IMAGE ?? '/bitcoin band.JPG';
   const prefillAmountRaw = searchParams?.amount;
   const prefillAmount = prefillAmountRaw ? Number(prefillAmountRaw) : undefined;
@@ -128,7 +125,6 @@ export default function DonatePage({
 
         <div id="bitcoin" className="mt-12 space-y-6 scroll-mt-28">
           <BtcPayDonateWidget defaultAmount={defaultAmount} />
-          <BitcoinDonationCard address={address} />
         </div>
 
         <div className="mt-10 rounded-2xl border border-border bg-surface p-6">
