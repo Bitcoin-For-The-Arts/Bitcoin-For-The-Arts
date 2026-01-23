@@ -93,9 +93,9 @@ export default function BtcPayDonateWidget({
                 Amount (USD)
               </label>
               <input
-                type="number"
-                min={1}
-                step={1}
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 value={amountInput}
                 onChange={(e) => {
                   const raw = e.target.value;
@@ -104,9 +104,13 @@ export default function BtcPayDonateWidget({
                     setError(null);
                     return;
                   }
-                  const normalized = raw.replace(/^0+(?!$)/, '');
+                  const digitsOnly = raw.replace(/[^\d]/g, '');
+                  const normalized = digitsOnly.replace(/^0+(?=\d)/, '');
                   setAmountInput(normalized);
                   setError(null);
+                }}
+                onFocus={(e) => {
+                  e.target.select();
                 }}
                 className="mt-2 min-h-12 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
               />
