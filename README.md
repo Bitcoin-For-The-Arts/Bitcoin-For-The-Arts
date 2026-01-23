@@ -30,6 +30,20 @@
 
 ---
 
+### **BTCPay Server (Donations)**
+The donation flow calls the BTCPay Server API. Configure these **deployment**
+environment variables (e.g., in Vercel or your hosting provider):
+
+- `BTCPAY_URL` (public HTTPS URL, e.g. `https://pay.bitcoinforthearts.org`)
+- `BTCPAY_API_KEY` (store API key from BTCPay Server)
+- `BTCPAY_STORE_ID` (store ID from BTCPay Server)
+
+Notes:
+- `.local` and `.onion` URLs will not work for a public website.
+- Restart/redeploy after updating env vars.
+
+---
+
 ### **Donor Perks**
 - **All donors:** Named in [leaderboard.csv](donors/leaderboard.csv)  
 - **≥ 0.01 BTC:** Digital thank-you card  
