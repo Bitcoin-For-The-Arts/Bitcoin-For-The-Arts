@@ -8,6 +8,15 @@ type State =
   | { status: 'success'; emailOk?: boolean; emailTo?: string }
   | { status: 'error'; message: string };
 
+function getErrorMessage(err: unknown) {
+  if (err instanceof Error) return err.message;
+  if (err && typeof err === 'object' && 'message' in err) {
+    const maybe = (err as { message?: unknown }).message;
+    if (typeof maybe === 'string') return maybe;
+  }
+  return '';
+}
+
 export default function VolunteerSignupForm() {
   const [state, setState] = useState<State>({ status: 'idle' });
 
@@ -40,7 +49,7 @@ export default function VolunteerSignupForm() {
       setState({ status: 'success', emailOk: data.emailOk, emailTo: data.emailTo });
       form.reset();
     } catch (err) {
-      const msg = err && typeof err === 'object' && 'message' in err ? String((err as any).message) : '';
+      const msg = getErrorMessage(err);
       setState({ status: 'error', message: msg || 'Something went wrong. Please try again.' });
     }
   };

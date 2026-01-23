@@ -14,6 +14,15 @@ function getFilenameFromDisposition(disposition: string | null) {
   }
 }
 
+function getErrorMessage(err: unknown) {
+  if (err instanceof Error) return err.message;
+  if (err && typeof err === 'object' && 'message' in err) {
+    const maybe = (err as { message?: unknown }).message;
+    if (typeof maybe === 'string') return maybe;
+  }
+  return '';
+}
+
 export default function AdminDownloadPdfButton({
   applicationId,
   className = '',
@@ -52,8 +61,7 @@ export default function AdminDownloadPdfButton({
       window.URL.revokeObjectURL(objectUrl);
       setState({ status: 'idle' });
     } catch (err) {
-      const msg =
-        err && typeof err === 'object' && 'message' in err ? String((err as any).message) : '';
+      const msg = getErrorMessage(err);
       setState({
         status: 'error',
         message:

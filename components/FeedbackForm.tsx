@@ -11,6 +11,15 @@ type State =
 
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim();
 
+function getErrorMessage(err: unknown) {
+  if (err instanceof Error) return err.message;
+  if (err && typeof err === 'object' && 'message' in err) {
+    const maybe = (err as { message?: unknown }).message;
+    if (typeof maybe === 'string') return maybe;
+  }
+  return '';
+}
+
 export default function FeedbackForm() {
   const [state, setState] = useState<State>({ status: 'idle' });
   const [anonymous, setAnonymous] = useState(false);
@@ -72,7 +81,7 @@ export default function FeedbackForm() {
       form.reset();
       setAnonymous(false);
     } catch (err) {
-      const msg = err && typeof err === 'object' && 'message' in err ? String((err as any).message) : '';
+      const msg = getErrorMessage(err);
       setState({ status: 'error', message: msg || 'Something went wrong. Please try again.' });
     }
   };
