@@ -9,7 +9,7 @@ type Props = {
 export default function BtcPayDonateWidget({
   defaultAmount = 25,
 }: Props) {
-  const [amount, setAmount] = useState<number>(defaultAmount);
+  const [amountInput, setAmountInput] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,13 +21,15 @@ export default function BtcPayDonateWidget({
       const raw = new URLSearchParams(window.location.search).get('amount');
       const parsed = raw ? Number(raw) : Number.NaN;
       if (Number.isFinite(parsed) && parsed > 0) {
-        setAmount(parsed);
+        setAmountInput(String(parsed));
         return;
       }
     }
     if (Number.isFinite(defaultAmount) && defaultAmount > 0) {
-      setAmount(defaultAmount);
+      setAmountInput(String(defaultAmount));
+      return;
     }
+    setAmountInput('');
   }, [defaultAmount]);
 
   const createInvoice = async () => {
@@ -35,12 +37,16 @@ export default function BtcPayDonateWidget({
     setError(null);
 
     try {
+      const parsedAmount = Number(amountInput);
+      if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
+        throw new Error('Enter a valid amount to donate.');
+      }
       const currency = 'USD';
       const res = await fetch('/api/btcpay/create-invoice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount,
+          amount: parsedAmount,
           currency,
           redirectUrl: `${window.location.origin}/donate`,
           metadata: message ? { message } : undefined,
@@ -90,8 +96,18 @@ export default function BtcPayDonateWidget({
                 type="number"
                 min={1}
                 step={1}
-                value={Number.isFinite(amount) ? amount : ''}
-                onChange={(e) => setAmount(Number(e.target.value))}
+                value={amountInput}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  if (raw === '') {
+                    setAmountInput('');
+                    setError(null);
+                    return;
+                  }
+                  const normalized = raw.replace(/^0+(?!$)/, '');
+                  setAmountInput(normalized);
+                  setError(null);
+                }}
                 className="mt-2 min-h-12 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
               />
               <div className="mt-3 flex flex-wrap gap-2">
@@ -99,7 +115,10 @@ export default function BtcPayDonateWidget({
                   <button
                     key={v}
                     type="button"
-                    onClick={() => setAmount(v)}
+                    onClick={() => {
+                      setAmountInput(String(v));
+                      setError(null);
+                    }}
                     className="min-h-12 rounded-md border border-border px-4 py-2 text-sm font-semibold transition-colors hover:bg-surface"
                   >
                     ${v}
