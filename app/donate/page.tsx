@@ -123,11 +123,11 @@ export default function DonatePage({
 
         <WaysToGive />
 
-        <div id="bitcoin" className="mt-12 space-y-6 scroll-mt-28">
+        <section id="bitcoin" className="mt-10 scroll-mt-28">
           <BtcPayDonateWidget defaultAmount={defaultAmount} />
-        </div>
+        </section>
 
-        <div className="mt-10 rounded-2xl border border-border bg-surface p-6">
+        <div className="mt-8 rounded-2xl border border-border bg-surface p-6">
           <h2 className="text-lg font-semibold tracking-tight">
             Where The Money Goes
           </h2>
