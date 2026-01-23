@@ -41,6 +41,7 @@ environment variables (e.g., in Vercel or your hosting provider):
 Notes:
 - `.local` and `.onion` URLs will not work for a public website.
 - Restart/redeploy after updating env vars.
+- Vercel only deploys new commits automatically; if your Git link was reconnected, make a fresh deploy (or merge a small PR) to trigger a new production build.
 
 ---
 
