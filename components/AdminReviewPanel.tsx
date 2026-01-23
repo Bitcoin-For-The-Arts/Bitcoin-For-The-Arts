@@ -29,6 +29,15 @@ function avg(nums: number[]) {
   return Math.round((total / nums.length) * 10) / 10;
 }
 
+function getErrorMessage(err: unknown) {
+  if (err instanceof Error) return err.message;
+  if (err && typeof err === 'object' && 'message' in err) {
+    const maybe = (err as { message?: unknown }).message;
+    if (typeof maybe === 'string') return maybe;
+  }
+  return '';
+}
+
 export default function AdminReviewPanel({
   applicationId,
   reviews,
@@ -110,7 +119,7 @@ export default function AdminReviewPanel({
       setNotes('');
       router.refresh();
     } catch (err) {
-      const msg = err && typeof err === 'object' && 'message' in err ? String((err as any).message) : '';
+      const msg = getErrorMessage(err);
       setState({ status: 'error', message: msg || 'Save failed.' });
     }
   };
