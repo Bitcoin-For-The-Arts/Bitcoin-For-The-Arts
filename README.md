@@ -45,6 +45,24 @@ Notes:
 
 ---
 
+### **Stripe Webhooks (Card Donations / Apple Pay)**
+If you want to run automation after donations (e.g., log donations to MongoDB, send donor thank-you emails), configure a Stripe webhook endpoint.
+
+- **Webhook URL**: `https://bitcoinforthearts.org/api/stripe/webhook`
+
+Environment variables:
+- `STRIPE_WEBHOOK_SECRET` (required; from Stripe Dashboard → Developers → Webhooks)
+- `STRIPE_SECRET_KEY` (optional; used by the Stripe SDK for future expansion)
+- `DONATION_THANKYOU_THRESHOLD_USD` (optional; default `50`)
+- `DONATIONS_FROM_EMAIL` (optional; defaults to `RESEND_FROM_EMAIL`)
+- `DONATIONS_REPLY_TO` (optional; defaults to `donate@bitcoinforthearts.org`)
+
+Notes:
+- The webhook stores paid `checkout.session.completed` events in MongoDB (`donations` collection).
+- Stripe still handles official receipts automatically.
+
+---
+
 ### **Donor Perks**
 - **All donors:** Named in [leaderboard.csv](donors/leaderboard.csv)  
 - **≥ 0.01 BTC:** Digital thank-you card  
