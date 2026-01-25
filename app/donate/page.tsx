@@ -11,13 +11,10 @@ export const metadata: Metadata = {
 };
 
 export default function DonatePage({
-  searchParams,
 }: {
   searchParams?: { amount?: string };
 }) {
   const heroImage = process.env.NEXT_PUBLIC_HERO_DONATE_IMAGE ?? '/bitcoin band.JPG';
-  const prefillAmountRaw = searchParams?.amount;
-  const prefillAmount = prefillAmountRaw ? Number(prefillAmountRaw) : undefined;
   const normalizeStripeUrl = (value?: string) => {
     const trimmed = value?.trim();
     if (!trimmed) return undefined;
@@ -34,10 +31,6 @@ export default function DonatePage({
     process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK,
   );
   const hasStripeOneTime = Boolean(stripeOneTimeUrl);
-  const defaultAmount =
-    Number.isFinite(prefillAmount) && (prefillAmount as number) > 0
-      ? (prefillAmount as number)
-      : undefined;
 
   return (
     <main className="bg-background">
@@ -124,7 +117,7 @@ export default function DonatePage({
         <WaysToGive />
 
         <section id="bitcoin" className="mt-10 scroll-mt-28">
-          <BtcPayDonateWidget defaultAmount={defaultAmount} />
+          <BtcPayDonateWidget />
         </section>
 
         <div className="mt-8 rounded-2xl border border-border bg-surface p-6">
