@@ -1,36 +1,14 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
-type Props = {
-  defaultAmount?: number;
-};
-
-export default function BtcPayDonateWidget({
-  defaultAmount = 25,
-}: Props) {
+export default function BtcPayDonateWidget() {
   const [amountInput, setAmountInput] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const suggested = useMemo(() => [11, 21, 51, 101], []);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const raw = new URLSearchParams(window.location.search).get('amount');
-      const parsed = raw ? Number(raw) : Number.NaN;
-      if (Number.isFinite(parsed) && parsed > 0) {
-        setAmountInput(String(parsed));
-        return;
-      }
-    }
-    if (Number.isFinite(defaultAmount) && defaultAmount > 0) {
-      setAmountInput(String(defaultAmount));
-      return;
-    }
-    setAmountInput('');
-  }, [defaultAmount]);
 
   const createInvoice = async () => {
     setIsLoading(true);
