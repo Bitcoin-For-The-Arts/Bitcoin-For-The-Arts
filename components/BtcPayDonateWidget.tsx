@@ -144,18 +144,7 @@ export default function BtcPayDonateWidget() {
           </div>
         </div>
 
-        <div className="md:col-span-5">
-          <div className="rounded-xl border border-border bg-surface p-5 text-sm text-muted">
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-              Note
-            </div>
-            <p className="mt-2 leading-relaxed">
-              Your BTCPay Server must be reachable at a public HTTPS URL. Tor
-              (.onion) and LAN (.local) addresses won’t work with a public site on
-              Vercel.
-            </p>
-          </div>
-        </div>
+        <div className="md:col-span-5" />
       </div>
     </div>
   );
