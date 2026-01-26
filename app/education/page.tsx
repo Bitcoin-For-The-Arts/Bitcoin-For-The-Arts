@@ -148,6 +148,32 @@ export default function EducationPage() {
                 </div>
               </div>
 
+              <div className="rounded-2xl border border-border bg-background p-6">
+                <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                  Webinar
+                </div>
+                <h2 className="mt-2 text-xl font-semibold tracking-tight">
+                  Why Artists Need Bitcoin
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-muted">
+                  A creator-focused webinar on why Bitcoin matters for artists: inflation, censorship resistance, getting
+                  paid globally, and building long-term sovereignty.
+                </p>
+                <div className="mt-4">
+                  <a
+                    href="https://copy-of-bitcoin-for-arti-1sbvsbl.gamma.site/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  >
+                    Study the webinar
+                  </a>
+                </div>
+                <div className="mt-3 text-xs text-muted">
+                  Opens on Gamma in a new tab.
+                </div>
+              </div>
+
               <div className="rounded-2xl border border-border bg-surface p-6">
                 <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                   Video (later)
