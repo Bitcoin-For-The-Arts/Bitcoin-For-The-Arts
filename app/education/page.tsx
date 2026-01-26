@@ -166,7 +166,7 @@ export default function EducationPage() {
                     rel="noopener noreferrer"
                     className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
                   >
-                    Watch the webinar
+                    Study the webinar
                   </a>
                 </div>
                 <div className="mt-3 text-xs text-muted">
