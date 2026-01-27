@@ -8,6 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default function EducationWebinarPage() {
+  const webinarUrl = 'https://copy-of-bitcoin-for-arti-1sbvsbl.gamma.site/';
   return (
     <main className="bg-background">
       <div className="mx-auto max-w-6xl px-6 py-14">
@@ -26,8 +27,8 @@ export default function EducationWebinarPage() {
           <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-surface">
             <div className="relative w-full" style={{ paddingTop: '64.2857%' }}>
               <iframe
-                src="https://gamma.app/embed/t4mk0cuuce26do9"
-                title="Copy of Bitcoin for Artists: Unlocking New Creative Freedom."
+                src={webinarUrl}
+                title="Bitcoin for Artists: Unlocking New Creative Freedom."
                 allow="fullscreen"
                 className="absolute inset-0 h-full w-full"
               />
@@ -36,7 +37,7 @@ export default function EducationWebinarPage() {
 
           <div className="mt-4 flex flex-col gap-3 sm:flex-row">
             <a
-              href="https://gamma.app/embed/t4mk0cuuce26do9"
+              href={webinarUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-background px-5 py-2 text-sm font-semibold transition-colors hover:bg-surface"
@@ -52,8 +53,8 @@ export default function EducationWebinarPage() {
           </div>
 
           <div className="mt-6 text-xs leading-relaxed text-muted">
-            If the embed doesn’t load in your browser, use the “Open full-screen”
-            button.
+            If you see a Gamma login, open the webinar in a new tab and make sure
+            the Gamma page is published publicly (and embedding is allowed).
           </div>
         </div>
       </div>
