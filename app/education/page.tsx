@@ -161,16 +161,14 @@ export default function EducationPage() {
                 </p>
                 <div className="mt-4">
                   <a
-                    href="https://copy-of-bitcoin-for-arti-1sbvsbl.gamma.site/"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="/education/webinar"
                     className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
                   >
                     Study the webinar
                   </a>
                 </div>
                 <div className="mt-3 text-xs text-muted">
-                  Opens on Gamma in a new tab.
+                  Opens on bitcoinforthearts.org
                 </div>
               </div>
 
