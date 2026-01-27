@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Webinar: Why Artists Need Bitcoin',
+  title: 'Bitcoin for Artists: Unlocking New Creative Freedom',
   description:
     'A creator-focused webinar on why Bitcoin matters for artists: inflation, censorship resistance, getting paid globally, and building long-term sovereignty.',
 };
@@ -17,7 +17,7 @@ export default function EducationWebinarPage() {
             Education • Webinar
           </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Why Artists Need Bitcoin
+            Bitcoin for Artists: Unlocking New Creative Freedom.
           </h1>
           <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
             Study the webinar below. It’s embedded from Gamma so it keeps the exact
