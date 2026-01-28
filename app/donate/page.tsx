@@ -55,8 +55,8 @@ export default function DonatePage({
             productions — and supports a long-term Bitcoin reserve.
           </p>
           <div className="mt-5 rounded-2xl border border-border bg-surface/80 p-4 text-sm text-muted">
-            501(c)(3) status is pending with the IRS. We will update this page once the
-            determination letter is approved.
+            Bitcoin For The Arts, Inc. is a 501(c)(3) tax-exempt nonprofit. Donations
+            may be tax-deductible as allowed by law.
           </div>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">

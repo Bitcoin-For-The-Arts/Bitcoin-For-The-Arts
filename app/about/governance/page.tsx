@@ -99,9 +99,9 @@ export default function GovernancePage() {
                 Nonprofit status
               </div>
               <p className="mt-2 text-sm leading-relaxed text-muted">
-                Bitcoin For The Arts, Inc. has a{' '}
-                <span className="font-semibold text-foreground">501(c)(3) determination pending</span>. We will publish
-                updates here as status changes.
+                Bitcoin For The Arts, Inc. is a{' '}
+                <span className="font-semibold text-foreground">501(c)(3) tax-exempt nonprofit</span>. We’ll post key
+                governance and reporting updates here.
               </p>
             </div>
 
