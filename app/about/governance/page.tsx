@@ -94,14 +94,13 @@ export default function GovernancePage() {
       <div className="mx-auto max-w-6xl px-6 py-14">
         <div className="max-w-5xl">
           <div className="rounded-3xl border border-border bg-surface/80 p-8 shadow-sm">
-            <div className="rounded-2xl border border-accent/40 bg-surface/80 p-5">
+            <div className="rounded-2xl border border-accent/40 bg-surface/80 p-4">
               <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                 Nonprofit status
               </div>
               <p className="mt-2 text-sm leading-relaxed text-muted">
                 Bitcoin For The Arts, Inc. is a{' '}
-                <span className="font-semibold text-foreground">501(c)(3) tax-exempt nonprofit</span>. We’ll post key
-                governance and reporting updates here.
+                <span className="font-semibold text-foreground">501(c)(3) tax-exempt nonprofit</span>.
               </p>
             </div>
 
