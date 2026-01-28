@@ -307,8 +307,8 @@ export default function MonthlyDonatePage() {
         <div className="mt-10 rounded-2xl border border-border bg-background p-6">
           <h2 className="text-lg font-semibold tracking-tight">Tax perks</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted">
-            As a 501(c)(3) pending nonprofit, your gifts may be tax-deductible
-            retroactively upon approval. Receipts are provided automatically.
+            As a 501(c)(3) tax-exempt nonprofit, your gifts may be tax-deductible as
+            allowed by law. Receipts are provided automatically.
           </p>
         </div>
 
