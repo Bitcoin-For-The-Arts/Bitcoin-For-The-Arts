@@ -4,6 +4,8 @@ import { useMemo, useState } from 'react';
 
 export default function BtcPayDonateWidget() {
   const [amountInput, setAmountInput] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [name, setName] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,6 +21,10 @@ export default function BtcPayDonateWidget() {
       if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
         throw new Error('Enter a valid amount to donate.');
       }
+      const emailValue = email.trim();
+      if (emailValue && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+        throw new Error('Enter a valid email (or leave it blank).');
+      }
       const currency = 'USD';
       const res = await fetch('/api/btcpay/create-invoice', {
         method: 'POST',
@@ -27,7 +33,11 @@ export default function BtcPayDonateWidget() {
           amount: parsedAmount,
           currency,
           redirectUrl: `${window.location.origin}/donate`,
-          metadata: message ? { message } : undefined,
+          metadata: {
+            ...(message ? { message } : null),
+            ...(emailValue ? { buyerEmail: emailValue } : null),
+            ...(name.trim() ? { buyerName: name.trim() } : null),
+          },
         }),
       });
 
@@ -114,6 +124,35 @@ export default function BtcPayDonateWidget() {
           </div>
 
           <div className="mt-5">
+                <label className="block text-xs font-semibold uppercase tracking-wide text-muted">
+                  Email (optional)
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mt-2 min-h-12 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                  placeholder="Get a thank-you email for $50+ donations"
+                />
+                <div className="mt-2 text-xs text-muted">
+                  Optional. Used only for donor acknowledgment.
+                </div>
+              </div>
+
+              <div className="mt-5">
+                <label className="block text-xs font-semibold uppercase tracking-wide text-muted">
+                  Name (optional)
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="mt-2 min-h-12 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                  placeholder="Optional"
+                />
+              </div>
+
+              <div className="mt-5">
             <label className="block text-xs font-semibold uppercase tracking-wide text-muted">
               Message (optional)
             </label>
