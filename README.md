@@ -37,6 +37,7 @@ environment variables (e.g., in Vercel or your hosting provider):
 - `BTCPAY_URL` (public HTTPS URL, e.g. `https://pay.bitcoinforthearts.org`)
 - `BTCPAY_API_KEY` (store API key from BTCPay Server)
 - `BTCPAY_STORE_ID` (store ID from BTCPay Server)
+- `BTCPAY_WEBHOOK_SECRET` (optional but recommended; used to verify BTCPay webhook signatures)
 
 Notes:
 - `.local` and `.onion` URLs will not work for a public website.
