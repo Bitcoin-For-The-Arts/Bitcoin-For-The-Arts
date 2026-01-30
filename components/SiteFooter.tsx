@@ -96,6 +96,11 @@ export default function SiteFooter() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/terms" className="hover:underline text-white/90 sm:text-foreground">
+                    Terms of use
+                  </Link>
+                </li>
+                <li>
                   <Link href="/donate" className="hover:underline text-white/90 sm:text-foreground">
                     Donate
                   </Link>

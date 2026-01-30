@@ -34,6 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/donate/guides/royalties-ip',
     '/contact',
     '/privacy-policy',
+    '/terms',
   ];
 
   return routes.map((url) => ({
