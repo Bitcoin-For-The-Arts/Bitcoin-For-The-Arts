@@ -85,6 +85,13 @@ export default function PrivacyPolicyPage() {
               as intended (for example, saving a local draft).
             </p>
 
+            <h3>Analytics</h3>
+            <p>
+              We use Vercel Analytics and Vercel Speed Insights to understand website usage and performance. These tools
+              are intended to be privacy-friendly and focused on aggregated measurement rather than cross-site advertising.
+              If you prefer, you can limit analytics by using browser controls that restrict cookies and site storage.
+            </p>
+
             <h3>Local storage (your browser)</h3>
             <p>
               Some pages may store limited information locally in your browser (for
@@ -193,9 +200,30 @@ export default function PrivacyPolicyPage() {
 
             <h2>5. Data retention</h2>
             <p>
-              We retain information for as long as needed to operate our programs,
-              maintain records, comply with legal obligations, resolve disputes, and
-              enforce agreements. Retention periods may vary by record type.
+              We retain information for as long as needed to operate our programs, comply with legal obligations,
+              resolve disputes, and enforce agreements. Retention may vary by record type. As a US nonprofit based in
+              New York, we generally follow recordkeeping practices appropriate for program administration and compliance.
+            </p>
+
+            <p>
+              Our current retention targets are:
+            </p>
+            <ul>
+              <li>
+                <strong>Grant applications and related records:</strong> generally retained for up to 7 years, then deleted.
+              </li>
+              <li>
+                <strong>Contact submissions and program inquiries:</strong> retained until no longer needed for the purpose
+                of the communication, or until you request deletion (subject to legal exceptions).
+              </li>
+              <li>
+                <strong>Operational/security logs (where maintained):</strong> generally retained for up to 1 year.
+              </li>
+            </ul>
+
+            <p>
+              Deletion may occur on a rolling basis (for example, periodic reviews) and may be delayed where needed for
+              legal, security, or operational reasons (for example, fraud prevention, dispute resolution, or audit requirements).
             </p>
 
             <h2>6. Your rights and choices</h2>
@@ -214,7 +242,18 @@ export default function PrivacyPolicyPage() {
               </li>
             </ul>
 
-            <h2>7. Additional disclosures for California residents (CCPA/CPRA)</h2>
+            <h2>7. Submitting privacy requests (DSAR process)</h2>
+            <p>
+              To submit a privacy request, email{' '}
+              <a href="mailto:privacy@bitcoinforthearts.org">privacy@bitcoinforthearts.org</a>. To protect your privacy,
+              we may need to verify your identity (for example, by confirming details related to your submission).
+            </p>
+            <p>
+              We generally respond within the timelines required by applicable law. For example, for certain US state
+              privacy requests, we aim to respond within <strong>45 days</strong> (and may extend where permitted).
+            </p>
+
+            <h2>8. Additional disclosures for California residents (CCPA/CPRA)</h2>
             <p>
               This section provides additional information for California residents about how we collect, use, and disclose
               personal information, as required by the California Consumer Privacy Act (CCPA) as amended by the CPRA.
@@ -262,32 +301,33 @@ export default function PrivacyPolicyPage() {
               Subject to certain exceptions, you may have the right to request: (a) access to personal information we collected about you, (b) deletion,
               (c) correction, and (d) information about our collection, use, and disclosure practices. We will not discriminate against you for exercising your rights.
               You (or an authorized agent) can submit requests by emailing{' '}
-              <a href="mailto:hello@bitcoinforthearts.org">hello@bitcoinforthearts.org</a>.
+              <a href="mailto:privacy@bitcoinforthearts.org">privacy@bitcoinforthearts.org</a>.
             </p>
 
-            <h2>8. International data transfers</h2>
+            <h2>9. International data transfers</h2>
             <p>
               We are based in the United States, and our service providers may process information in the United States and other countries. If you access the site from
               outside the United States, you understand that your information may be transferred to, stored, and processed in jurisdictions that may have different
               data protection laws than your home jurisdiction.
             </p>
 
-            <h2>7. Children’s privacy</h2>
+            <h2>10. Children’s privacy</h2>
             <p>
               Our website is not directed to children under 13, and we do not knowingly
               collect personal information from children under 13.
             </p>
 
-            <h2>9. Changes to this policy</h2>
+            <h2>11. Changes to this policy</h2>
             <p>
               We may update this policy from time to time. The version posted here is
               the current one.
             </p>
 
-            <h2>10. Contact us</h2>
+            <h2>12. Contact us</h2>
             <p>
-              Questions or requests can be sent to{' '}
-              <a href="mailto:hello@bitcoinforthearts.org">hello@bitcoinforthearts.org</a>.
+              General questions can be sent to{' '}
+              <a href="mailto:hello@bitcoinforthearts.org">hello@bitcoinforthearts.org</a>. Privacy requests should be sent to{' '}
+              <a href="mailto:privacy@bitcoinforthearts.org">privacy@bitcoinforthearts.org</a>.
             </p>
 
             <hr />
