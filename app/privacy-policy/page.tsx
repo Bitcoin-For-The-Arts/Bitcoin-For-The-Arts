@@ -25,7 +25,7 @@ export default function PrivacyPolicyPage() {
             <p>
               <strong>Effective date:</strong> January 29, 2026
               <br />
-              <strong>Last updated:</strong> January 29, 2026
+              <strong>Last updated:</strong> January 30, 2026
             </p>
 
             <h2>Summary</h2>
@@ -77,6 +77,14 @@ export default function PrivacyPolicyPage() {
               information, and basic usage data (for example: pages visited and performance metrics).
             </p>
 
+            <h3>Cookies and similar technologies</h3>
+            <p>
+              We and our service providers may use cookies or similar technologies (for example, local storage)
+              to operate the site and improve performance. Your browser may allow you to manage cookies and
+              local storage settings. If you disable certain storage mechanisms, parts of the site may not function
+              as intended (for example, saving a local draft).
+            </p>
+
             <h3>Local storage (your browser)</h3>
             <p>
               Some pages may store limited information locally in your browser (for
@@ -121,6 +129,27 @@ export default function PrivacyPolicyPage() {
               <li>
                 <strong>Compliance:</strong> comply with applicable laws and
                 recordkeeping requirements.
+              </li>
+            </ul>
+
+            <h2>3. Legal bases for processing (EEA/UK users)</h2>
+            <p>
+              If you are located in the European Economic Area (EEA) or the United Kingdom, we process personal
+              information only when we have a valid legal basis under applicable law. Depending on the context,
+              these legal bases may include:
+            </p>
+            <ul>
+              <li>
+                <strong>Consent:</strong> when you choose to provide information to us or opt into certain communications.
+              </li>
+              <li>
+                <strong>Contract:</strong> to provide services you request (for example, processing program participation).
+              </li>
+              <li>
+                <strong>Legitimate interests:</strong> to operate, secure, and improve our website and services (for example, preventing fraud/abuse).
+              </li>
+              <li>
+                <strong>Legal obligations:</strong> to comply with applicable laws and recordkeeping requirements.
               </li>
             </ul>
 
@@ -185,19 +214,77 @@ export default function PrivacyPolicyPage() {
               </li>
             </ul>
 
+            <h2>7. Additional disclosures for California residents (CCPA/CPRA)</h2>
+            <p>
+              This section provides additional information for California residents about how we collect, use, and disclose
+              personal information, as required by the California Consumer Privacy Act (CCPA) as amended by the CPRA.
+            </p>
+
+            <h3>Categories of personal information we collect</h3>
+            <p>
+              In the last 12 months, we may have collected the following categories of personal information (depending on how you use the site):
+            </p>
+            <ul>
+              <li>
+                <strong>Identifiers</strong> (for example: name, email address, IP address).
+              </li>
+              <li>
+                <strong>Internet or other electronic network activity information</strong> (for example: interactions with pages and performance metrics).
+              </li>
+              <li>
+                <strong>Professional or other information you provide</strong> (for example: portfolio links, project details, application materials).
+              </li>
+              <li>
+                <strong>Donation/payment-related information</strong> (processed by third parties; we may receive limited records such as donation status or transaction identifiers).
+              </li>
+            </ul>
+
+            <h3>Sources, purposes, and disclosures</h3>
+            <p>
+              We collect personal information from (a) you, (b) your browser/device automatically, and (c) service providers that help deliver payments or site functionality.
+              We use and disclose personal information for the business and commercial purposes described above in this policy (program operations, communications, security,
+              analytics/performance, and compliance).
+            </p>
+
+            <h3>Sensitive personal information</h3>
+            <p>
+              We do not intentionally collect “sensitive personal information” as defined by the CPRA. If you include sensitive information in open-text fields,
+              we will treat it as part of your submission.
+            </p>
+
+            <h3>Sale and sharing</h3>
+            <p>
+              We do not sell personal information. We also do not “share” personal information for cross-context behavioral advertising.
+            </p>
+
+            <h3>Your California privacy rights</h3>
+            <p>
+              Subject to certain exceptions, you may have the right to request: (a) access to personal information we collected about you, (b) deletion,
+              (c) correction, and (d) information about our collection, use, and disclosure practices. We will not discriminate against you for exercising your rights.
+              You (or an authorized agent) can submit requests by emailing{' '}
+              <a href="mailto:hello@bitcoinforthearts.org">hello@bitcoinforthearts.org</a>.
+            </p>
+
+            <h2>8. International data transfers</h2>
+            <p>
+              We are based in the United States, and our service providers may process information in the United States and other countries. If you access the site from
+              outside the United States, you understand that your information may be transferred to, stored, and processed in jurisdictions that may have different
+              data protection laws than your home jurisdiction.
+            </p>
+
             <h2>7. Children’s privacy</h2>
             <p>
               Our website is not directed to children under 13, and we do not knowingly
               collect personal information from children under 13.
             </p>
 
-            <h2>8. Changes to this policy</h2>
+            <h2>9. Changes to this policy</h2>
             <p>
               We may update this policy from time to time. The version posted here is
               the current one.
             </p>
 
-            <h2>9. Contact us</h2>
+            <h2>10. Contact us</h2>
             <p>
               Questions or requests can be sent to{' '}
               <a href="mailto:hello@bitcoinforthearts.org">hello@bitcoinforthearts.org</a>.
