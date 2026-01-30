@@ -350,6 +350,13 @@ export default function PrivacyPolicyPage() {
               <a href="mailto:hello@bitcoinforthearts.org">hello@bitcoinforthearts.org</a>. Privacy requests should be sent to{' '}
               <a href="mailto:privacy@bitcoinforthearts.org">privacy@bitcoinforthearts.org</a>.
             </p>
+            <p>
+              Bitcoin for the Arts, Inc.
+              <br />
+              27 W 60th St. P.O. Box 20069
+              <br />
+              New York, NY 10023
+            </p>
 
             <hr />
 
