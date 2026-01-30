@@ -85,6 +85,27 @@ export default function PrivacyPolicyPage() {
               as intended (for example, saving a local draft).
             </p>
 
+            <h4>Cookie preferences</h4>
+            <p>
+              You can control cookie and storage behavior at any time through your browser settings. Common options include:
+            </p>
+            <ul>
+              <li>
+                <strong>Clear site data:</strong> remove stored cookies and local storage for <span className="font-semibold">bitcoinforthearts.org</span>.
+              </li>
+              <li>
+                <strong>Block cookies:</strong> block all cookies, or block third-party cookies (if enabled).
+              </li>
+              <li>
+                <strong>Private browsing:</strong> limit storage by using private/incognito mode.
+              </li>
+            </ul>
+            <p>
+              If your browser supports <strong>Global Privacy Control (GPC)</strong> or “Do Not Track,” you can enable it in your browser.
+              While not all systems interpret these signals the same way, we use them as a preference signal and do not use data for
+              cross-context behavioral advertising.
+            </p>
+
             <h3>Analytics</h3>
             <p>
               We use Vercel Analytics and Vercel Speed Insights to understand website usage and performance. These tools
