@@ -38,7 +38,7 @@ export const socialLinks: SocialLink[] = [
   {
     key: 'github',
     label: 'GitHub',
-    href: 'https://github.com/DionWilson/bitcoinforthearts',
+    href: 'https://github.com/Bitcoin-For-The-Arts',
   },
 ];
 
