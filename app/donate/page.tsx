@@ -15,6 +15,7 @@ export default function DonatePage({
   searchParams?: { amount?: string };
 }) {
   const heroImage = process.env.NEXT_PUBLIC_HERO_DONATE_IMAGE ?? '/bitcoin band.JPG';
+  const ein = process.env.NEXT_PUBLIC_BFTA_EIN?.trim();
   const normalizeStripeUrl = (value?: string) => {
     const trimmed = value?.trim();
     if (!trimmed) return undefined;
@@ -57,6 +58,12 @@ export default function DonatePage({
           <div className="mt-5 rounded-2xl border border-border bg-surface/80 p-4 text-sm text-muted">
             Bitcoin For The Arts, Inc. is a 501(c)(3) tax-exempt nonprofit. Donations
             may be tax-deductible as allowed by law.
+            {ein ? (
+              <>
+                <br />
+                <span className="font-semibold text-foreground">EIN:</span> {ein}
+              </>
+            ) : null}
           </div>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
