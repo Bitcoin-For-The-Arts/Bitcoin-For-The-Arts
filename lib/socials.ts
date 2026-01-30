@@ -1,5 +1,5 @@
 export type SocialLink = {
-  key: 'x' | 'tiktok' | 'facebook' | 'nostr' | 'linkedin' | 'instagram';
+  key: 'x' | 'tiktok' | 'facebook' | 'nostr' | 'linkedin' | 'instagram' | 'github';
   label: string;
   href: string;
 };
@@ -34,6 +34,11 @@ export const socialLinks: SocialLink[] = [
     key: 'instagram',
     label: 'Instagram',
     href: 'https://www.instagram.com/bitcoin_for_the_arts/',
+  },
+  {
+    key: 'github',
+    label: 'GitHub',
+    href: 'https://github.com/Bitcoin-For-The-Arts',
   },
 ];
 
