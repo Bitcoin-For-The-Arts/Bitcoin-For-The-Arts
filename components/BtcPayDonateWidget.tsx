@@ -132,7 +132,7 @@ export default function BtcPayDonateWidget() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="mt-2 min-h-12 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-                  placeholder="Get a thank-you email for $50+ donations"
+                  placeholder="Get a thank-you email and receipt details"
                 />
                 <div className="mt-2 text-xs text-muted">
                   Optional. Used only for donor acknowledgment.
