@@ -17,6 +17,12 @@ function getClientIp(req: NextRequest) {
   return req.headers.get('x-real-ip') ?? 'unknown';
 }
 
+function maskEmail(value: string) {
+  const at = value.indexOf('@');
+  if (at <= 1) return '***';
+  return `${value.slice(0, 2)}***${value.slice(at)}`;
+}
+
 function isEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
@@ -271,6 +277,12 @@ export async function POST(req: NextRequest) {
         { status: 502 },
       );
     }
+
+    console.log('[stripe-portal] emailed billing message', {
+      to: maskEmail(email),
+      hasPortalUrl: Boolean(portalUrl),
+      resendId: 'id' in emailAttempt ? emailAttempt.id ?? null : null,
+    });
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err) {

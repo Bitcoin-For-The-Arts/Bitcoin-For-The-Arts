@@ -53,6 +53,8 @@ export async function sendResendEmail(args: {
     };
   }
 
-  return { ok: true as const, skipped: false as const };
+  const data = (await res.json().catch(() => null)) as { id?: unknown } | null;
+  const id = data && typeof data.id === 'string' ? data.id : undefined;
+  return { ok: true as const, skipped: false as const, id };
 }
 
