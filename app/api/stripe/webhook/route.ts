@@ -109,12 +109,17 @@ async function sendDonationEmail(args: {
     // If Resend failed (not skipped), preserve the failure details so we can diagnose
     // (e.g., unverified sender domain, invalid API key, etc.).
     if (!resendAttempt.skipped) {
+      const resendError =
+        'error' in resendAttempt && typeof resendAttempt.error === 'string'
+          ? resendAttempt.error
+          : null;
       return {
         ok: false as const,
         skipped: false as const,
         reason: 'resend_failed' as const,
         error:
-          typeof resendAttempt.reason === 'string' ? resendAttempt.reason : 'resend_failed',
+          [resendAttempt.reason, resendError].filter(Boolean).join(' — ') ||
+          'resend_failed',
       };
     }
     return {
