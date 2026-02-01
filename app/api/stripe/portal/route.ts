@@ -1,7 +1,8 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { sendResendEmail } from '@/lib/resend';
+import nodemailer from 'nodemailer';
+import { formatFrom, sendResendEmail } from '@/lib/resend';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -34,6 +35,82 @@ function escapeHtml(input: string) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
+}
+
+async function sendBillingEmail(args: {
+  to: string;
+  subject: string;
+  text: string;
+  html: string;
+}) {
+  const replyTo = 'donate@bitcoinforthearts.org';
+
+  // Prefer Resend.
+  const resendAttempt = await sendResendEmail({
+    to: args.to,
+    subject: args.subject,
+    text: args.text,
+    html: args.html,
+    replyTo,
+    fromEmail: getEnv('DONATIONS_FROM_EMAIL') ?? getEnv('RESEND_FROM_EMAIL'),
+  });
+  if (resendAttempt.ok) {
+    return { ok: true as const, provider: 'resend' as const, id: resendAttempt.id ?? null };
+  }
+
+  // Fallback: SMTP (Zoho/etc). Prefer DONATIONS_*, then CONTACT_*, then GRANTS_* (since many deployments already have it).
+  const smtpUser =
+    getEnv('DONATIONS_SMTP_USER') ?? getEnv('CONTACT_SMTP_USER') ?? getEnv('GRANTS_SMTP_USER');
+  const smtpPass =
+    getEnv('DONATIONS_SMTP_PASS') ?? getEnv('CONTACT_SMTP_PASS') ?? getEnv('GRANTS_SMTP_PASS');
+  const smtpHost =
+    getEnv('DONATIONS_SMTP_HOST') ??
+    getEnv('CONTACT_SMTP_HOST') ??
+    getEnv('GRANTS_SMTP_HOST') ??
+    'smtp.zoho.com';
+  const smtpPort = Number(
+    getEnv('DONATIONS_SMTP_PORT') ?? getEnv('CONTACT_SMTP_PORT') ?? getEnv('GRANTS_SMTP_PORT') ?? '465',
+  );
+  const smtpSecure =
+    (getEnv('DONATIONS_SMTP_SECURE') ??
+      getEnv('CONTACT_SMTP_SECURE') ??
+      getEnv('GRANTS_SMTP_SECURE') ??
+      'true').toLowerCase() !== 'false';
+
+  const fromEmail =
+    getEnv('DONATIONS_FROM_EMAIL') ??
+    getEnv('CONTACT_FROM_EMAIL') ??
+    getEnv('GRANTS_FROM_EMAIL') ??
+    getEnv('RESEND_FROM_EMAIL');
+
+  if (!smtpUser || !smtpPass || !fromEmail) {
+    return {
+      ok: false as const,
+      provider: 'none' as const,
+      error:
+        resendAttempt.skipped
+          ? resendAttempt.reason
+          : `${resendAttempt.reason}${'error' in resendAttempt && resendAttempt.error ? ` — ${resendAttempt.error}` : ''}`,
+    };
+  }
+
+  const transporter = nodemailer.createTransport({
+    host: smtpHost,
+    port: smtpPort,
+    secure: smtpSecure,
+    auth: { user: smtpUser, pass: smtpPass },
+  });
+
+  await transporter.sendMail({
+    from: formatFrom(fromEmail),
+    to: args.to,
+    subject: args.subject,
+    text: args.text,
+    html: args.html,
+    replyTo,
+  });
+
+  return { ok: true as const, provider: 'smtp' as const, id: null };
 }
 
 // Best-effort in-memory rate limit (resets per server instance).
@@ -258,16 +335,9 @@ export async function POST(req: NextRequest) {
         </div>
       `.trim();
 
-    const emailAttempt = await sendResendEmail({
-      to: email,
-      subject,
-      text,
-      html,
-      replyTo: 'donate@bitcoinforthearts.org',
-      fromEmail: getEnv('DONATIONS_FROM_EMAIL') ?? getEnv('RESEND_FROM_EMAIL'),
-    });
-    if (!emailAttempt.ok) {
-      console.error('[stripe-portal] resend failed', emailAttempt);
+    const sendAttempt = await sendBillingEmail({ to: email, subject, text, html });
+    if (!sendAttempt.ok) {
+      console.error('[stripe-portal] billing email failed', sendAttempt);
       return NextResponse.json(
         {
           ok: false,
@@ -281,7 +351,8 @@ export async function POST(req: NextRequest) {
     console.log('[stripe-portal] emailed billing message', {
       to: maskEmail(email),
       hasPortalUrl: Boolean(portalUrl),
-      resendId: 'id' in emailAttempt ? emailAttempt.id ?? null : null,
+      provider: sendAttempt.provider,
+      id: sendAttempt.id ?? null,
     });
 
     return NextResponse.json({ ok: true }, { status: 200 });
