@@ -26,7 +26,7 @@ const tiers: Tier[] = [
     name: 'Satoshi Supporter',
     amount: '$5',
     perk: 'Monthly impact updates.',
-    href: 'https://buy.stripe.com/4gMbJ21LU9RHgGo6rn83C05',
+    href: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_5_LINK?.trim() || 'https://buy.stripe.com/4gMbJ21LU9RHgGo6rn83C05',
     impact: [
       'Helps cover a portion of a micro-grant over the year.',
       'Supports one workshop seat for an emerging creator.',
@@ -38,7 +38,7 @@ const tiers: Tier[] = [
     name: 'Orange Piller Patron',
     amount: '$11',
     perk: 'Shoutouts in our newsletter + early access to webinar recordings.',
-    href: 'https://buy.stripe.com/6oU5kE8aibZP3TCbLH83C06',
+    href: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_11_LINK?.trim() || 'https://buy.stripe.com/6oU5kE8aibZP3TCbLH83C06',
     impact: [
       'Enables roughly half to one micro-grant per year.',
       'Covers materials for 2-4 workshop participants.',
@@ -50,7 +50,7 @@ const tiers: Tier[] = [
     name: 'Hard Cap Hero',
     amount: '$21',
     perk: 'Honor the 21M cap — custom stickers + artist priority.',
-    href: 'https://buy.stripe.com/cNi8wQ9em5Br75OeXT83C0a',
+    href: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_21_LINK?.trim() || 'https://buy.stripe.com/cNi8wQ9em5Br75OeXT83C0a',
     impact: [
       'Powers one micro-grant over the course of a year.',
       'Funds up to five workshop spots or a residency boost.',
@@ -62,7 +62,7 @@ const tiers: Tier[] = [
     name: 'Sovereign Stacker',
     amount: '$51',
     perk: 'Personalized thank-you from an artist + invite to virtual meetups.',
-    href: 'https://buy.stripe.com/aFa3cw2PYd3TeygdTP83C08',
+    href: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_51_LINK?.trim() || 'https://buy.stripe.com/aFa3cw2PYd3TeygdTP83C08',
     impact: [
       'Delivers 1-3 micro-grants per year for working artists.',
       'Supports 6-12 workshop or residency seats annually.',
@@ -74,7 +74,7 @@ const tiers: Tier[] = [
     name: 'Renaissance Guardian',
     amount: '$101',
     perk: 'Name a grant + board shoutout.',
-    href: 'https://buy.stripe.com/3cIaEY4Y6fc1cq8bLH83C09',
+    href: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_101_LINK?.trim() || 'https://buy.stripe.com/3cIaEY4Y6fc1cq8bLH83C09',
     impact: [
       'Fuels 4+ micro-grants annually for bold creators.',
       'Sponsors full workshops or co-production moments.',
