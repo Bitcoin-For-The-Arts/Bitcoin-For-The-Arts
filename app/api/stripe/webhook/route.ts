@@ -164,6 +164,18 @@ export async function POST(req: Request) {
       { status: 500 },
     );
   }
+  // Common misconfiguration: putting the Stripe API secret key (sk_...) into STRIPE_WEBHOOK_SECRET.
+  // Webhook signing secrets always start with whsec_...
+  if (webhookSecret.startsWith('sk_')) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error:
+          'STRIPE_WEBHOOK_SECRET looks misconfigured. It should be the webhook signing secret (starts with "whsec_"), not your Stripe secret key (starts with "sk_").',
+      },
+      { status: 500 },
+    );
+  }
 
   const signature = req.headers.get('stripe-signature');
   if (!signature) {
@@ -173,6 +185,8 @@ export async function POST(req: Request) {
     );
   }
 
+  // The Stripe SDK expects an API key string, but webhook signature verification does not require
+  // making API calls. We still prefer STRIPE_SECRET_KEY to be set correctly for future expansion.
   const stripe = new Stripe(getEnv('STRIPE_SECRET_KEY') ?? 'sk_missing');
 
   let event: Stripe.Event;
