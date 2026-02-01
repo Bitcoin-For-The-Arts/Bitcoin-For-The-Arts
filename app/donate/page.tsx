@@ -3,6 +3,7 @@ import BtcPayDonateWidget from '@/components/BtcPayDonateWidget';
 import WaysToGive from '@/components/WaysToGive';
 import Link from 'next/link';
 import FullBleedHero from '@/components/FullBleedHero';
+import StripeCustomDonateForm from '@/components/StripeCustomDonateForm';
 
 export const metadata: Metadata = {
   title: 'Donate',
@@ -92,6 +93,9 @@ export default function DonatePage({
             Give securely by card. Choose one-time or monthly support to fuel artist
             grants and programming.
           </p>
+
+          <StripeCustomDonateForm />
+
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             {hasStripeOneTime ? (
               <>
