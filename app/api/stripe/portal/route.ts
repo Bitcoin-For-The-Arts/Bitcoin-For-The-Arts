@@ -1,8 +1,10 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import crypto from 'node:crypto';
 import nodemailer from 'nodemailer';
 import { formatFrom, sendResendEmail } from '@/lib/resend';
+import { getMongoDb } from '@/lib/mongodb';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -157,6 +159,16 @@ function getBaseUrl(req: NextRequest) {
   return `${proto}://${host}`;
 }
 
+type BillingPortalTokenDoc = {
+  token: string;
+  email: string;
+  customerId: string;
+  createdAt: Date;
+  expiresAt: Date;
+  usedAt?: Date | null;
+  usedIp?: string | null;
+};
+
 export async function POST(req: NextRequest) {
   try {
     const ip = getClientIp(req);
@@ -238,8 +250,9 @@ export async function POST(req: NextRequest) {
     const customers = await stripe.customers.list({ email, limit: 10 });
     const customer = customers.data[0] ?? null;
 
-    // Compute a portal link if possible.
-    let portalUrl: string | null = null;
+    // Prepare a one-time token link (generated on demand on click) to avoid emailing
+    // a short-lived Stripe portal session URL.
+    let tokenLink: string | null = null;
     if (customer) {
       const subs = await stripe.subscriptions.list({
         customer: customer.id,
@@ -251,28 +264,41 @@ export async function POST(req: NextRequest) {
       );
       if (hasManageable) {
         const baseUrl = getBaseUrl(req);
-        const returnUrl = `${baseUrl}/billing`;
-        const session = await stripe.billingPortal.sessions.create({
-          customer: customer.id,
-          return_url: returnUrl,
+        const token = crypto.randomBytes(24).toString('base64url');
+        const now = new Date();
+        const ttlHours = Number(getEnv('BILLING_PORTAL_TOKEN_TTL_HOURS') ?? '24');
+        const expiresAt = new Date(now.getTime() + (Number.isFinite(ttlHours) ? ttlHours : 24) * 60 * 60 * 1000);
+
+        // Store token in Mongo (required).
+        const db = await getMongoDb();
+        await db.collection<BillingPortalTokenDoc>('billingPortalTokens').insertOne({
+          token,
+          email,
+          customerId: customer.id,
+          createdAt: now,
+          expiresAt,
+          usedAt: null,
+          usedIp: null,
         });
-        portalUrl = session.url;
+
+        tokenLink = `${baseUrl}/billing/portal?token=${encodeURIComponent(token)}`;
       }
     }
 
     // Always send an email so the user gets feedback even if we can't find a subscription,
     // without leaking account existence via the HTTP response.
-    const subject = portalUrl
+    const subject = tokenLink
       ? 'Manage your Bitcoin for the Arts subscription'
       : 'Bitcoin for the Arts — billing support';
 
-    const text = portalUrl
+    const text = tokenLink
       ? [
           'Bitcoin for the Arts — Subscription management',
           '',
-          'Use this secure Stripe link to manage your subscription (update payment method, view invoices, or cancel):',
-          portalUrl,
+          'Use this secure link to open the Stripe customer portal (update payment method, view invoices, or cancel):',
+          tokenLink,
           '',
+          'For security, this link expires.',
           'If you did not request this link, you can ignore this email.',
           '',
           'Bitcoin for the Arts',
@@ -294,19 +320,22 @@ export async function POST(req: NextRequest) {
           'https://bitcoinforthearts.org',
         ].join('\n');
 
-    const html = portalUrl
+    const html = tokenLink
       ? `
         <div style="font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; line-height: 1.5;">
           <h2 style="margin: 0 0 12px;">Manage your subscription</h2>
           <p style="margin: 0 0 12px;">
-            Use this secure Stripe link to manage your subscription (update payment method, view invoices, or cancel):
+            Use this secure link to open the Stripe customer portal (update payment method, view invoices, or cancel):
           </p>
           <p style="margin: 0 0 16px;">
-            <a href="${escapeHtml(portalUrl)}" target="_blank" rel="noopener noreferrer">
-              Open Stripe customer portal
+            <a href="${escapeHtml(tokenLink)}" target="_blank" rel="noopener noreferrer">
+              Open subscription management
             </a>
           </p>
           <p style="margin: 0; color: #666; font-size: 12px;">
+            For security, this link expires.
+          </p>
+          <p style="margin: 8px 0 0; color: #666; font-size: 12px;">
             If you did not request this link, you can ignore this email.
           </p>
         </div>
@@ -350,7 +379,7 @@ export async function POST(req: NextRequest) {
 
     console.log('[stripe-portal] emailed billing message', {
       to: maskEmail(email),
-      hasPortalUrl: Boolean(portalUrl),
+      hasPortalUrl: Boolean(tokenLink),
       provider: sendAttempt.provider,
       id: sendAttempt.id ?? null,
     });
