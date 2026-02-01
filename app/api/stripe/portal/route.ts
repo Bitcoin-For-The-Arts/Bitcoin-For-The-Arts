@@ -135,7 +135,10 @@ export async function POST(req: NextRequest) {
         { status: 503 },
       );
     }
-    if (!stripeKey.startsWith('sk_')) {
+    // Accept standard secret keys (sk_...) and restricted keys (rk_...).
+    // Stripe UI often encourages creating restricted keys; those can work as long as they have
+    // permissions for customers/subscriptions and billing portal.
+    if (!stripeKey.startsWith('sk_') && !stripeKey.startsWith('rk_')) {
       return NextResponse.json(
         {
           ok: false,
