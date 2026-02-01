@@ -75,126 +75,169 @@ function getBaseUrl(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const ip = getClientIp(req);
-  if (!rateLimitOk(ip)) {
-    return NextResponse.json({ ok: false, error: 'Too many requests. Please try again later.' }, { status: 429 });
-  }
-
-  let body: Record<string, unknown>;
   try {
-    body = (await req.json()) as Record<string, unknown>;
-  } catch {
-    return NextResponse.json({ ok: false, error: 'Invalid JSON.' }, { status: 400 });
-  }
-
-  // Honeypot
-  if (String(body.company ?? '').trim()) {
-    return NextResponse.json({ ok: true }, { status: 200 });
-  }
-
-  const email = String(body.email ?? '').trim().toLowerCase();
-  if (!email || !isEmail(email)) {
-    return NextResponse.json({ ok: false, error: 'Please enter a valid email address.' }, { status: 400 });
-  }
-
-  const turnstileSecret = getEnv('TURNSTILE_SECRET_KEY');
-  const turnstileSiteKey = getEnv('NEXT_PUBLIC_TURNSTILE_SITE_KEY');
-  if (turnstileSecret && turnstileSiteKey) {
-    const token = String(body['cf-turnstile-response'] ?? '').trim();
-    if (!token) {
+    const ip = getClientIp(req);
+    if (!rateLimitOk(ip)) {
       return NextResponse.json(
-        { ok: false, error: 'Please complete the anti-spam verification and try again.' },
+        { ok: false, error: 'Too many requests. Please try again later.' },
+        { status: 429 },
+      );
+    }
+
+    let body: Record<string, unknown>;
+    try {
+      body = (await req.json()) as Record<string, unknown>;
+    } catch {
+      return NextResponse.json({ ok: false, error: 'Invalid JSON.' }, { status: 400 });
+    }
+
+    // Honeypot
+    if (String(body.company ?? '').trim()) {
+      return NextResponse.json({ ok: true }, { status: 200 });
+    }
+
+    const email = String(body.email ?? '').trim().toLowerCase();
+    if (!email || !isEmail(email)) {
+      return NextResponse.json(
+        { ok: false, error: 'Please enter a valid email address.' },
         { status: 400 },
       );
     }
-    const t = await verifyTurnstile({ secret: turnstileSecret, token, ip });
-    if (!t.ok) {
+
+    const turnstileSecret = getEnv('TURNSTILE_SECRET_KEY');
+    const turnstileSiteKey = getEnv('NEXT_PUBLIC_TURNSTILE_SITE_KEY');
+    if (turnstileSecret && turnstileSiteKey) {
+      const token = String(body['cf-turnstile-response'] ?? '').trim();
+      if (!token) {
+        return NextResponse.json(
+          { ok: false, error: 'Please complete the anti-spam verification and try again.' },
+          { status: 400 },
+        );
+      }
+      const t = await verifyTurnstile({ secret: turnstileSecret, token, ip });
+      if (!t.ok) {
+        return NextResponse.json(
+          { ok: false, error: 'Anti-spam verification failed. Please reload and try again.' },
+          { status: 403 },
+        );
+      }
+    }
+
+    const stripeKey = getEnv('STRIPE_SECRET_KEY');
+    if (!stripeKey) {
+      // Don't reveal internal config; provide a user-safe message.
       return NextResponse.json(
-        { ok: false, error: 'Anti-spam verification failed. Please reload and try again.' },
-        { status: 403 },
+        {
+          ok: false,
+          error:
+            'Subscription self-service is not configured yet. Please email donate@bitcoinforthearts.org for help.',
+        },
+        { status: 503 },
       );
     }
-  }
+    if (!stripeKey.startsWith('sk_')) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            'Subscription self-service is misconfigured. Please contact donate@bitcoinforthearts.org for help.',
+        },
+        { status: 503 },
+      );
+    }
 
-  const stripeKey = getEnv('STRIPE_SECRET_KEY');
-  if (!stripeKey) {
-    // Don't reveal internal config; provide a user-safe message.
+    const stripe = new Stripe(stripeKey);
+
+    // Find customer(s) by email.
+    const customers = await stripe.customers.list({ email, limit: 10 });
+    const customer = customers.data[0] ?? null;
+
+    // Always return ok to avoid leaking whether the email exists.
+    // If we can create a portal session, we email the link.
+    if (customer) {
+      // Only proceed if there is at least one active/trialing subscription.
+      const subs = await stripe.subscriptions.list({
+        customer: customer.id,
+        status: 'all',
+        limit: 10,
+      });
+      const hasManageable = subs.data.some((s) =>
+        ['active', 'trialing', 'past_due', 'unpaid'].includes(s.status),
+      );
+
+      if (hasManageable) {
+        const baseUrl = getBaseUrl(req);
+        const returnUrl = `${baseUrl}/billing`;
+        const session = await stripe.billingPortal.sessions.create({
+          customer: customer.id,
+          return_url: returnUrl,
+        });
+
+        const subject = 'Manage your Bitcoin for the Arts subscription';
+        const text = [
+          'Bitcoin for the Arts — Subscription management',
+          '',
+          'Use this secure Stripe link to manage your subscription (update payment method, view invoices, or cancel):',
+          session.url,
+          '',
+          'If you did not request this link, you can ignore this email.',
+          '',
+          'Bitcoin for the Arts',
+          'https://bitcoinforthearts.org',
+        ].join('\n');
+
+        const html = `
+          <div style="font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; line-height: 1.5;">
+            <h2 style="margin: 0 0 12px;">Manage your subscription</h2>
+            <p style="margin: 0 0 12px;">
+              Use this secure Stripe link to manage your subscription (update payment method, view invoices, or cancel):
+            </p>
+            <p style="margin: 0 0 16px;">
+              <a href="${escapeHtml(session.url)}" target="_blank" rel="noopener noreferrer">
+                Open Stripe customer portal
+              </a>
+            </p>
+            <p style="margin: 0; color: #666; font-size: 12px;">
+              If you did not request this link, you can ignore this email.
+            </p>
+          </div>
+        `.trim();
+
+        const emailAttempt = await sendResendEmail({
+          to: email,
+          subject,
+          text,
+          html,
+          replyTo: 'donate@bitcoinforthearts.org',
+          fromEmail: getEnv('DONATIONS_FROM_EMAIL') ?? getEnv('RESEND_FROM_EMAIL'),
+        });
+        if (!emailAttempt.ok) {
+          console.error('[stripe-portal] resend failed', emailAttempt);
+          // Return a message so the UI doesn't show a generic 500.
+          return NextResponse.json(
+            {
+              ok: false,
+              error:
+                'We could not email the portal link right now. Please try again in a minute or email donate@bitcoinforthearts.org.',
+            },
+            { status: 502 },
+          );
+        }
+      }
+    }
+
+    return NextResponse.json({ ok: true }, { status: 200 });
+  } catch (err) {
+    // Make sure the client always gets JSON (not a generic HTML 500).
+    console.error('[stripe-portal] unhandled error', err);
     return NextResponse.json(
       {
         ok: false,
         error:
           'Subscription self-service is temporarily unavailable. Please email donate@bitcoinforthearts.org for help.',
       },
-      { status: 503 },
+      { status: 500 },
     );
   }
-
-  const stripe = new Stripe(stripeKey);
-
-  // Find customer(s) by email.
-  const customers = await stripe.customers.list({ email, limit: 10 });
-  const customer = customers.data[0] ?? null;
-
-  // Always return ok to avoid leaking whether the email exists.
-  // If we can create a portal session, we email the link.
-  if (customer) {
-    // Only proceed if there is at least one active/trialing subscription.
-    const subs = await stripe.subscriptions.list({
-      customer: customer.id,
-      status: 'all',
-      limit: 10,
-    });
-    const hasManageable = subs.data.some((s) => ['active', 'trialing', 'past_due', 'unpaid'].includes(s.status));
-
-    if (hasManageable) {
-      const baseUrl = getBaseUrl(req);
-      const returnUrl = `${baseUrl}/billing`;
-      const session = await stripe.billingPortal.sessions.create({
-        customer: customer.id,
-        return_url: returnUrl,
-      });
-
-      const subject = 'Manage your Bitcoin for the Arts subscription';
-      const text = [
-        'Bitcoin for the Arts — Subscription management',
-        '',
-        'Use this secure Stripe link to manage your subscription (update payment method, view invoices, or cancel):',
-        session.url,
-        '',
-        'If you did not request this link, you can ignore this email.',
-        '',
-        'Bitcoin for the Arts',
-        'https://bitcoinforthearts.org',
-      ].join('\n');
-
-      const html = `
-        <div style="font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; line-height: 1.5;">
-          <h2 style="margin: 0 0 12px;">Manage your subscription</h2>
-          <p style="margin: 0 0 12px;">
-            Use this secure Stripe link to manage your subscription (update payment method, view invoices, or cancel):
-          </p>
-          <p style="margin: 0 0 16px;">
-            <a href="${escapeHtml(session.url)}" target="_blank" rel="noopener noreferrer">
-              Open Stripe customer portal
-            </a>
-          </p>
-          <p style="margin: 0; color: #666; font-size: 12px;">
-            If you did not request this link, you can ignore this email.
-          </p>
-        </div>
-      `.trim();
-
-      await sendResendEmail({
-        to: email,
-        subject,
-        text,
-        html,
-        replyTo: 'donate@bitcoinforthearts.org',
-        fromEmail: getEnv('DONATIONS_FROM_EMAIL') ?? getEnv('RESEND_FROM_EMAIL'),
-      });
-    }
-  }
-
-  return NextResponse.json({ ok: true }, { status: 200 });
 }
 
