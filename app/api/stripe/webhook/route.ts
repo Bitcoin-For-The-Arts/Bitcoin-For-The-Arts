@@ -106,6 +106,22 @@ async function sendDonationEmail(args: {
     getEnv('CONTACT_FROM_EMAIL') ??
     getEnv('RESEND_FROM_EMAIL');
   if (!smtpUser || !smtpPass || !fromEmail) {
+    // If Resend failed (not skipped), preserve the failure details so we can diagnose
+    // (e.g., unverified sender domain, invalid API key, etc.).
+    if (!resendAttempt.skipped) {
+      const resendError =
+        'error' in resendAttempt && typeof resendAttempt.error === 'string'
+          ? resendAttempt.error
+          : null;
+      return {
+        ok: false as const,
+        skipped: false as const,
+        reason: 'resend_failed' as const,
+        error:
+          [resendAttempt.reason, resendError].filter(Boolean).join(' — ') ||
+          'resend_failed',
+      };
+    }
     return {
       ok: false as const,
       skipped: true as const,
@@ -229,6 +245,7 @@ export async function POST(req: Request) {
   }
 
   let db: Awaited<ReturnType<typeof getMongoDb>> | null = null;
+  let eventAlreadyRecorded = false;
   try {
     db = await getMongoDb();
     await db.collection<StripeWebhookEventDoc>('stripeWebhookEvents').insertOne({
@@ -246,7 +263,13 @@ export async function POST(req: Request) {
       'code' in err &&
       (err as { code?: unknown }).code === 11000
     ) {
-      return NextResponse.json({ ok: true, skipped: true }, { status: 200 });
+      // NOTE:
+      // We *do not* return early here. Stripe "Resend" is commonly used to recover from
+      // earlier misconfiguration (e.g. webhooks failing, email not configured, etc.).
+      // We treat the event log as idempotent, but still allow downstream handlers to run.
+      eventAlreadyRecorded = true;
+      db = await getMongoDb();
+      // continue
     }
     // If Mongo isn't configured, we still acknowledge the webhook to avoid retries.
     console.error('[stripe-webhook] mongo insert failed', err);
@@ -309,7 +332,23 @@ export async function POST(req: Request) {
         typeof amountTotal === 'number' &&
         amountTotal >= thresholdUsd * 100;
 
+      // Email idempotency:
+      // - If we have already recorded a successful thank-you email for this session, do not resend.
+      // - If the event is being resent and prior execution did not record email outcome, allow recovery.
       let thankYouOutcome: DonationDoc['thankYouEmail'] | undefined;
+      let alreadyThanked = false;
+      if (db) {
+        try {
+          const existing = await db
+            .collection<DonationDoc>('donations')
+            .findOne({ stripeCheckoutSessionId: sessionId }, { projection: { thankYouEmail: 1 } });
+          alreadyThanked = Boolean(existing?.thankYouEmail?.ok);
+        } catch (err) {
+          console.error('[stripe-webhook] failed to check existing thank-you state', err);
+          alreadyThanked = false;
+        }
+      }
+
       if ((isSubscription || qualifiesOneTime) && !customerEmail) {
         // Stripe should normally provide an email (especially for subscriptions),
         // but record if it's missing so we can diagnose.
@@ -321,7 +360,7 @@ export async function POST(req: Request) {
         };
       }
 
-      if ((isSubscription || qualifiesOneTime) && customerEmail) {
+      if (!alreadyThanked && (isSubscription || qualifiesOneTime) && customerEmail) {
         const amountText =
           typeof amountTotal === 'number' ? formatMoney(amountTotal, currency) : 'your donation';
         const subject = isSubscription
@@ -410,6 +449,9 @@ export async function POST(req: Request) {
     // Acknowledge to avoid retry loops; errors are logged and events are stored.
   }
 
-  return NextResponse.json({ ok: true }, { status: 200 });
+  return NextResponse.json(
+    { ok: true, eventAlreadyRecorded },
+    { status: 200 },
+  );
 }
 
