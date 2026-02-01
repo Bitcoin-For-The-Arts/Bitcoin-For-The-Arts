@@ -374,8 +374,7 @@ export async function POST(req: Request) {
           'What happens next:',
           '- Stripe will email you a receipt.',
           '- You’ll receive impact updates and program news as we publish them.',
-          '- To change or cancel a monthly subscription, use the link in your Stripe email receipt/invoice (if provided).',
-          '- If you can’t find that email, contact donate@bitcoinforthearts.org and we can help from our Stripe dashboard.',
+          '- Manage your subscription (update payment method, view invoices, or cancel): https://bitcoinforthearts.org/billing',
           '',
           'With gratitude,',
           'Bitcoin for the Arts',
@@ -397,8 +396,10 @@ export async function POST(req: Request) {
             <ul style="margin: 0 0 0 18px; padding: 0;">
               <li>Stripe will email you a receipt.</li>
               <li>You’ll receive impact updates and program news as we publish them.</li>
-              <li>To change or cancel a monthly subscription, use the link in your Stripe email receipt/invoice (if provided).</li>
-              <li>If you can’t find that email, contact donate@bitcoinforthearts.org and we can help from our Stripe dashboard.</li>
+              <li>
+                Manage your subscription (update payment method, view invoices, or cancel):{' '}
+                <a href="https://bitcoinforthearts.org/billing">bitcoinforthearts.org/billing</a>
+              </li>
             </ul>
             <p style="margin: 16px 0 0; color: #666; font-size: 12px;">
               Sent from <a href="https://bitcoinforthearts.org">bitcoinforthearts.org</a>
