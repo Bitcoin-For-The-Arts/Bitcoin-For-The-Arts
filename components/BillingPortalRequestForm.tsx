@@ -73,7 +73,7 @@ export default function BillingPortalRequestForm() {
       <div>
         <div className="text-sm font-semibold">Check your email.</div>
         <div className="mt-2 text-sm text-muted">
-          If we found an active subscription for that email, we sent a secure Stripe portal link.
+          We sent you a secure subscription management link (if available) for that email address.
           If you don’t see it, check spam or email{' '}
           <a className="underline underline-offset-4" href="mailto:donate@bitcoinforthearts.org">
             donate@bitcoinforthearts.org
