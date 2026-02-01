@@ -70,6 +70,18 @@ type BtcPayInvoice = {
   };
 };
 
+type BtcPayPaymentMethod = {
+  paymentMethodId?: string;
+  // Payments can differ by method; for on-chain this is often a txid, for Lightning a payment hash/id.
+  payments?: Array<{
+    id?: string;
+    destination?: string;
+    status?: string;
+    receivedDate?: string;
+    paymentMethodId?: string;
+  }>;
+};
+
 // Safe config status endpoint (no secrets).
 export async function GET() {
   const webhookSecret = Boolean(getEnv('BTCPAY_WEBHOOK_SECRET'));
@@ -216,6 +228,44 @@ export async function POST(req: Request) {
     const customerName =
       invoice.buyer && typeof invoice.buyer.name === 'string' ? invoice.buyer.name.trim() : null;
 
+    // Best-effort: fetch payment method details to extract on-chain txid (and/or Lightning payment id).
+    let onChainTxIds: string[] = [];
+    let lightningPaymentIds: string[] = [];
+    try {
+      const paymentMethodsUrl = new URL(
+        `/api/v1/stores/${encodeURIComponent(storeId)}/invoices/${encodeURIComponent(invoiceId)}/payment-methods`,
+        BTCPAY_URL.endsWith('/') ? BTCPAY_URL : `${BTCPAY_URL}/`,
+      );
+      const pmRes = await fetch(paymentMethodsUrl.toString(), {
+        method: 'GET',
+        headers: {
+          Authorization: `token ${BTCPAY_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-store',
+      });
+      if (pmRes.ok) {
+        const methods = (await pmRes.json()) as BtcPayPaymentMethod[];
+        for (const m of Array.isArray(methods) ? methods : []) {
+          const pmid = String(m.paymentMethodId ?? '').toLowerCase();
+          const payments = Array.isArray(m.payments) ? m.payments : [];
+          for (const p of payments) {
+            const id = String(p.id ?? '').trim();
+            if (!id) continue;
+            if (pmid.includes('onchain') || pmid === 'btc' || pmid.includes('btc-onchain')) {
+              onChainTxIds.push(id);
+            } else if (pmid.includes('lightning')) {
+              lightningPaymentIds.push(id);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error('[btcpay-webhook] payment-methods fetch failed', err);
+    }
+    onChainTxIds = Array.from(new Set(onChainTxIds)).slice(0, 6);
+    lightningPaymentIds = Array.from(new Set(lightningPaymentIds)).slice(0, 6);
+
     // Store donation record (best-effort).
     if (db) {
       await db
@@ -230,6 +280,15 @@ export async function POST(req: Request) {
           customerEmail: string | null;
           customerName: string | null;
           metadata: Record<string, unknown>;
+          onChainTxIds?: string[];
+          lightningPaymentIds?: string[];
+          thankYouEmail?: {
+            ok: boolean;
+            provider?: 'resend';
+            id?: string | null;
+            error?: string;
+            sentAt?: Date;
+          };
         }>('btcpayDonations')
         .updateOne(
           { btcpayInvoiceId: invoiceId },
@@ -247,25 +306,34 @@ export async function POST(req: Request) {
               customerEmail,
               customerName,
               metadata: invoice.metadata ?? {},
+              onChainTxIds,
+              lightningPaymentIds,
             },
           },
           { upsert: true },
         );
     }
 
-    // Thank-you emails: only possible if we have an email on the invoice.
-    const thresholdUsd = asNumber(getEnv('DONATION_THANKYOU_THRESHOLD_USD') ?? '50') ?? 50;
-    const qualifies = currency === 'usd' && typeof amount === 'number' && amount >= thresholdUsd;
+    // Thank-you email: send for any settled/complete invoice if donor provided an email.
+    if (customerEmail) {
+      const amountMinor =
+        typeof amount === 'number' && currency === 'usd' ? Math.round(amount * 100) : null;
+      const amountText = amountMinor !== null ? formatMoney(amountMinor, currency) : 'your donation';
 
-    if (qualifies && customerEmail) {
-      const amountMinor = Math.round(amount * 100);
-      const amountText = formatMoney(amountMinor, currency);
+      const subject = `Thank you for your Bitcoin donation to Bitcoin for the Arts`;
+      const txLine =
+        onChainTxIds.length
+          ? `On-chain transaction id(s): ${onChainTxIds.join(', ')}`
+          : lightningPaymentIds.length
+            ? `Lightning payment id(s): ${lightningPaymentIds.join(', ')}`
+            : 'Transaction id: (not available yet)';
 
-      const subject = `Thank you for your donation to Bitcoin for the Arts (${amountText})`;
       const text = [
         'Thank you for supporting Bitcoin for the Arts.',
         '',
         `Donation: ${amountText}`,
+        `BTCPay invoice id: ${invoiceId}`,
+        txLine,
         '',
         'With gratitude,',
         'Bitcoin for the Arts',
@@ -281,6 +349,20 @@ export async function POST(req: Request) {
           <p style="margin: 0 0 8px;">
             <strong>Donation:</strong> ${escapeHtml(amountText)}
           </p>
+          <p style="margin: 0 0 8px;">
+            <strong>BTCPay invoice id:</strong> ${escapeHtml(invoiceId)}
+          </p>
+          ${
+            onChainTxIds.length
+              ? `<p style="margin: 0 0 8px;"><strong>On-chain transaction id(s):</strong> ${escapeHtml(
+                  onChainTxIds.join(', '),
+                )}</p>`
+              : lightningPaymentIds.length
+                ? `<p style="margin: 0 0 8px;"><strong>Lightning payment id(s):</strong> ${escapeHtml(
+                    lightningPaymentIds.join(', '),
+                  )}</p>`
+                : `<p style="margin: 0 0 8px;"><strong>Transaction id:</strong> (not available yet)</p>`
+          }
           <p style="margin: 16px 0 0; color: #666; font-size: 12px;">
             Sent from <a href="https://bitcoinforthearts.org">bitcoinforthearts.org</a>
           </p>
@@ -299,6 +381,23 @@ export async function POST(req: Request) {
         fromEmail,
         replyTo,
       });
+
+      if (db) {
+        await db.collection('btcpayDonations').updateOne(
+          { btcpayInvoiceId: invoiceId },
+          {
+            $set: {
+              thankYouEmail: {
+                ok: send.ok,
+                provider: send.ok ? 'resend' : undefined,
+                id: send.ok && 'id' in send && typeof send.id === 'string' ? send.id : null,
+                error: !send.ok && !send.skipped && 'error' in send ? (send.error as string) : undefined,
+                sentAt: new Date(),
+              },
+            },
+          },
+        );
+      }
 
       if (!send.ok && !send.skipped) {
         console.error('[btcpay-webhook] thank-you email failed', send);
