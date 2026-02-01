@@ -155,10 +155,9 @@ export async function POST(req: NextRequest) {
     const customers = await stripe.customers.list({ email, limit: 10 });
     const customer = customers.data[0] ?? null;
 
-    // Always return ok to avoid leaking whether the email exists.
-    // If we can create a portal session, we email the link.
+    // Compute a portal link if possible.
+    let portalUrl: string | null = null;
     if (customer) {
-      // Only proceed if there is at least one active/trialing subscription.
       const subs = await stripe.subscriptions.list({
         customer: customer.id,
         status: 'all',
@@ -167,7 +166,6 @@ export async function POST(req: NextRequest) {
       const hasManageable = subs.data.some((s) =>
         ['active', 'trialing', 'past_due', 'unpaid'].includes(s.status),
       );
-
       if (hasManageable) {
         const baseUrl = getBaseUrl(req);
         const returnUrl = `${baseUrl}/billing`;
@@ -175,58 +173,103 @@ export async function POST(req: NextRequest) {
           customer: customer.id,
           return_url: returnUrl,
         });
+        portalUrl = session.url;
+      }
+    }
 
-        const subject = 'Manage your Bitcoin for the Arts subscription';
-        const text = [
+    // Always send an email so the user gets feedback even if we can't find a subscription,
+    // without leaking account existence via the HTTP response.
+    const subject = portalUrl
+      ? 'Manage your Bitcoin for the Arts subscription'
+      : 'Bitcoin for the Arts — billing support';
+
+    const text = portalUrl
+      ? [
           'Bitcoin for the Arts — Subscription management',
           '',
           'Use this secure Stripe link to manage your subscription (update payment method, view invoices, or cancel):',
-          session.url,
+          portalUrl,
           '',
           'If you did not request this link, you can ignore this email.',
           '',
           'Bitcoin for the Arts',
           'https://bitcoinforthearts.org',
+        ].join('\n')
+      : [
+          'Bitcoin for the Arts — Billing support',
+          '',
+          'We received a request to manage a subscription using this email address.',
+          'We were not able to automatically generate a Stripe customer portal link.',
+          '',
+          'Next steps:',
+          '- If you have an active monthly donation, email donate@bitcoinforthearts.org and we will help you from our Stripe dashboard.',
+          '- If you received a Stripe receipt/invoice email, it may include billing details and support links.',
+          '',
+          'If you did not request this email, you can ignore it.',
+          '',
+          'Bitcoin for the Arts',
+          'https://bitcoinforthearts.org',
         ].join('\n');
 
-        const html = `
-          <div style="font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; line-height: 1.5;">
-            <h2 style="margin: 0 0 12px;">Manage your subscription</h2>
-            <p style="margin: 0 0 12px;">
-              Use this secure Stripe link to manage your subscription (update payment method, view invoices, or cancel):
-            </p>
-            <p style="margin: 0 0 16px;">
-              <a href="${escapeHtml(session.url)}" target="_blank" rel="noopener noreferrer">
-                Open Stripe customer portal
-              </a>
-            </p>
-            <p style="margin: 0; color: #666; font-size: 12px;">
-              If you did not request this link, you can ignore this email.
-            </p>
-          </div>
-        `.trim();
+    const html = portalUrl
+      ? `
+        <div style="font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; line-height: 1.5;">
+          <h2 style="margin: 0 0 12px;">Manage your subscription</h2>
+          <p style="margin: 0 0 12px;">
+            Use this secure Stripe link to manage your subscription (update payment method, view invoices, or cancel):
+          </p>
+          <p style="margin: 0 0 16px;">
+            <a href="${escapeHtml(portalUrl)}" target="_blank" rel="noopener noreferrer">
+              Open Stripe customer portal
+            </a>
+          </p>
+          <p style="margin: 0; color: #666; font-size: 12px;">
+            If you did not request this link, you can ignore this email.
+          </p>
+        </div>
+      `.trim()
+      : `
+        <div style="font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; line-height: 1.5;">
+          <h2 style="margin: 0 0 12px;">Billing support</h2>
+          <p style="margin: 0 0 12px;">
+            We received a request to manage a subscription using this email address.
+            We were not able to automatically generate a Stripe customer portal link.
+          </p>
+          <p style="margin: 0 0 12px;"><strong>Next steps</strong></p>
+          <ul style="margin: 0 0 0 18px; padding: 0;">
+            <li>
+              If you have an active monthly donation, email
+              <a href="mailto:donate@bitcoinforthearts.org">donate@bitcoinforthearts.org</a>
+              and we will help you from our Stripe dashboard.
+            </li>
+            <li>
+              If you received a Stripe receipt/invoice email, it may include billing details and support links.
+            </li>
+          </ul>
+          <p style="margin: 12px 0 0; color: #666; font-size: 12px;">
+            If you did not request this email, you can ignore it.
+          </p>
+        </div>
+      `.trim();
 
-        const emailAttempt = await sendResendEmail({
-          to: email,
-          subject,
-          text,
-          html,
-          replyTo: 'donate@bitcoinforthearts.org',
-          fromEmail: getEnv('DONATIONS_FROM_EMAIL') ?? getEnv('RESEND_FROM_EMAIL'),
-        });
-        if (!emailAttempt.ok) {
-          console.error('[stripe-portal] resend failed', emailAttempt);
-          // Return a message so the UI doesn't show a generic 500.
-          return NextResponse.json(
-            {
-              ok: false,
-              error:
-                'We could not email the portal link right now. Please try again in a minute or email donate@bitcoinforthearts.org.',
-            },
-            { status: 502 },
-          );
-        }
-      }
+    const emailAttempt = await sendResendEmail({
+      to: email,
+      subject,
+      text,
+      html,
+      replyTo: 'donate@bitcoinforthearts.org',
+      fromEmail: getEnv('DONATIONS_FROM_EMAIL') ?? getEnv('RESEND_FROM_EMAIL'),
+    });
+    if (!emailAttempt.ok) {
+      console.error('[stripe-portal] resend failed', emailAttempt);
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            'We could not email you right now. Please try again in a minute or email donate@bitcoinforthearts.org.',
+        },
+        { status: 502 },
+      );
     }
 
     return NextResponse.json({ ok: true }, { status: 200 });
