@@ -106,6 +106,17 @@ async function sendDonationEmail(args: {
     getEnv('CONTACT_FROM_EMAIL') ??
     getEnv('RESEND_FROM_EMAIL');
   if (!smtpUser || !smtpPass || !fromEmail) {
+    // If Resend failed (not skipped), preserve the failure details so we can diagnose
+    // (e.g., unverified sender domain, invalid API key, etc.).
+    if (!resendAttempt.skipped) {
+      return {
+        ok: false as const,
+        skipped: false as const,
+        reason: 'resend_failed' as const,
+        error:
+          typeof resendAttempt.reason === 'string' ? resendAttempt.reason : 'resend_failed',
+      };
+    }
     return {
       ok: false as const,
       skipped: true as const,
