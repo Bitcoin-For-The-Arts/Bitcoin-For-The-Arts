@@ -98,7 +98,9 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const stripeKey = getEnv('STRIPE_SECRET_KEY');
+  // Use a dedicated key for donations if provided, so you can keep the billing portal key locked down.
+  // Recommended for restricted keys: enable Checkout Sessions (write) + the required payment permissions.
+  const stripeKey = getEnv('STRIPE_DONATIONS_SECRET_KEY') ?? getEnv('STRIPE_SECRET_KEY');
   if (!stripeKey) {
     return NextResponse.json(
       {
@@ -161,12 +163,24 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true, url: session.url }, { status: 200 });
   } catch (err) {
-    console.error('[stripe] create checkout session failed', err);
+    const e = err as { type?: unknown; code?: unknown; message?: unknown };
+    const type = typeof e.type === 'string' ? e.type : '';
+    const code = typeof e.code === 'string' ? e.code : '';
+    const msg = typeof e.message === 'string' ? e.message : '';
+    console.error('[stripe] create checkout session failed', { type, code, msg });
+
+    // Friendly guidance for the common case: restricted keys missing permissions.
+    const isPermission =
+      code === 'permission_denied' ||
+      msg.toLowerCase().includes('permission') ||
+      msg.toLowerCase().includes('not allowed');
+
     return NextResponse.json(
       {
         ok: false,
-        error:
-          'Unable to start checkout right now. Please try again, or use the donation link options below.',
+        error: isPermission
+          ? 'Stripe is not authorized to create Checkout Sessions. If you are using a restricted key, enable Checkout Sessions (write) and the required payment permissions, or set STRIPE_DONATIONS_SECRET_KEY to a key with those permissions.'
+          : 'Unable to start checkout right now. Please try again, or use the donation link options below.',
       },
       { status: 502 },
     );
