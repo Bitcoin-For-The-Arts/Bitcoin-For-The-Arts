@@ -28,6 +28,15 @@ type DonationDoc = {
   customerName: string | null;
   metadata: Record<string, string>;
   livemode: boolean;
+  thankYouEmail?: {
+    ok: boolean;
+    provider?: 'resend' | 'smtp';
+    skipped?: boolean;
+    reason?: string;
+    error?: string;
+    sentAt?: Date;
+    subject?: string;
+  };
 };
 
 function getEnv(name: string) {
@@ -257,16 +266,17 @@ export async function POST(req: Request) {
       const customerEmail =
         (session.customer_details?.email ?? session.customer_email ?? null) || null;
       const customerName = session.customer_details?.name ?? null;
+      const sessionId = session.id;
 
       // Store donation details (best-effort).
       if (db) {
         await db.collection<DonationDoc>('donations').updateOne(
-          { stripeCheckoutSessionId: session.id },
+          { stripeCheckoutSessionId: sessionId },
           {
             $setOnInsert: {
               createdAt: new Date(),
               stripeEventId: event.id,
-              stripeCheckoutSessionId: session.id,
+              stripeCheckoutSessionId: sessionId,
               stripePaymentIntentId:
                 typeof session.payment_intent === 'string'
                   ? session.payment_intent
@@ -298,6 +308,18 @@ export async function POST(req: Request) {
         currency === 'usd' &&
         typeof amountTotal === 'number' &&
         amountTotal >= thresholdUsd * 100;
+
+      let thankYouOutcome: DonationDoc['thankYouEmail'] | undefined;
+      if ((isSubscription || qualifiesOneTime) && !customerEmail) {
+        // Stripe should normally provide an email (especially for subscriptions),
+        // but record if it's missing so we can diagnose.
+        thankYouOutcome = {
+          ok: false,
+          skipped: true,
+          reason: 'missing_customer_email',
+          sentAt: new Date(),
+        };
+      }
 
       if ((isSubscription || qualifiesOneTime) && customerEmail) {
         const amountText =
@@ -345,14 +367,41 @@ export async function POST(req: Request) {
 
         try {
           const res = await sendDonationEmail({ to: customerEmail, subject, text, html });
-          if (!res.ok && !('skipped' in res && res.skipped)) {
+          if (res.ok) {
+            thankYouOutcome = { ok: true, provider: res.provider, sentAt: new Date(), subject };
+          } else if ('skipped' in res && res.skipped) {
+            thankYouOutcome = {
+              ok: false,
+              skipped: true,
+              reason: res.reason,
+              sentAt: new Date(),
+              subject,
+            };
+            console.warn('[stripe-webhook] email not configured; could not send thank-you');
+          } else {
+            thankYouOutcome = { ok: false, error: 'email_send_failed', sentAt: new Date(), subject };
             console.error('[stripe-webhook] thank-you email failed', res);
           }
-          if ('skipped' in res && res.skipped) {
-            console.warn('[stripe-webhook] email not configured; could not send thank-you');
-          }
         } catch (emailErr) {
+          thankYouOutcome = {
+            ok: false,
+            error: emailErr instanceof Error ? emailErr.message : 'Unknown email error',
+            sentAt: new Date(),
+            subject,
+          };
           console.error('[stripe-webhook] thank-you email exception', emailErr);
+        }
+      }
+
+      // Store email outcome for debugging/audit (best-effort).
+      if (db && thankYouOutcome) {
+        try {
+          await db.collection<DonationDoc>('donations').updateOne(
+            { stripeCheckoutSessionId: sessionId },
+            { $set: { thankYouEmail: thankYouOutcome } },
+          );
+        } catch (err) {
+          console.error('[stripe-webhook] failed to store thank-you email outcome', err);
         }
       }
     }
