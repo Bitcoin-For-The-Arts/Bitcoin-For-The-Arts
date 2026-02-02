@@ -181,7 +181,7 @@ export default function PrivacyPolicyPage() {
               </li>
             </ul>
 
-            <h2>3. How we share information</h2>
+            <h2>4. How we share information</h2>
             <p>
               We may share information with service providers only as needed to
               operate the website and our programs, and only under appropriate
@@ -196,30 +196,87 @@ export default function PrivacyPolicyPage() {
             <h3>Service providers we may use</h3>
             <ul>
               <li>
-                <strong>Vercel</strong> (hosting) and <strong>Vercel Analytics / Speed Insights</strong> (site analytics and performance).
+                <strong>Vercel</strong> (hosting and infrastructure) and{' '}
+                <strong>Vercel Analytics / Speed Insights</strong> (website usage and performance measurement).{' '}
+                <a
+                  href="https://vercel.com/legal/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Vercel privacy policy
+                </a>
+                .
               </li>
               <li>
-                <strong>MongoDB</strong> (database storage for program submissions; uploaded PDFs may be stored in database file storage).
+                <strong>MongoDB</strong> (database storage for program submissions and operational records; uploaded PDFs may be stored in database file storage).{' '}
+                <a
+                  href="https://www.mongodb.com/legal/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  MongoDB privacy policy
+                </a>
+                .
               </li>
               <li>
-                <strong>Cloudflare Turnstile</strong> (anti-spam protection for forms, when enabled).
+                <strong>Cloudflare</strong> (Turnstile anti-spam protection for forms, when enabled).{' '}
+                <a
+                  href="https://www.cloudflare.com/privacypolicy/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Cloudflare privacy policy
+                </a>
+                .
               </li>
               <li>
-                <strong>Resend</strong> and/or <strong>SMTP email providers</strong> (sending program notifications and confirmations, when configured).
+                <strong>Resend</strong> (email delivery, when configured).{' '}
+                <a
+                  href="https://resend.com/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Resend privacy policy
+                </a>
+                .
               </li>
               <li>
-                <strong>Stripe</strong> (card payments) and/or <strong>BTCPay Server</strong> (Bitcoin payments), depending on donation method.
+                <strong>SMTP email providers</strong> (sending program notifications and confirmations, when configured; for example, Zoho Mail).{' '}
+                <a
+                  href="https://www.zoho.com/privacy.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Zoho privacy policy
+                </a>
+                .
+              </li>
+              <li>
+                <strong>Stripe</strong> (card payments and subscription management).{' '}
+                <a
+                  href="https://stripe.com/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Stripe privacy policy
+                </a>
+                .
+              </li>
+              <li>
+                <strong>BTCPay Server</strong> (Bitcoin payment processing, depending on donation method). If we operate our own BTCPay Server instance,
+                it processes invoice and payment details to complete your donation. If a third party operates the BTCPay Server instance, their privacy policy
+                may also apply.
               </li>
             </ul>
 
-            <h2>4. Security</h2>
+            <h2>5. Security</h2>
             <p>
               We use reasonable administrative, technical, and organizational measures
               designed to protect information. However, no method of transmission or
               storage is 100% secure.
             </p>
 
-            <h2>5. Data retention</h2>
+            <h2>6. Data retention</h2>
             <p>
               We retain information for as long as needed to operate our programs, comply with legal obligations,
               resolve disputes, and enforce agreements. Retention may vary by record type. As a US nonprofit based in
@@ -247,7 +304,7 @@ export default function PrivacyPolicyPage() {
               legal, security, or operational reasons (for example, fraud prevention, dispute resolution, or audit requirements).
             </p>
 
-            <h2>6. Your rights and choices</h2>
+            <h2>7. Your rights and choices</h2>
             <ul>
               <li>
                 <strong>Access / correction / deletion:</strong> You can request access to, correction of,
@@ -263,7 +320,7 @@ export default function PrivacyPolicyPage() {
               </li>
             </ul>
 
-            <h2>7. Submitting privacy requests (DSAR process)</h2>
+            <h2>8. Submitting privacy requests (DSAR process)</h2>
             <p>
               To submit a privacy request, email{' '}
               <a href="mailto:privacy@bitcoinforthearts.org">privacy@bitcoinforthearts.org</a>. To protect your privacy,
@@ -274,7 +331,7 @@ export default function PrivacyPolicyPage() {
               privacy requests, we aim to respond within <strong>45 days</strong> (and may extend where permitted).
             </p>
 
-            <h2>8. Additional disclosures for California residents (CCPA/CPRA)</h2>
+            <h2>9. Additional disclosures for California residents (CCPA/CPRA)</h2>
             <p>
               This section provides additional information for California residents about how we collect, use, and disclose
               personal information, as required by the California Consumer Privacy Act (CCPA) as amended by the CPRA.
@@ -325,26 +382,26 @@ export default function PrivacyPolicyPage() {
               <a href="mailto:privacy@bitcoinforthearts.org">privacy@bitcoinforthearts.org</a>.
             </p>
 
-            <h2>9. International data transfers</h2>
+            <h2>10. International data transfers</h2>
             <p>
               We are based in the United States, and our service providers may process information in the United States and other countries. If you access the site from
               outside the United States, you understand that your information may be transferred to, stored, and processed in jurisdictions that may have different
               data protection laws than your home jurisdiction.
             </p>
 
-            <h2>10. Children’s privacy</h2>
+            <h2>11. Children’s privacy</h2>
             <p>
               Our website is not directed to children under 13, and we do not knowingly
               collect personal information from children under 13.
             </p>
 
-            <h2>11. Changes to this policy</h2>
+            <h2>12. Changes to this policy</h2>
             <p>
               We may update this policy from time to time. The version posted here is
               the current one.
             </p>
 
-            <h2>12. Contact us</h2>
+            <h2>13. Contact us</h2>
             <p>
               General questions can be sent to{' '}
               <a href="mailto:hello@bitcoinforthearts.org">hello@bitcoinforthearts.org</a>. Privacy requests should be sent to{' '}
