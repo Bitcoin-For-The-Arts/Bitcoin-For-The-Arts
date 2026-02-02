@@ -414,15 +414,6 @@ export default function PrivacyPolicyPage() {
               <br />
               New York, NY 10023
             </p>
-
-            <hr />
-
-            <p>
-              <strong>Download PDF:</strong>{' '}
-              <a href="/privacy-policy.pdf" target="_blank" rel="noopener noreferrer">
-                Privacy Policy (PDF)
-              </a>
-            </p>
           </div>
         </div>
       </div>
