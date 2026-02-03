@@ -78,7 +78,6 @@ export default function StripeCustomDonateForm() {
               if (state.status === 'error') setState({ status: 'idle' });
             }}
             className="mt-2 min-h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-            placeholder="25"
           />
         </label>
 
