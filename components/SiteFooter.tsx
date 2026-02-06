@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { socialLinks } from '@/lib/socials';
 import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-Gold.png';
 import SocialIconLinks from '@/components/SocialIconLinks';
+import NewsletterSignupFooter from '@/components/NewsletterSignupFooter';
 
 export default function SiteFooter() {
   const hasSocials = socialLinks.length > 0;
@@ -10,6 +11,8 @@ export default function SiteFooter() {
   return (
     <footer className="border-t border-white/15 bg-primary text-white sm:border-border sm:bg-background sm:text-foreground">
       <div className="mx-auto max-w-6xl px-6 py-10">
+        <NewsletterSignupFooter />
+
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-md">
             <div className="flex items-center gap-3">
