@@ -11,6 +11,8 @@ export default function SiteFooter() {
   return (
     <footer className="border-t border-white/15 bg-primary text-white sm:border-border sm:bg-background sm:text-foreground">
       <div className="mx-auto max-w-6xl px-6 py-10">
+        <NewsletterSignupFooter />
+
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-md">
             <div className="flex items-center gap-3">
@@ -121,8 +123,6 @@ export default function SiteFooter() {
             ) : null}
           </div>
         </div>
-
-        <NewsletterSignupFooter />
 
         <div className="mt-10 flex flex-col gap-2 border-t border-white/15 pt-6 text-xs text-white/80 sm:border-border sm:text-muted sm:flex-row sm:items-center sm:justify-between">
           <div>

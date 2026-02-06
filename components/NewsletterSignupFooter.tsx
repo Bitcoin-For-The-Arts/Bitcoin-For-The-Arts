@@ -71,7 +71,7 @@ export default function NewsletterSignupFooter() {
   return (
     <section
       aria-label="Newsletter signup"
-      className="mt-10 rounded-2xl border border-white/15 bg-white/5 p-5 sm:border-border sm:bg-surface/60"
+      className="mb-10 rounded-2xl border border-white/15 bg-white/5 p-5 sm:border-border sm:bg-surface/60"
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="max-w-xl">
