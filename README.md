@@ -105,6 +105,26 @@ Notes:
 
 ---
 
+### **Webinar Promo (Homepage Card)**
+To promote an upcoming webinar/class on the homepage (without adding a second blocking modal), set:
+
+- `NEXT_PUBLIC_SHOW_WEBINAR_PROMO=1`
+- `NEXT_PUBLIC_WEBINAR_SIGNUP_URL=https://...` (**required**)
+
+Optional copy:
+- `NEXT_PUBLIC_WEBINAR_TITLE=Bitcoin for Artists — Live Webinar`
+- `NEXT_PUBLIC_WEBINAR_DATE_TEXT=Feb 8 • 12:00 PM ET`
+- `NEXT_PUBLIC_WEBINAR_BODY_TEXT=...`
+
+Optional flyer image:
+- Upload your flyer to `public/` (example: `public/flyers/bitcoin-for-artists-webinar.png`)
+- Set `NEXT_PUBLIC_WEBINAR_FLYER_SRC=/flyers/bitcoin-for-artists-webinar.png`
+
+If you want to prevent the donation popup from competing with the webinar promo (homepage only), set:
+- `NEXT_PUBLIC_SUPPRESS_DONATE_POPUP_FOR_WEBINAR=1`
+
+---
+
 ### **Contact Form (Send Directly From the Website)**
 The Contact page now sends email directly (no “open your email app” prompt).
 
