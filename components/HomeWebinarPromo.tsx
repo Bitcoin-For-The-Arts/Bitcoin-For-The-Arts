@@ -63,15 +63,23 @@ export default function HomeWebinarPromo() {
 
           <div className="relative grid grid-cols-1 gap-4 p-5 sm:grid-cols-[112px_1fr_auto] sm:items-center sm:gap-5">
             {config.flyerSrc ? (
-              <div className="relative h-28 w-full overflow-hidden rounded-xl border border-white/15 bg-black/10 sm:h-20 sm:w-28 sm:border-border">
-                <Image
-                  src={config.flyerSrc}
-                  alt="Webinar flyer"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 90vw, 112px"
-                />
-              </div>
+              <a
+                href={config.signupUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+                aria-label="Open webinar signup"
+              >
+                <div className="relative h-44 w-full overflow-hidden rounded-xl border border-white/15 bg-black/20 sm:h-20 sm:w-28 sm:border-border">
+                  <Image
+                    src={config.flyerSrc}
+                    alt="Webinar flyer"
+                    fill
+                    className="object-contain sm:object-cover"
+                    sizes="(max-width: 640px) 90vw, 112px"
+                  />
+                </div>
+              </a>
             ) : (
               <div className="hidden sm:block">
                 <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/80 sm:border-border sm:bg-surface sm:text-muted">
