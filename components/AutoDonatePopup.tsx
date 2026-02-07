@@ -8,6 +8,7 @@ import logoImage from '@/app/asset/BITCOIN-ARTS-LOGO-Gold.png';
 
 const STORAGE_KEY = 'bfta_donate_popup_dismissed_session';
 const HOME_SCROLL_KEY = 'bfta_donate_popup_home_scrolled_session';
+const WEBINAR_PROMO_KEY = 'bfta_home_webinar_promo_dismissed_session';
 
 function isSuppressedPath(pathname: string) {
   // Don’t interrupt the donation flow or internal routes.
@@ -20,6 +21,8 @@ export default function AutoDonatePopup() {
   const pathname = usePathname() ?? '/';
   const enabled = process.env.NEXT_PUBLIC_SHOW_DONATE_POPUP !== '0';
   const homeHasIntro = process.env.NEXT_PUBLIC_SHOW_HOME_INTRO !== '0';
+  const suppressForWebinar = process.env.NEXT_PUBLIC_SUPPRESS_DONATE_POPUP_FOR_WEBINAR === '1';
+  const webinarPromoEnabled = process.env.NEXT_PUBLIC_SHOW_WEBINAR_PROMO === '1';
   const [open, setOpen] = useState(false);
   const closeBtnRef = useRef<HTMLButtonElement | null>(null);
 
@@ -45,6 +48,16 @@ export default function AutoDonatePopup() {
     if (!enabled) return;
     if (typeof window === 'undefined') return;
     if (isSuppressedPath(pathname)) return;
+
+    // If a webinar promo is running, avoid competing with it (especially on homepage).
+    // This is session-scoped: once the user dismisses the promo, the donation popup can appear on next visit.
+    if (suppressForWebinar && webinarPromoEnabled && pathname === '/') {
+      try {
+        if (window.sessionStorage.getItem(WEBINAR_PROMO_KEY) !== '1') return;
+      } catch {
+        return;
+      }
+    }
 
     try {
       if (window.sessionStorage.getItem(STORAGE_KEY) === '1') return;
@@ -97,7 +110,7 @@ export default function AutoDonatePopup() {
       window.removeEventListener('touchmove', onFirstScroll);
       cleanupTimer?.();
     };
-  }, [enabled, pathname, homeHasIntro]);
+  }, [enabled, pathname, homeHasIntro, suppressForWebinar, webinarPromoEnabled]);
 
   useEffect(() => {
     if (!open) return;
