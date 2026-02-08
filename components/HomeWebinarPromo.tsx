@@ -12,10 +12,7 @@ function isEnabled() {
 
 export function isWebinarPromoConfigured() {
   const url = (process.env.NEXT_PUBLIC_WEBINAR_SIGNUP_URL ?? '').trim();
-  const endIso = (process.env.NEXT_PUBLIC_WEBINAR_END_ISO ?? '').trim();
-  const endMs = endIso ? Date.parse(endIso) : NaN;
-  const expired = Number.isFinite(endMs) && Date.now() > endMs;
-  return isEnabled() && Boolean(url) && !expired;
+  return isEnabled() && Boolean(url);
 }
 
 export default function HomeWebinarPromo() {
@@ -33,11 +30,8 @@ export default function HomeWebinarPromo() {
       'A fast, practical intro for artists: wallets, custody basics, and getting started.';
     const flyerSrc =
       (process.env.NEXT_PUBLIC_WEBINAR_FLYER_SRC ?? '').trim() || DEFAULT_FLYER_SRC;
-    const endIso = (process.env.NEXT_PUBLIC_WEBINAR_END_ISO ?? '').trim();
-    const endMs = endIso ? Date.parse(endIso) : NaN;
-    const expired = Number.isFinite(endMs) && Date.now() > endMs;
 
-    return { signupUrl, title, dateText, body, flyerSrc, expired };
+    return { signupUrl, title, dateText, body, flyerSrc };
   }, []);
 
   useEffect(() => {
@@ -46,7 +40,6 @@ export default function HomeWebinarPromo() {
 
     // Only show if configured.
     if (!config.signupUrl) return;
-    if (config.expired) return;
 
     try {
       if (window.sessionStorage.getItem(STORAGE_KEY) === '1') return;

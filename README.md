@@ -120,9 +120,6 @@ Optional flyer image:
 - Easiest workflow: upload/replace `public/webinar-flyer.png` (the promo uses this by default)
 - Or upload a specific flyer and set `NEXT_PUBLIC_WEBINAR_FLYER_SRC=/path-to-flyer.png`
 
-Optional auto-hide after the webinar ends:
-- `NEXT_PUBLIC_WEBINAR_END_ISO=2026-02-08T17:00:00.000Z` (example)
-
 If you want to prevent the donation popup from competing with the webinar promo (homepage only), set:
 - `NEXT_PUBLIC_SUPPRESS_DONATE_POPUP_FOR_WEBINAR=1`
 
