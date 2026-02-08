@@ -94,6 +94,11 @@ export default function SiteFooter() {
               </div>
               <ul className="mt-3 space-y-2 text-sm">
                 <li>
+                  <Link href="/transparency" className="hover:underline text-white/90 sm:text-foreground">
+                    Transparency
+                  </Link>
+                </li>
+                <li>
                   <Link href="/privacy-policy" className="hover:underline text-white/90 sm:text-foreground">
                     Privacy policy
                   </Link>

@@ -33,6 +33,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/donate/guides/estate-planning',
     '/donate/guides/royalties-ip',
     '/contact',
+    '/transparency',
     '/privacy-policy',
     '/terms',
     '/billing',

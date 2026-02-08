@@ -1,0 +1,90 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Transparency',
+  description:
+    'Board minutes and governance documents for Bitcoin for the Arts, Inc.',
+};
+
+type DocLink = {
+  title: string;
+  href: string;
+  subtitle?: string;
+};
+
+const minutes: DocLink[] = [
+  {
+    title: 'Board Meeting Minutes — Incorporation Meeting (Q4 2025)',
+    subtitle: 'Official minutes from the incorporation meeting.',
+    href: '/BFTA-Incorp-Minutes-Q4-2025.pdf',
+  },
+  {
+    title: 'Board Meeting Minutes — Q1 2026',
+    subtitle: 'Official minutes from the Q1 2026 board meeting.',
+    href: '/BFTA-Minutes-Q1-2026.pdf',
+  },
+];
+
+export default function TransparencyPage() {
+  return (
+    <main className="bg-background">
+      <div className="mx-auto max-w-6xl px-6 py-14">
+        <div className="max-w-3xl">
+          <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+            Transparency
+          </div>
+          <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
+            Board minutes &amp; documents
+          </h1>
+          <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
+            We publish key governance records to support accountability and radical
+            transparency.
+          </p>
+
+          <div className="mt-10 space-y-4">
+            {minutes.map((doc) => (
+              <div
+                key={doc.href}
+                className="rounded-2xl border border-border bg-surface/60 p-5"
+              >
+                <div className="text-sm font-semibold tracking-tight">
+                  {doc.title}
+                </div>
+                {doc.subtitle ? (
+                  <div className="mt-1 text-sm text-muted">{doc.subtitle}</div>
+                ) : null}
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                  <a
+                    href={doc.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  >
+                    View PDF
+                  </a>
+                  <a
+                    href={doc.href}
+                    download
+                    className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-background px-5 py-2 text-sm font-semibold transition-colors hover:bg-surface"
+                  >
+                    Download
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 rounded-2xl border border-border bg-background p-5 text-sm text-muted">
+            Looking for our governance overview? Visit{' '}
+            <Link href="/about/governance" className="underline underline-offset-4">
+              Governance &amp; reporting
+            </Link>
+            .
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
+
