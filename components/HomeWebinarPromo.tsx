@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 
 const STORAGE_KEY = 'bfta_home_webinar_promo_dismissed_session';
+const DEFAULT_FLYER_SRC = '/webinar-flyer.png';
 
 function isEnabled() {
   return process.env.NEXT_PUBLIC_SHOW_WEBINAR_PROMO === '1';
@@ -11,7 +12,10 @@ function isEnabled() {
 
 export function isWebinarPromoConfigured() {
   const url = (process.env.NEXT_PUBLIC_WEBINAR_SIGNUP_URL ?? '').trim();
-  return isEnabled() && Boolean(url);
+  const endIso = (process.env.NEXT_PUBLIC_WEBINAR_END_ISO ?? '').trim();
+  const endMs = endIso ? Date.parse(endIso) : NaN;
+  const expired = Number.isFinite(endMs) && Date.now() > endMs;
+  return isEnabled() && Boolean(url) && !expired;
 }
 
 export default function HomeWebinarPromo() {
@@ -23,15 +27,17 @@ export default function HomeWebinarPromo() {
     const title =
       (process.env.NEXT_PUBLIC_WEBINAR_TITLE ?? '').trim() ||
       'Bitcoin for Artists — Live Webinar';
-    const dateText =
-      (process.env.NEXT_PUBLIC_WEBINAR_DATE_TEXT ?? '').trim() ||
-      'Feb 8 • 12:00 PM ET';
+    const dateText = (process.env.NEXT_PUBLIC_WEBINAR_DATE_TEXT ?? '').trim();
     const body =
       (process.env.NEXT_PUBLIC_WEBINAR_BODY_TEXT ?? '').trim() ||
       'A fast, practical intro for artists: wallets, custody basics, and getting started.';
-    const flyerSrc = (process.env.NEXT_PUBLIC_WEBINAR_FLYER_SRC ?? '').trim();
+    const flyerSrc =
+      (process.env.NEXT_PUBLIC_WEBINAR_FLYER_SRC ?? '').trim() || DEFAULT_FLYER_SRC;
+    const endIso = (process.env.NEXT_PUBLIC_WEBINAR_END_ISO ?? '').trim();
+    const endMs = endIso ? Date.parse(endIso) : NaN;
+    const expired = Number.isFinite(endMs) && Date.now() > endMs;
 
-    return { signupUrl, title, dateText, body, flyerSrc };
+    return { signupUrl, title, dateText, body, flyerSrc, expired };
   }, []);
 
   useEffect(() => {
@@ -40,6 +46,7 @@ export default function HomeWebinarPromo() {
 
     // Only show if configured.
     if (!config.signupUrl) return;
+    if (config.expired) return;
 
     try {
       if (window.sessionStorage.getItem(STORAGE_KEY) === '1') return;
@@ -85,14 +92,16 @@ export default function HomeWebinarPromo() {
                 <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/80 sm:border-border sm:bg-surface sm:text-muted">
                   Live webinar
                 </div>
-                <div className="mt-2 text-sm font-semibold">{config.dateText}</div>
+                {config.dateText ? (
+                  <div className="mt-2 text-sm font-semibold">{config.dateText}</div>
+                ) : null}
               </div>
             )}
 
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/80 sm:border-border sm:bg-surface sm:text-muted sm:hidden">
-                  Live webinar · {config.dateText}
+                  Live webinar{config.dateText ? ` · ${config.dateText}` : ''}
                 </div>
                 <div className="text-lg font-semibold tracking-tight">{config.title}</div>
               </div>
