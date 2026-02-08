@@ -33,7 +33,7 @@ export const socialLinks: SocialLink[] = [
   {
     key: 'instagram',
     label: 'Instagram',
-    href: 'https://www.instagram.com/bitcoin_for_the_arts/',
+    href: 'https://www.instagram.com/bitcoinforthearts?igsh=MWtlaXgxM3Q0Z2ZpMA%3D%3D&utm_source=qr',
   },
   {
     key: 'github',
