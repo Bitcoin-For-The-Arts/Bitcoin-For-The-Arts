@@ -109,6 +109,15 @@ export default function EducationPage() {
                   We’ll expand this library over time. These are hosted on our site (no third-party required).
                 </p>
                 <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Link
+                    href="/education/open"
+                    className="rounded-xl border border-border bg-surface p-4 text-sm font-semibold transition-colors hover:opacity-90"
+                  >
+                    Open education materials (CC BY 4.0)
+                    <div className="mt-1 text-xs font-normal text-muted">
+                      Free, reusable learning resources for anyone.
+                    </div>
+                  </Link>
                   <a
                     href="/resources/btcpay-setup-guide.md"
                     className="rounded-xl border border-border bg-surface p-4 text-sm font-semibold transition-colors hover:opacity-90"
@@ -168,7 +177,11 @@ export default function EducationPage() {
                   </a>
                 </div>
                 <div className="mt-3 text-xs text-muted">
-                  Opens on bitcoinforthearts.org
+                  Prefer open-licensed notes? See{' '}
+                  <Link href="/education/open" className="underline underline-offset-4">
+                    open materials
+                  </Link>
+                  .
                 </div>
               </div>
 

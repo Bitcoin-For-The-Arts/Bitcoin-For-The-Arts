@@ -24,6 +24,17 @@ export default function EducationWebinarPage() {
             presentation format and navigation.
           </p>
 
+          <div className="mt-6 rounded-2xl border border-border bg-surface/60 p-5 text-sm text-muted">
+            <div className="font-semibold text-foreground">Open-licensed materials</div>
+            <div className="mt-2">
+              Prefer a self-hosted, openly licensed version? Use our{' '}
+              <Link href="/education/open" className="underline underline-offset-4">
+                open education materials
+              </Link>{' '}
+              (CC BY 4.0).
+            </div>
+          </div>
+
           <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-surface">
             <div className="relative w-full" style={{ paddingTop: '64.2857%' }}>
               <iframe
