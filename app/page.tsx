@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import logoImage from './asset/BITCOIN-ARTS-LOGO-gold.jpg';
-import HomeWebinarPromo from '@/components/HomeWebinarPromo';
 
 export default function Home() {
   // Easy toggle for the fullscreen intro video.
@@ -22,7 +21,6 @@ export default function Home() {
 
   return (
     <main className="bg-background">
-      <HomeWebinarPromo />
       {showIntro ? (
         <>
           {/* Intro video section */}

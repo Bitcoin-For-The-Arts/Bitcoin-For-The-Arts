@@ -63,6 +63,13 @@ export default function TermsOfUsePage() {
               derivative works from, or otherwise exploit the Site content without
               our prior written permission, except where permitted by law.
             </p>
+            <p>
+              Exception: designated open education materials (including content linked
+              from <Link href="/education/open">/education/open</Link> and files in{' '}
+              <code>/resources/education/</code>) are licensed under Creative Commons
+              Attribution 4.0 International (CC BY 4.0), unless otherwise noted. Those
+              materials are governed by their stated license terms.
+            </p>
 
             <h2>4. User content</h2>
             <p>
