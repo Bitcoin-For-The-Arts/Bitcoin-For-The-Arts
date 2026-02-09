@@ -55,6 +55,14 @@ Donate BTC → `bc1qarts...` (tax-deductible Dec 2025)
 - No inflation
 - No gatekeepers
 
+### Education Materials (Public Repo)
+
+We maintain public education materials in a dedicated repo:
+https://github.com/Bitcoin-For-The-Arts/education
+
+License: CC BY 4.0. For setup and webinar upload steps, see:
+docs/education-repo.md
+
 X: @Bitcoinfta
 
 Email: hello@bitcoinforthearts.org
