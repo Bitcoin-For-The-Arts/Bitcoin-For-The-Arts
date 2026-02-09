@@ -20,6 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/grants/faq',
     '/programming',
     '/education',
+    '/education/open',
     '/artists',
     '/artists/research',
     '/events',
