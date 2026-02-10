@@ -47,7 +47,7 @@ type Receipt = {
     ein?: string;
     nonprofitOrSponsor?: string;
     disciplines: string[];
-    btcAddress: string;
+    btcAddress?: string;
   };
   project: {
     title: string;
@@ -160,7 +160,7 @@ export default function GrantApplicationForm() {
         ein: getInputValue('ein').trim() || undefined,
         nonprofitOrSponsor: getInputValue('nonprofitOrSponsor').trim() || undefined,
         disciplines,
-        btcAddress: getInputValue('btcAddress').trim(),
+        btcAddress: getInputValue('btcAddress').trim() || undefined,
       },
       project: {
         title: getInputValue('projectTitle').trim(),
@@ -930,7 +930,7 @@ export default function GrantApplicationForm() {
             BFTA Grant Application
           </div>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-            Apply for a Bitcoin-native micro-grant
+            Apply for a Bitcoin-native micro-grant ($500–$2,000 initial funding)
           </h2>
         </div>
         <div className="text-sm text-muted">
@@ -1002,9 +1002,11 @@ export default function GrantApplicationForm() {
       ) : null}
 
       <p className="mt-4 text-sm leading-relaxed text-muted">
-        BFTA funds Bitcoin-aligned arts projects. Grants are disbursed in BTC. Reviewed quarterly;
-        processing starts <span className="font-semibold text-foreground">Q3 2026</span>. Applicants must commit to
-        post-grant reporting for radical transparency.
+        Bitcoin For The Arts (BFTA) funds Bitcoin-aligned arts projects. Initial funding is typically{' '}
+        <span className="font-semibold text-foreground">$500–$2,000</span> per grant and is disbursed in BTC. Applications
+        are reviewed quarterly; processing begins{' '}
+        <span className="font-semibold text-foreground">Q3 2026</span>. Applicants must commit to simple post-grant
+        reporting to support radical transparency.
       </p>
 
       {/* Progress */}
@@ -1140,15 +1142,18 @@ export default function GrantApplicationForm() {
 
           <label className="flex flex-col gap-2">
             <span className="text-sm font-semibold">
-              Bitcoin Wallet Address for Disbursement <span className="text-accent">*</span>
+              Bitcoin Wallet Address for Disbursement (optional)
             </span>
             <input
               name="btcAddress"
-              required
+              required={false}
               pattern={BITCOIN_ADDRESS_PATTERN}
               className="min-h-12 rounded-md border border-border bg-background px-3 py-2"
               placeholder="bc1q…, bc1p…, 1…, or 3…"
             />
+            <span className="text-xs text-muted">
+              If selected, we can confirm a disbursement address later during the award process.
+            </span>
           </label>
         </div>
 
