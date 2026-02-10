@@ -481,8 +481,9 @@ export async function POST(req: NextRequest) {
     const email = requireString(fields, 'email', 'Email');
     const mailingAddress = requireString(fields, 'mailingAddress', 'Mailing Address');
     const links = requireString(fields, 'links', 'Links');
-    const btcAddress = requireString(fields, 'btcAddress', 'Bitcoin Address');
-    if (!isValidBitcoinOnchainAddress(btcAddress)) {
+    const btcAddressRaw = (fields.btcAddress ?? '').trim();
+    const btcAddress = btcAddressRaw ? btcAddressRaw : null;
+    if (btcAddress && !isValidBitcoinOnchainAddress(btcAddress)) {
       throw new Error(
         'Bitcoin wallet address format looks invalid. Please use an on-chain address (legacy 1/3, segwit bc1q…, or taproot bc1p…).',
       );

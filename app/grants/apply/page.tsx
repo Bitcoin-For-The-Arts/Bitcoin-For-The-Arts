@@ -45,6 +45,15 @@ export default function GrantsApplyPage() {
                 Bitcoin For The Arts (BFTA) exists to fund artists with low time preference:
                 censorship-resistant innovation, no gatekeepers, and radical transparency.
               </p>
+              <div className="mt-4 rounded-2xl border border-border bg-background p-4 text-sm text-muted">
+                <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                  Initial micro-grant range
+                </div>
+                <div className="mt-2">
+                  Initial funding is typically <span className="font-semibold text-foreground">$500–$2,000</span> per grant
+                  (disbursed in BTC).
+                </div>
+              </div>
               <div className="mt-4 rounded-2xl border border-border bg-background p-4 text-sm">
                 <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                   Reserve model
