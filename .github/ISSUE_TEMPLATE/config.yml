@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Donate Bitcoin
+    url: https://bitcoinforthearts.org/donate
+    about: Support sovereign creators by donating Bitcoin.
+  - name: Apply for a Grant
+    url: https://bitcoinforthearts.org/grants
+    about: Apply for a Bitcoin micro-grant for your creative project.
+  - name: General Inquiries
+    url: mailto:hello@bitcoinforthearts.org
+    about: For questions not related to code, email us directly.
