@@ -2,70 +2,154 @@
 
 # Bitcoin For The Arts, Inc.
 
-Bitcoin For The Arts, Inc. – 501(c)(3) Nonprofit
+**501(c)(3) Nonprofit | The first nonprofit paying artists in Bitcoin.**
 
-The first nonprofit paying artists in Bitcoin.
+[![Donate Bitcoin](https://img.shields.io/badge/Donate-Bitcoin-f7931a?style=for-the-badge&logo=bitcoin&logoColor=white)](https://bitcoinforthearts.org/donate)
+[![Website](https://img.shields.io/badge/Website-bitcoinforthearts.org-000?style=for-the-badge)](https://bitcoinforthearts.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
-55/30/10/5 Rule | 100% On-Chain | 100% Open-Source
+---
 
-### Our Mission
+## Our Mission
 
-“In the sovereign spirit of Bitcoin—uncensorable money for uncensorable minds—we ignite a self-sustaining global renaissance in art.
+> "In the sovereign spirit of Bitcoin — uncensorable money for uncensorable minds — we ignite a self-sustaining global renaissance in art. Through Bitcoin micro-grants, performance workshops, and live + digital productions, we back sovereign creators across visual arts, theater, dance, music, writing, storytelling, and film."
 
-Through Bitcoin micro-grants, performance workshops, and live + digital productions, we back sovereign creators across visual arts, theater, dance, music, writing, storytelling, and film. We favor low time preference work—timeless craft that resists censorship and celebrates financial freedom through Bitcoin-aligned innovation. Every donation fuels direct support to creators, powers exhibitions and residencies, and plants a seed in a permanent Bitcoin reserve—building an endowment for human creativity that no institution or inflation can touch.”
+Every donation fuels direct support to creators, powers exhibitions and residencies, and plants a seed in a permanent Bitcoin reserve — building an endowment for human creativity that no institution or inflation can touch.
 
-### What We Do
+---
 
-- **55%** Staking art on sound money
-- 30% → workshops, residencies, co-productions with BAM, Whitney, Carnegie
-- 10% → operations
-- 5% → HODL Vault (1 BTC by 2030)
+## Donate
 
-### Live Treasury
+All donations support working artists and are tax-deductible under our 501(c)(3) status.
 
-`github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury`
-
-- Main Donation Wallet: `bc1qarts...` (public for on-chain verification)
-- HODL Vault: Secure 3-of-5 multisig (non-public address for enhanced security)
-- Live Balance: Updated quarterly via audited summary reports
-- Grants Paid: 0 → 750 artists by 2028
-- Donor Leaderboard: Public or anonymous
-
-Donate BTC → `bc1qarts...` (tax-deductible Dec 2025)
+| Method | Link |
+|--------|------|
+| Bitcoin (on-chain & Lightning) | [bitcoinforthearts.org/donate#bitcoin](https://bitcoinforthearts.org/donate#bitcoin) |
+| All donation methods | [bitcoinforthearts.org/donate](https://bitcoinforthearts.org/donate) |
+| Donor-Advised Fund (DAF) | [DAF giving guide](https://bitcoinforthearts.org/donate/guides/daf) |
+| IRA Qualified Charitable Distribution | [IRA QCD guide](https://bitcoinforthearts.org/donate/guides/ira-qcd) |
+| Securities & stock | [Securities guide](https://bitcoinforthearts.org/donate/guides/securities) |
+| Estate planning & bequests | [Estate planning guide](https://bitcoinforthearts.org/donate/guides/estate-planning) |
+| Life insurance | [Life insurance guide](https://bitcoinforthearts.org/donate/guides/life-insurance) |
+| Royalties & IP | [Royalties guide](https://bitcoinforthearts.org/donate/guides/royalties-ip) |
 
 ### Donor Perks
 
-- All donors: Named in leaderboard.csv
-- ≥ 0.01 BTC: Digital thank-you card
-- ≥ 1 BTC: Name a grant + steel seed backup
+- **All donors:** Named in the donor leaderboard (or anonymous)
+- **0.01+ BTC:** Digital thank-you card
+- **1+ BTC:** Name a grant + steel seed backup
 
-### The 55/30/10/5 Rule
+---
 
-| Use          | %  | Purpose                  |
-|--------------|----|--------------------------|
-| Artist Grants| 55%| BTC to creators         |
-| Programs     | 30%| Workshops, residencies, co-productions |
-| Admin        | 10%| Compliance & ops        |
-| HODL Vault   | 5% | 1 BTC by 2030           |
+## The 55/30/10/5 Rule
 
-### Stacking Culture on Sound Money
+Every dollar (or sat) follows a clear, public allocation model:
 
-- No fiat
-- No VCs
-- No inflation
+| Allocation | % | Purpose |
+|---|---|---|
+| Artist Grants | 55% | Direct BTC micro-grants to working creators |
+| Programs | 30% | Workshops, residencies, co-productions |
+| Operations | 10% | Compliance, admin, infrastructure |
+| HODL Vault | 5% | Long-term Bitcoin reserve (1 BTC by 2030) |
+
+---
+
+## Treasury & Transparency
+
+We believe in radical financial transparency. All funds are designed to be publicly verifiable on-chain.
+
+- **Live Treasury:** [github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury](https://github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury)
+- **HODL Vault:** Secure 3-of-5 multisig
+- **Quarterly Reports:** Published in the treasury repo
+- **Grant Tracking:** 0 → 750 artists by 2028
+
+---
+
+## For Artists
+
+### Grants
+We fund sovereign creators across all disciplines — visual arts, theater, dance, music, writing, storytelling, and film.
+
+- **Apply:** [bitcoinforthearts.org/grants](https://bitcoinforthearts.org/grants)
+- **FAQ:** [bitcoinforthearts.org/grants/faq](https://bitcoinforthearts.org/grants/faq)
+- **Grant terms:** [Grant Terms PDF](https://bitcoinforthearts.org/resources/grants/grant-terms.pdf)
+
+### Programs
+- Workshops, residencies, and live productions
+- [bitcoinforthearts.org/programming](https://bitcoinforthearts.org/programming)
+
+### Why Bitcoin?
+- [bitcoinforthearts.org/artists/why-bitcoin](https://bitcoinforthearts.org/artists/why-bitcoin)
+
+---
+
+## Get Involved
+
+- **Volunteer:** [bitcoinforthearts.org/get-involved](https://bitcoinforthearts.org/get-involved)
+- **DIY Fundraising:** [bitcoinforthearts.org/get-involved/diy-fundraising-guide](https://bitcoinforthearts.org/get-involved/diy-fundraising-guide)
+- **Contribute code:** See [CONTRIBUTING.md](CONTRIBUTING.md)
+- **Board nominations:** [bitcoinforthearts.org/about/governance](https://bitcoinforthearts.org/about/governance)
+
+---
+
+## Education
+
+We maintain public education materials in a dedicated repository:
+
+- **Education repo:** [github.com/Bitcoin-For-The-Arts/education](https://github.com/Bitcoin-For-The-Arts/education)
+- **License:** CC BY 4.0
+- **Setup guide:** [docs/education-repo.md](docs/education-repo.md)
+
+---
+
+## About the Organization
+
+- **Type:** 501(c)(3) nonprofit corporation
+- **Founded:** 2025
+- **Headquarters:** New York, NY
+- **Leadership:** [bitcoinforthearts.org/about/leadership](https://bitcoinforthearts.org/about/leadership)
+- **Governance:** [GOVERNANCE.md](GOVERNANCE.md)
+
+### Core Principles
+- 100% on-chain transparency
+- 100% open-source
+- No fiat middlemen
 - No gatekeepers
+- Artist-first, always
 
-### Education Materials (Public Repo)
+---
 
-We maintain public education materials in a dedicated repo:
-https://github.com/Bitcoin-For-The-Arts/education
+## Contact
 
-License: CC BY 4.0. For setup and webinar upload steps, see:
-docs/education-repo.md
+| Channel | Link |
+|---------|------|
+| Website | [bitcoinforthearts.org](https://bitcoinforthearts.org) |
+| Email | hello@bitcoinforthearts.org |
+| X (Twitter) | [@Bitcoinfta](https://x.com/Bitcoinfta) |
+| Grants | grants@bitcoinforthearts.org |
 
-X: @Bitcoinfta
+---
 
-Email: hello@bitcoinforthearts.org
+## Project Documentation
+
+<details>
+<summary><strong>Developer Setup & Deployment Guide</strong> (click to expand)</summary>
+
+### Tech Stack
+- **Framework:** Next.js (App Router)
+- **Styling:** Tailwind CSS
+- **Language:** TypeScript
+- **Hosting:** Vercel
+- **Payments:** BTCPay Server
+
+### Local Development
+
+```bash
+git clone https://github.com/Bitcoin-For-The-Arts/Bitcoin-For-The-Arts.git
+cd Bitcoin-For-The-Arts
+npm install
+npm run dev
+```
 
 ### Homepage Intro Video (Easy Swap)
 
@@ -79,7 +163,7 @@ Email: hello@bitcoinforthearts.org
 
 ### Contact Form (Send Directly From the Website)
 
-The Contact page now sends email directly (no “open your email app” prompt).
+The Contact page now sends email directly (no "open your email app" prompt).
 
 #### Option A (recommended): Resend (no Zoho app password needed)
 
@@ -238,8 +322,11 @@ To email applications to reviewers without giving them admin credentials:
 
 - `REVIEW_LINK_SECRET` (required; any long random string)
 
-“The NEA of the Bitcoin Era.”
+</details>
 
-First. Transparent. Unstoppable.
+---
 
-November 16, 2025 | 12:40 AM EST | New York, NY
+<p align="center">
+  <strong>"The NEA of the Bitcoin Era."</strong><br>
+  First. Transparent. Unstoppable.
+</p>
