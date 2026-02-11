@@ -71,6 +71,21 @@ export default function EducationPage() {
             how to receive Bitcoin, protect your earnings, and build a sovereign
             creative life.
           </p>
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/education/webinar"
+              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 border border-accent/60"
+            >
+              Study the webinars
+            </Link>
+            <Link
+              href="/donate"
+              className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+            >
+              Fund education
+            </Link>
+          </div>
         </div>
 
         {/* Featured / Latest webinar hero card */}
