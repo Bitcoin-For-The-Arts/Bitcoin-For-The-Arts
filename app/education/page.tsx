@@ -166,34 +166,16 @@ export default function EducationPage() {
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-muted">
                   Practical, creator-focused presentations on Bitcoin adoption — from
-                  introductory concepts to hands-on custody and payments.
+                  introductory concepts to hands-on custody and payments. All webinar
+                  materials are published under CC BY 4.0.
                 </p>
-                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="mt-4">
                   <Link
                     href="/education/webinar"
-                    className="rounded-xl border border-accent/30 bg-accent/10 p-4 text-sm font-semibold transition-colors hover:opacity-90"
+                    className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
                   >
-                    <span className="text-accent">New</span> — Bitcoin in Practice for Artists
-                    <div className="mt-1 text-xs font-normal text-muted">
-                      Hands-on PDF webinar (CC BY 4.0).
-                    </div>
+                    View webinars
                   </Link>
-                  <Link
-                    href="/education/webinar"
-                    className="rounded-xl border border-border bg-surface p-4 text-sm font-semibold transition-colors hover:opacity-90"
-                  >
-                    Bitcoin for Artists: Unlocking Creative Freedom
-                    <div className="mt-1 text-xs font-normal text-muted">
-                      Interactive Gamma presentation.
-                    </div>
-                  </Link>
-                </div>
-                <div className="mt-3 text-xs text-muted">
-                  Prefer open-licensed notes? See{' '}
-                  <Link href="/education/open" className="underline underline-offset-4">
-                    open materials
-                  </Link>
-                  .
                 </div>
               </div>
 
