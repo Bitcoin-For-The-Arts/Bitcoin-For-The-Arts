@@ -159,29 +159,23 @@ export default function EducationPage() {
 
               <div className="rounded-2xl border border-border bg-background p-6">
                 <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-                  Webinar
+                  Webinars
                 </div>
                 <h2 className="mt-2 text-xl font-semibold tracking-tight">
-                  Why Artists Need Bitcoin
+                  Bitcoin Webinars for Artists
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-muted">
-                  A creator-focused webinar on why Bitcoin matters for artists: inflation, censorship resistance, getting
-                  paid globally, and building long-term sovereignty.
+                  Practical, creator-focused presentations on Bitcoin adoption — from
+                  introductory concepts to hands-on custody and payments. All webinar
+                  materials are published under CC BY 4.0.
                 </p>
                 <div className="mt-4">
-                  <a
+                  <Link
                     href="/education/webinar"
                     className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
                   >
-                    Study the webinar
-                  </a>
-                </div>
-                <div className="mt-3 text-xs text-muted">
-                  Prefer open-licensed notes? See{' '}
-                  <Link href="/education/open" className="underline underline-offset-4">
-                    open materials
+                    View webinars
                   </Link>
-                  .
                 </div>
               </div>
 
