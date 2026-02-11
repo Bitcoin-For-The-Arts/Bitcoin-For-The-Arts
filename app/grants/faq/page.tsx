@@ -18,7 +18,7 @@ const faqs = [
   },
   {
     q: 'How much funding can I request?',
-    a: 'Grants range from $500 to $5,000 USD equivalent in Bitcoin (BTC). The amount is disbursed based on your project’s needs and our review.',
+    a: 'Grants range from $500 to $2,000 USD equivalent in Bitcoin (BTC). The amount is disbursed based on your project’s needs and our review.',
   },
   {
     q: 'What types of projects do you fund?',
@@ -38,7 +38,7 @@ const faqs = [
   },
   {
     q: 'Do I need to report on how I use the grant?',
-    a: 'For current micro-grants ($500–$5,000), no reporting is required. However, if we introduce larger grants in the future, basic reporting on project outcomes may be needed—we’ll update applicants accordingly.',
+    a: 'For current micro-grants ($500–$2,000), no reporting is required. However, if we introduce larger grants in the future, basic reporting on project outcomes may be needed—we’ll update applicants accordingly.',
   },
   {
     q: 'Why pay grants in Bitcoin?',

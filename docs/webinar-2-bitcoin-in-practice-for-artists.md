@@ -253,7 +253,7 @@ This is general education, not tax advice. Consult a qualified tax professional 
 
 | Detail | Info |
 |--------|------|
-| Amount | $500 – $5,000 (USD equivalent in BTC) |
+| Amount | $500 – $2,000 (USD equivalent in BTC) |
 | Disciplines | Visual arts, theater, dance, music, writing, storytelling, film |
 | Eligibility | Independent artists and small collectives |
 | Review cycle | Quarterly |
