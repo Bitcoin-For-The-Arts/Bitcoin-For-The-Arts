@@ -45,6 +45,7 @@ export default function Navigation() {
         ],
       },
       { label: 'Programming', href: '/programming' },
+      { label: 'Education', href: '/education' },
       { label: 'Events', href: '/events' },
       { label: 'Stories', href: '/stories' },
       { label: 'Contact', href: '/contact' },
