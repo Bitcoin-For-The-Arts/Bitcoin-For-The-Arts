@@ -12,9 +12,9 @@ You are free to **share** and **adapt** the material for any purpose (including 
 
 ### Attribution suggestion
 
-“Bitcoin for the Arts (bitcoinforthearts.org) — CC BY 4.0”
+"Bitcoin for the Arts (bitcoinforthearts.org) — CC BY 4.0"
 
-## What’s included
+## What's included
 
-- `bitcoin-for-artists-webinar.md`: notes/handout for our “Bitcoin for Artists” webinar.
-
+- **Bitcoin in Practice for Artists** (PDF webinar): a hands-on guide covering real-world custody, accepting payments, and pricing strategies. [View PDF on Google Drive](https://drive.google.com/file/d/1n9EyXi933K5KIe8ljPgEb5KQJdNGMZYp/view?usp=drive_link)
+- `bitcoin-for-artists-webinar.md`: notes/handout for our "Bitcoin for Artists" webinar.
