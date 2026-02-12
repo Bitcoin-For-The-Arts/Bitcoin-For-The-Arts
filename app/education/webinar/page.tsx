@@ -11,6 +11,8 @@ export const metadata: Metadata = {
 const gammaUrl = 'https://copy-of-bitcoin-for-arti-1sbvsbl.gamma.site/';
 const pdfUrl =
   'https://drive.google.com/file/d/1n9EyXi933K5KIe8ljPgEb5KQJdNGMZYp/view?usp=drive_link';
+const whatIsMoneyUrl =
+  'https://docs.google.com/presentation/d/1nfV8JfONmbHYRAw7Few7mPdMacszO3emAH-t8dtTQos/edit?usp=sharing';
 
 export default function EducationWebinarPage() {
   return (
@@ -76,7 +78,7 @@ export default function EducationWebinarPage() {
             </div>
           </section>
 
-          {/* ── 2. Bitcoin in Practice for Artists (newest) ─────────── */}
+          {/* ── 2. Bitcoin in Practice for Artists ─────────────────── */}
           <section className="mt-14">
             <a
               href={pdfUrl}
@@ -96,7 +98,7 @@ export default function EducationWebinarPage() {
               </div>
               <div className="p-6 sm:p-8">
                 <div className="inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent">
-                  New — PDF Webinar
+                  PDF Webinar
                 </div>
                 <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
                   Bitcoin in Practice for Artists
@@ -109,6 +111,45 @@ export default function EducationWebinarPage() {
                 </p>
                 <div className="mt-5 inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-6 py-2 text-sm font-semibold text-white transition-colors group-hover:opacity-90">
                   View PDF presentation &rarr;
+                </div>
+              </div>
+            </a>
+          </section>
+
+          {/* ── 3. What Is Money? (newest) ─────────────────────────── */}
+          <section className="mt-14">
+            <a
+              href={whatIsMoneyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group block overflow-hidden rounded-3xl border border-border bg-surface/80 shadow-sm transition-shadow hover:shadow-lg"
+            >
+              <div className="relative aspect-[16/9] w-full">
+                <Image
+                  src="/1_What-Is-Money.png"
+                  alt="What Is Money? — webinar cover"
+                  fill
+                  priority={false}
+                  className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                  sizes="(max-width: 768px) 100vw, 896px"
+                />
+              </div>
+              <div className="p-6 sm:p-8">
+                <div className="inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent">
+                  New — Webinar
+                </div>
+                <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+                  What Is Money?
+                </h2>
+                <p className="mt-3 text-sm leading-relaxed text-muted sm:text-base">
+                  A beginner-friendly journey through the origins of money &mdash; how
+                  barter gave way to sound money, why human action depends on the ability
+                  to economize, what makes free markets and circular economies thrive, and
+                  how Bitcoin carries the story forward. Written so a fifth grader can
+                  follow along.
+                </p>
+                <div className="mt-5 inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-6 py-2 text-sm font-semibold text-white transition-colors group-hover:opacity-90">
+                  View presentation &rarr;
                 </div>
               </div>
             </a>
