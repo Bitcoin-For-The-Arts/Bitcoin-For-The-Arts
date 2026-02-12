@@ -16,11 +16,11 @@ type Material = {
 
 const materials: Material[] = [
   {
-    title: 'Bitcoin in Practice for Artists — PDF Webinar',
+    title: 'Bitcoin in Practice for Artists — Webinar',
     description:
       'A hands-on guide covering real-world custody setups, accepting payments, pricing strategies, and the practical steps to using Bitcoin every day.',
-    href: 'https://drive.google.com/file/d/1n9EyXi933K5KIe8ljPgEb5KQJdNGMZYp/view?usp=drive_link',
-    format: 'PDF',
+    href: 'https://docs.google.com/presentation/d/1jzhAQxY4QgojFcjtT_A9BPY8yh3yu6tvawsUDg29dzk/edit?usp=sharing',
+    format: 'Link',
   },
   {
     title: 'Bitcoin for Artists — Open Webinar Notes',

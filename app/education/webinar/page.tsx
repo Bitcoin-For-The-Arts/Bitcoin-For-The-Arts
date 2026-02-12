@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 
 /* ── External URLs ───────────────────────────────────────────────── */
 const gammaUrl = 'https://copy-of-bitcoin-for-arti-1sbvsbl.gamma.site/';
-const pdfUrl =
-  'https://drive.google.com/file/d/1n9EyXi933K5KIe8ljPgEb5KQJdNGMZYp/view?usp=drive_link';
+const bitcoinInPracticeUrl =
+  'https://docs.google.com/presentation/d/1jzhAQxY4QgojFcjtT_A9BPY8yh3yu6tvawsUDg29dzk/edit?usp=sharing';
 const whatIsMoneyUrl =
   'https://docs.google.com/presentation/d/1nfV8JfONmbHYRAw7Few7mPdMacszO3emAH-t8dtTQos/edit?usp=sharing';
 const protectingBtcUrl =
@@ -54,13 +54,13 @@ const webinars: Webinar[] = [
   /* 3 — Hands-on: accepting and using Bitcoin */
   {
     title: 'Bitcoin in Practice for Artists',
-    href: pdfUrl,
+    href: bitcoinInPracticeUrl,
     image: '/1_Bitcoin-in-Practice-for-Artists.png',
     alt: 'Bitcoin in Practice for Artists — webinar cover',
-    badge: 'PDF Webinar',
+    badge: 'Webinar',
     description:
       'A hands-on guide for artists ready to put Bitcoin to work\u00a0\u2014 covering real-world custody setups, accepting payments, pricing strategies, and the practical steps between \u201cI\u2019ve heard of Bitcoin\u201d and \u201cI\u2019m using it every day.\u201d',
-    cta: 'View PDF presentation',
+    cta: 'View presentation',
   },
   /* 4 — Advanced: securing your stack for the long term */
   {

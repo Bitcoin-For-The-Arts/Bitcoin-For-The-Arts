@@ -16,5 +16,5 @@ You are free to **share** and **adapt** the material for any purpose (including 
 
 ## What's included
 
-- **Bitcoin in Practice for Artists** (PDF webinar): a hands-on guide covering real-world custody, accepting payments, and pricing strategies. [View PDF on Google Drive](https://drive.google.com/file/d/1n9EyXi933K5KIe8ljPgEb5KQJdNGMZYp/view?usp=drive_link)
+- **Bitcoin in Practice for Artists** (webinar): a hands-on guide covering real-world custody, accepting payments, and pricing strategies. [View presentation on Google Slides](https://docs.google.com/presentation/d/1jzhAQxY4QgojFcjtT_A9BPY8yh3yu6tvawsUDg29dzk/edit?usp=sharing)
 - `bitcoin-for-artists-webinar.md`: notes/handout for our "Bitcoin for Artists" webinar.
