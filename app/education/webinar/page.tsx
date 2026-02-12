@@ -17,7 +17,7 @@ const whatIsMoneyUrl =
 const protectingBtcUrl =
   'https://docs.google.com/presentation/d/1Z64VaEpCIAHsXjPfn2zArpnqPwNj-zZTaQkivRefw8Y/edit?usp=sharing';
 
-/* ── Webinar data (newest first) ─────────────────────────────────── */
+/* ── Webinar data (progressive educational order) ────────────────── */
 interface Webinar {
   title: string;
   href: string;
@@ -29,26 +29,29 @@ interface Webinar {
 }
 
 const webinars: Webinar[] = [
-  {
-    title: 'Protecting Your Bitcoin: Security & Self-Custody Deep Dive',
-    href: protectingBtcUrl,
-    image: '/1_Protecting-Your-Bitcoin-Security-and-Self-Custody-Deep-Dive.png',
-    alt: 'Protecting Your Bitcoin: Security and Self-Custody Deep Dive — webinar cover',
-    badge: 'New — Webinar',
-    description:
-      'A deep dive into protecting your Bitcoin — covering wallet architecture, self-custody best practices, multi-sig setups, seed-phrase security, and the practical steps every artist needs to safeguard their stack for the long term.',
-    cta: 'View presentation',
-  },
+  /* 1 — Start here: understand money itself */
   {
     title: 'What Is Money?',
     href: whatIsMoneyUrl,
     image: '/1_What-Is-Money.png',
     alt: 'What Is Money? — webinar cover',
-    badge: 'Webinar',
+    badge: 'Start Here',
     description:
-      'A beginner-friendly journey through the origins of money\u00a0— how barter gave way to sound money, why human action depends on the ability to economize, what makes free markets and circular economies thrive, and how Bitcoin carries the story forward.',
+      'A beginner-friendly journey through the origins of money\u00a0\u2014 how barter gave way to sound money, why human action depends on the ability to economize, what makes free markets and circular economies thrive, and how Bitcoin carries the story forward.',
     cta: 'View presentation',
   },
+  /* 2 — Why Bitcoin matters for artists */
+  {
+    title: 'Bitcoin for Artists: Unlocking New Creative Freedom',
+    href: gammaUrl,
+    image: '/1_Bitcoin-for-Artists-Unlocking-New-Creative-Freedom.png',
+    alt: 'Bitcoin for Artists: Unlocking New Creative Freedom — webinar cover',
+    badge: 'Webinar',
+    description:
+      'An interactive overview of why Bitcoin matters for creators, how to take custody of your sats, and the path toward financial sovereignty as an artist.',
+    cta: 'View presentation',
+  },
+  /* 3 — Hands-on: accepting and using Bitcoin */
   {
     title: 'Bitcoin in Practice for Artists',
     href: pdfUrl,
@@ -56,17 +59,18 @@ const webinars: Webinar[] = [
     alt: 'Bitcoin in Practice for Artists — webinar cover',
     badge: 'PDF Webinar',
     description:
-      'A hands-on guide for artists ready to put Bitcoin to work\u00a0— covering real-world custody setups, accepting payments, pricing strategies, and the practical steps between \u201cI\u2019ve heard of Bitcoin\u201d and \u201cI\u2019m using it every day.\u201d',
+      'A hands-on guide for artists ready to put Bitcoin to work\u00a0\u2014 covering real-world custody setups, accepting payments, pricing strategies, and the practical steps between \u201cI\u2019ve heard of Bitcoin\u201d and \u201cI\u2019m using it every day.\u201d',
     cta: 'View PDF presentation',
   },
+  /* 4 — Advanced: securing your stack for the long term */
   {
-    title: 'Bitcoin for Artists: Unlocking New Creative Freedom',
-    href: gammaUrl,
-    image: '/feb-8-webinar.png',
-    alt: 'Bitcoin for Artists: Unlocking New Creative Freedom — webinar cover',
-    badge: 'Webinar',
+    title: 'Protecting Your Bitcoin: Security & Self-Custody Deep Dive',
+    href: protectingBtcUrl,
+    image: '/1_Protecting-Your-Bitcoin-Security-and-Self-Custody-Deep-Dive.png',
+    alt: 'Protecting Your Bitcoin: Security and Self-Custody Deep Dive — webinar cover',
+    badge: 'New — Webinar',
     description:
-      'The original webinar that started it all\u00a0— an interactive overview of why Bitcoin matters for creators, how to take custody of your sats, and the path toward financial sovereignty as an artist.',
+      'A deep dive into protecting your Bitcoin\u00a0\u2014 covering wallet architecture, self-custody best practices, multi-sig setups, seed-phrase security, and the practical steps every artist needs to safeguard their stack for the long term.',
     cta: 'View presentation',
   },
 ];
@@ -160,12 +164,12 @@ export default function EducationWebinarPage() {
           </p>
         </div>
 
-        {/* ── Featured (newest) webinar ───────────────────────────── */}
+        {/* ── Featured (first in series) webinar ─────────────────── */}
         <section className="mt-10">
           <WebinarCard webinar={featured} priority size="featured" />
         </section>
 
-        {/* ── Remaining webinars — responsive grid ────────────────── */}
+        {/* ── Remaining webinars — progressive order grid ─────────── */}
         <section className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {rest.map((w) => (
             <WebinarCard key={w.title} webinar={w} />
