@@ -16,6 +16,8 @@ const whatIsMoneyUrl =
   'https://docs.google.com/presentation/d/1kA_4H_h1C-MiTo0-lansl7D2W1fUCs7ekAiiTjE5JQU/edit?usp=sharing';
 const protectingBtcUrl =
   'https://docs.google.com/presentation/d/1Z64VaEpCIAHsXjPfn2zArpnqPwNj-zZTaQkivRefw8Y/edit?usp=sharing';
+const soundMoneyUrl =
+  'https://docs.google.com/presentation/d/1Cf8CB9jFZ18Z3ZI4vniH41pujZz30EXX_7XKV01g7wA/edit?usp=sharing';
 
 /* ── Webinar data (progressive educational order) ────────────────── */
 interface Webinar {
@@ -68,9 +70,20 @@ const webinars: Webinar[] = [
     href: protectingBtcUrl,
     image: '/1_Protecting-Your-Bitcoin-Security-and-Self-Custody-Deep-Dive.png',
     alt: 'Protecting Your Bitcoin: Security and Self-Custody Deep Dive — webinar cover',
-    badge: 'New — Webinar',
+    badge: 'Webinar',
     description:
       'A deep dive into protecting your Bitcoin\u00a0\u2014 covering wallet architecture, self-custody best practices, multi-sig setups, seed-phrase security, and the practical steps every artist needs to safeguard their stack for the long term.',
+    cta: 'View presentation',
+  },
+  /* 5 — Capstone: sound money principles elevate creative work */
+  {
+    title: 'Sound Money, Better Art',
+    href: soundMoneyUrl,
+    image: '/1_Sound-Money-Better-Art.png',
+    alt: 'Sound Money, Better Art — webinar cover',
+    badge: 'New — Webinar',
+    description:
+      'The capstone of the series\u00a0\u2014 exploring how sound money principles fuel better creative work, why low time-preference thinking transforms artistic practice, and how Bitcoin-native patronage builds a sustainable future for the arts.',
     cta: 'View presentation',
   },
 ];
@@ -104,7 +117,7 @@ function WebinarCard({
           sizes={
             isFeatured
               ? '(max-width: 768px) 100vw, 1152px'
-              : '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 560px'
+              : '(max-width: 640px) 100vw, 50vw'
           }
         />
       </div>
@@ -181,8 +194,8 @@ export default function EducationWebinarPage() {
           <WebinarCard webinar={featured} priority size="featured" />
         </section>
 
-        {/* ── Remaining webinars — progressive order grid ─────────── */}
-        <section className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* ── Remaining webinars — 2 × 2 grid on desktop ──────────── */}
+        <section className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
           {rest.map((w) => (
             <WebinarCard key={w.title} webinar={w} />
           ))}
