@@ -19,7 +19,7 @@ const protectingBtcUrl =
 const soundMoneyUrl =
   'https://docs.google.com/presentation/d/1Cf8CB9jFZ18Z3ZI4vniH41pujZz30EXX_7XKV01g7wA/edit?usp=sharing';
 
-/* ── Webinar data (progressive educational order) ────────────────── */
+/* ── Webinar type ─────────────────────────────────────────────────── */
 interface Webinar {
   title: string;
   href: string;
@@ -30,60 +30,60 @@ interface Webinar {
   cta: string;
 }
 
-const webinars: Webinar[] = [
-  /* 1 — Start here: understand money itself */
+/* ── Level 1: Foundations ─────────────────────────────────────────── */
+const foundations: Webinar[] = [
   {
     title: 'What Is Money?',
     href: whatIsMoneyUrl,
     image: '/1_What-Is-Money.png',
     alt: 'What Is Money? — webinar cover',
-    badge: 'Start Here',
+    badge: 'Step 1',
     description:
       'A beginner-friendly journey through the origins of money\u00a0\u2014 how barter gave way to sound money, why human action depends on the ability to economize, what makes free markets and circular economies thrive, and how Bitcoin carries the story forward.',
     cta: 'View presentation',
   },
-  /* 2 — Why Bitcoin matters for artists */
   {
     title: 'Bitcoin for Artists: Unlocking New Creative Freedom',
     href: gammaUrl,
     image: '/1_Bitcoin-for-Artists-Unlocking-New-Creative-Freedom.png',
     alt: 'Bitcoin for Artists: Unlocking New Creative Freedom — webinar cover',
-    badge: 'Webinar',
+    badge: 'Step 2',
     description:
       'An interactive overview of why Bitcoin matters for creators, how to take custody of your sats, and the path toward financial sovereignty as an artist.',
     cta: 'View presentation',
   },
-  /* 3 — Hands-on: accepting and using Bitcoin */
   {
     title: 'Bitcoin in Practice for Artists',
     href: bitcoinInPracticeUrl,
     image: '/1_Bitcoin-in-Practice-for-Artists.png',
     alt: 'Bitcoin in Practice for Artists — webinar cover',
-    badge: 'Webinar',
+    badge: 'Step 3',
     description:
       'A hands-on guide for artists ready to put Bitcoin to work\u00a0\u2014 covering real-world custody setups, accepting payments, pricing strategies, and the practical steps between \u201cI\u2019ve heard of Bitcoin\u201d and \u201cI\u2019m using it every day.\u201d',
     cta: 'View presentation',
   },
-  /* 4 — Advanced: securing your stack for the long term */
   {
     title: 'Protecting Your Bitcoin: Security & Self-Custody Deep Dive',
     href: protectingBtcUrl,
     image: '/1_Protecting-Your-Bitcoin-Security-and-Self-Custody-Deep-Dive.png',
     alt: 'Protecting Your Bitcoin: Security and Self-Custody Deep Dive — webinar cover',
-    badge: 'Webinar',
+    badge: 'Step 4',
     description:
       'A deep dive into protecting your Bitcoin\u00a0\u2014 covering wallet architecture, self-custody best practices, multi-sig setups, seed-phrase security, and the practical steps every artist needs to safeguard their stack for the long term.',
     cta: 'View presentation',
   },
-  /* 5 — Capstone: sound money principles elevate creative work */
+];
+
+/* ── Level 2: Philosophy & Principles ────────────────────────────── */
+const philosophy: Webinar[] = [
   {
     title: 'Sound Money, Better Art',
     href: soundMoneyUrl,
     image: '/1_Sound-Money-Better-Art.png',
     alt: 'Sound Money, Better Art — webinar cover',
-    badge: 'New — Webinar',
+    badge: 'New — Deep Dive',
     description:
-      'The capstone of the series\u00a0\u2014 exploring how sound money principles fuel better creative work, why low time-preference thinking transforms artistic practice, and how Bitcoin-native patronage builds a sustainable future for the arts.',
+      'Exploring how sound money principles fuel better creative work, why low time-preference thinking transforms artistic practice, and how Bitcoin-native patronage builds a sustainable future for the arts.',
     cta: 'View presentation',
   },
 ];
@@ -157,8 +157,6 @@ function WebinarCard({
 
 /* ── Page ─────────────────────────────────────────────────────────── */
 export default function EducationWebinarPage() {
-  const [featured, ...rest] = webinars;
-
   return (
     <main className="bg-background relative overflow-hidden min-h-screen">
       {/* ── Background image at 50 % opacity ─────────────────────── */}
@@ -174,7 +172,7 @@ export default function EducationWebinarPage() {
       </div>
 
       <div className="relative mx-auto max-w-6xl px-6 py-14">
-        {/* ── Header ──────────────────────────────────────────────── */}
+        {/* ── Page header ─────────────────────────────────────────── */}
         <div className="max-w-4xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
             Education &bull; Webinars
@@ -183,26 +181,80 @@ export default function EducationWebinarPage() {
             Bitcoin Webinars for Artists.
           </h1>
           <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
-            Practical, creator-focused presentations on Bitcoin: custody, getting
-            paid, pricing in sats, and building long-term sovereignty. All materials
-            are published under our open license (CC&nbsp;BY&nbsp;4.0).
+            A structured learning path from first principles to deep philosophy.
+            Start with the foundations, then dive deeper. All materials are
+            published under our open license (CC&nbsp;BY&nbsp;4.0).
           </p>
         </div>
 
-        {/* ── Featured (first in series) webinar ─────────────────── */}
-        <section className="mt-10">
-          <WebinarCard webinar={featured} priority size="featured" />
+        {/* ═══════════════════════════════════════════════════════════
+            LEVEL 1 — FOUNDATIONS
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="mt-14">
+          <div className="flex items-center gap-3">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent text-sm font-bold text-white">
+              1
+            </span>
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              Foundations
+            </h2>
+          </div>
+          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted sm:text-base">
+            The essentials every artist needs to get started with Bitcoin.
+            Understand what money is, why Bitcoin matters for creators, how to
+            use it day-to-day, and how to keep it safe. Complete these four and
+            you&rsquo;re ready for anything.
+          </p>
+
+          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
+            {foundations.map((w, i) => (
+              <WebinarCard key={w.title} webinar={w} priority={i === 0} />
+            ))}
+          </div>
         </section>
 
-        {/* ── Remaining webinars — 2 × 2 grid on desktop ──────────── */}
-        <section className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {rest.map((w) => (
-            <WebinarCard key={w.title} webinar={w} />
-          ))}
+        {/* ═══════════════════════════════════════════════════════════
+            LEVEL 2 — PHILOSOPHY & PRINCIPLES
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="mt-20">
+          <div className="flex items-center gap-3">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
+              2
+            </span>
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              Philosophy &amp; Principles
+            </h2>
+          </div>
+          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted sm:text-base">
+            A deeper dive into the ideas behind sound money. These webinars
+            explore how Bitcoin&rsquo;s philosophical foundations &mdash; low
+            time preference, Austrian economics, individual sovereignty &mdash;
+            reshape how artists create, sustain, and fund their work. More
+            sessions coming soon.
+          </p>
+
+          {philosophy.length === 1 ? (
+            <div className="mt-8">
+              <WebinarCard webinar={philosophy[0]} size="featured" />
+            </div>
+          ) : (
+            <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
+              {philosophy.map((w) => (
+                <WebinarCard key={w.title} webinar={w} />
+              ))}
+            </div>
+          )}
+
+          <div className="mt-6 rounded-2xl border border-border bg-surface/60 p-5 text-sm text-muted">
+            <span className="font-semibold text-foreground">Coming soon</span>
+            &nbsp;&mdash; additional deep-dive webinars on Austrian economics
+            for artists, censorship resistance and creative freedom, building a
+            circular Bitcoin economy in the arts, and more.
+          </div>
         </section>
 
         {/* ── Open-education CTA ──────────────────────────────────── */}
-        <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-14 flex flex-col gap-3 sm:flex-row">
           <Link
             href="/education/open"
             className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-background px-5 py-2 text-sm font-semibold transition-colors hover:bg-surface"
