@@ -206,9 +206,13 @@ export default function EducationWebinarPage() {
             you&rsquo;re ready for anything.
           </p>
 
-          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
-            {foundations.map((w, i) => (
-              <WebinarCard key={w.title} webinar={w} priority={i === 0} />
+          <div className="mt-8">
+            <WebinarCard webinar={foundations[0]} priority size="featured" />
+          </div>
+
+          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-3">
+            {foundations.slice(1).map((w) => (
+              <WebinarCard key={w.title} webinar={w} />
             ))}
           </div>
         </section>
