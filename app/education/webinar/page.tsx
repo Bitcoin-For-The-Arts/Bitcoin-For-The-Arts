@@ -13,7 +13,7 @@ const gammaUrl = 'https://copy-of-bitcoin-for-arti-1sbvsbl.gamma.site/';
 const bitcoinInPracticeUrl =
   'https://docs.google.com/presentation/d/1jzhAQxY4QgojFcjtT_A9BPY8yh3yu6tvawsUDg29dzk/edit?usp=sharing';
 const whatIsMoneyUrl =
-  'https://docs.google.com/presentation/d/1nfV8JfONmbHYRAw7Few7mPdMacszO3emAH-t8dtTQos/edit?usp=sharing';
+  'https://docs.google.com/presentation/d/1kA_4H_h1C-MiTo0-lansl7D2W1fUCs7ekAiiTjE5JQU/edit?usp=sharing';
 const protectingBtcUrl =
   'https://docs.google.com/presentation/d/1Z64VaEpCIAHsXjPfn2zArpnqPwNj-zZTaQkivRefw8Y/edit?usp=sharing';
 
