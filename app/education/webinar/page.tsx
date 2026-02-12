@@ -147,8 +147,20 @@ export default function EducationWebinarPage() {
   const [featured, ...rest] = webinars;
 
   return (
-    <main className="bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-14">
+    <main className="bg-background relative overflow-hidden min-h-screen">
+      {/* ── Background image at 50 % opacity ─────────────────────── */}
+      <div className="pointer-events-none absolute inset-0">
+        <Image
+          src="/bitcoin-class.JPG"
+          alt=""
+          fill
+          priority={false}
+          className="object-cover object-center opacity-50"
+        />
+        <div className="absolute inset-0 bg-background/60" />
+      </div>
+
+      <div className="relative mx-auto max-w-6xl px-6 py-14">
         {/* ── Header ──────────────────────────────────────────────── */}
         <div className="max-w-4xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
