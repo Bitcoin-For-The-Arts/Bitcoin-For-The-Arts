@@ -538,7 +538,7 @@ export async function POST(req: NextRequest) {
       'Requested Grant Amount',
     );
 
-    const budgetBreakdown = requireString(fields, 'budgetBreakdown', 'Budget Breakdown');
+    const budgetBreakdown = (fields.budgetBreakdown ?? '').trim() || null;
     const fundUse = requireString(fields, 'fundUse', 'How BFTA Funds Will Be Used');
     if (fundUse.length > 1500) throw new Error('How BFTA Funds Will Be Used exceeds 1500 characters.');
 
