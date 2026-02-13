@@ -455,7 +455,8 @@ export default function GrantGuidelinesPage() {
             <Section id="award" title="6. Award Information">
               <ul className="list-disc pl-5 space-y-2">
                 <li>
-                  <span className="font-semibold text-foreground">Grant Amounts:</span> $500–$25,000 in BTC per project.
+                  <span className="font-semibold text-foreground">Grant Amounts:</span> $500–$25,000 in BTC per project (long-term range).
+                  <span className="font-semibold text-foreground"> Current funding round: $500–$2,000 per grant.</span>
                 </li>
                 <li>
                   <span className="font-semibold text-foreground">Number of Awards:</span> variable, based on quarterly
