@@ -229,9 +229,11 @@ export default function GrantGuidelinesPage() {
                 <li>Educational content or tools promoting Bitcoin adoption in creative communities.</li>
               </ul>
               <p>
-                Grants are micro-sized (typically 0.01–0.5 BTC, based on market value at disbursement) and disbursed in
-                BTC to promote Bitcoin adoption. We prioritize projects with potential for long-term impact, transparency
-                in execution, and alignment with our reserve model.
+                Grants are disbursed in BTC to promote Bitcoin adoption. The current funding round
+                awards <span className="font-semibold text-foreground">$500–$2,000</span> per
+                grant; the long-term program range is $500–$25,000 per project as reserves grow.
+                We prioritize projects with potential for long-term impact, transparency in execution,
+                and alignment with our reserve model.
               </p>
               <Callout title="Reserve model">
                 Our sustainable model targets: <span className="font-semibold text-foreground">55% grants</span>,{' '}
