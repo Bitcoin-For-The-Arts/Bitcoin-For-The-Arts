@@ -18,6 +18,12 @@ const protectingBtcUrl =
   'https://docs.google.com/presentation/d/1Z64VaEpCIAHsXjPfn2zArpnqPwNj-zZTaQkivRefw8Y/edit?usp=sharing';
 const soundMoneyUrl =
   'https://docs.google.com/presentation/d/1Cf8CB9jFZ18Z3ZI4vniH41pujZz30EXX_7XKV01g7wA/edit?usp=sharing';
+const creatorEconIntroUrl =
+  'https://docs.google.com/presentation/d/1I5qSrucPfLKvBT16BL6hP1PiuMJh-hmGtLfO-amJxbs/edit?usp=drive_link';
+const creatorEconAudienceUrl =
+  'https://docs.google.com/presentation/d/1Lc9BxVjTaWaQK9YJGKKliOt7qUnflYlgOfXNliwHaHc/edit?usp=drive_link';
+const creatorEconToolsUrl =
+  'https://docs.google.com/presentation/d/1M9ib06XexhmruW1JotHNMzWcdua4xl-Cx-kmSJZVBmk/edit?usp=drive_link';
 
 /* ── Webinar type ─────────────────────────────────────────────────── */
 interface Webinar {
@@ -81,9 +87,43 @@ const philosophy: Webinar[] = [
     href: soundMoneyUrl,
     image: '/1_Sound-Money-Better-Art.png',
     alt: 'Sound Money, Better Art — webinar cover',
-    badge: 'New — Deep Dive',
+    badge: 'Deep Dive',
     description:
       'Exploring how sound money principles fuel better creative work, why low time-preference thinking transforms artistic practice, and how Bitcoin-native patronage builds a sustainable future for the arts.',
+    cta: 'View presentation',
+  },
+];
+
+/* ── Level 3: Bitcoin & the Creator Economy (3-part series) ──────── */
+const creatorEconomy: Webinar[] = [
+  {
+    title: 'Bitcoin and the Creator Economy',
+    href: creatorEconIntroUrl,
+    image: '/1_Bitcoin-and-the-Creator-Economy.png',
+    alt: 'Bitcoin and the Creator Economy — webinar cover',
+    badge: 'Part 1',
+    description:
+      'An introduction to the creator economy through a Bitcoin lens\u00a0\u2014 why traditional platforms extract value from artists, how Bitcoin changes the incentive structure, and the opportunity for creators who adopt sound money early.',
+    cta: 'View presentation',
+  },
+  {
+    title: 'Bitcoin & the Creator Economy: Building Your Audience',
+    href: creatorEconAudienceUrl,
+    image: '/1_Bitcoin-the-Creator-Economy-Building-Your-Audience.png',
+    alt: 'Bitcoin & the Creator Economy: Building Your Audience — webinar cover',
+    badge: 'Part 2',
+    description:
+      'How to build and grow an audience as a Bitcoin-aligned creator\u00a0\u2014 leveraging value-for-value models, community-first strategies, and permissionless platforms to connect directly with supporters.',
+    cta: 'View presentation',
+  },
+  {
+    title: 'Bitcoin & the Creator Economy: Tools, Platforms, and Payments',
+    href: creatorEconToolsUrl,
+    image: '/1_Bitcoin-and-the-Creator-Economy-Tools-Platforms-and-Payments.png',
+    alt: 'Bitcoin & the Creator Economy: Tools, Platforms, and Payments — webinar cover',
+    badge: 'Part 3',
+    description:
+      'The practical toolkit for creators\u00a0\u2014 Bitcoin-native platforms, Lightning payments, invoicing workflows, and the tools that let artists get paid directly without intermediaries.',
     cta: 'View presentation',
   },
 ];
@@ -218,7 +258,7 @@ export default function EducationWebinarPage() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            LEVEL 2 — PHILOSOPHY & PRINCIPLES
+            LEVEL 2 — DEEP DIVES
         ═══════════════════════════════════════════════════════════ */}
         <section className="mt-20">
           <div className="flex items-center gap-3">
@@ -226,34 +266,42 @@ export default function EducationWebinarPage() {
               2
             </span>
             <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-              Philosophy &amp; Principles
+              Deep Dives
             </h2>
           </div>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted sm:text-base">
-            A deeper dive into the ideas behind sound money. These webinars
-            explore how Bitcoin&rsquo;s philosophical foundations &mdash; low
-            time preference, Austrian economics, individual sovereignty &mdash;
-            reshape how artists create, sustain, and fund their work. More
-            sessions coming soon.
+            Go beyond the basics. These webinars explore the philosophy behind
+            sound money, how Bitcoin&rsquo;s principles reshape creative
+            practice, and the practical path to building a sustainable career
+            in the creator economy&mdash;all without gatekeepers.
           </p>
 
-          {philosophy.length === 1 ? (
-            <div className="mt-8">
-              <WebinarCard webinar={philosophy[0]} size="featured" />
+          {/* ── Sound Money, Better Art (featured) ────────────────── */}
+          <div className="mt-8">
+            <WebinarCard webinar={philosophy[0]} size="featured" />
+          </div>
+
+          {/* ── Bitcoin & the Creator Economy — 3-Part Series ─────── */}
+          <div className="mt-10">
+            <div className="flex flex-wrap items-center gap-3">
+              <h3 className="text-xl font-semibold tracking-tight sm:text-2xl">
+                Bitcoin &amp; the Creator Economy
+              </h3>
+              <span className="inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent">
+                New — 3-Part Series
+              </span>
             </div>
-          ) : (
-            <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
-              {philosophy.map((w) => (
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
+              A three-part series on building a sustainable creative career with
+              Bitcoin. From understanding the creator economy to growing your
+              audience and mastering the tools that let you get paid
+              directly&mdash;without intermediaries.
+            </p>
+            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-3">
+              {creatorEconomy.map((w) => (
                 <WebinarCard key={w.title} webinar={w} />
               ))}
             </div>
-          )}
-
-          <div className="mt-6 rounded-2xl border border-border bg-surface/60 p-5 text-sm text-muted">
-            <span className="font-semibold text-foreground">Coming soon</span>
-            &nbsp;&mdash; additional deep-dive webinars on Austrian economics
-            for artists, censorship resistance and creative freedom, building a
-            circular Bitcoin economy in the arts, and more.
           </div>
         </section>
 
