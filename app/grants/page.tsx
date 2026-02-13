@@ -26,10 +26,10 @@ export default function GrantsPage() {
     {
       title: 'Who Can Apply',
       items: [
-        'Independent artists and small collectives',
+        'Independent artists, small collectives, and organizations',
         'Any discipline: visual arts, theater, dance, music, writing, storytelling, film',
-        'Working on a specific project with clear next steps',
-        'Open to all geographies (subject to program capacity)',
+        'Working on a specific, US-based project with clear next steps',
+        'Applicants worldwide — funded projects must take place in the US',
       ],
       imageSrc: '/artfest.jpg',
       imageAlt: 'An art festival scene, representing community arts.',
