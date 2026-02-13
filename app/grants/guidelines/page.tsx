@@ -9,8 +9,8 @@ export const metadata: Metadata = {
     'Detailed guidelines for applying to Bitcoin For The Arts (BFTA) grants: eligibility, what to submit, do’s and don’ts, and review rubric.',
 };
 
-const VERSION = '1.1';
-const EFFECTIVE_DATE = 'January 09, 2026';
+const VERSION = '1.2';
+const EFFECTIVE_DATE = 'February 12, 2026';
 const TOC_ITEMS = [
   { href: '#program', label: '1. Program Description' },
   { href: '#eligibility', label: '2. Eligibility Criteria' },
@@ -198,21 +198,35 @@ export default function GrantGuidelinesPage() {
           <div className="mt-10 grid grid-cols-1 gap-6">
             <Section id="program" title="1. Program Description">
               <p>
-                Bitcoin For The Arts (BFTA) funds sovereign art with Bitcoin-native grants, supporting artists with low
-                time preference through censorship-resistant innovation, no gatekeepers, and radical transparency.
+                Bitcoin For The Arts (BFTA) funds sovereign art with Bitcoin-native micro-grants, supporting
+                artists with low time preference through censorship-resistant innovation, no gatekeepers,
+                and radical transparency.
               </p>
               <p>
-                Our mission is to empower Bitcoin-aligned arts projects that explore themes like decentralization,
-                sovereignty, financial freedom, privacy, and community resilience.
+                We prioritize artists whose work resonates with Bitcoin&rsquo;s core ethos: decentralization,
+                low time preference, preservation of energy&mdash;especially creative energy&mdash;and
+                individual sovereignty. If your project explores themes like financial freedom, censorship
+                resistance, community resilience, or the transformative power of sound money, we want to
+                hear from you.
               </p>
               <p>
-                Projects can span disciplines such as visual arts, music, literature, performing arts, film/video,
-                digital/media art, or interdisciplinary work. Examples include:
+                <span className="font-semibold text-foreground">Not yet fully aligned with Bitcoin?</span>{' '}
+                That&rsquo;s okay. If your art speaks to these principles but you haven&rsquo;t yet taken
+                the time to study Bitcoin, let Bitcoin for the Arts lead the way. Our{' '}
+                <Link href="/education/webinar" className="font-semibold underline underline-offset-4">
+                  free education program
+                </Link>{' '}
+                is designed to meet artists where they are and guide them toward sound living
+                and creative sovereignty.
+              </p>
+              <p>
+                Projects can span disciplines such as visual arts, music, literature, performing arts,
+                film/video, digital/media art, or interdisciplinary work. Examples include:
               </p>
               <ul className="list-disc pl-5 space-y-2">
-                <li>Digital art NFTs exploring Bitcoin’s philosophy.</li>
+                <li>Digital art exploring Bitcoin’s philosophy and sound money principles.</li>
                 <li>Performances or installations highlighting censorship resistance.</li>
-                <li>Educational content or tools promoting Bitcoin in creative ways.</li>
+                <li>Educational content or tools promoting Bitcoin adoption in creative communities.</li>
               </ul>
               <p>
                 Grants are micro-sized (typically 0.01–0.5 BTC, based on market value at disbursement) and disbursed in
@@ -281,8 +295,8 @@ export default function GrantGuidelinesPage() {
                 <ul className="list-disc pl-5 space-y-2">
                   <li>Projects primarily taking place outside the US (even if applicant is US-based).</li>
                   <li>
-                    Projects promoting illegal activities, hate speech, or non-Bitcoin cryptocurrencies without clear
-                    Bitcoin alignment.
+                    Projects promoting illegal activities, hate speech, or non-Bitcoin digital assets
+                    (altcoins, tokens, etc.).
                   </li>
                   <li>Applicants under 18 (or local age of majority).</li>
                   <li>Organizations or individuals with a history of fraud or non-compliance in prior grants.</li>
