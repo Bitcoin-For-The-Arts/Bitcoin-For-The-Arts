@@ -258,7 +258,7 @@ export default function EducationWebinarPage() {
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
-            LEVEL 2 — PHILOSOPHY & PRINCIPLES
+            LEVEL 2 — DEEP DIVES
         ═══════════════════════════════════════════════════════════ */}
         <section className="mt-20">
           <div className="flex items-center gap-3">
@@ -266,57 +266,42 @@ export default function EducationWebinarPage() {
               2
             </span>
             <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-              Philosophy &amp; Principles
+              Deep Dives
             </h2>
           </div>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted sm:text-base">
-            A deeper dive into the ideas behind sound money. These webinars
-            explore how Bitcoin&rsquo;s philosophical foundations &mdash; low
-            time preference, Austrian economics, individual sovereignty &mdash;
-            reshape how artists create, sustain, and fund their work. More
-            sessions coming soon.
+            Go beyond the basics. These webinars explore the philosophy behind
+            sound money, how Bitcoin&rsquo;s principles reshape creative
+            practice, and the practical path to building a sustainable career
+            in the creator economy&mdash;all without gatekeepers.
           </p>
 
-          {philosophy.length === 1 ? (
-            <div className="mt-8">
-              <WebinarCard webinar={philosophy[0]} size="featured" />
+          {/* ── Sound Money, Better Art (featured) ────────────────── */}
+          <div className="mt-8">
+            <WebinarCard webinar={philosophy[0]} size="featured" />
+          </div>
+
+          {/* ── Bitcoin & the Creator Economy — 3-Part Series ─────── */}
+          <div className="mt-10">
+            <div className="flex flex-wrap items-center gap-3">
+              <h3 className="text-xl font-semibold tracking-tight sm:text-2xl">
+                Bitcoin &amp; the Creator Economy
+              </h3>
+              <span className="inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent">
+                New — 3-Part Series
+              </span>
             </div>
-          ) : (
-            <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
-              {philosophy.map((w) => (
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
+              A three-part series on building a sustainable creative career with
+              Bitcoin. From understanding the creator economy to growing your
+              audience and mastering the tools that let you get paid
+              directly&mdash;without intermediaries.
+            </p>
+            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-3">
+              {creatorEconomy.map((w) => (
                 <WebinarCard key={w.title} webinar={w} />
               ))}
             </div>
-          )}
-
-        </section>
-
-        {/* ═══════════════════════════════════════════════════════════
-            LEVEL 3 — BITCOIN & THE CREATOR ECONOMY (3-part series)
-        ═══════════════════════════════════════════════════════════ */}
-        <section className="mt-20">
-          <div className="flex items-center gap-3">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-success text-sm font-bold text-white">
-              3
-            </span>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-              Bitcoin &amp; the Creator Economy
-            </h2>
-          </div>
-          <div className="mt-1 inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent">
-            New — 3-Part Series
-          </div>
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted sm:text-base">
-            A three-part series on building a sustainable creative career with
-            Bitcoin. From understanding the creator economy to growing your
-            audience and mastering the tools that let you get paid
-            directly&mdash;without gatekeepers or intermediaries.
-          </p>
-
-          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-3">
-            {creatorEconomy.map((w) => (
-              <WebinarCard key={w.title} webinar={w} />
-            ))}
           </div>
         </section>
 
