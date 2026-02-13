@@ -59,7 +59,6 @@ type Receipt = {
   };
   funding: {
     requestedAmount: string;
-    budgetBreakdown: string;
     fundUse: string;
   };
   background: {
@@ -172,7 +171,6 @@ export default function GrantApplicationForm() {
       },
       funding: {
         requestedAmount: getInputValue('requestedAmount').trim(),
-        budgetBreakdown: getInputValue('budgetBreakdown').trim(),
         fundUse: getInputValue('fundUse').trim(),
       },
       background: {
@@ -1415,21 +1413,6 @@ export default function GrantApplicationForm() {
               min={0}
               step="any"
               className="min-h-12 rounded-md border border-border bg-background px-3 py-2"
-            />
-          </label>
-
-          <label className="flex flex-col gap-2 sm:col-span-2">
-            <span className="flex items-center justify-between gap-3 text-sm font-semibold">
-              <span>
-                Total Project Budget Breakdown <span className="text-accent">*</span>
-              </span>
-              <InfoTip text="List line items with estimated costs (materials, venue, travel, collaborators, etc.). Totals can be rough but should add up." />
-            </span>
-            <textarea
-              name="budgetBreakdown"
-              required
-              rows={4}
-              className="rounded-md border border-border bg-background px-3 py-2"
             />
           </label>
 
