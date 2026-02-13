@@ -17,15 +17,15 @@ export default function PrivacyPolicyPage() {
             This Privacy Policy explains how Bitcoin for the Arts, Inc. (“BFTA,”
             “we,” “us,” or “our”) collects, uses, and shares information when you
             visit <span className="font-semibold text-foreground">bitcoinforthearts.org</span> or
-            use our services (including grants, workshops, donations, and contact
-            forms).
+            use our services (including grants, workshops, webinars, education
+            content, donations, and contact forms).
           </p>
 
           <div className="prose prose-neutral dark:prose-invert mt-10 max-w-none">
             <p>
               <strong>Effective date:</strong> January 29, 2026
               <br />
-              <strong>Last updated:</strong> January 30, 2026
+              <strong>Last updated:</strong> February 12, 2026
             </p>
 
             <h2>Summary</h2>
@@ -118,6 +118,16 @@ export default function PrivacyPolicyPage() {
               Some pages may store limited information locally in your browser (for
               example, saving a draft of a grant application). This information is
               stored on your device and is not uploaded until you submit the form.
+            </p>
+
+            <h3>Education content and third-party platforms</h3>
+            <p>
+              Our webinar and education pages link to presentations hosted on third-party
+              platforms (for example, Google Slides and Gamma). When you click a webinar link,
+              you leave our site. We do not collect any additional personal information through
+              these links. The third-party platform&rsquo;s privacy policy governs your use of
+              their service. All BFTA education materials are published under Creative Commons
+              Attribution 4.0 International (CC&nbsp;BY&nbsp;4.0) unless otherwise noted.
             </p>
 
             <h3>Donations and on-chain activity</h3>
@@ -266,6 +276,30 @@ export default function PrivacyPolicyPage() {
                 <strong>BTCPay Server</strong> (Bitcoin payment processing, depending on donation method). If we operate our own BTCPay Server instance,
                 it processes invoice and payment details to complete your donation. If a third party operates the BTCPay Server instance, their privacy policy
                 may also apply.
+              </li>
+              <li>
+                <strong>Google</strong> (education content hosting). Some webinar presentations are hosted on Google Slides / Google Docs. When you open
+                a webinar link, you leave our site and interact with Google&rsquo;s services. We do not control data Google collects on its platforms.{' '}
+                <a
+                  href="https://policies.google.com/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Google privacy policy
+                </a>
+                .
+              </li>
+              <li>
+                <strong>Gamma</strong> (presentation hosting). Some education content may be hosted on Gamma. When you open
+                a Gamma-hosted presentation, you leave our site and interact with Gamma&rsquo;s services.{' '}
+                <a
+                  href="https://gamma.app/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Gamma privacy policy
+                </a>
+                .
               </li>
             </ul>
 
