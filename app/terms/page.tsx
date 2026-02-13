@@ -28,7 +28,7 @@ export default function TermsOfUsePage() {
             <p>
               <strong>Effective date:</strong> January 29, 2026
               <br />
-              <strong>Last updated:</strong> January 30, 2026
+              <strong>Last updated:</strong> February 12, 2026
             </p>
 
             <p>
@@ -45,10 +45,10 @@ export default function TermsOfUsePage() {
             <h2>2. Using the site / submissions</h2>
             <p>
               Some features require you to submit information (for example: grant
-              applications, volunteer signups, workshop interest, feedback, or board
-              nominations). You agree that the information you submit will be
-              accurate to the best of your knowledge and that you will not submit
-              content you do not have the right to share.
+              applications, volunteer signups, workshop interest, webinar
+              registrations, feedback, or board nominations). You agree that the
+              information you submit will be accurate to the best of your knowledge
+              and that you will not submit content you do not have the right to share.
             </p>
 
             <h2>3. Intellectual property</h2>
@@ -65,10 +65,14 @@ export default function TermsOfUsePage() {
             </p>
             <p>
               Exception: designated open education materials (including content linked
-              from <Link href="/education/open">/education/open</Link> and files in{' '}
+              from <Link href="/education/open">/education/open</Link>,{' '}
+              <Link href="/education/webinar">/education/webinar</Link>, and files in{' '}
               <code>/resources/education/</code>) are licensed under Creative Commons
-              Attribution 4.0 International (CC BY 4.0), unless otherwise noted. Those
-              materials are governed by their stated license terms.
+              Attribution 4.0 International (CC BY 4.0), unless otherwise noted. This
+              includes webinar presentations hosted on third-party platforms such as
+              Google Slides. Those materials are governed by their stated license terms
+              and may be shared and adapted with attribution:{' '}
+              <em>&ldquo;Bitcoin for the Arts (bitcoinforthearts.org) &mdash; CC BY 4.0&rdquo;</em>.
             </p>
 
             <h2>4. User content</h2>
@@ -125,6 +129,14 @@ export default function TermsOfUsePage() {
               The Site may contain links to third-party websites or services. We do
               not control and are not responsible for third-party content, policies,
               or practices. Your use of third-party services is at your own risk.
+            </p>
+            <p>
+              Our education and webinar pages link to presentations hosted on
+              third-party platforms (for example, Google Slides/Docs and Gamma). When
+              you follow these links you leave the Site and are subject to the
+              third party&rsquo;s terms of service and privacy policy. BFTA is not
+              responsible for the availability, accuracy, or data practices of these
+              platforms.
             </p>
 
             <h2>8. Disclaimers</h2>
