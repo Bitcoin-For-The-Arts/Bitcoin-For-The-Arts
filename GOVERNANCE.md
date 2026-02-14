@@ -14,7 +14,7 @@ The organization is overseen by a Board of Trustees responsible for fiduciary du
 ### Board of Trustees
 
 The organization is overseen by a Board of Trustees responsible for fiduciary duty, strategic direction, and ensuring the nonprofit fulfills its mission.
->>>>>>> main
+
 
 | Name | Role | Contact |
 |------|------|---------|
