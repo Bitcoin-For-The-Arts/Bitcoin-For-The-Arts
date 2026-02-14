@@ -26,15 +26,7 @@ The organization is overseen by a Board of Trustees responsible for fiduciary du
 
 - Board nominations are accepted at [bitcoinforthearts.org/about/governance](https://bitcoinforthearts.org/about/governance)
 
-### BFTA Advisory Board
 
-| Name | Contact |
-|------|---------|
-| Buttercup Roberts | buttercuproberts@protonmail.com |
-| Kyle Knight | bitcoinculturehub@gmail.com |
-| Julie Costello | julie@phantompowermusic.io |
-| Camas Logue | camas@camaslogue.com |
-| Valerie Love | aloha@djvalerieblove.com |
 
 ### Advisory Board
 
