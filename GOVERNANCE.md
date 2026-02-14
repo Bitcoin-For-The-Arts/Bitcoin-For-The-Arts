@@ -6,11 +6,29 @@ Bitcoin For The Arts, Inc. is a 501(c)(3) nonprofit organization dedicated to fu
 
 ## Organizational Structure
 
-### Board of Directors
-The organization is overseen by a Board of Directors responsible for fiduciary duty, strategic direction, and ensuring the nonprofit fulfills its mission.
+### BFTA Board of Trustees
+
+The organization is overseen by a Board of Trustees responsible for fiduciary duty, strategic direction, and ensuring the nonprofit fulfills its mission. The board meets quarterly to review finances, programs, and organizational health.
+
+| Name | Role | Contact |
+|------|------|---------|
+| Dion Wilson | Founder | wilson.dion@proton.me |
+| Avi Burra | Treasurer | avi@casanostra.ink |
+| Cheryl McGinnis | Secretary | cherylmcginnisgallery@gmail.com |
+| Kyle Shirkness | Trustee | kyle.shirkness@thebitcoinpivot.com |
+| Ahmed Klink | Trustee | ahmed@sundayafternoon.us |
 
 - Board nominations are accepted at [bitcoinforthearts.org/about/governance](https://bitcoinforthearts.org/about/governance)
-- The board meets quarterly to review finances, programs, and organizational health
+
+### BFTA Advisory Board
+
+| Name | Contact |
+|------|---------|
+| Buttercup Roberts | buttercuproberts@protonmail.com |
+| Kyle Knight | bitcoinculturehub@gmail.com |
+| Julie Costello | julie@phantompowermusic.io |
+| Camas Logue | camas@camaslogue.com |
+| Valerie Love | aloha@djvalerieblove.com |
 
 ### Leadership
 - **Founder & Executive Director:** Dion Wilson
