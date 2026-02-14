@@ -6,9 +6,15 @@ Bitcoin For The Arts, Inc. is a 501(c)(3) nonprofit organization dedicated to fu
 
 ## Organizational Structure
 
+<<<<<<< cursor/nonprofit-funding-github-structure-8d34
+### BFTA Board of Trustees
+
+The organization is overseen by a Board of Trustees responsible for fiduciary duty, strategic direction, and ensuring the nonprofit fulfills its mission. The board meets quarterly to review finances, programs, and organizational health.
+=======
 ### Board of Trustees
 
 The organization is overseen by a Board of Trustees responsible for fiduciary duty, strategic direction, and ensuring the nonprofit fulfills its mission.
+>>>>>>> main
 
 | Name | Role | Contact |
 |------|------|---------|
@@ -19,7 +25,16 @@ The organization is overseen by a Board of Trustees responsible for fiduciary du
 | Ahmed Klink | Trustee | ahmed@sundayafternoon.us |
 
 - Board nominations are accepted at [bitcoinforthearts.org/about/governance](https://bitcoinforthearts.org/about/governance)
-- The board meets quarterly to review finances, programs, and organizational health
+
+### BFTA Advisory Board
+
+| Name | Contact |
+|------|---------|
+| Buttercup Roberts | buttercuproberts@protonmail.com |
+| Kyle Knight | bitcoinculturehub@gmail.com |
+| Julie Costello | julie@phantompowermusic.io |
+| Camas Logue | camas@camaslogue.com |
+| Valerie Love | aloha@djvalerieblove.com |
 
 ### Advisory Board
 
