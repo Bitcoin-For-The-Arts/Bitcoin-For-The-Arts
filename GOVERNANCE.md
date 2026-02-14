@@ -6,15 +6,9 @@ Bitcoin For The Arts, Inc. is a 501(c)(3) nonprofit organization dedicated to fu
 
 ## Organizational Structure
 
-<<<<<<< cursor/nonprofit-funding-github-structure-8d34
-### BFTA Board of Trustees
-
-The organization is overseen by a Board of Trustees responsible for fiduciary duty, strategic direction, and ensuring the nonprofit fulfills its mission. The board meets quarterly to review finances, programs, and organizational health.
-=======
 ### Board of Trustees
 
-The organization is overseen by a Board of Trustees responsible for fiduciary duty, strategic direction, and ensuring the nonprofit fulfills its mission.
-
+The organization is overseen by a Board of Trustees responsible for fiduciary duty, strategic direction, and ensuring the nonprofit fulfills its mission. The board meets quarterly to review finances, programs, and organizational health.
 
 | Name | Role | Contact |
 |------|------|---------|
@@ -25,8 +19,6 @@ The organization is overseen by a Board of Trustees responsible for fiduciary du
 | Ahmed Klink | Trustee | ahmed@sundayafternoon.us |
 
 - Board nominations are accepted at [bitcoinforthearts.org/about/governance](https://bitcoinforthearts.org/about/governance)
-
-
 
 ### Advisory Board
 
@@ -41,6 +33,7 @@ The Advisory Board provides strategic counsel, industry expertise, and community
 | Valerie Love | aloha@djvalerieblove.com |
 
 ### Leadership
+
 - **Founder & Executive Director:** Dion Wilson
 - For leadership details, visit [bitcoinforthearts.org/about/leadership](https://bitcoinforthearts.org/about/leadership)
 
