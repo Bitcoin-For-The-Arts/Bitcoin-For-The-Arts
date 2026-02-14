@@ -230,13 +230,19 @@ Bitcoin For The Arts is a 501(c)(3) nonprofit that accepts Bitcoin donations thr
 
 ## Anything Else We Should Know?
 
-Bitcoin For The Arts sits at a unique intersection: we are both a Bitcoin-native nonprofit and an education-first organization. Our approach is "learn by doing" — every webinar ends with homework, every module includes hands-on wallet setup, and our grant program requires applicants to have a Bitcoin wallet ready to receive funds. This creates a natural pipeline from education to real Bitcoin adoption.
+### A personal note from the founder
 
-Our entire stack is open-source and Bitcoin-native. We don't use fiat payment processors. We don't use Google Forms. We built our own grant application system, our own contact forms, and our own governance tools — all publicly auditable on GitHub. We believe this level of transparency and sovereignty should be the standard for Bitcoin nonprofits, and our education materials teach artists to expect the same from every platform they use.
+I want to be upfront: Bitcoin For The Arts is early. We are a young organization without a long track record or big-name backers to point to. What we do have is real work, real materials, and a mission I believe in down to my bones.
 
-The arts community is large, culturally influential, and currently almost entirely absent from the Bitcoin ecosystem. By meeting artists where they are — with practical, jargon-free education and real funding in Bitcoin — we can onboard a demographic that will carry Bitcoin's message into galleries, theaters, concert halls, and classrooms worldwide.
+I spent 16 years as a principal dancer — Alvin Ailey American Dance Theater, Dance Theatre of Harlem, Disney's The Lion King national tour. I've performed in over 20 countries and 45 U.S. states. I grew up in Baltimore, came up through the arts, and I know firsthand what it means to be a working artist surviving in a system that chronically underfunds the people who make the culture. I served as a union representative on The Lion King tour fighting for performers' rights. I helped negotiate the Ailey dancers' AGMA contract and reformed the pay scale for the first time since unionization. I've mentored over 10,000 students across the country — from the Baltimore School for the Arts to the American Ballet Theatre Summer Program to the Alvin Ailey Dance Center.
 
-`[Add any additional personal notes or context you'd like OpenSats to know.]`
+I started Bitcoin For The Arts because I watched the arts funding model break in real time. Artists depend on institutions that can freeze accounts, hold payments, censor work, and inflate away savings. I found Bitcoin, and I realized: this is the fix. Uncensorable money for uncensorable minds. Direct patronage with no middlemen. A reserve that can't be printed into nothing. Everything I wished existed when I was a young dancer from Bmore trying to build a life in the arts.
+
+We don't have deep credibility yet in the Bitcoin open-source world — but we have conviction, and we are building in the open. Our website is MIT-licensed. Our education materials are CC BY 4.0. Our treasury is on-chain and publicly verifiable. We built our own grant application system, our own contact forms, our own governance tools — no Google Forms, no fiat processors, all auditable on GitHub. Every webinar we've delivered is free, every resource we've published is open, and every sat we receive follows a transparent allocation model.
+
+I'm not asking for support based on reputation. I'm asking based on the work. The two webinars are published. The open-source codebase is live. The 501(c)(3) is filed. The board is seated. The education repo is public. We are doing this — and with dedicated funding for the education program, we can do it at the scale this community deserves.
+
+The arts represent $1.17 trillion of U.S. GDP, and right now that entire world is almost completely absent from Bitcoin. This grant would help us change that — one artist, one webinar, one open-licensed module at a time.
 
 ---
 
