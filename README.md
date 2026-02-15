@@ -72,7 +72,7 @@ Cloudflare dashboard and create new keys.
 The donation flow calls the BTCPay Server API. Configure these **deployment**
 environment variables (e.g., in Vercel or your hosting provider):
 
-- `BTCPAY_URL` (public HTTPS URL, e.g. `https://pay.bitcoinforthearts.org`)
+- `BTCPAY_URL` (public HTTPS URL of your cloud-hosted BTCPay instance)
 - `BTCPAY_API_KEY` (store API key from BTCPay Server)
 - `BTCPAY_STORE_ID` (store ID from BTCPay Server)
 - `BTCPAY_WEBHOOK_SECRET` (optional but recommended; used to verify BTCPay webhook signatures)
