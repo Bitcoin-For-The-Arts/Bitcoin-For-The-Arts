@@ -33,45 +33,38 @@
 ### **Domain & DNS Configuration**
 
 The site runs on the custom domain **bitcoinforthearts.org**, registered at
-**Hostinger** and served via **Vercel** (hosting) + **Cloudflare** (DNS proxy,
-CDN, DDoS protection, Turnstile spam filtering).
+**Hostinger** and served via **Vercel** (hosting). **Cloudflare** is used
+**only for Turnstile** (spam protection on forms) — DNS is managed at
+Hostinger, not Cloudflare.
 
-#### Required DNS records (managed in Cloudflare)
+#### DNS records (managed in Hostinger)
 
-| Type  | Name               | Value / Target                         | Proxy |
-|-------|--------------------|----------------------------------------|-------|
-| A     | `@` (root)         | `76.76.21.21` (Vercel)                 | Yes   |
-| CNAME | `www`              | `cname.vercel-dns.com`                 | Yes   |
-| CNAME | `pay`              | *(your BTCPay server IP / hostname)*   | DNS only |
-| MX    | `@`                | `mx.zoho.com` (pri 10)                | —     |
-| MX    | `@`                | `mx2.zoho.com` (pri 20)               | —     |
-| MX    | `@`                | `mx3.zoho.com` (pri 50)               | —     |
-| TXT   | `@`                | `v=spf1 include:zohomail.com ~all`     | —     |
-| TXT   | `@`                | `zoho-verification=zb65290452.zmverify.zoho.com` | — |
-| TXT   | `_dmarc`           | `v=DMARC1; p=none; rua=mailto:dionwilson@bitcoinforthearts.org; ruf=mailto:dionwilson@bitcoinforthearts.org; sp=none; adkim=r; aspf=r; pct=100` | — |
+| Type  | Name               | Value / Target                         |
+|-------|--------------------|----------------------------------------|
+| CNAME | `www`              | Vercel DNS (e.g. `cname.vercel-dns.com`) |
+| MX    | `@`                | `mx.zoho.com` (pri 10)                |
+| MX    | `@`                | `mx2.zoho.com` (pri 20)               |
+| MX    | `@`                | `mx3.zoho.com` (pri 50)               |
+| TXT   | `@`                | `v=spf1 include:zohomail.com ~all`     |
+| TXT   | `@`                | Zoho domain verification TXT           |
+| TXT   | `_dmarc`           | DMARC policy record                    |
 
-#### Registrar nameservers (Hostinger → Cloudflare)
+#### Cloudflare "domain deleted" emails
 
-At **Hostinger**, the domain nameservers **must** be set to the pair Cloudflare
-assigned when the domain was first added (e.g., `*.ns.cloudflare.com`).
+Cloudflare may send emails saying `bitcoinforthearts.org has been deleted`
+from your Cloudflare account. This happens because the domain was added to
+Cloudflare (required when creating a Turnstile site key) but the nameservers
+were **never pointed to Cloudflare** — DNS stays at Hostinger. After ~4 weeks
+on the free plan without Cloudflare nameservers, Cloudflare auto-removes the
+domain zone.
 
-If the registrar resets nameservers to its defaults (`ns1.dns-parking.com` /
-`ns2.dns-parking.com`), Cloudflare will detect the change and **delete the
-domain zone** after a short monitoring period. This breaks:
+**This does not affect the site or Turnstile.** Turnstile widgets and
+server-side verification (`challenges.cloudflare.com/turnstile/v0/siteverify`)
+are a standalone Cloudflare service tied to your API keys, not to DNS.
 
-- Cloudflare CDN / DDoS protection
-- Any DNS records not duplicated at the registrar (e.g., `pay` subdomain)
-- Cloudflare proxy (orange-cloud) benefits
-
-**To recover from a Cloudflare domain deletion:**
-
-1. Log in to **Cloudflare** → *Add a Site* → re-add `bitcoinforthearts.org`.
-2. Cloudflare will re-detect existing records and assign nameservers.
-3. Log in to **Hostinger** → *Domains* → *DNS / Nameservers* → set nameservers
-   to the Cloudflare-assigned pair.
-4. Wait for propagation (up to 24 h, usually < 1 h).
-5. Verify `pay.bitcoinforthearts.org` resolves (BTCPay donations).
-6. Verify email delivery still works (send a test to `hello@bitcoinforthearts.org`).
+If Cloudflare deletes the domain zone, you can safely ignore the email. If you
+ever need to regenerate Turnstile keys, just re-add the domain in the
+Cloudflare dashboard and create new keys.
 
 ---
 
