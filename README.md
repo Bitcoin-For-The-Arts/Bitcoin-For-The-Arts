@@ -30,6 +30,51 @@
 
 ---
 
+### **Domain & DNS Configuration**
+
+The site runs on the custom domain **bitcoinforthearts.org**, registered at
+**Hostinger** and served via **Vercel** (hosting) + **Cloudflare** (DNS proxy,
+CDN, DDoS protection, Turnstile spam filtering).
+
+#### Required DNS records (managed in Cloudflare)
+
+| Type  | Name               | Value / Target                         | Proxy |
+|-------|--------------------|----------------------------------------|-------|
+| A     | `@` (root)         | `76.76.21.21` (Vercel)                 | Yes   |
+| CNAME | `www`              | `cname.vercel-dns.com`                 | Yes   |
+| CNAME | `pay`              | *(your BTCPay server IP / hostname)*   | DNS only |
+| MX    | `@`                | `mx.zoho.com` (pri 10)                | —     |
+| MX    | `@`                | `mx2.zoho.com` (pri 20)               | —     |
+| MX    | `@`                | `mx3.zoho.com` (pri 50)               | —     |
+| TXT   | `@`                | `v=spf1 include:zohomail.com ~all`     | —     |
+| TXT   | `@`                | `zoho-verification=zb65290452.zmverify.zoho.com` | — |
+| TXT   | `_dmarc`           | `v=DMARC1; p=none; rua=mailto:dionwilson@bitcoinforthearts.org; ruf=mailto:dionwilson@bitcoinforthearts.org; sp=none; adkim=r; aspf=r; pct=100` | — |
+
+#### Registrar nameservers (Hostinger → Cloudflare)
+
+At **Hostinger**, the domain nameservers **must** be set to the pair Cloudflare
+assigned when the domain was first added (e.g., `*.ns.cloudflare.com`).
+
+If the registrar resets nameservers to its defaults (`ns1.dns-parking.com` /
+`ns2.dns-parking.com`), Cloudflare will detect the change and **delete the
+domain zone** after a short monitoring period. This breaks:
+
+- Cloudflare CDN / DDoS protection
+- Any DNS records not duplicated at the registrar (e.g., `pay` subdomain)
+- Cloudflare proxy (orange-cloud) benefits
+
+**To recover from a Cloudflare domain deletion:**
+
+1. Log in to **Cloudflare** → *Add a Site* → re-add `bitcoinforthearts.org`.
+2. Cloudflare will re-detect existing records and assign nameservers.
+3. Log in to **Hostinger** → *Domains* → *DNS / Nameservers* → set nameservers
+   to the Cloudflare-assigned pair.
+4. Wait for propagation (up to 24 h, usually < 1 h).
+5. Verify `pay.bitcoinforthearts.org` resolves (BTCPay donations).
+6. Verify email delivery still works (send a test to `hello@bitcoinforthearts.org`).
+
+---
+
 ### **BTCPay Server (Donations)**
 The donation flow calls the BTCPay Server API. Configure these **deployment**
 environment variables (e.g., in Vercel or your hosting provider):
