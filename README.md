@@ -30,11 +30,49 @@
 
 ---
 
+### **Domain & DNS Configuration**
+
+The site runs on the custom domain **bitcoinforthearts.org**, registered at
+**Hostinger** and served via **Vercel** (hosting). **Cloudflare** is used
+**only for Turnstile** (spam protection on forms) — DNS is managed at
+Hostinger, not Cloudflare.
+
+#### DNS records (managed in Hostinger)
+
+| Type  | Name               | Value / Target                         |
+|-------|--------------------|----------------------------------------|
+| CNAME | `www`              | Vercel DNS (e.g. `cname.vercel-dns.com`) |
+| MX    | `@`                | `mx.zoho.com` (pri 10)                |
+| MX    | `@`                | `mx2.zoho.com` (pri 20)               |
+| MX    | `@`                | `mx3.zoho.com` (pri 50)               |
+| TXT   | `@`                | `v=spf1 include:zohomail.com ~all`     |
+| TXT   | `@`                | Zoho domain verification TXT           |
+| TXT   | `_dmarc`           | DMARC policy record                    |
+
+#### Cloudflare "domain deleted" emails
+
+Cloudflare may send emails saying `bitcoinforthearts.org has been deleted`
+from your Cloudflare account. This happens because the domain was added to
+Cloudflare (required when creating a Turnstile site key) but the nameservers
+were **never pointed to Cloudflare** — DNS stays at Hostinger. After ~4 weeks
+on the free plan without Cloudflare nameservers, Cloudflare auto-removes the
+domain zone.
+
+**This does not affect the site or Turnstile.** Turnstile widgets and
+server-side verification (`challenges.cloudflare.com/turnstile/v0/siteverify`)
+are a standalone Cloudflare service tied to your API keys, not to DNS.
+
+If Cloudflare deletes the domain zone, you can safely ignore the email. If you
+ever need to regenerate Turnstile keys, just re-add the domain in the
+Cloudflare dashboard and create new keys.
+
+---
+
 ### **BTCPay Server (Donations)**
 The donation flow calls the BTCPay Server API. Configure these **deployment**
 environment variables (e.g., in Vercel or your hosting provider):
 
-- `BTCPAY_URL` (public HTTPS URL, e.g. `https://pay.bitcoinforthearts.org`)
+- `BTCPAY_URL` (public HTTPS URL of your cloud-hosted BTCPay instance)
 - `BTCPAY_API_KEY` (store API key from BTCPay Server)
 - `BTCPAY_STORE_ID` (store ID from BTCPay Server)
 - `BTCPAY_WEBHOOK_SECRET` (optional but recommended; used to verify BTCPay webhook signatures)
