@@ -366,19 +366,15 @@ export default function MembershipPage() {
             </div>
           </div>
 
+          {/* ── Standard levels (2-col grid) ── */}
           <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-            {levels.map((level, levelIndex) => {
+            {levels.slice(0, -1).map((level, levelIndex) => {
               const prevLevelName = levelIndex > 0 ? levels[levelIndex - 1].name : null;
               const hasAnnualStripe = Boolean(level.annualHref);
               return (
                 <div
                   key={level.name}
-                  className={[
-                    'rounded-2xl border bg-background p-6 shadow-sm',
-                    levelIndex === levels.length - 1
-                      ? 'border-primary/40 ring-1 ring-primary/20'
-                      : 'border-border',
-                  ].join(' ')}
+                  className="rounded-2xl border border-border bg-background p-6 shadow-sm"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -387,18 +383,11 @@ export default function MembershipPage() {
                         {level.monthly} / mo&ensp;·&ensp;{level.annual} / yr
                       </div>
                     </div>
-                    {levelIndex === levels.length - 1 ? (
-                      <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
-                        Most impact
-                      </span>
-                    ) : (
-                      <span className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted">
-                        Membership
-                      </span>
-                    )}
+                    <span className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted">
+                      Membership
+                    </span>
                   </div>
 
-                  {/* ── Perks ── */}
                   <div className="mt-4">
                     <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                       Member benefits
@@ -406,17 +395,8 @@ export default function MembershipPage() {
                     <ul className="mt-2 space-y-2">
                       {level.perks.map((perk) => (
                         <li key={perk} className="flex items-start gap-2 text-sm leading-relaxed">
-                          <svg
-                            viewBox="0 0 20 20"
-                            className="mt-0.5 h-4 w-4 shrink-0 text-primary"
-                            aria-hidden="true"
-                          >
-                            <path
-                              fill="currentColor"
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
+                          <svg viewBox="0 0 20 20" className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true">
+                            <path fill="currentColor" fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                           <span>{perk}</span>
                         </li>
@@ -424,17 +404,8 @@ export default function MembershipPage() {
                     </ul>
                     {prevLevelName && (
                       <div className="mt-3 flex items-center gap-2 rounded-lg border border-border bg-surface/60 px-3 py-2 text-xs text-muted">
-                        <svg
-                          viewBox="0 0 20 20"
-                          className="h-3.5 w-3.5 shrink-0 text-primary/70"
-                          aria-hidden="true"
-                        >
-                          <path
-                            fill="currentColor"
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v4.59L7.3 9.24a.75.75 0 00-1.1 1.02l3.25 3.5a.75.75 0 001.1 0l3.25-3.5a.75.75 0 10-1.1-1.02l-1.95 2.1V6.75z"
-                            clipRule="evenodd"
-                          />
+                        <svg viewBox="0 0 20 20" className="h-3.5 w-3.5 shrink-0 text-primary/70" aria-hidden="true">
+                          <path fill="currentColor" fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v4.59L7.3 9.24a.75.75 0 00-1.1 1.02l3.25 3.5a.75.75 0 001.1 0l3.25-3.5a.75.75 0 10-1.1-1.02l-1.95 2.1V6.75z" clipRule="evenodd" />
                         </svg>
                         <span>
                           Plus everything in <strong>{prevLevelName}</strong>{levelIndex > 1 ? ' and below' : ''}
@@ -443,32 +414,19 @@ export default function MembershipPage() {
                     )}
                   </div>
 
-                  {/* ── Impact ── */}
                   <div className="mt-4 rounded-xl border border-border bg-surface/80 p-4">
-                    <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-                      Yearly impact
-                    </div>
+                    <div className="text-xs font-semibold uppercase tracking-wide text-muted">Yearly impact</div>
                     <ul className="mt-3 space-y-2 text-sm text-muted">
                       {level.impact.map((item) => (
                         <li key={item} className="flex items-start gap-2">
-                          <svg
-                            viewBox="0 0 24 24"
-                            className="mt-0.5 h-4 w-4 shrink-0 text-primary"
-                            aria-hidden="true"
-                          >
+                          <svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true">
                             <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.16" />
-                            <path
-                              d="M12 7.5v9M9.5 9.5h5"
-                              stroke="currentColor"
-                              strokeWidth="1.6"
-                              strokeLinecap="round"
-                            />
+                            <path d="M12 7.5v9M9.5 9.5h5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                           </svg>
                           <span>{item}</span>
                         </li>
                       ))}
                     </ul>
-
                     <div className="mt-4 space-y-3">
                       {meterItems.map((metric) => {
                         const value = level.meter[metric.key];
@@ -479,10 +437,7 @@ export default function MembershipPage() {
                               <span className="tabular-nums">{value}%</span>
                             </div>
                             <div className="mt-1 h-2 w-full overflow-hidden rounded-full border border-border bg-background">
-                              <div
-                                className="h-full rounded-full bg-[linear-gradient(90deg,rgba(126,87,194,0.95),rgba(247,147,26,0.9))]"
-                                style={{ width: `${value}%` }}
-                              />
+                              <div className="h-full rounded-full bg-[linear-gradient(90deg,rgba(126,87,194,0.95),rgba(247,147,26,0.9))]" style={{ width: `${value}%` }} />
                             </div>
                           </div>
                         );
@@ -490,63 +445,29 @@ export default function MembershipPage() {
                     </div>
                   </div>
 
-                  {/* ── Payment options ── */}
                   <div className="mt-6 space-y-4">
-                    {/* Monthly */}
                     <div>
-                      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
-                        Monthly
-                      </div>
+                      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Monthly</div>
                       <div className="space-y-2">
-                        <a
-                          href={level.monthlyHref}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={[
-                            'inline-flex min-h-12 w-full items-center justify-center rounded-md px-5 py-3 text-sm font-semibold transition-colors hover:opacity-90',
-                            levelIndex === levels.length - 1
-                              ? 'bg-primary text-white'
-                              : 'bg-accent text-white',
-                          ].join(' ')}
-                        >
+                        <a href={level.monthlyHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90">
                           Traditional payment — {level.monthly} / mo
                         </a>
-                        <BtcPayMembershipButton
-                          amount={level.monthlyNum}
-                          tierName={`${level.name} (monthly)`}
-                          label={`Pay with Bitcoin — ${level.monthly}`}
-                        />
+                        <BtcPayMembershipButton amount={level.monthlyNum} tierName={`${level.name} (monthly)`} label={`Pay with Bitcoin — ${level.monthly}`} />
                       </div>
                     </div>
-
-                    {/* Annual */}
                     <div>
-                      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
-                        Annual
-                      </div>
+                      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Annual</div>
                       <div className="space-y-2">
                         {hasAnnualStripe ? (
-                          <a
-                            href={level.annualHref}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-background px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface"
-                          >
+                          <a href={level.annualHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-background px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface">
                             Traditional payment — {level.annual} / yr
                           </a>
                         ) : (
-                          <a
-                            href={`mailto:donate@bitcoinforthearts.org?subject=Annual%20membership%3A%20${encodeURIComponent(level.name)}&body=I%E2%80%99d%20like%20to%20join%20as%20an%20annual%20${encodeURIComponent(level.name)}%20member%20(${level.annual}%2Fyr).`}
-                            className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-background px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface"
-                          >
+                          <a href={`mailto:donate@bitcoinforthearts.org?subject=Annual%20membership%3A%20${encodeURIComponent(level.name)}&body=I%E2%80%99d%20like%20to%20join%20as%20an%20annual%20${encodeURIComponent(level.name)}%20member%20(${level.annual}%2Fyr).`} className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-background px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface">
                             Traditional payment — {level.annual} / yr
                           </a>
                         )}
-                        <BtcPayMembershipButton
-                          amount={level.annualNum}
-                          tierName={`${level.name} (annual)`}
-                          label={`Pay with Bitcoin — ${level.annual}`}
-                        />
+                        <BtcPayMembershipButton amount={level.annualNum} tierName={`${level.name} (annual)`} label={`Pay with Bitcoin — ${level.annual}`} />
                       </div>
                     </div>
                   </div>
@@ -554,6 +475,130 @@ export default function MembershipPage() {
               );
             })}
           </div>
+
+          {/* ── Renaissance Guardian — full-width prestige card ── */}
+          {(() => {
+            const guardian = levels[levels.length - 1];
+            const prevName = levels[levels.length - 2].name;
+            const hasAnnualStripe = Boolean(guardian.annualHref);
+            return (
+              <div className="mt-6 rounded-2xl bg-[linear-gradient(135deg,#4a148c_0%,#7e57c2_45%,#f7931a_100%)] p-[2px] shadow-lg">
+                <div className="rounded-[14px] bg-[linear-gradient(135deg,rgba(74,20,140,0.97)_0%,rgba(126,87,194,0.95)_50%,rgba(247,147,26,0.92)_100%)] p-6 sm:p-8">
+                  <div className="flex flex-col gap-6 md:flex-row md:gap-10">
+                    {/* Left column — info */}
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <span className="inline-flex items-center rounded-full border border-white/25 bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                            Most impact
+                          </span>
+                          <div className="mt-3 text-2xl font-semibold text-white sm:text-3xl">
+                            {guardian.name}
+                          </div>
+                          <div className="mt-1 text-sm text-white/75">
+                            {guardian.monthly} / mo&ensp;·&ensp;{guardian.annual} / yr
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-5">
+                        <div className="text-xs font-semibold uppercase tracking-wide text-white/60">
+                          Member benefits
+                        </div>
+                        <ul className="mt-2 space-y-2">
+                          {guardian.perks.map((perk) => (
+                            <li key={perk} className="flex items-start gap-2 text-sm leading-relaxed text-white/90">
+                              <svg viewBox="0 0 20 20" className="mt-0.5 h-4 w-4 shrink-0 text-white" aria-hidden="true">
+                                <path fill="currentColor" fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                              <span>{perk}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="mt-3 flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-xs text-white/75">
+                          <svg viewBox="0 0 20 20" className="h-3.5 w-3.5 shrink-0 text-white/60" aria-hidden="true">
+                            <path fill="currentColor" fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v4.59L7.3 9.24a.75.75 0 00-1.1 1.02l3.25 3.5a.75.75 0 001.1 0l3.25-3.5a.75.75 0 10-1.1-1.02l-1.95 2.1V6.75z" clipRule="evenodd" />
+                          </svg>
+                          <span>Plus everything in <strong>{prevName}</strong> and below</span>
+                        </div>
+                      </div>
+
+                      <div className="mt-5 rounded-xl border border-white/15 bg-white/10 p-4">
+                        <div className="text-xs font-semibold uppercase tracking-wide text-white/60">Yearly impact</div>
+                        <ul className="mt-3 space-y-2 text-sm text-white/80">
+                          {guardian.impact.map((item) => (
+                            <li key={item} className="flex items-start gap-2">
+                              <svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 shrink-0 text-white/70" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.2" />
+                                <path d="M12 7.5v9M9.5 9.5h5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                              </svg>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="mt-4 space-y-3">
+                          {meterItems.map((metric) => {
+                            const value = guardian.meter[metric.key];
+                            return (
+                              <div key={metric.key}>
+                                <div className="flex items-center justify-between text-[11px] text-white/60">
+                                  <span>{metric.label}</span>
+                                  <span className="tabular-nums">{value}%</span>
+                                </div>
+                                <div className="mt-1 h-2 w-full overflow-hidden rounded-full border border-white/15 bg-white/10">
+                                  <div className="h-full rounded-full bg-white/70" style={{ width: `${value}%` }} />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right column — payment */}
+                    <div className="flex-1 md:max-w-sm">
+                      <div className="space-y-4">
+                        <div>
+                          <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/60">Monthly</div>
+                          <div className="space-y-2">
+                            <a href={guardian.monthlyHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-white px-5 py-3 text-sm font-semibold text-[#4a148c] transition-colors hover:opacity-90">
+                              Traditional payment — {guardian.monthly} / mo
+                            </a>
+                            <BtcPayMembershipButton
+                              amount={guardian.monthlyNum}
+                              tierName={`${guardian.name} (monthly)`}
+                              label={`Pay with Bitcoin — ${guardian.monthly}`}
+                              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25 disabled:opacity-60"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/60">Annual</div>
+                          <div className="space-y-2">
+                            {hasAnnualStripe ? (
+                              <a href={guardian.annualHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25">
+                                Traditional payment — {guardian.annual} / yr
+                              </a>
+                            ) : (
+                              <a href={`mailto:donate@bitcoinforthearts.org?subject=Annual%20membership%3A%20${encodeURIComponent(guardian.name)}&body=I%E2%80%99d%20like%20to%20join%20as%20an%20annual%20${encodeURIComponent(guardian.name)}%20member%20(${guardian.annual}%2Fyr).`} className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25">
+                                Traditional payment — {guardian.annual} / yr
+                              </a>
+                            )}
+                            <BtcPayMembershipButton
+                              amount={guardian.annualNum}
+                              tierName={`${guardian.name} (annual)`}
+                              label={`Pay with Bitcoin — ${guardian.annual}`}
+                              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25 disabled:opacity-60"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </section>
 
         <div className="mt-6 space-y-2 text-xs leading-relaxed text-muted">
