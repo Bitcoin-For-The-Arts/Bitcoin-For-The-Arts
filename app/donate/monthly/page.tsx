@@ -77,7 +77,7 @@ const levels: Level[] = [
       'Quarterly virtual hangout with artists and team',
       'BFTA welcome kit (sticker pack, US addresses)',
       'Vote on a quarterly community "Audience Choice" grant',
-      'Choose a grant category your support is weighted toward',
+      'Option to direct your support toward a specific art discipline — just email us',
     ],
     monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_21_LINK?.trim() || 'https://buy.stripe.com/cNi8wQ9em5Br75OeXT83C0a',
     annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_252_LINK?.trim() || '',
