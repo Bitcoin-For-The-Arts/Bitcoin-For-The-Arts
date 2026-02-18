@@ -447,7 +447,9 @@ export default function MembershipPage() {
 
                   <div className="mt-6 space-y-4">
                     <div>
-                      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Monthly</div>
+                      <div className="mb-2 inline-flex items-center rounded-full border border-primary/25 bg-primary/8 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-primary">
+                        Monthly membership
+                      </div>
                       <div className="space-y-2">
                         <a href={level.monthlyHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90">
                           Traditional payment — {level.monthly} / mo
@@ -456,7 +458,9 @@ export default function MembershipPage() {
                       </div>
                     </div>
                     <div>
-                      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Annual</div>
+                      <div className="mb-2 inline-flex items-center rounded-full border border-success/25 bg-success/8 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-success">
+                        Annual membership
+                      </div>
                       <div className="space-y-2">
                         {hasAnnualStripe ? (
                           <a href={level.annualHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-background px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface">
@@ -559,7 +563,9 @@ export default function MembershipPage() {
                     <div className="flex-1 md:max-w-sm">
                       <div className="space-y-4">
                         <div>
-                          <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/60">Monthly</div>
+                          <div className="mb-2 inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white/80">
+                            Monthly membership
+                          </div>
                           <div className="space-y-2">
                             <a href={guardian.monthlyHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-white px-5 py-3 text-sm font-semibold text-[#4a148c] transition-colors hover:opacity-90">
                               Traditional payment — {guardian.monthly} / mo
@@ -568,12 +574,14 @@ export default function MembershipPage() {
                               amount={guardian.monthlyNum}
                               tierName={`${guardian.name} (monthly)`}
                               label={`Pay with Bitcoin — ${guardian.monthly}`}
-                              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25 disabled:opacity-60"
+                              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-white/10 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/20 disabled:opacity-60"
                             />
                           </div>
                         </div>
                         <div>
-                          <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/60">Annual</div>
+                          <div className="mb-2 inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white/80">
+                            Annual membership
+                          </div>
                           <div className="space-y-2">
                             {hasAnnualStripe ? (
                               <a href={guardian.annualHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25">
@@ -588,7 +596,7 @@ export default function MembershipPage() {
                               amount={guardian.annualNum}
                               tierName={`${guardian.name} (annual)`}
                               label={`Pay with Bitcoin — ${guardian.annual}`}
-                              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25 disabled:opacity-60"
+                              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-white/10 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/20 disabled:opacity-60"
                             />
                           </div>
                         </div>
