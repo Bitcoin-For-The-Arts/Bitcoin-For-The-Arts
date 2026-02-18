@@ -447,7 +447,7 @@ export default function MembershipPage() {
 
                   <div className="mt-6 space-y-4">
                     <div>
-                      <div className="mb-2 inline-flex items-center rounded-full border border-primary/25 bg-primary/8 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-primary">
+                      <div className="mb-2 inline-flex items-center rounded-full border border-border bg-background px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-foreground">
                         Monthly membership
                       </div>
                       <div className="space-y-2">
@@ -563,7 +563,7 @@ export default function MembershipPage() {
                     <div className="flex-1 md:max-w-sm">
                       <div className="space-y-4">
                         <div>
-                          <div className="mb-2 inline-flex items-center rounded-full border border-white/30 bg-white/20 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
+                          <div className="mb-2 inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white/80">
                             Monthly membership
                           </div>
                           <div className="space-y-2">
