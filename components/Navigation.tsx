@@ -69,7 +69,7 @@ export default function Navigation() {
         label: 'Donate',
         href: '/donate',
         variant: 'cta',
-        children: [{ label: 'Monthly giving', href: '/donate/monthly' }],
+        children: [{ label: 'Sovereign Circle', href: '/donate/monthly' }],
       },
     ],
     [],
