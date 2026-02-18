@@ -458,7 +458,7 @@ export default function MembershipPage() {
                       </div>
                     </div>
                     <div>
-                      <div className="mb-2 inline-flex items-center rounded-full border border-success/25 bg-success/8 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-success">
+                      <div className="mb-2 inline-flex items-center rounded-full border border-primary/25 bg-primary/8 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-primary">
                         Annual membership
                       </div>
                       <div className="space-y-2">
