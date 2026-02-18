@@ -563,7 +563,7 @@ export default function MembershipPage() {
                     <div className="flex-1 md:max-w-sm">
                       <div className="space-y-4">
                         <div>
-                          <div className="mb-2 inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white/80">
+                          <div className="mb-2 inline-flex items-center rounded-full border border-white/30 bg-white/20 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
                             Monthly membership
                           </div>
                           <div className="space-y-2">
@@ -574,7 +574,7 @@ export default function MembershipPage() {
                               amount={guardian.monthlyNum}
                               tierName={`${guardian.name} (monthly)`}
                               label={`Pay with Bitcoin — ${guardian.monthly}`}
-                              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-white/10 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/20 disabled:opacity-60"
+                              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25 disabled:opacity-60"
                             />
                           </div>
                         </div>
@@ -596,7 +596,7 @@ export default function MembershipPage() {
                               amount={guardian.annualNum}
                               tierName={`${guardian.name} (annual)`}
                               label={`Pay with Bitcoin — ${guardian.annual}`}
-                              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-white/10 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/20 disabled:opacity-60"
+                              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25 disabled:opacity-60"
                             />
                           </div>
                         </div>
