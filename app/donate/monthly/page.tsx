@@ -1,18 +1,23 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import FullBleedHero from '@/components/FullBleedHero';
+import BtcPayMembershipButton from '@/components/BtcPayMembershipButton';
 
 export const metadata: Metadata = {
-  title: 'Monthly Giving',
+  title: 'Sovereign Circle Membership',
   description:
-    'Join the Sovereign Circle with a monthly donation that funds artist grants, workshops, and residencies.',
+    'Join the Sovereign Circle — a membership community funding artist grants, workshops, and residencies with Bitcoin.',
 };
 
-type Tier = {
+type Level = {
   name: string;
-  amount: string;
+  monthly: string;
+  monthlyNum: number;
+  annual: string;
+  annualNum: number;
   perks: string[];
-  href: string;
+  monthlyHref: string;
+  annualHref: string;
   impact: string[];
   meter: {
     grants: number;
@@ -21,16 +26,20 @@ type Tier = {
   };
 };
 
-const tiers: Tier[] = [
+const levels: Level[] = [
   {
     name: 'Satoshi Supporter',
-    amount: '$5',
+    monthly: '$5',
+    monthlyNum: 5,
+    annual: '$60',
+    annualNum: 60,
     perks: [
       'Monthly impact email with grant updates and on-chain reports',
-      'Name on the Sovereign Circle donors page (with your consent)',
-      'Access to the donor-only community group',
+      'Name on the Sovereign Circle members page (with your consent)',
+      'Access to The Commons — our members-only community group',
     ],
-    href: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_5_LINK?.trim() || 'https://buy.stripe.com/4gMbJ21LU9RHgGo6rn83C05',
+    monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_5_LINK?.trim() || 'https://buy.stripe.com/4gMbJ21LU9RHgGo6rn83C05',
+    annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_60_LINK?.trim() || '',
     impact: [
       'Helps cover a portion of a micro-grant over the year.',
       'Supports one workshop seat for an emerging creator.',
@@ -40,13 +49,17 @@ const tiers: Tier[] = [
   },
   {
     name: 'Orange Piller Patron',
-    amount: '$11',
+    monthly: '$11',
+    monthlyNum: 11,
+    annual: '$132',
+    annualNum: 132,
     perks: [
-      'Shoutout in the monthly newsletter',
+      'Shoutout at milestone moments in the newsletter',
       'Early access to all webinar recordings',
       'Behind-the-scenes updates from active grants',
     ],
-    href: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_11_LINK?.trim() || 'https://buy.stripe.com/6oU5kE8aibZP3TCbLH83C06',
+    monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_11_LINK?.trim() || 'https://buy.stripe.com/6oU5kE8aibZP3TCbLH83C06',
+    annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_132_LINK?.trim() || '',
     impact: [
       'Enables roughly half to one micro-grant per year.',
       'Covers materials for 2-4 workshop participants.',
@@ -56,13 +69,18 @@ const tiers: Tier[] = [
   },
   {
     name: 'Hard Cap Hero',
-    amount: '$21',
+    monthly: '$21',
+    monthlyNum: 21,
+    annual: '$252',
+    annualNum: 252,
     perks: [
       'Quarterly virtual hangout with artists and team',
-      'BFTA sticker pack (one-time welcome kit)',
+      'BFTA welcome kit (sticker pack, US addresses)',
       'Vote on a quarterly community "Audience Choice" grant',
+      'Option to direct your support toward a specific art discipline — just email us',
     ],
-    href: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_21_LINK?.trim() || 'https://buy.stripe.com/cNi8wQ9em5Br75OeXT83C0a',
+    monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_21_LINK?.trim() || 'https://buy.stripe.com/cNi8wQ9em5Br75OeXT83C0a',
+    annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_252_LINK?.trim() || '',
     impact: [
       'Powers one micro-grant over the course of a year.',
       'Funds up to five workshop spots or a residency boost.',
@@ -72,13 +90,17 @@ const tiers: Tier[] = [
   },
   {
     name: 'Sovereign Stacker',
-    amount: '$51',
+    monthly: '$51',
+    monthlyNum: 51,
+    annual: '$612',
+    annualNum: 612,
     perks: [
       'Personalized video thank-you from a grant recipient (at signup)',
-      'Named on the website supporters wall',
+      'Featured card on the Sovereign Circle members page',
       'Annual year-in-review letter from the board',
     ],
-    href: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_51_LINK?.trim() || 'https://buy.stripe.com/aFa3cw2PYd3TeygdTP83C08',
+    monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_51_LINK?.trim() || 'https://buy.stripe.com/aFa3cw2PYd3TeygdTP83C08',
+    annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_612_LINK?.trim() || '',
     impact: [
       'Delivers 1-3 micro-grants per year for working artists.',
       'Supports 6-12 workshop or residency seats annually.',
@@ -88,14 +110,18 @@ const tiers: Tier[] = [
   },
   {
     name: 'Renaissance Guardian',
-    amount: '$101',
+    monthly: '$101',
+    monthlyNum: 101,
+    annual: '$1,212',
+    annualNum: 1212,
     perks: [
       'Name a grant cycle',
-      'Donor spotlight feature on site and newsletter',
+      'Member spotlight feature on site and newsletter',
       'Invitation to annual strategy call with the board',
       'Early review of grant applications before public announcement',
     ],
-    href: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_101_LINK?.trim() || 'https://buy.stripe.com/3cIaEY4Y6fc1cq8bLH83C09',
+    monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_101_LINK?.trim() || 'https://buy.stripe.com/3cIaEY4Y6fc1cq8bLH83C09',
+    annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_1212_LINK?.trim() || '',
     impact: [
       'Fuels 4+ micro-grants annually for bold creators.',
       'Sponsors full workshops or co-production moments.',
@@ -105,7 +131,58 @@ const tiers: Tier[] = [
   },
 ];
 
-export default function MonthlyDonatePage() {
+const pillars = [
+  {
+    name: 'The Commons',
+    description: 'A members-only community space where you connect with artists, fellow members, and the BFTA team. Behind-the-scenes updates, candid org discussions, and direct access.',
+  },
+  {
+    name: 'The Gallery',
+    description: 'Quarterly digital art drops from grant recipients, exclusive to active members. Plus an annual Sovereign Collection — a curated portfolio of all works your membership helped create.',
+  },
+  {
+    name: 'The Voice',
+    description: 'Vote on the quarterly Audience Choice grant. Choose which art discipline your support is weighted toward. Shape the mission through annual member surveys.',
+  },
+  {
+    name: 'The Ledger',
+    description: 'Public member recognition on the Sovereign Circle page (opt-in). On-chain impact tracking. Your name in the annual transparency report.',
+  },
+  {
+    name: 'The Journey',
+    description: 'Benefits unlock the longer you stay. Hit milestones at 3, 6, 12, and 24 months. Reach Legacy Member status and your recognition becomes permanent.',
+  },
+];
+
+const milestones = [
+  {
+    month: 'Day 1',
+    title: 'Welcome',
+    description: 'Welcome kit, access to The Commons, listing on the Sovereign Circle members page.',
+  },
+  {
+    month: '3 months',
+    title: 'Steady Supporter',
+    description: 'Badge upgrade on the members page. Access to quarterly grant impact reports.',
+  },
+  {
+    month: '6 months',
+    title: 'Art Connection',
+    description: 'Your first quarterly art drop — an exclusive digital work from a grant recipient.',
+  },
+  {
+    month: '12 months',
+    title: 'Annual Member',
+    description: 'Name in the yearly transparency report. Annual Sovereign Collection of funded works.',
+  },
+  {
+    month: '24 months',
+    title: 'Legacy Member',
+    description: 'Permanent recognition on the Sovereign Circle page — even if you later pause your membership.',
+  },
+];
+
+export default function MembershipPage() {
   const heroImage = '/donor-hype.JPG';
   const meterItems = [
     { key: 'grants', label: 'Grants' },
@@ -119,37 +196,37 @@ export default function MonthlyDonatePage() {
       <div className="pointer-events-none absolute inset-0 bg-background/50" />
       <FullBleedHero
         imageSrc={heroImage}
-        imageAlt="Monthly donations support artists."
-        label="Monthly Giving"
-        title="Stack culture on sound money."
-        description="Join the Sovereign Circle and power steady support for artist grants, workshops, and residencies."
+        imageAlt="Join the Sovereign Circle membership."
+        label="Sovereign Circle"
+        title="Become a member. Fund the renaissance."
+        description="Join a community of patrons powering artist grants, workshops, and residencies with sound money."
       />
 
       <div className="relative mx-auto max-w-6xl px-8 py-14 sm:px-6">
+        {/* ── Intro ────────────────────────────────────────── */}
         <div className="max-w-4xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Become a monthly donor
+            Sovereign Circle Membership
           </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Join the Sovereign Circle – empower artists every month.
+            More than a donation. A membership.
           </h1>
           <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
-            At Bitcoin for the Arts (BFTA), your monthly gift is a commitment to
-            uncensorable money fueling uncensorable minds. As the NEA of the Bitcoin
-            Era, we are breaking artists free from fiat decay, one sat at a time.
-            Monthly donors ensure steady support for micro-grants, workshops, and
-            residencies, creating a self-sustaining arts renaissance that no inflation
-            or gatekeeper can touch.
+            The Sovereign Circle isn&apos;t a subscription — it&apos;s a community
+            of people who believe in funding artists with uncensorable money.
+            Members don&apos;t just give; they belong, participate, and shape where
+            the money goes. You&apos;ll connect with the artists you help fund,
+            vote on grants, and unlock deeper access the longer you stay.
           </p>
           <p className="mt-4 text-base leading-relaxed text-muted sm:text-lg">
-            Unlike one-time gifts, monthly contributions provide reliable fuel for our
-            mission, allowing us to plan boldly and respond swiftly to artists&apos;
-            needs. With our transparent 55/30/10/5 rule, you see exactly where your
-            sats stack up: 55% to direct grants, 30% to programs, 10% to operations,
-            and 5% to our eternal HODL Vault.
+            With our transparent 55/30/10/5 allocation, you see exactly where
+            your support goes: 55% to direct grants, 30% to programs, 10% to
+            operations, and 5% to the HODL Vault — a permanent reserve for
+            the mission.
           </p>
         </div>
 
+        {/* ── Allocation ───────────────────────────────────── */}
         <section className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-4">
           {[
             { label: 'Grants', value: '55%' },
@@ -169,51 +246,74 @@ export default function MonthlyDonatePage() {
           ))}
         </section>
 
+        {/* ── Five Pillars ─────────────────────────────────── */}
         <section className="mt-10 rounded-2xl border border-border bg-surface/80 p-6">
-          <h2 className="text-xl font-semibold tracking-tight">Why go monthly?</h2>
-          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="rounded-xl border border-border bg-background p-5">
-              <div className="text-sm font-semibold">Consistent empowerment</div>
-              <p className="mt-2 text-sm leading-relaxed text-muted">
-                Your recurring gift helps artists escape economic volatility, funding
-                Bitcoin wallets for dancers facing tour cuts or grants for musicians
-                battling streaming royalties.
-              </p>
-            </div>
-            <div className="rounded-xl border border-border bg-background p-5">
-              <div className="text-sm font-semibold">Amplified reach</div>
-              <p className="mt-2 text-sm leading-relaxed text-muted">
-                Monthly stacking compounds like Bitcoin itself, enabling more
-                workshops (like Bitcoin for Performers) and co-productions with NYC
-                icons like BAM or the Whitney.
-              </p>
-            </div>
+          <h2 className="text-xl font-semibold tracking-tight">
+            What membership gives you
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted">
+            Five pillars that make the Sovereign Circle more than a donation.
+          </p>
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {pillars.map((pillar) => (
+              <div
+                key={pillar.name}
+                className="rounded-xl border border-border bg-background p-5"
+              >
+                <div className="text-sm font-semibold">{pillar.name}</div>
+                <p className="mt-2 text-sm leading-relaxed text-muted">
+                  {pillar.description}
+                </p>
+              </div>
+            ))}
           </div>
         </section>
 
+        {/* ── The Journey ──────────────────────────────────── */}
         <section className="mt-10 rounded-2xl border border-border bg-background/90 p-6 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-xl font-semibold tracking-tight">
-              See your impact multiply
+              The Journey — your membership grows with you
             </h2>
             <span className="text-xs font-semibold uppercase tracking-wide text-muted">
-              Monthly momentum
+              Tenure milestones
             </span>
           </div>
           <p className="mt-3 text-sm leading-relaxed text-muted">
-            Monthly giving turns steady support into bold outcomes. A $21 Hard Cap Hero
-            gift can fund an artist&apos;s first Bitcoin wallet and spark sovereignty.
-            Track the momentum in quarterly updates and on-chain reports.
+            The longer you stay, the more you unlock. Every milestone is
+            celebrated — and at 24 months, your Legacy Member status becomes
+            permanent.
           </p>
+          <div className="mt-5 space-y-3">
+            {milestones.map((ms, i) => (
+              <div
+                key={ms.month}
+                className="flex items-start gap-4 rounded-xl border border-border bg-surface/60 p-4"
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10 text-xs font-bold text-primary">
+                  {i + 1}
+                </div>
+                <div>
+                  <div className="text-sm font-semibold">
+                    {ms.month} — {ms.title}
+                  </div>
+                  <p className="mt-1 text-sm leading-relaxed text-muted">
+                    {ms.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
+        {/* ── Video ────────────────────────────────────────── */}
         <section className="mt-10 rounded-2xl border border-border bg-background/90 p-6 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-xl font-semibold tracking-tight">
-              See the monthly impact
+              See the impact
             </h2>
             <span className="text-xs font-semibold uppercase tracking-wide text-muted">
-              Donor spotlight
+              Member spotlight
             </span>
           </div>
           <div className="mt-4 mx-auto w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-black">
@@ -228,17 +328,18 @@ export default function MonthlyDonatePage() {
             />
           </div>
           <p className="mt-3 text-sm leading-relaxed text-muted">
-            Every month keeps the lights on for artists building uncensorable work.
+            Your membership keeps the lights on for artists building uncensorable work.
           </p>
         </section>
 
-        <section id="tiers" className="mt-10 scroll-mt-28">
+        {/* ── Membership Levels ────────────────────────────── */}
+        <section id="levels" className="mt-10 scroll-mt-28">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-2xl font-semibold tracking-tight">
-              Monthly donation tiers
+              Membership levels
             </h2>
             <span className="text-xs font-semibold uppercase tracking-wide text-muted">
-              Select amount & tier
+              Choose your level
             </span>
           </div>
           <div className="mt-4 rounded-xl border border-border bg-surface/60 p-4">
@@ -254,120 +355,81 @@ export default function MonthlyDonatePage() {
                 />
               </svg>
               <div>
-                <div className="text-sm font-semibold">Perks stack up</div>
+                <div className="text-sm font-semibold">Benefits stack up</div>
                 <p className="mt-1 text-sm leading-relaxed text-muted">
-                  Every tier includes all perks from the tiers below it.
-                  A Renaissance Guardian gets everything a Satoshi Supporter,
-                  Orange Piller, Hard Cap Hero, and Sovereign Stacker receives — plus
-                  their own exclusive benefits.
+                  Every level includes all benefits from the levels below it.
+                  A Renaissance Guardian receives everything a Satoshi Supporter,
+                  Orange Piller, Hard Cap Hero, and Sovereign Stacker
+                  unlocks — plus their own exclusive access.
                 </p>
               </div>
             </div>
           </div>
 
+          {/* ── Standard levels (2-col grid) ── */}
           <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-            {tiers.map((tier, tierIndex) => {
-              const prevTierName = tierIndex > 0 ? tiers[tierIndex - 1].name : null;
+            {levels.slice(0, -1).map((level, levelIndex) => {
+              const prevLevelName = levelIndex > 0 ? levels[levelIndex - 1].name : null;
+              const hasAnnualStripe = Boolean(level.annualHref);
               return (
                 <div
-                  key={tier.name}
-                  className={[
-                    'rounded-2xl border bg-background p-6 shadow-sm',
-                    tierIndex === tiers.length - 1
-                      ? 'border-primary/40 ring-1 ring-primary/20'
-                      : 'border-border',
-                  ].join(' ')}
+                  key={level.name}
+                  className="rounded-2xl border border-border bg-background p-6 shadow-sm"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <div className="text-lg font-semibold">{tier.name}</div>
+                      <div className="text-lg font-semibold">{level.name}</div>
                       <div className="mt-1 text-sm text-muted">
-                        {tier.amount} / month
+                        {level.monthly} / mo&ensp;·&ensp;{level.annual} / yr
                       </div>
                     </div>
-                    {tierIndex === tiers.length - 1 ? (
-                      <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
-                        Most impact
-                      </span>
-                    ) : (
-                      <span className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted">
-                        Monthly
-                      </span>
-                    )}
+                    <span className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted">
+                      Membership
+                    </span>
                   </div>
 
                   <div className="mt-4">
                     <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-                      Your perks
+                      Member benefits
                     </div>
                     <ul className="mt-2 space-y-2">
-                      {tier.perks.map((perk) => (
+                      {level.perks.map((perk) => (
                         <li key={perk} className="flex items-start gap-2 text-sm leading-relaxed">
-                          <svg
-                            viewBox="0 0 20 20"
-                            className="mt-0.5 h-4 w-4 shrink-0 text-primary"
-                            aria-hidden="true"
-                          >
-                            <path
-                              fill="currentColor"
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
+                          <svg viewBox="0 0 20 20" className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true">
+                            <path fill="currentColor" fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                           <span>{perk}</span>
                         </li>
                       ))}
                     </ul>
-                    {prevTierName && (
+                    {prevLevelName && (
                       <div className="mt-3 flex items-center gap-2 rounded-lg border border-border bg-surface/60 px-3 py-2 text-xs text-muted">
-                        <svg
-                          viewBox="0 0 20 20"
-                          className="h-3.5 w-3.5 shrink-0 text-primary/70"
-                          aria-hidden="true"
-                        >
-                          <path
-                            fill="currentColor"
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v4.59L7.3 9.24a.75.75 0 00-1.1 1.02l3.25 3.5a.75.75 0 001.1 0l3.25-3.5a.75.75 0 10-1.1-1.02l-1.95 2.1V6.75z"
-                            clipRule="evenodd"
-                          />
+                        <svg viewBox="0 0 20 20" className="h-3.5 w-3.5 shrink-0 text-primary/70" aria-hidden="true">
+                          <path fill="currentColor" fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v4.59L7.3 9.24a.75.75 0 00-1.1 1.02l3.25 3.5a.75.75 0 001.1 0l3.25-3.5a.75.75 0 10-1.1-1.02l-1.95 2.1V6.75z" clipRule="evenodd" />
                         </svg>
                         <span>
-                          Plus everything in <strong>{prevTierName}</strong>{tierIndex > 1 ? ' and below' : ''}
+                          Plus everything in <strong>{prevLevelName}</strong>{levelIndex > 1 ? ' and below' : ''}
                         </span>
                       </div>
                     )}
                   </div>
 
                   <div className="mt-4 rounded-xl border border-border bg-surface/80 p-4">
-                    <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-                      Impact metrics
-                    </div>
+                    <div className="text-xs font-semibold uppercase tracking-wide text-muted">Yearly impact</div>
                     <ul className="mt-3 space-y-2 text-sm text-muted">
-                      {tier.impact.map((item) => (
+                      {level.impact.map((item) => (
                         <li key={item} className="flex items-start gap-2">
-                          <svg
-                            viewBox="0 0 24 24"
-                            className="mt-0.5 h-4 w-4 shrink-0 text-primary"
-                            aria-hidden="true"
-                          >
+                          <svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true">
                             <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.16" />
-                            <path
-                              d="M12 7.5v9M9.5 9.5h5"
-                              stroke="currentColor"
-                              strokeWidth="1.6"
-                              strokeLinecap="round"
-                            />
+                            <path d="M12 7.5v9M9.5 9.5h5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                           </svg>
                           <span>{item}</span>
                         </li>
                       ))}
                     </ul>
-
                     <div className="mt-4 space-y-3">
                       {meterItems.map((metric) => {
-                        const value = tier.meter[metric.key];
+                        const value = level.meter[metric.key];
                         return (
                           <div key={metric.key}>
                             <div className="flex items-center justify-between text-[11px] text-muted">
@@ -375,10 +437,7 @@ export default function MonthlyDonatePage() {
                               <span className="tabular-nums">{value}%</span>
                             </div>
                             <div className="mt-1 h-2 w-full overflow-hidden rounded-full border border-border bg-background">
-                              <div
-                                className="h-full rounded-full bg-[linear-gradient(90deg,rgba(126,87,194,0.95),rgba(247,147,26,0.9))]"
-                                style={{ width: `${value}%` }}
-                              />
+                              <div className="h-full rounded-full bg-[linear-gradient(90deg,rgba(126,87,194,0.95),rgba(247,147,26,0.9))]" style={{ width: `${value}%` }} />
                             </div>
                           </div>
                         );
@@ -386,74 +445,229 @@ export default function MonthlyDonatePage() {
                     </div>
                   </div>
 
-                  <a
-                    href={tier.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={[
-                      'mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-md px-5 py-3 text-sm font-semibold transition-colors hover:opacity-90',
-                      tierIndex === tiers.length - 1
-                        ? 'bg-primary text-white'
-                        : 'bg-accent text-white',
-                    ].join(' ')}
-                  >
-                    Choose {tier.amount} / month
-                  </a>
+                  <div className="mt-6 space-y-4">
+                    <div>
+                      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Monthly</div>
+                      <div className="space-y-2">
+                        <a href={level.monthlyHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90">
+                          Traditional payment — {level.monthly} / mo
+                        </a>
+                        <BtcPayMembershipButton amount={level.monthlyNum} tierName={`${level.name} (monthly)`} label={`Pay with Bitcoin — ${level.monthly}`} />
+                      </div>
+                    </div>
+                    <div>
+                      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Annual</div>
+                      <div className="space-y-2">
+                        {hasAnnualStripe ? (
+                          <a href={level.annualHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-background px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface">
+                            Traditional payment — {level.annual} / yr
+                          </a>
+                        ) : (
+                          <a href={`mailto:donate@bitcoinforthearts.org?subject=Annual%20membership%3A%20${encodeURIComponent(level.name)}&body=I%E2%80%99d%20like%20to%20join%20as%20an%20annual%20${encodeURIComponent(level.name)}%20member%20(${level.annual}%2Fyr).`} className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-background px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface">
+                            Traditional payment — {level.annual} / yr
+                          </a>
+                        )}
+                        <BtcPayMembershipButton amount={level.annualNum} tierName={`${level.name} (annual)`} label={`Pay with Bitcoin — ${level.annual}`} />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               );
             })}
           </div>
+
+          {/* ── Renaissance Guardian — full-width prestige card ── */}
+          {(() => {
+            const guardian = levels[levels.length - 1];
+            const prevName = levels[levels.length - 2].name;
+            const hasAnnualStripe = Boolean(guardian.annualHref);
+            return (
+              <div className="mt-6 rounded-2xl bg-[linear-gradient(135deg,#4a148c_0%,#7e57c2_45%,#f7931a_100%)] p-[2px] shadow-lg">
+                <div className="rounded-[14px] bg-[linear-gradient(135deg,rgba(74,20,140,0.97)_0%,rgba(126,87,194,0.95)_50%,rgba(247,147,26,0.92)_100%)] p-6 sm:p-8">
+                  <div className="flex flex-col gap-6 md:flex-row md:gap-10">
+                    {/* Left column — info */}
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <span className="inline-flex items-center rounded-full border border-white/25 bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                            Most impact
+                          </span>
+                          <div className="mt-3 text-2xl font-semibold text-white sm:text-3xl">
+                            {guardian.name}
+                          </div>
+                          <div className="mt-1 text-sm text-white/75">
+                            {guardian.monthly} / mo&ensp;·&ensp;{guardian.annual} / yr
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-5">
+                        <div className="text-xs font-semibold uppercase tracking-wide text-white/60">
+                          Member benefits
+                        </div>
+                        <ul className="mt-2 space-y-2">
+                          {guardian.perks.map((perk) => (
+                            <li key={perk} className="flex items-start gap-2 text-sm leading-relaxed text-white/90">
+                              <svg viewBox="0 0 20 20" className="mt-0.5 h-4 w-4 shrink-0 text-white" aria-hidden="true">
+                                <path fill="currentColor" fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                              <span>{perk}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="mt-3 flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-xs text-white/75">
+                          <svg viewBox="0 0 20 20" className="h-3.5 w-3.5 shrink-0 text-white/60" aria-hidden="true">
+                            <path fill="currentColor" fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v4.59L7.3 9.24a.75.75 0 00-1.1 1.02l3.25 3.5a.75.75 0 001.1 0l3.25-3.5a.75.75 0 10-1.1-1.02l-1.95 2.1V6.75z" clipRule="evenodd" />
+                          </svg>
+                          <span>Plus everything in <strong>{prevName}</strong> and below</span>
+                        </div>
+                      </div>
+
+                      <div className="mt-5 rounded-xl border border-white/15 bg-white/10 p-4">
+                        <div className="text-xs font-semibold uppercase tracking-wide text-white/60">Yearly impact</div>
+                        <ul className="mt-3 space-y-2 text-sm text-white/80">
+                          {guardian.impact.map((item) => (
+                            <li key={item} className="flex items-start gap-2">
+                              <svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 shrink-0 text-white/70" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.2" />
+                                <path d="M12 7.5v9M9.5 9.5h5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                              </svg>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="mt-4 space-y-3">
+                          {meterItems.map((metric) => {
+                            const value = guardian.meter[metric.key];
+                            return (
+                              <div key={metric.key}>
+                                <div className="flex items-center justify-between text-[11px] text-white/60">
+                                  <span>{metric.label}</span>
+                                  <span className="tabular-nums">{value}%</span>
+                                </div>
+                                <div className="mt-1 h-2 w-full overflow-hidden rounded-full border border-white/15 bg-white/10">
+                                  <div className="h-full rounded-full bg-white/70" style={{ width: `${value}%` }} />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right column — payment */}
+                    <div className="flex-1 md:max-w-sm">
+                      <div className="space-y-4">
+                        <div>
+                          <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/60">Monthly</div>
+                          <div className="space-y-2">
+                            <a href={guardian.monthlyHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-white px-5 py-3 text-sm font-semibold text-[#4a148c] transition-colors hover:opacity-90">
+                              Traditional payment — {guardian.monthly} / mo
+                            </a>
+                            <BtcPayMembershipButton
+                              amount={guardian.monthlyNum}
+                              tierName={`${guardian.name} (monthly)`}
+                              label={`Pay with Bitcoin — ${guardian.monthly}`}
+                              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25 disabled:opacity-60"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/60">Annual</div>
+                          <div className="space-y-2">
+                            {hasAnnualStripe ? (
+                              <a href={guardian.annualHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25">
+                                Traditional payment — {guardian.annual} / yr
+                              </a>
+                            ) : (
+                              <a href={`mailto:donate@bitcoinforthearts.org?subject=Annual%20membership%3A%20${encodeURIComponent(guardian.name)}&body=I%E2%80%99d%20like%20to%20join%20as%20an%20annual%20${encodeURIComponent(guardian.name)}%20member%20(${guardian.annual}%2Fyr).`} className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25">
+                                Traditional payment — {guardian.annual} / yr
+                              </a>
+                            )}
+                            <BtcPayMembershipButton
+                              amount={guardian.annualNum}
+                              tierName={`${guardian.name} (annual)`}
+                              label={`Pay with Bitcoin — ${guardian.annual}`}
+                              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25 disabled:opacity-60"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </section>
 
-        <p className="mt-6 text-xs leading-relaxed text-muted">
-          Impact metrics are illustrative estimates based on our allocation model and
-          will evolve as data grows.
-        </p>
-
-        <div className="mt-10 rounded-2xl border border-border bg-background p-6">
-          <h2 className="text-lg font-semibold tracking-tight">Tax perks</h2>
-          <p className="mt-2 text-sm leading-relaxed text-muted">
-            As a 501(c)(3) tax-exempt nonprofit, your gifts may be tax-deductible as
-            allowed by law. Receipts are provided automatically.
+        <div className="mt-6 space-y-2 text-xs leading-relaxed text-muted">
+          <p>
+            Impact metrics are illustrative estimates based on our allocation model and
+            will evolve as data grows.
+          </p>
+          <p>
+            <strong>Bitcoin payments:</strong> BTC and Lightning payments are processed
+            through BTCPay Server. Since Bitcoin doesn&apos;t support auto-recurring
+            payments, BTC members return each month (or pay annually) to renew.
+            Traditional payment memberships renew automatically.
+          </p>
+          <p>
+            <strong>Annual memberships:</strong> Annual members immediately unlock the
+            3-month &ldquo;Steady Supporter&rdquo; milestone since they&apos;ve
+            committed for the year.
           </p>
         </div>
 
+        {/* ── Tax info ─────────────────────────────────────── */}
+        <div className="mt-10 rounded-2xl border border-border bg-background p-6">
+          <h2 className="text-lg font-semibold tracking-tight">Tax benefits</h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted">
+            Bitcoin For The Arts, Inc. is a 501(c)(3) tax-exempt nonprofit. Your
+            membership contribution may be tax-deductible as allowed by law.
+            Receipts are provided automatically.
+          </p>
+        </div>
+
+        {/* ── CTA banner ───────────────────────────────────── */}
         <section className="mt-6 rounded-2xl border border-border bg-primary text-white p-6 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="text-sm font-semibold uppercase tracking-wide text-white/80">
-                Sovereign Circle pledge
+                Sovereign Circle
               </div>
               <div className="mt-2 text-xl font-semibold">
-                Your monthly gift keeps art free and artists paid in sound money.
+                Your membership keeps art free and artists paid in sound money.
               </div>
             </div>
             <Link
-              href="#tiers"
+              href="#levels"
               className="inline-flex min-h-12 items-center justify-center rounded-md bg-white px-5 py-3 text-sm font-semibold text-primary transition-colors hover:opacity-90"
             >
-              Choose a tier
+              Choose a level
             </Link>
           </div>
         </section>
 
+        {/* ── Transparency ─────────────────────────────────── */}
         <div className="mt-6 rounded-2xl border border-border bg-surface/80 p-6">
           <h2 className="text-lg font-semibold tracking-tight">On-chain transparency</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted">
-            Track your impact via our public main wallet and watch your sats turn into
-            artist sovereignty.
+            Track the collective impact of the Sovereign Circle via our public
+            wallet. Watch your support turn into artist sovereignty — no other
+            arts nonprofit can show you this.
           </p>
         </div>
 
+        {/* ── Contact / back link ──────────────────────────── */}
         <div className="mt-8 text-center text-sm text-muted">
-          Questions? Email{' '}
+          Questions about membership? Email{' '}
           <a
             href="mailto:donate@bitcoinforthearts.org"
             className="font-semibold underline underline-offset-4"
           >
             donate@bitcoinforthearts.org
           </a>
-          . Your support is uncensorable — thank you for stacking with us! ⚡️
         </div>
 
         <div className="mt-8 flex justify-center">

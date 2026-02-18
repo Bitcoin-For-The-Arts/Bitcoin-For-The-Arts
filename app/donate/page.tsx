@@ -131,7 +131,7 @@ export default function DonatePage({
               href="/donate/monthly"
               className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
             >
-              Give monthly
+              Join the Sovereign Circle
             </Link>
           </div>
           {!hasStripeOneTime ? (

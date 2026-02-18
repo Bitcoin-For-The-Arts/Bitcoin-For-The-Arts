@@ -364,17 +364,27 @@ export async function POST(req: Request) {
         const amountText =
           typeof amountTotal === 'number' ? formatMoney(amountTotal, currency) : 'your donation';
         const subject = isSubscription
-          ? 'Welcome to monthly giving — Bitcoin for the Arts'
+          ? 'Welcome to the Sovereign Circle — Bitcoin for the Arts'
           : `Thank you for your donation to Bitcoin for the Arts (${amountText})`;
+
+        const qualifiesDisciplineChoice =
+          isSubscription &&
+          currency === 'usd' &&
+          typeof amountTotal === 'number' &&
+          amountTotal >= 2100;
         const text = [
           'Thank you for supporting Bitcoin for the Arts.',
           '',
-          isSubscription ? 'Your monthly subscription is active.' : `Donation: ${amountText}`,
+          isSubscription ? 'Your Sovereign Circle membership is active.' : `Donation: ${amountText}`,
+          ...(qualifiesDisciplineChoice ? [
+            '',
+            'As a member at this level, you can direct your support toward a specific art discipline (visual arts, music, theater, dance, writing, or film). Just reply to this email or write to donate@bitcoinforthearts.org with your preference.',
+          ] : []),
           '',
           'What happens next:',
           '- Stripe will email you a receipt.',
           '- You’ll receive impact updates and program news as we publish them.',
-          '- Manage your subscription (update payment method, view invoices, or cancel): https://bitcoinforthearts.org/billing',
+          '- Manage your membership (update payment method, view invoices, or pause): https://bitcoinforthearts.org/billing',
           '',
           'With gratitude,',
           'Bitcoin for the Arts',
@@ -389,15 +399,21 @@ export async function POST(req: Request) {
             </p>
             ${
               isSubscription
-                ? `<p style="margin: 0 0 8px;"><strong>Your monthly subscription is active.</strong></p>`
+                ? `<p style="margin: 0 0 8px;"><strong>Your Sovereign Circle membership is active.</strong></p>`
                 : `<p style="margin: 0 0 8px;"><strong>Donation:</strong> ${escapeHtml(amountText)}</p>`
             }
+            ${qualifiesDisciplineChoice ? `
+            <p style="margin: 12px 0 8px; padding: 10px 14px; background: #f8f4ff; border-left: 3px solid #7e57c2; border-radius: 4px; font-size: 13px;">
+              As a member at this level, you can direct your support toward a specific art discipline
+              (visual arts, music, theater, dance, writing, or film). Just reply to this email or write to
+              <a href="mailto:donate@bitcoinforthearts.org">donate@bitcoinforthearts.org</a> with your preference.
+            </p>` : ''}
             <p style="margin: 16px 0 8px;"><strong>What happens next</strong></p>
             <ul style="margin: 0 0 0 18px; padding: 0;">
               <li>Stripe will email you a receipt.</li>
               <li>You’ll receive impact updates and program news as we publish them.</li>
               <li>
-                Manage your subscription (update payment method, view invoices, or cancel):{' '}
+                Manage your membership (update payment method, view invoices, or pause):{' '}
                 <a href="https://bitcoinforthearts.org/billing">bitcoinforthearts.org/billing</a>
               </li>
             </ul>
