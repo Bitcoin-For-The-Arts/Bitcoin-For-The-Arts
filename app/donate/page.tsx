@@ -88,10 +88,10 @@ export default function DonatePage({
         </div>
 
         <div id="card" className="mt-10 rounded-2xl border border-border bg-background p-6">
-          <h2 className="text-xl font-semibold tracking-tight">Donate by card</h2>
+          <h2 className="text-xl font-semibold tracking-tight">Donate</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted">
-            Give securely by card. Choose one-time or monthly support to fuel artist
-            grants and programming.
+            Give securely with a one-time gift or join the Sovereign Circle as a
+            monthly or annual member to fuel artist grants and programming.
           </p>
 
           <StripeCustomDonateForm />
