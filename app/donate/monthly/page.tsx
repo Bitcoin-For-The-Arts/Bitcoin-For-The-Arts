@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import FullBleedHero from '@/components/FullBleedHero';
+import BtcPayMembershipButton from '@/components/BtcPayMembershipButton';
 
 export const metadata: Metadata = {
   title: 'Monthly Giving',
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 type Tier = {
   name: string;
   amount: string;
+  amountNum: number;
   perks: string[];
   href: string;
   impact: string[];
@@ -25,6 +27,7 @@ const tiers: Tier[] = [
   {
     name: 'Satoshi Supporter',
     amount: '$5',
+    amountNum: 5,
     perks: [
       'Monthly impact email with grant updates and on-chain reports',
       'Name on the Sovereign Circle donors page (with your consent)',
@@ -41,6 +44,7 @@ const tiers: Tier[] = [
   {
     name: 'Orange Piller Patron',
     amount: '$11',
+    amountNum: 11,
     perks: [
       'Shoutout in the monthly newsletter',
       'Early access to all webinar recordings',
@@ -57,6 +61,7 @@ const tiers: Tier[] = [
   {
     name: 'Hard Cap Hero',
     amount: '$21',
+    amountNum: 21,
     perks: [
       'Quarterly virtual hangout with artists and team',
       'BFTA sticker pack (one-time welcome kit)',
@@ -73,6 +78,7 @@ const tiers: Tier[] = [
   {
     name: 'Sovereign Stacker',
     amount: '$51',
+    amountNum: 51,
     perks: [
       'Personalized video thank-you from a grant recipient (at signup)',
       'Named on the website supporters wall',
@@ -89,6 +95,7 @@ const tiers: Tier[] = [
   {
     name: 'Renaissance Guardian',
     amount: '$101',
+    amountNum: 101,
     perks: [
       'Name a grant cycle',
       'Donor spotlight feature on site and newsletter',
@@ -386,29 +393,44 @@ export default function MonthlyDonatePage() {
                     </div>
                   </div>
 
-                  <a
-                    href={tier.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={[
-                      'mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-md px-5 py-3 text-sm font-semibold transition-colors hover:opacity-90',
-                      tierIndex === tiers.length - 1
-                        ? 'bg-primary text-white'
-                        : 'bg-accent text-white',
-                    ].join(' ')}
-                  >
-                    Choose {tier.amount} / month
-                  </a>
+                  <div className="mt-6 space-y-2">
+                    <a
+                      href={tier.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={[
+                        'inline-flex min-h-12 w-full items-center justify-center rounded-md px-5 py-3 text-sm font-semibold transition-colors hover:opacity-90',
+                        tierIndex === tiers.length - 1
+                          ? 'bg-primary text-white'
+                          : 'bg-accent text-white',
+                      ].join(' ')}
+                    >
+                      Join with card — {tier.amount} / mo
+                    </a>
+                    <BtcPayMembershipButton
+                      amount={tier.amountNum}
+                      tierName={tier.name}
+                      label={`Pay with Bitcoin — ${tier.amount}`}
+                    />
+                  </div>
                 </div>
               );
             })}
           </div>
         </section>
 
-        <p className="mt-6 text-xs leading-relaxed text-muted">
-          Impact metrics are illustrative estimates based on our allocation model and
-          will evolve as data grows.
-        </p>
+        <div className="mt-6 space-y-2 text-xs leading-relaxed text-muted">
+          <p>
+            Impact metrics are illustrative estimates based on our allocation model and
+            will evolve as data grows.
+          </p>
+          <p>
+            <strong>Bitcoin payments:</strong> BTC and Lightning payments are processed
+            through BTCPay Server. Since Bitcoin doesn&apos;t support auto-recurring
+            payments, BTC members return each month (or pay annually) to renew.
+            Card memberships via Stripe renew automatically.
+          </p>
+        </div>
 
         <div className="mt-10 rounded-2xl border border-border bg-background p-6">
           <h2 className="text-lg font-semibold tracking-tight">Tax perks</h2>
