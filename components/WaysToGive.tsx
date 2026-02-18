@@ -17,10 +17,10 @@ type Way = {
 
 const baseWays: Way[] = [
   {
-    title: 'Cash & Monthly Gifts',
+    title: 'One-Time & Membership Gifts',
     description:
-      'One-time or recurring via credit card/check (Stripe). Monthly patrons can opt into a public leaderboard spot.',
-    ctaLabel: 'Donate by card',
+      'Give once or become a Sovereign Circle member (monthly or annual) via card or check. Members unlock community access, art drops, grant votes, and tenure milestones.',
+    ctaLabel: 'Donate',
     href: '/donate#card',
     meter: { speed: 85, tax: 35, legacy: 45 },
   },
