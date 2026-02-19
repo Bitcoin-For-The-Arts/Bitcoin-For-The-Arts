@@ -6,7 +6,7 @@ import BoardNominationForm from '@/components/BoardNominationForm';
 export const metadata: Metadata = {
   title: 'Governance',
   description:
-    'Governing documents for Bitcoin For The Arts (BFTA): bylaws, conflict of interest policy, endowment management, and curatorial manifesto.',
+    'Governing documents for Bitcoin For The Arts (BFTA): bylaws, conflict of interest policy, endowment management, curatorial manifesto, code of ethics, and CSR policy.',
 };
 
 const DOCS = [
@@ -29,6 +29,16 @@ const DOCS = [
     title: 'Curatorial Manifesto (PDF)',
     description: 'Our curatorial principles for sovereign art in the Bitcoin era.',
     href: '/resources/governance/curatorial-manifesto.pdf',
+  },
+  {
+    title: 'Code of Ethics (PDF)',
+    description: 'Standards of conduct for board members, staff, and volunteers.',
+    href: '/BFTA Code of Ethics.pdf',
+  },
+  {
+    title: 'Corporate Social Responsibility Policy (PDF)',
+    description: 'Our commitments to ethical, social, and environmental responsibility.',
+    href: '/BFTA CSR Policy.pdf',
   },
 ] as const;
 
@@ -101,6 +111,13 @@ export default function GovernancePage() {
               <p className="mt-2 text-sm leading-relaxed text-muted">
                 Bitcoin For The Arts, Inc. is a{' '}
                 <span className="font-semibold text-foreground">501(c)(3) tax-exempt nonprofit</span>.
+                {process.env.NEXT_PUBLIC_BFTA_EIN?.trim() ? (
+                  <>
+                    <br />
+                    <span className="font-semibold text-foreground">EIN:</span>{' '}
+                    {process.env.NEXT_PUBLIC_BFTA_EIN.trim()}
+                  </>
+                ) : null}
               </p>
             </div>
 
