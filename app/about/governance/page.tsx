@@ -111,6 +111,13 @@ export default function GovernancePage() {
               <p className="mt-2 text-sm leading-relaxed text-muted">
                 Bitcoin For The Arts, Inc. is a{' '}
                 <span className="font-semibold text-foreground">501(c)(3) tax-exempt nonprofit</span>.
+                {process.env.NEXT_PUBLIC_BFTA_EIN?.trim() ? (
+                  <>
+                    <br />
+                    <span className="font-semibold text-foreground">EIN:</span>{' '}
+                    {process.env.NEXT_PUBLIC_BFTA_EIN.trim()}
+                  </>
+                ) : null}
               </p>
             </div>
 
