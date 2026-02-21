@@ -33,7 +33,7 @@ type Level = {
 const btcpayBase = (process.env.NEXT_PUBLIC_BTCPAY_URL ?? process.env.BTCPAY_URL ?? '').replace(/\/+$/, '');
 function btcSubUrl(planId: string) {
   if (!planId || !btcpayBase) return '';
-  return `${btcpayBase}/plugins/subscription/checkout/${planId}`;
+  return `${btcpayBase}/plan-checkout/${planId}`;
 }
 
 const levels: Level[] = [
