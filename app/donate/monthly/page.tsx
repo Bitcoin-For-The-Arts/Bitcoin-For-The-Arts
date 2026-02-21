@@ -521,7 +521,7 @@ export default function MembershipPage() {
                             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">₿</span>
                             Subscribe with Bitcoin — {level.btcAnnual} / yr                          </a>
                         ) : (
-                          <BtcPayMembershipButton amount={level.annualNum} tierName={`${level.name} (annual)`} label={`Bitcoin one-time — ${level.annual}`} />
+                          <BtcPayMembershipButton amount={level.btcAnnualNum} tierName={`${level.name} (annual)`} label={`Bitcoin one-time — ${level.btcAnnual}`} />
                         )}
                       </div>
                     </div>
@@ -664,9 +664,9 @@ export default function MembershipPage() {
                                 Subscribe with Bitcoin — {guardian.btcAnnual} / yr                              </a>
                             ) : (
                               <BtcPayMembershipButton
-                                amount={guardian.annualNum}
+                                amount={guardian.btcAnnualNum}
                                 tierName={`${guardian.name} (annual)`}
-                                label={`Bitcoin one-time — ${guardian.annual}`}
+                                label={`Bitcoin one-time — ${guardian.btcAnnual}`}
                                 className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25 disabled:opacity-60"
                               />
                             )}
