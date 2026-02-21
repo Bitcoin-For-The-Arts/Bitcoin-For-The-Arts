@@ -418,8 +418,7 @@ export default function MembershipPage() {
                       </div>
                       {level.btcAnnual !== level.annual && (
                         <div className="mt-0.5 text-xs text-accent">
-                          ₿ Annual: {level.btcAnnual} / yr (save 1 month)
-                        </div>
+                          ₿ Annual: {level.btcAnnual} / yr                        </div>
                       )}
                     </div>
                     <span className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted">
@@ -520,8 +519,7 @@ export default function MembershipPage() {
                         {hasBtcAnnual ? (
                           <a href={btcAnnualUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-background px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/5">
                             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">₿</span>
-                            Subscribe with Bitcoin — {level.btcAnnual} / yr (save 1 month)
-                          </a>
+                            Subscribe with Bitcoin — {level.btcAnnual} / yr                          </a>
                         ) : (
                           <BtcPayMembershipButton amount={level.annualNum} tierName={`${level.name} (annual)`} label={`Bitcoin one-time — ${level.annual}`} />
                         )}
@@ -561,8 +559,7 @@ export default function MembershipPage() {
                           </div>
                           {guardian.btcAnnual !== guardian.annual && (
                             <div className="mt-0.5 text-xs text-accent">
-                              ₿ Annual: {guardian.btcAnnual} / yr (save 1 month)
-                            </div>
+                              ₿ Annual: {guardian.btcAnnual} / yr                            </div>
                           )}
                         </div>
                       </div>
@@ -664,8 +661,7 @@ export default function MembershipPage() {
                             {hasBtcAnnual ? (
                               <a href={guardianBtcAnnualUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25">
                                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">₿</span>
-                                Subscribe with Bitcoin — {guardian.btcAnnual} / yr (save 1 month)
-                              </a>
+                                Subscribe with Bitcoin — {guardian.btcAnnual} / yr                              </a>
                             ) : (
                               <BtcPayMembershipButton
                                 amount={guardian.annualNum}
