@@ -20,8 +20,8 @@ type Level = {
   perks: string[];
   monthlyHref: string;
   annualHref: string;
-  btcMonthlyHref: string;
-  btcAnnualHref: string;
+  btcMonthlyPlan: string;
+  btcAnnualPlan: string;
   impact: string[];
   meter: {
     grants: number;
@@ -29,6 +29,12 @@ type Level = {
     reserve: number;
   };
 };
+
+const btcpayBase = (process.env.NEXT_PUBLIC_BTCPAY_URL ?? process.env.BTCPAY_URL ?? '').replace(/\/+$/, '');
+function btcSubUrl(planId: string) {
+  if (!planId || !btcpayBase) return '';
+  return `${btcpayBase}/plugins/subscription/checkout/${planId}`;
+}
 
 const levels: Level[] = [
   {
@@ -46,8 +52,8 @@ const levels: Level[] = [
     ],
     monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_5_LINK?.trim() || 'https://buy.stripe.com/4gMbJ21LU9RHgGo6rn83C05',
     annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_60_LINK?.trim() || '',
-    btcMonthlyHref: process.env.NEXT_PUBLIC_BTCPAY_MONTHLY_5_LINK?.trim() || '',
-    btcAnnualHref: process.env.NEXT_PUBLIC_BTCPAY_ANNUAL_55_LINK?.trim() || '',
+    btcMonthlyPlan: process.env.NEXT_PUBLIC_BTCPAY_MONTHLY_5_PLAN?.trim() || '',
+    btcAnnualPlan: process.env.NEXT_PUBLIC_BTCPAY_ANNUAL_55_PLAN?.trim() || '',
     impact: [
       'Helps cover a portion of a micro-grant over the year.',
       'Supports one workshop seat for an emerging creator.',
@@ -70,8 +76,8 @@ const levels: Level[] = [
     ],
     monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_11_LINK?.trim() || 'https://buy.stripe.com/6oU5kE8aibZP3TCbLH83C06',
     annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_132_LINK?.trim() || '',
-    btcMonthlyHref: process.env.NEXT_PUBLIC_BTCPAY_MONTHLY_11_LINK?.trim() || '',
-    btcAnnualHref: process.env.NEXT_PUBLIC_BTCPAY_ANNUAL_121_LINK?.trim() || '',
+    btcMonthlyPlan: process.env.NEXT_PUBLIC_BTCPAY_MONTHLY_11_PLAN?.trim() || '',
+    btcAnnualPlan: process.env.NEXT_PUBLIC_BTCPAY_ANNUAL_121_PLAN?.trim() || '',
     impact: [
       'Enables roughly half to one micro-grant per year.',
       'Covers materials for 2-4 workshop participants.',
@@ -95,8 +101,8 @@ const levels: Level[] = [
     ],
     monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_21_LINK?.trim() || 'https://buy.stripe.com/cNi8wQ9em5Br75OeXT83C0a',
     annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_252_LINK?.trim() || '',
-    btcMonthlyHref: process.env.NEXT_PUBLIC_BTCPAY_MONTHLY_21_LINK?.trim() || '',
-    btcAnnualHref: process.env.NEXT_PUBLIC_BTCPAY_ANNUAL_231_LINK?.trim() || '',
+    btcMonthlyPlan: process.env.NEXT_PUBLIC_BTCPAY_MONTHLY_21_PLAN?.trim() || '',
+    btcAnnualPlan: process.env.NEXT_PUBLIC_BTCPAY_ANNUAL_231_PLAN?.trim() || '',
     impact: [
       'Powers one micro-grant over the course of a year.',
       'Funds up to five workshop spots or a residency boost.',
@@ -119,8 +125,8 @@ const levels: Level[] = [
     ],
     monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_51_LINK?.trim() || 'https://buy.stripe.com/aFa3cw2PYd3TeygdTP83C08',
     annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_612_LINK?.trim() || '',
-    btcMonthlyHref: process.env.NEXT_PUBLIC_BTCPAY_MONTHLY_51_LINK?.trim() || '',
-    btcAnnualHref: process.env.NEXT_PUBLIC_BTCPAY_ANNUAL_561_LINK?.trim() || '',
+    btcMonthlyPlan: process.env.NEXT_PUBLIC_BTCPAY_MONTHLY_51_PLAN?.trim() || '',
+    btcAnnualPlan: process.env.NEXT_PUBLIC_BTCPAY_ANNUAL_561_PLAN?.trim() || '',
     impact: [
       'Delivers 1-3 micro-grants per year for working artists.',
       'Supports 6-12 workshop or residency seats annually.',
@@ -144,8 +150,8 @@ const levels: Level[] = [
     ],
     monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_101_LINK?.trim() || 'https://buy.stripe.com/3cIaEY4Y6fc1cq8bLH83C09',
     annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_1212_LINK?.trim() || '',
-    btcMonthlyHref: process.env.NEXT_PUBLIC_BTCPAY_MONTHLY_101_LINK?.trim() || '',
-    btcAnnualHref: process.env.NEXT_PUBLIC_BTCPAY_ANNUAL_1111_LINK?.trim() || '',
+    btcMonthlyPlan: process.env.NEXT_PUBLIC_BTCPAY_MONTHLY_101_PLAN?.trim() || '',
+    btcAnnualPlan: process.env.NEXT_PUBLIC_BTCPAY_ANNUAL_1111_PLAN?.trim() || '',
     impact: [
       'Fuels 4+ micro-grants annually for bold creators.',
       'Sponsors full workshops or co-production moments.',
@@ -395,8 +401,10 @@ export default function MembershipPage() {
             {levels.slice(0, -1).map((level, levelIndex) => {
               const prevLevelName = levelIndex > 0 ? levels[levelIndex - 1].name : null;
               const hasAnnualStripe = Boolean(level.annualHref);
-              const hasBtcMonthly = Boolean(level.btcMonthlyHref);
-              const hasBtcAnnual = Boolean(level.btcAnnualHref);
+              const btcMonthlyUrl = btcSubUrl(level.btcMonthlyPlan);
+              const btcAnnualUrl = btcSubUrl(level.btcAnnualPlan);
+              const hasBtcMonthly = Boolean(btcMonthlyUrl);
+              const hasBtcAnnual = Boolean(btcAnnualUrl);
               return (
                 <div
                   key={level.name}
@@ -481,7 +489,7 @@ export default function MembershipPage() {
                           Traditional payment — {level.monthly} / mo
                         </a>
                         {hasBtcMonthly ? (
-                          <a href={level.btcMonthlyHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-background px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/5">
+                          <a href={btcMonthlyUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-background px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/5">
                             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">₿</span>
                             Pay with Bitcoin — {level.monthly} / mo
                           </a>
@@ -505,7 +513,7 @@ export default function MembershipPage() {
                           </a>
                         )}
                         {hasBtcAnnual ? (
-                          <a href={level.btcAnnualHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-background px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/5">
+                          <a href={btcAnnualUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-background px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/5">
                             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">₿</span>
                             Pay with Bitcoin — {level.btcAnnual} / yr (save 1 month)
                           </a>
@@ -525,8 +533,10 @@ export default function MembershipPage() {
             const guardian = levels[levels.length - 1];
             const prevName = levels[levels.length - 2].name;
             const hasAnnualStripe = Boolean(guardian.annualHref);
-            const hasBtcMonthly = Boolean(guardian.btcMonthlyHref);
-            const hasBtcAnnual = Boolean(guardian.btcAnnualHref);
+            const guardianBtcMonthlyUrl = btcSubUrl(guardian.btcMonthlyPlan);
+            const guardianBtcAnnualUrl = btcSubUrl(guardian.btcAnnualPlan);
+            const hasBtcMonthly = Boolean(guardianBtcMonthlyUrl);
+            const hasBtcAnnual = Boolean(guardianBtcAnnualUrl);
             return (
               <div className="mt-6 rounded-2xl bg-[linear-gradient(135deg,#4a148c_0%,#7e57c2_45%,#f7931a_100%)] p-[2px] shadow-lg">
                 <div className="rounded-[14px] bg-[linear-gradient(135deg,rgba(74,20,140,0.97)_0%,rgba(126,87,194,0.95)_50%,rgba(247,147,26,0.92)_100%)] p-6 sm:p-8">
@@ -613,7 +623,7 @@ export default function MembershipPage() {
                               Traditional payment — {guardian.monthly} / mo
                             </a>
                             {hasBtcMonthly ? (
-                              <a href={guardian.btcMonthlyHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25">
+                              <a href={guardianBtcMonthlyUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25">
                                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">₿</span>
                                 Pay with Bitcoin — {guardian.monthly} / mo
                               </a>
@@ -642,7 +652,7 @@ export default function MembershipPage() {
                               </a>
                             )}
                             {hasBtcAnnual ? (
-                              <a href={guardian.btcAnnualHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25">
+                              <a href={guardianBtcAnnualUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25">
                                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">₿</span>
                                 Pay with Bitcoin — {guardian.btcAnnual} / yr (save 1 month)
                               </a>
