@@ -335,25 +335,30 @@ export default function SovereignArtistResidencyProposalPage() {
 
           <section className="mt-8 rounded-2xl border border-accent/40 bg-background p-6">
             <h2 className="text-xl font-semibold tracking-tight">
-              Help make this program possible
+              Call to action: Help us make this happen
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-muted sm:text-base">
-              We welcome funding partners, venue collaborators, mentors, and program
-              design feedback. If you want to help launch this residency, contact{' '}
+              This is our vision for the Sovereign Artist Residency and what we aim
+              to achieve with your help. For grant applications, this proposal
+              outlines the program structure, projected costs, and intended
+              impact. Contact us to discuss customization or collaboration.
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-muted sm:text-base">
+              Questions, ideas, or feedback:{' '}
               <a
                 className="font-semibold underline underline-offset-4"
                 href="mailto:programs@bitcoinforthearts.org?subject=Sovereign%20Artist%20Residency%20Proposal"
               >
                 programs@bitcoinforthearts.org
               </a>
-              .
+              . Let&apos;s empower sovereign creators together.
             </p>
             <div className="mt-5 flex flex-col gap-3 sm:flex-row">
               <a
                 href="mailto:programs@bitcoinforthearts.org?subject=Sovereign%20Artist%20Residency%20Proposal"
                 className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
               >
-                Contact the team
+                Contact programs team
               </a>
               <Link
                 href="/programming"
