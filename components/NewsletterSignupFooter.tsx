@@ -61,7 +61,7 @@ export default function NewsletterSignupFooter() {
       }
 
       setStatus('success');
-      setMessage('Thank you — we’ll share our first newsletter in March.');
+      setMessage('Thank you — we’ll share our first newsletter in April.');
     } catch (err) {
       setStatus('error');
       setMessage(getErrorMessage(err));
@@ -79,7 +79,7 @@ export default function NewsletterSignupFooter() {
             Stay informed with news &amp; updates
           </div>
           <div className="mt-2 text-sm leading-relaxed text-white/80 sm:text-muted">
-            Get occasional updates on grants, programming, and events. First newsletter planned for March.
+            Get occasional updates on grants, programming, and events. First newsletter planned for April.
           </div>
         </div>
 
