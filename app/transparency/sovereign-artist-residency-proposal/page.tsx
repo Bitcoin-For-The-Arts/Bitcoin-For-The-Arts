@@ -108,14 +108,6 @@ const budgetRows = [
   },
 ] as const;
 
-const implementationNotes = [
-  'Publish in the Transparency section as a draft vision and funding invitation.',
-  'Link from Programming with clear wording: "proposed, not yet launched."',
-  'Keep version/date visible and update openly when assumptions change.',
-  'Track traffic, donation conversions, and community engagement to measure demand.',
-  'Review public disclosures against nonprofit guidance before each major revision.',
-] as const;
-
 export default function SovereignArtistResidencyProposalPage() {
   return (
     <main className="bg-background">
@@ -341,17 +333,6 @@ export default function SovereignArtistResidencyProposalPage() {
             </p>
           </section>
 
-          <section className="mt-8 rounded-2xl border border-border bg-surface p-6">
-            <h2 className="text-xl font-semibold tracking-tight">
-              Transparency publication notes
-            </h2>
-            <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted">
-              {implementationNotes.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </section>
-
           <section className="mt-8 rounded-2xl border border-accent/40 bg-background p-6">
             <h2 className="text-xl font-semibold tracking-tight">
               Help make this program possible
@@ -361,15 +342,15 @@ export default function SovereignArtistResidencyProposalPage() {
               design feedback. If you want to help launch this residency, contact{' '}
               <a
                 className="font-semibold underline underline-offset-4"
-                href="mailto:hello@bitcoinforthearts.org?subject=Sovereign%20Artist%20Residency%20Proposal"
+                href="mailto:programs@bitcoinforthearts.org?subject=Sovereign%20Artist%20Residency%20Proposal"
               >
-                hello@bitcoinforthearts.org
+                programs@bitcoinforthearts.org
               </a>
               .
             </p>
             <div className="mt-5 flex flex-col gap-3 sm:flex-row">
               <a
-                href="mailto:hello@bitcoinforthearts.org?subject=Sovereign%20Artist%20Residency%20Proposal"
+                href="mailto:programs@bitcoinforthearts.org?subject=Sovereign%20Artist%20Residency%20Proposal"
                 className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
               >
                 Contact the team
