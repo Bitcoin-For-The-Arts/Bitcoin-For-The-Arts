@@ -806,7 +806,7 @@ export default function MembershipPage() {
 
         <div className="mt-6 rounded-2xl border border-border bg-surface/80 p-6">
           <h2 className="text-lg font-semibold tracking-tight">
-            Membership terms (quick)
+            Membership terms
           </h2>
           <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted">
             <li>
