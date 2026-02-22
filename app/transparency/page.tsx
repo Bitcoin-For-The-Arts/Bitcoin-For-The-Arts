@@ -4,7 +4,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Transparency',
   description:
-    'Board minutes and governance documents for Bitcoin for the Arts, Inc.',
+    'Board minutes, governance records, and funding-dependent program proposals for Bitcoin for the Arts, Inc.',
 };
 
 type DocLink = {
@@ -26,6 +26,15 @@ const minutes: DocLink[] = [
   },
 ];
 
+const proposals: DocLink[] = [
+  {
+    title: 'Sovereign Artist Residency Program — Proposal Draft (Feb 2026)',
+    subtitle:
+      'Funding-dependent residency model shared for transparency, collaboration, and donor alignment.',
+    href: '/transparency/sovereign-artist-residency-proposal',
+  },
+];
+
 export default function TransparencyPage() {
   return (
     <main className="bg-background">
@@ -35,14 +44,17 @@ export default function TransparencyPage() {
             Transparency
           </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Board minutes &amp; documents
+            Board minutes, documents, and proposal drafts
           </h1>
           <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
             We publish key governance records to support accountability and radical
-            transparency.
+            transparency, including funding-dependent program proposals.
           </p>
 
-          <div className="mt-10 space-y-4">
+          <div className="mt-10 text-xs font-semibold uppercase tracking-wide text-muted">
+            Board minutes
+          </div>
+          <div className="mt-4 space-y-4">
             {minutes.map((doc) => (
               <div
                 key={doc.href}
@@ -70,6 +82,36 @@ export default function TransparencyPage() {
                   >
                     Download
                   </a>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 text-xs font-semibold uppercase tracking-wide text-muted">
+            Program proposals (drafts)
+          </div>
+          <div className="mt-4 space-y-4">
+            {proposals.map((proposal) => (
+              <div
+                key={proposal.href}
+                className="rounded-2xl border border-border bg-background p-5"
+              >
+                <div className="text-sm font-semibold tracking-tight">
+                  {proposal.title}
+                </div>
+                {proposal.subtitle ? (
+                  <div className="mt-1 text-sm text-muted">{proposal.subtitle}</div>
+                ) : null}
+                <div className="mt-3 text-xs text-muted">
+                  Status: Draft subject to change. Not yet launched.
+                </div>
+                <div className="mt-4">
+                  <Link
+                    href={proposal.href}
+                    className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-5 py-2 text-sm font-semibold transition-colors hover:bg-background"
+                  >
+                    Read proposal
+                  </Link>
                 </div>
               </div>
             ))}

@@ -35,6 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/donate/guides/royalties-ip',
     '/contact',
     '/transparency',
+    '/transparency/sovereign-artist-residency-proposal',
     '/privacy-policy',
     '/terms',
     '/billing',
