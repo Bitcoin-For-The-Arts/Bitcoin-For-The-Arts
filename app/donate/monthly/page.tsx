@@ -836,11 +836,8 @@ export default function MembershipPage() {
             Membership contributions may be tax-deductible to the extent allowed by
             law, reduced by the fair market value (FMV) of any goods or services
             received. Most circles have estimated FMV of $0; Hard Cap Heroes
-            includes a one-time sticker pack with an estimated FMV of about $5.
-          </p>
-          <p className="mt-2 text-sm leading-relaxed text-muted">
-            <span className="font-semibold text-foreground">EIN:</span>{' '}
-            {ein ?? 'available upon request'}
+            includes a one-time sticker pack with an estimated FMV of about $5. Our
+            EIN is {ein ?? 'available upon request'}.
           </p>
           <p className="mt-2 text-sm leading-relaxed text-muted">
             Receipts are provided automatically. This page is for informational
