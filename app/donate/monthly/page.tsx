@@ -428,8 +428,7 @@ export default function MembershipPage() {
 
           {/* ── Standard levels (2-col grid) ── */}
           <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-            {levels.slice(0, -1).map((level, levelIndex) => {
-              const prevLevelName = levelIndex > 0 ? levels[levelIndex - 1].name : null;
+            {levels.slice(0, -1).map((level) => {
               const hasAnnualStripe = Boolean(level.annualHref);
               const btcMonthlyUrl = btcSubUrl(level.btcMonthlyPlan);
               const btcAnnualUrl = btcSubUrl(level.btcAnnualPlan);
@@ -459,7 +458,6 @@ export default function MembershipPage() {
 
                   <div className="mt-4">
                     <div className="rounded-lg border border-border bg-surface/60 px-3 py-2 text-sm leading-relaxed text-muted">
-                      <span className="font-semibold text-foreground">Relational:</span>{' '}
                       {level.relational}
                     </div>
                     <div className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted">
@@ -475,16 +473,6 @@ export default function MembershipPage() {
                         </li>
                       ))}
                     </ul>
-                    {prevLevelName && (
-                      <div className="mt-3 flex items-center gap-2 rounded-lg border border-border bg-surface/60 px-3 py-2 text-xs text-muted">
-                        <svg viewBox="0 0 20 20" className="h-3.5 w-3.5 shrink-0 text-primary/70" aria-hidden="true">
-                          <path fill="currentColor" fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v4.59L7.3 9.24a.75.75 0 00-1.1 1.02l3.25 3.5a.75.75 0 001.1 0l3.25-3.5a.75.75 0 10-1.1-1.02l-1.95 2.1V6.75z" clipRule="evenodd" />
-                        </svg>
-                        <span>
-                          Plus everything in <strong>{prevLevelName}</strong>{levelIndex > 1 ? ' and below' : ''}
-                        </span>
-                      </div>
-                    )}
                     <div className="mt-3 text-xs leading-relaxed text-muted">
                       <span className="font-semibold text-foreground">Tax note:</span>{' '}
                       {level.fmvNote}
@@ -615,7 +603,6 @@ export default function MembershipPage() {
           {/* ── Renaissance Guardian — full-width prestige card ── */}
           {(() => {
             const guardian = levels[levels.length - 1];
-            const prevName = levels[levels.length - 2].name;
             const hasAnnualStripe = Boolean(guardian.annualHref);
             const guardianBtcMonthlyUrl = btcSubUrl(guardian.btcMonthlyPlan);
             const guardianBtcAnnualUrl = btcSubUrl(guardian.btcAnnualPlan);
@@ -648,7 +635,6 @@ export default function MembershipPage() {
 
                       <div className="mt-5">
                         <div className="rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm leading-relaxed text-white/85">
-                          <span className="font-semibold text-white">Relational:</span>{' '}
                           {guardian.relational}
                         </div>
                         <div className="mt-3 text-xs font-semibold uppercase tracking-wide text-white/60">
@@ -664,12 +650,6 @@ export default function MembershipPage() {
                             </li>
                           ))}
                         </ul>
-                        <div className="mt-3 flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-xs text-white/75">
-                          <svg viewBox="0 0 20 20" className="h-3.5 w-3.5 shrink-0 text-white/60" aria-hidden="true">
-                            <path fill="currentColor" fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v4.59L7.3 9.24a.75.75 0 00-1.1 1.02l3.25 3.5a.75.75 0 001.1 0l3.25-3.5a.75.75 0 10-1.1-1.02l-1.95 2.1V6.75z" clipRule="evenodd" />
-                          </svg>
-                          <span>Plus everything in <strong>{prevName}</strong> and below</span>
-                        </div>
                         <div className="mt-3 text-xs leading-relaxed text-white/75">
                           <span className="font-semibold text-white">Tax note:</span>{' '}
                           {guardian.fmvNote}
