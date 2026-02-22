@@ -51,7 +51,7 @@ export default function TransparencyPage() {
             Transparency
           </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Board minutes, documents, and proposal drafts
+            Board Minutes, Documents, and Proposal Drafts
           </h1>
           <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
             We publish key governance records to support accountability and radical
