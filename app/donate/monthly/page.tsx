@@ -235,6 +235,7 @@ const milestones = [
 
 export default function MembershipPage() {
   const heroImage = '/donor-hype.JPG';
+  const ein = process.env.NEXT_PUBLIC_BFTA_EIN?.trim();
   const meterItems = [
     { key: 'grants', label: 'Grants' },
     { key: 'programs', label: 'Programs' },
@@ -831,15 +832,20 @@ export default function MembershipPage() {
         <div className="mt-10 rounded-2xl border border-border bg-background p-6">
           <h2 className="text-lg font-semibold tracking-tight">Tax benefits</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted">
-            Bitcoin For The Arts, Inc. is a 501(c)(3) tax-exempt nonprofit. Your
-            membership contribution may be tax-deductible to the extent it exceeds
-            the fair market value (FMV) of any goods or services received. Most
-            circles have estimated FMV of $0; Hard Cap Heroes includes a one-time
-            sticker pack estimated around $5 FMV.
+            Bitcoin For The Arts, Inc. is a 501(c)(3) tax-exempt nonprofit.
+            Membership contributions may be tax-deductible to the extent allowed by
+            law, reduced by the fair market value (FMV) of any goods or services
+            received. Most circles have estimated FMV of $0; Hard Cap Heroes
+            includes a one-time sticker pack with an estimated FMV of about $5.
           </p>
           <p className="mt-2 text-sm leading-relaxed text-muted">
-            Receipts are provided automatically. This page is informational and not
-            tax advice. Please consult your tax advisor.
+            <span className="font-semibold text-foreground">EIN:</span>{' '}
+            {ein ?? 'available upon request'}
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-muted">
+            Receipts are provided automatically. This page is for informational
+            purposes only and does not constitute tax advice. Please consult your
+            tax advisor.
           </p>
         </div>
 
