@@ -28,6 +28,13 @@ const minutes: DocLink[] = [
 
 const proposals: DocLink[] = [
   {
+    title:
+      'Empowering Creators: Pathways to Financial Sovereignty in the Arts - Proposal Draft (Feb 2026)',
+    subtitle:
+      'Funding-dependent education initiative focused on Bitcoin literacy through arts partner organizations.',
+    href: '/transparency/bitcoin-education-initiative-proposal',
+  },
+  {
     title: 'Sovereign Artist Residency Program — Proposal Draft (Feb 2026)',
     subtitle:
       'Funding-dependent residency model shared for transparency, collaboration, and donor alignment.',
