@@ -28,6 +28,13 @@ const minutes: DocLink[] = [
 
 const proposals: DocLink[] = [
   {
+    title:
+      'Empowering Creators: Pathways to Financial Sovereignty in the Arts - Proposal Draft (Feb 2026)',
+    subtitle:
+      'Funding-dependent education initiative focused on Bitcoin literacy through arts partner organizations.',
+    href: '/transparency/bitcoin-education-initiative-proposal',
+  },
+  {
     title: 'Sovereign Artist Residency Program — Proposal Draft (Feb 2026)',
     subtitle:
       'Funding-dependent residency model shared for transparency, collaboration, and donor alignment.',
@@ -44,7 +51,7 @@ export default function TransparencyPage() {
             Transparency
           </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Board minutes, documents, and proposal drafts
+            Board Minutes, Documents, and Proposal Drafts
           </h1>
           <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
             We publish key governance records to support accountability and radical

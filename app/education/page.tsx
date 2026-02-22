@@ -65,6 +65,23 @@ export default function EducationPage() {
             >
               Volunteer to teach / support
             </Link>
+            <Link
+              href="/transparency/bitcoin-education-initiative-proposal"
+              className="inline-flex min-h-12 items-center justify-center rounded-md border border-border bg-surface px-6 py-3 text-sm font-semibold transition-colors hover:bg-background"
+            >
+              Education proposal (draft)
+            </Link>
+          </div>
+
+          <div className="mt-6 rounded-2xl border border-border bg-background p-5 text-sm text-muted">
+            Looking for the full funding proposal? Read the draft in Transparency{' '}
+            <Link
+              href="/transparency/bitcoin-education-initiative-proposal"
+              className="font-semibold underline underline-offset-4"
+            >
+              here
+            </Link>
+            .
           </div>
 
           <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-12">

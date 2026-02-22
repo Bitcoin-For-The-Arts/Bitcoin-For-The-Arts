@@ -69,7 +69,7 @@ export default function GrantsPage() {
             Bitcoin Micro-Grants
           </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Grants for working artists — paid in Bitcoin.
+            Grants for Working Artists — paid in bitcoin.
           </h1>
           <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
             We support sovereign creators across visual arts, theater, dance, music,
