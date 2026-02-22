@@ -1,12 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { track } from '@vercel/analytics';
 
 interface BtcPayMembershipButtonProps {
   amount: number;
   tierName: string;
   label?: string;
   className?: string;
+  tracking?: {
+    tier: string;
+    cadence: 'monthly' | 'annual';
+    checkoutType?: 'one_time_invoice';
+  };
 }
 
 export default function BtcPayMembershipButton({
@@ -14,6 +20,7 @@ export default function BtcPayMembershipButton({
   tierName,
   label,
   className,
+  tracking,
 }: BtcPayMembershipButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -23,6 +30,13 @@ export default function BtcPayMembershipButton({
     setError(null);
 
     try {
+      track('membership_checkout_click', {
+        tier: tracking?.tier ?? tierName,
+        cadence: tracking?.cadence ?? 'monthly',
+        paymentMethod: 'bitcoin',
+        checkoutType: tracking?.checkoutType ?? 'one_time_invoice',
+      });
+
       const res = await fetch('/api/btcpay/create-invoice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

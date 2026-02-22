@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import FullBleedHero from '@/components/FullBleedHero';
 import BtcPayMembershipButton from '@/components/BtcPayMembershipButton';
+import TrackedMembershipLink from '@/components/TrackedMembershipLink';
 
 export const metadata: Metadata = {
   title: 'Sovereign Circle Membership',
@@ -17,7 +18,9 @@ type Level = {
   annualNum: number;
   btcAnnual: string;
   btcAnnualNum: number;
+  relational: string;
   perks: string[];
+  fmvNote: string;
   monthlyHref: string;
   annualHref: string;
   btcMonthlyPlan: string;
@@ -40,67 +43,77 @@ function btcSubUrl(value: string) {
 
 const levels: Level[] = [
   {
-    name: 'Satoshi Supporter',
+    name: 'Friends of Satoshi Circle',
     monthly: '$5',
     monthlyNum: 5,
     annual: '$60',
     annualNum: 60,
     btcAnnual: '$55',
     btcAnnualNum: 55,
+    relational:
+      'Join a welcoming circle of supporters and begin building long-term relationships with sovereign creators.',
     perks: [
       'Monthly impact email with grant updates and on-chain reports',
       'Name on the Sovereign Circle members page (with your consent)',
       'Access to The Commons — our members-only community group',
     ],
+    fmvNote: 'Estimated FMV: $0 (no tangible goods or services).',
     monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_5_LINK?.trim() || 'https://buy.stripe.com/4gMbJ21LU9RHgGo6rn83C05',
     annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_60_LINK?.trim() || '',
     btcMonthlyPlan: process.env.NEXT_PUBLIC_BTCPAY_MONTHLY_5_PLAN?.trim() || '',
     btcAnnualPlan: process.env.NEXT_PUBLIC_BTCPAY_ANNUAL_55_PLAN?.trim() || '',
     impact: [
-      'Helps cover a portion of a micro-grant over the year.',
-      'Supports one workshop seat for an emerging creator.',
-      'Strengthens the long-term reserve for artist payments.',
+      'Supports foundational mission work and helps cover a portion of a micro-grant.',
+      'Strengthens education and transparency reporting for the wider artist community.',
+      'Contributes to long-term reserve health for future grants.',
     ],
     meter: { grants: 35, programs: 30, reserve: 25 },
   },
   {
-    name: 'Orange Piller Patron',
+    name: 'Orange Pilling Friends Circle',
     monthly: '$11',
     monthlyNum: 11,
     annual: '$132',
     annualNum: 132,
     btcAnnual: '$121',
     btcAnnualNum: 121,
+    relational:
+      'Build deeper ties to the mission through regular updates, recognition, and direct learning touchpoints.',
     perks: [
       'Shoutout at milestone moments in the newsletter',
       'Early access to all webinar recordings',
       'Behind-the-scenes updates from active grants',
+      'Quarterly Q&A with the Director (virtual)',
     ],
+    fmvNote: 'Estimated FMV: $0 (no tangible goods or services).',
     monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_11_LINK?.trim() || 'https://buy.stripe.com/6oU5kE8aibZP3TCbLH83C06',
     annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_132_LINK?.trim() || '',
     btcMonthlyPlan: process.env.NEXT_PUBLIC_BTCPAY_MONTHLY_11_PLAN?.trim() || '',
     btcAnnualPlan: process.env.NEXT_PUBLIC_BTCPAY_ANNUAL_121_PLAN?.trim() || '',
     impact: [
-      'Enables roughly half to one micro-grant per year.',
+      'Can enable roughly half to one micro-grant over a year.',
       'Covers materials for 2-4 workshop participants.',
-      'Builds reserve capacity for future grants.',
+      'Expands reserve capacity for future artist support.',
     ],
     meter: { grants: 50, programs: 45, reserve: 35 },
   },
   {
-    name: 'Hard Cap Hero',
+    name: 'Hard Cap Heroes',
     monthly: '$21',
     monthlyNum: 21,
     annual: '$252',
     annualNum: 252,
     btcAnnual: '$231',
     btcAnnualNum: 231,
+    relational:
+      'Strengthen bonds with artists and team through hangouts, voting, and discipline-level voice in mission priorities.',
     perks: [
       'Quarterly virtual hangout with artists and team',
-      'BFTA welcome kit (sticker pack, US addresses)',
+      'BFTA welcome kit (sticker pack, US addresses, one-time)',
       'Vote on a quarterly community "Audience Choice" grant',
       'Option to direct your support toward a specific art discipline — just email us',
     ],
+    fmvNote: 'Estimated FMV: ~$5 one-time (sticker pack, US only).',
     monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_21_LINK?.trim() || 'https://buy.stripe.com/cNi8wQ9em5Br75OeXT83C0a',
     annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_252_LINK?.trim() || '',
     btcMonthlyPlan: process.env.NEXT_PUBLIC_BTCPAY_MONTHLY_21_PLAN?.trim() || '',
@@ -113,18 +126,21 @@ const levels: Level[] = [
     meter: { grants: 60, programs: 55, reserve: 45 },
   },
   {
-    name: 'Sovereign Stacker',
+    name: 'Sovereign Leaders Circle',
     monthly: '$51',
     monthlyNum: 51,
     annual: '$612',
     annualNum: 612,
     btcAnnual: '$561',
     btcAnnualNum: 561,
+    relational:
+      'Receive deeper acknowledgment and annual reflections that connect your support to real artist outcomes.',
     perks: [
       'Personalized video thank-you from a grant recipient (at signup)',
       'Featured card on the Sovereign Circle members page',
       'Annual year-in-review letter from the board',
     ],
+    fmvNote: 'Estimated FMV: $0 (appreciation benefits are insubstantial).',
     monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_51_LINK?.trim() || 'https://buy.stripe.com/aFa3cw2PYd3TeygdTP83C08',
     annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_612_LINK?.trim() || '',
     btcMonthlyPlan: process.env.NEXT_PUBLIC_BTCPAY_MONTHLY_51_PLAN?.trim() || '',
@@ -137,19 +153,22 @@ const levels: Level[] = [
     meter: { grants: 75, programs: 70, reserve: 55 },
   },
   {
-    name: 'Renaissance Guardian',
+    name: 'Renaissance Guardian Circle',
     monthly: '$101',
     monthlyNum: 101,
     annual: '$1,212',
     annualNum: 1212,
     btcAnnual: '$1,111',
     btcAnnualNum: 1111,
+    relational:
+      'Engage at the highest level with mission strategy, recognition, and long-horizon support for sovereign creators.',
     perks: [
       'Name a grant cycle',
       'Member spotlight feature on site and newsletter',
       'Invitation to annual strategy call with the board',
       'Early review of grant applications before public announcement',
     ],
+    fmvNote: 'Estimated FMV: $0 (recognition and strategy access are insubstantial).',
     monthlyHref: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_101_LINK?.trim() || 'https://buy.stripe.com/3cIaEY4Y6fc1cq8bLH83C09',
     annualHref: process.env.NEXT_PUBLIC_STRIPE_ANNUAL_1212_LINK?.trim() || '',
     btcMonthlyPlan: process.env.NEXT_PUBLIC_BTCPAY_MONTHLY_101_PLAN?.trim() || '',
@@ -174,7 +193,7 @@ const pillars = [
   },
   {
     name: 'The Voice',
-    description: 'Vote on the quarterly Audience Choice grant. Choose which art discipline your support is weighted toward. Shape the mission through annual member surveys.',
+    description: 'Vote on the quarterly Audience Choice grant. Choose which art discipline your support is weighted toward. Shape the mission through annual member surveys. Member input is advisory and does not override board fiduciary responsibility or final compliance decisions.',
   },
   {
     name: 'The Ledger',
@@ -216,6 +235,7 @@ const milestones = [
 
 export default function MembershipPage() {
   const heroImage = '/donor-hype.JPG';
+  const ein = process.env.NEXT_PUBLIC_BFTA_EIN?.trim();
   const meterItems = [
     { key: 'grants', label: 'Grants' },
     { key: 'programs', label: 'Programs' },
@@ -364,14 +384,14 @@ export default function MembershipPage() {
           </p>
         </section>
 
-        {/* ── Membership Levels ────────────────────────────── */}
+        {/* ── Membership circles ───────────────────────────── */}
         <section id="levels" className="mt-10 scroll-mt-28">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-2xl font-semibold tracking-tight">
-              Membership levels
+              Membership circles
             </h2>
             <span className="text-xs font-semibold uppercase tracking-wide text-muted">
-              Choose your level
+              Choose your circle
             </span>
           </div>
           <div className="mt-4 rounded-xl border border-border bg-surface/60 p-4">
@@ -389,19 +409,27 @@ export default function MembershipPage() {
               <div>
                 <div className="text-sm font-semibold">Benefits stack up</div>
                 <p className="mt-1 text-sm leading-relaxed text-muted">
-                  Every level includes all benefits from the levels below it.
-                  A Renaissance Guardian receives everything a Satoshi Supporter,
-                  Orange Piller, Hard Cap Hero, and Sovereign Stacker
-                  unlocks — plus their own exclusive access.
+                  Every circle includes all benefits from circles below it. Higher
+                  circles add deeper participation, recognition, and mission voice.
                 </p>
               </div>
             </div>
           </div>
+          <div className="mt-3 rounded-xl border border-accent/40 bg-surface/80 p-4">
+            <div className="text-sm font-semibold tracking-tight">
+              Annual support helps us plan with confidence
+            </div>
+            <p className="mt-1 text-sm leading-relaxed text-muted">
+              If you&apos;re ready for long-term support, annual membership reduces
+              renewal friction and helps us plan grants and programs more
+              predictably. Bitcoin annual circles include a one-month discount
+              (11 months for the price of 12).
+            </p>
+          </div>
 
           {/* ── Standard levels (2-col grid) ── */}
           <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-            {levels.slice(0, -1).map((level, levelIndex) => {
-              const prevLevelName = levelIndex > 0 ? levels[levelIndex - 1].name : null;
+            {levels.slice(0, -1).map((level) => {
               const hasAnnualStripe = Boolean(level.annualHref);
               const btcMonthlyUrl = btcSubUrl(level.btcMonthlyPlan);
               const btcAnnualUrl = btcSubUrl(level.btcAnnualPlan);
@@ -420,7 +448,8 @@ export default function MembershipPage() {
                       </div>
                       {level.btcAnnual !== level.annual && (
                         <div className="mt-0.5 text-xs text-accent">
-                          ₿ Annual: {level.btcAnnual} / yr                        </div>
+                          ₿ Annual: {level.btcAnnual} / yr
+                        </div>
                       )}
                     </div>
                     <span className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted">
@@ -429,7 +458,10 @@ export default function MembershipPage() {
                   </div>
 
                   <div className="mt-4">
-                    <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    <div className="rounded-lg border border-border bg-surface/60 px-3 py-2 text-sm leading-relaxed text-muted">
+                      {level.relational}
+                    </div>
+                    <div className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted">
                       Member benefits
                     </div>
                     <ul className="mt-2 space-y-2">
@@ -442,16 +474,10 @@ export default function MembershipPage() {
                         </li>
                       ))}
                     </ul>
-                    {prevLevelName && (
-                      <div className="mt-3 flex items-center gap-2 rounded-lg border border-border bg-surface/60 px-3 py-2 text-xs text-muted">
-                        <svg viewBox="0 0 20 20" className="h-3.5 w-3.5 shrink-0 text-primary/70" aria-hidden="true">
-                          <path fill="currentColor" fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v4.59L7.3 9.24a.75.75 0 00-1.1 1.02l3.25 3.5a.75.75 0 001.1 0l3.25-3.5a.75.75 0 10-1.1-1.02l-1.95 2.1V6.75z" clipRule="evenodd" />
-                        </svg>
-                        <span>
-                          Plus everything in <strong>{prevLevelName}</strong>{levelIndex > 1 ? ' and below' : ''}
-                        </span>
-                      </div>
-                    )}
+                    <div className="mt-3 text-xs leading-relaxed text-muted">
+                      <span className="font-semibold text-foreground">Tax note:</span>{' '}
+                      {level.fmvNote}
+                    </div>
                   </div>
 
                   <div className="mt-4 rounded-xl border border-border bg-surface/80 p-4">
@@ -491,16 +517,33 @@ export default function MembershipPage() {
                         Monthly membership
                       </div>
                       <div className="space-y-2">
-                        <a href={level.monthlyHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90">
+                        <TrackedMembershipLink
+                          href={level.monthlyHref}
+                          tier={level.name}
+                          cadence="monthly"
+                          paymentMethod="traditional"
+                          className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                        >
                           Traditional payment — {level.monthly} / mo
-                        </a>
+                        </TrackedMembershipLink>
                         {hasBtcMonthly ? (
-                          <a href={btcMonthlyUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-background px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/5">
+                          <TrackedMembershipLink
+                            href={btcMonthlyUrl}
+                            tier={level.name}
+                            cadence="monthly"
+                            paymentMethod="bitcoin"
+                            className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-background px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/5"
+                          >
                             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">₿</span>
                             Subscribe with Bitcoin — {level.monthly} / mo
-                          </a>
+                          </TrackedMembershipLink>
                         ) : (
-                          <BtcPayMembershipButton amount={level.monthlyNum} tierName={`${level.name} (monthly)`} label={`Bitcoin one-time — ${level.monthly}`} />
+                          <BtcPayMembershipButton
+                            amount={level.monthlyNum}
+                            tierName={`${level.name} (monthly)`}
+                            label={`Bitcoin one-time — ${level.monthly}`}
+                            tracking={{ tier: level.name, cadence: 'monthly', checkoutType: 'one_time_invoice' }}
+                          />
                         )}
                       </div>
                     </div>
@@ -510,20 +553,45 @@ export default function MembershipPage() {
                       </div>
                       <div className="space-y-2">
                         {hasAnnualStripe ? (
-                          <a href={level.annualHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-background px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface">
+                          <TrackedMembershipLink
+                            href={level.annualHref}
+                            tier={level.name}
+                            cadence="annual"
+                            paymentMethod="traditional"
+                            className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-background px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+                          >
                             Traditional payment — {level.annual} / yr
-                          </a>
+                          </TrackedMembershipLink>
                         ) : (
-                          <a href={`mailto:donate@bitcoinforthearts.org?subject=Annual%20membership%3A%20${encodeURIComponent(level.name)}&body=I%E2%80%99d%20like%20to%20join%20as%20an%20annual%20${encodeURIComponent(level.name)}%20member%20(${level.annual}%2Fyr).`} className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-background px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface">
+                          <TrackedMembershipLink
+                            href={`mailto:donate@bitcoinforthearts.org?subject=Annual%20membership%3A%20${encodeURIComponent(level.name)}&body=I%E2%80%99d%20like%20to%20join%20as%20an%20annual%20${encodeURIComponent(level.name)}%20member%20(${level.annual}%2Fyr).`}
+                            tier={level.name}
+                            cadence="annual"
+                            paymentMethod="traditional"
+                            checkoutType="manual_email"
+                            className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-background px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+                          >
                             Traditional payment — {level.annual} / yr
-                          </a>
+                          </TrackedMembershipLink>
                         )}
                         {hasBtcAnnual ? (
-                          <a href={btcAnnualUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-background px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/5">
+                          <TrackedMembershipLink
+                            href={btcAnnualUrl}
+                            tier={level.name}
+                            cadence="annual"
+                            paymentMethod="bitcoin"
+                            className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-background px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/5"
+                          >
                             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">₿</span>
-                            Subscribe with Bitcoin — {level.btcAnnual} / yr                          </a>
+                            Subscribe with Bitcoin — {level.btcAnnual} / yr
+                          </TrackedMembershipLink>
                         ) : (
-                          <BtcPayMembershipButton amount={level.btcAnnualNum} tierName={`${level.name} (annual)`} label={`Bitcoin one-time — ${level.btcAnnual}`} />
+                          <BtcPayMembershipButton
+                            amount={level.btcAnnualNum}
+                            tierName={`${level.name} (annual)`}
+                            label={`Bitcoin one-time — ${level.btcAnnual}`}
+                            tracking={{ tier: level.name, cadence: 'annual', checkoutType: 'one_time_invoice' }}
+                          />
                         )}
                       </div>
                     </div>
@@ -536,7 +604,6 @@ export default function MembershipPage() {
           {/* ── Renaissance Guardian — full-width prestige card ── */}
           {(() => {
             const guardian = levels[levels.length - 1];
-            const prevName = levels[levels.length - 2].name;
             const hasAnnualStripe = Boolean(guardian.annualHref);
             const guardianBtcMonthlyUrl = btcSubUrl(guardian.btcMonthlyPlan);
             const guardianBtcAnnualUrl = btcSubUrl(guardian.btcAnnualPlan);
@@ -561,13 +628,17 @@ export default function MembershipPage() {
                           </div>
                           {guardian.btcAnnual !== guardian.annual && (
                             <div className="mt-0.5 text-xs text-accent">
-                              ₿ Annual: {guardian.btcAnnual} / yr                            </div>
+                              ₿ Annual: {guardian.btcAnnual} / yr
+                            </div>
                           )}
                         </div>
                       </div>
 
                       <div className="mt-5">
-                        <div className="text-xs font-semibold uppercase tracking-wide text-white/60">
+                        <div className="rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm leading-relaxed text-white/85">
+                          {guardian.relational}
+                        </div>
+                        <div className="mt-3 text-xs font-semibold uppercase tracking-wide text-white/60">
                           Member benefits
                         </div>
                         <ul className="mt-2 space-y-2">
@@ -580,11 +651,9 @@ export default function MembershipPage() {
                             </li>
                           ))}
                         </ul>
-                        <div className="mt-3 flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-xs text-white/75">
-                          <svg viewBox="0 0 20 20" className="h-3.5 w-3.5 shrink-0 text-white/60" aria-hidden="true">
-                            <path fill="currentColor" fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v4.59L7.3 9.24a.75.75 0 00-1.1 1.02l3.25 3.5a.75.75 0 001.1 0l3.25-3.5a.75.75 0 10-1.1-1.02l-1.95 2.1V6.75z" clipRule="evenodd" />
-                          </svg>
-                          <span>Plus everything in <strong>{prevName}</strong> and below</span>
+                        <div className="mt-3 text-xs leading-relaxed text-white/75">
+                          <span className="font-semibold text-white">Tax note:</span>{' '}
+                          {guardian.fmvNote}
                         </div>
                       </div>
 
@@ -628,19 +697,32 @@ export default function MembershipPage() {
                             Monthly membership
                           </div>
                           <div className="space-y-2">
-                            <a href={guardian.monthlyHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-white px-5 py-3 text-sm font-semibold text-[#4a148c] transition-colors hover:opacity-90">
+                            <TrackedMembershipLink
+                              href={guardian.monthlyHref}
+                              tier={guardian.name}
+                              cadence="monthly"
+                              paymentMethod="traditional"
+                              className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-white px-5 py-3 text-sm font-semibold text-[#4a148c] transition-colors hover:opacity-90"
+                            >
                               Traditional payment — {guardian.monthly} / mo
-                            </a>
+                            </TrackedMembershipLink>
                             {hasBtcMonthly ? (
-                              <a href={guardianBtcMonthlyUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25">
+                              <TrackedMembershipLink
+                                href={guardianBtcMonthlyUrl}
+                                tier={guardian.name}
+                                cadence="monthly"
+                                paymentMethod="bitcoin"
+                                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25"
+                              >
                                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">₿</span>
                                 Subscribe with Bitcoin — {guardian.monthly} / mo
-                              </a>
+                              </TrackedMembershipLink>
                             ) : (
                               <BtcPayMembershipButton
                                 amount={guardian.monthlyNum}
                                 tierName={`${guardian.name} (monthly)`}
                                 label={`Bitcoin one-time — ${guardian.monthly}`}
+                                tracking={{ tier: guardian.name, cadence: 'monthly', checkoutType: 'one_time_invoice' }}
                                 className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25 disabled:opacity-60"
                               />
                             )}
@@ -652,23 +734,44 @@ export default function MembershipPage() {
                           </div>
                           <div className="space-y-2">
                             {hasAnnualStripe ? (
-                              <a href={guardian.annualHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25">
+                              <TrackedMembershipLink
+                                href={guardian.annualHref}
+                                tier={guardian.name}
+                                cadence="annual"
+                                paymentMethod="traditional"
+                                className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25"
+                              >
                                 Traditional payment — {guardian.annual} / yr
-                              </a>
+                              </TrackedMembershipLink>
                             ) : (
-                              <a href={`mailto:donate@bitcoinforthearts.org?subject=Annual%20membership%3A%20${encodeURIComponent(guardian.name)}&body=I%E2%80%99d%20like%20to%20join%20as%20an%20annual%20${encodeURIComponent(guardian.name)}%20member%20(${guardian.annual}%2Fyr).`} className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25">
+                              <TrackedMembershipLink
+                                href={`mailto:donate@bitcoinforthearts.org?subject=Annual%20membership%3A%20${encodeURIComponent(guardian.name)}&body=I%E2%80%99d%20like%20to%20join%20as%20an%20annual%20${encodeURIComponent(guardian.name)}%20member%20(${guardian.annual}%2Fyr).`}
+                                tier={guardian.name}
+                                cadence="annual"
+                                paymentMethod="traditional"
+                                checkoutType="manual_email"
+                                className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25"
+                              >
                                 Traditional payment — {guardian.annual} / yr
-                              </a>
+                              </TrackedMembershipLink>
                             )}
                             {hasBtcAnnual ? (
-                              <a href={guardianBtcAnnualUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25">
+                              <TrackedMembershipLink
+                                href={guardianBtcAnnualUrl}
+                                tier={guardian.name}
+                                cadence="annual"
+                                paymentMethod="bitcoin"
+                                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25"
+                              >
                                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">₿</span>
-                                Subscribe with Bitcoin — {guardian.btcAnnual} / yr                              </a>
+                                Subscribe with Bitcoin — {guardian.btcAnnual} / yr
+                              </TrackedMembershipLink>
                             ) : (
                               <BtcPayMembershipButton
                                 amount={guardian.btcAnnualNum}
                                 tierName={`${guardian.name} (annual)`}
                                 label={`Bitcoin one-time — ${guardian.btcAnnual}`}
+                                tracking={{ tier: guardian.name, cadence: 'annual', checkoutType: 'one_time_invoice' }}
                                 className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25 disabled:opacity-60"
                               />
                             )}
@@ -689,10 +792,10 @@ export default function MembershipPage() {
             will evolve as data grows.
           </p>
           <p>
-            <strong>Bitcoin payments:</strong> BTC and Lightning memberships are managed
-            through BTCPay Server subscriptions. You&apos;ll receive an email reminder
-            before each renewal. Annual Bitcoin memberships include a one-month
-            discount (11 months for the price of 12).
+            <strong>Annual recommendation:</strong> Annual memberships reduce renewal
+            friction and help us plan grants and programming with more confidence.
+            Annual Bitcoin circles include a one-month discount (11 months for the
+            price of 12).
           </p>
           <p>
             <strong>Annual memberships:</strong> Annual members immediately unlock the
@@ -701,13 +804,45 @@ export default function MembershipPage() {
           </p>
         </div>
 
+        <div className="mt-6 rounded-2xl border border-border bg-surface/80 p-6">
+          <h2 className="text-lg font-semibold tracking-tight">
+            Membership terms
+          </h2>
+          <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted">
+            <li>
+              Member benefits are mission-participation benefits and may evolve as
+              the program grows.
+            </li>
+            <li>
+              Benefits have no cash value, are non-transferable, and are not
+              investment or ownership rights.
+            </li>
+            <li>
+              Community votes, surveys, and discipline preferences are advisory;
+              the board retains final fiduciary and compliance authority.
+            </li>
+            <li>
+              You can pause your membership at any time. Recognition milestones
+              are based on active tenure.
+            </li>
+          </ul>
+        </div>
+
         {/* ── Tax info ─────────────────────────────────────── */}
         <div className="mt-10 rounded-2xl border border-border bg-background p-6">
           <h2 className="text-lg font-semibold tracking-tight">Tax benefits</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted">
-            Bitcoin For The Arts, Inc. is a 501(c)(3) tax-exempt nonprofit. Your
-            membership contribution may be tax-deductible as allowed by law.
-            Receipts are provided automatically.
+            Bitcoin For The Arts, Inc. is a 501(c)(3) tax-exempt nonprofit.
+            Membership contributions may be tax-deductible to the extent allowed by
+            law, reduced by the fair market value (FMV) of any goods or services
+            received. Most circles have estimated FMV of $0; Hard Cap Heroes
+            includes a one-time sticker pack with an estimated FMV of about $5. Our
+            EIN is {ein ?? 'available upon request'}.
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-muted">
+            Receipts are provided automatically. This page is for informational
+            purposes only and does not constitute tax advice. Please consult your
+            tax advisor.
           </p>
         </div>
 
@@ -726,7 +861,7 @@ export default function MembershipPage() {
               href="#levels"
               className="inline-flex min-h-12 items-center justify-center rounded-md bg-white px-5 py-3 text-sm font-semibold text-primary transition-colors hover:opacity-90"
             >
-              Choose a level
+              Choose a circle
             </Link>
           </div>
         </section>
