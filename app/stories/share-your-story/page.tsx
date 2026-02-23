@@ -44,6 +44,7 @@ export default function ShareYourStoryPage() {
         label="Artist Stories • Open call"
         title="Share your Bitcoin journey and artistic evolution."
         description="Bitcoin For The Arts, Inc., a 501(c)(3) nonprofit, invites sovereign creators to help other artists learn, grow, and build sovereignty through real lived experience."
+        titleClassName="text-4xl sm:text-5xl lg:text-6xl"
         heightClassName="h-[440px] sm:h-[600px] lg:h-[760px]"
         overlayClassName="bg-black/35"
         showScrollHint={false}
