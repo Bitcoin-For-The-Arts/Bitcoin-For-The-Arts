@@ -25,6 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/artists/research',
     '/events',
     '/stories',
+    '/stories/share-your-story',
     '/donate',
     '/donate/monthly',
     '/donate/guides/life-insurance',

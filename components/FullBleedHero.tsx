@@ -6,6 +6,7 @@ type Props = {
   label: string;
   title: string;
   description?: string;
+  titleClassName?: string;
   heightClassName?: string; // e.g. "h-[240px] sm:h-[320px] lg:h-[380px]"
   overlayClassName?: string; // e.g. "bg-black/35"
   children?: React.ReactNode; // optional actions/extra content
@@ -18,6 +19,7 @@ export default function FullBleedHero({
   label,
   title,
   description,
+  titleClassName = 'text-3xl sm:text-4xl',
   heightClassName = 'h-[240px] sm:h-[320px] lg:h-[380px]',
   overlayClassName = 'bg-black/35',
   children,
@@ -43,7 +45,7 @@ export default function FullBleedHero({
             <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
               {label}
             </div>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+            <h1 className={`mt-3 font-semibold tracking-tight text-white ${titleClassName}`}>
               {title}
             </h1>
             {description ? (

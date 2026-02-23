@@ -1,6 +1,7 @@
 import StoryEntry from "@/components/StoryEntry";
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Stories",
@@ -40,8 +41,18 @@ function QuoteCard({
 
 export default function StoriesPage() {
   return (
-    <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-14">
+    <main className="relative min-h-screen overflow-hidden bg-background">
+      <div className="pointer-events-none absolute inset-0">
+        <Image
+          src="/21-artist.png"
+          alt=""
+          fill
+          priority={false}
+          className="object-cover object-center opacity-50"
+          sizes="100vw"
+        />
+      </div>
+      <div className="relative mx-auto max-w-6xl px-6 py-14">
         <section className="mb-10">
           <div className="max-w-4xl">
             <div className="text-xs font-semibold uppercase tracking-wide text-muted">
@@ -54,6 +65,25 @@ export default function StoriesPage() {
               We asked artists on Nostr. These responses are practical, specific, and exactly why small grants matter:
               time, materials, travel, studio sessions, and the ability to say “yes” to opportunities.
             </p>
+
+            <div className="mt-8 rounded-2xl border border-accent/40 bg-surface/80 p-5">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                Artist story invitation
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-muted">
+                Help us teach artists about Bitcoin through real lived experience.
+                Share your Bitcoin journey and artistic evolution so other creators
+                can learn, grow, and build sovereignty with confidence.
+              </p>
+              <div className="mt-4">
+                <Link
+                  href="/stories/share-your-story"
+                  className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-background px-5 py-2 text-sm font-semibold transition-colors hover:bg-surface"
+                >
+                  Share your story and help artists
+                </Link>
+              </div>
+            </div>
 
             <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
               <QuoteCard
