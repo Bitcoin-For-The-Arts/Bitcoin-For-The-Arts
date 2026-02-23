@@ -1,6 +1,7 @@
 import StoryEntry from "@/components/StoryEntry";
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Stories",
@@ -40,8 +41,18 @@ function QuoteCard({
 
 export default function StoriesPage() {
   return (
-    <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-14">
+    <main className="relative min-h-screen overflow-hidden bg-background">
+      <div className="pointer-events-none absolute inset-0">
+        <Image
+          src="/21-artist.png"
+          alt=""
+          fill
+          priority={false}
+          className="object-cover object-center opacity-50"
+          sizes="100vw"
+        />
+      </div>
+      <div className="relative mx-auto max-w-6xl px-6 py-14">
         <section className="mb-10">
           <div className="max-w-4xl">
             <div className="text-xs font-semibold uppercase tracking-wide text-muted">
