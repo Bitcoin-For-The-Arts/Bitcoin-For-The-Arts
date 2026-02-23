@@ -48,9 +48,10 @@ export default function StoriesPage() {
           alt=""
           fill
           priority={false}
-          className="object-cover object-center opacity-50"
+          className="object-cover object-[58%_center] opacity-30 sm:object-center sm:opacity-50"
           sizes="100vw"
         />
+        <div className="absolute inset-0 bg-background/45 sm:bg-background/20" />
       </div>
       <div className="relative mx-auto max-w-6xl px-6 py-14">
         <section className="mb-10">
