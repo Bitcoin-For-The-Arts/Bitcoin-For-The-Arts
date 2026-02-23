@@ -1,9 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import Script from 'next/script';
+import { useEffect, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim();
 
 const MEDIA_OPTIONS = [
   {
@@ -51,6 +53,9 @@ export default function ArtistStoryInvitationForm() {
   const [mediaFormats, setMediaFormats] = useState<string[]>([]);
   const [storySummary, setStorySummary] = useState('');
   const [portfolioUrl, setPortfolioUrl] = useState('');
+  const [preferredContactWindow, setPreferredContactWindow] = useState('');
+  const [timezone, setTimezone] = useState('');
+  const [publicationConsent, setPublicationConsent] = useState(false);
   const [notes, setNotes] = useState('');
   const [website, setWebsite] = useState(''); // honeypot
 
@@ -64,9 +69,23 @@ export default function ArtistStoryInvitationForm() {
       isEmail(email) &&
       discipline.trim().length > 0 &&
       mediaFormats.length > 0 &&
-      storySummary.trim().length >= 20
+      storySummary.trim().length >= 20 &&
+      publicationConsent
     );
-  }, [name, email, discipline, mediaFormats, storySummary, status]);
+  }, [name, email, discipline, mediaFormats, storySummary, publicationConsent, status]);
+
+  useEffect(() => {
+    if (!TURNSTILE_SITE_KEY) return;
+    if (status !== 'error') return;
+    const w = window as unknown as { turnstile?: { reset?: () => void } };
+    if (typeof w.turnstile?.reset === 'function') {
+      try {
+        w.turnstile.reset();
+      } catch {
+        // ignore
+      }
+    }
+  }, [status]);
 
   function toggleFormat(value: string) {
     setMediaFormats((prev) =>
@@ -80,10 +99,21 @@ export default function ArtistStoryInvitationForm() {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    const form = e.currentTarget as HTMLFormElement;
+    const formData = new FormData(form);
+    const turnstileToken = String(formData.get('cf-turnstile-response') ?? '').trim();
 
     if (!canSubmit) {
       setStatus('error');
-      setMessage('Please complete all required fields and select at least one media format.');
+      setMessage(
+        'Please complete all required fields, select at least one media format, and confirm publication consent.',
+      );
+      return;
+    }
+
+    if (TURNSTILE_SITE_KEY && !turnstileToken) {
+      setStatus('error');
+      setMessage('Please complete the anti-spam verification and try again.');
       return;
     }
 
@@ -101,7 +131,11 @@ export default function ArtistStoryInvitationForm() {
           mediaFormats,
           storySummary: storySummary.trim(),
           portfolioUrl: portfolioUrl.trim(),
+          preferredContactWindow: preferredContactWindow.trim(),
+          timezone: timezone.trim(),
+          publicationConsent,
           notes: notes.trim(),
+          'cf-turnstile-response': turnstileToken,
           website,
         }),
       });
@@ -127,8 +161,21 @@ export default function ArtistStoryInvitationForm() {
       setMediaFormats([]);
       setStorySummary('');
       setPortfolioUrl('');
+      setPreferredContactWindow('');
+      setTimezone('');
+      setPublicationConsent(false);
       setNotes('');
       setWebsite('');
+      if (TURNSTILE_SITE_KEY) {
+        const w = window as unknown as { turnstile?: { reset?: () => void } };
+        if (typeof w.turnstile?.reset === 'function') {
+          try {
+            w.turnstile.reset();
+          } catch {
+            // ignore
+          }
+        }
+      }
     } catch (err) {
       setStatus('error');
       setMessage(getErrorMessage(err));
@@ -137,6 +184,13 @@ export default function ArtistStoryInvitationForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
+      {TURNSTILE_SITE_KEY ? (
+        <Script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+          strategy="afterInteractive"
+        />
+      ) : null}
+
       <div className="hidden" aria-hidden="true">
         <label htmlFor="website">Website</label>
         <input
@@ -261,6 +315,32 @@ export default function ArtistStoryInvitationForm() {
         />
       </label>
 
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <label className="block">
+          <div className="text-sm font-semibold">
+            Preferred contact window (optional)
+          </div>
+          <input
+            name="preferredContactWindow"
+            value={preferredContactWindow}
+            onChange={(e) => setPreferredContactWindow(e.target.value)}
+            className="mt-2 min-h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+            placeholder="Weekdays after 2pm ET, mornings, evenings, etc."
+          />
+        </label>
+
+        <label className="block">
+          <div className="text-sm font-semibold">Timezone (optional)</div>
+          <input
+            name="timezone"
+            value={timezone}
+            onChange={(e) => setTimezone(e.target.value)}
+            className="mt-2 min-h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+            placeholder="ET, PT, UTC+1, etc."
+          />
+        </label>
+      </div>
+
       <label className="block">
         <div className="text-sm font-semibold">Anything else you want us to know? (optional)</div>
         <textarea
@@ -272,6 +352,33 @@ export default function ArtistStoryInvitationForm() {
           placeholder="Availability, timezone, accessibility notes, or other context."
         />
       </label>
+
+      <label className="flex items-start gap-3 rounded-xl border border-border bg-surface/70 p-4 text-sm leading-relaxed text-muted">
+        <input
+          type="checkbox"
+          checked={publicationConsent}
+          onChange={(e) => setPublicationConsent(e.target.checked)}
+          className="mt-0.5 h-4 w-4"
+          required
+        />
+        <span>
+          I consent to potential publication of my submitted story content (edited
+          for clarity) on BFTA channels, with final publication confirmed with me
+          before release.
+        </span>
+      </label>
+
+      {TURNSTILE_SITE_KEY ? (
+        <div className="flex justify-center">
+          <div
+            className="cf-turnstile"
+            data-sitekey={TURNSTILE_SITE_KEY}
+            data-theme="auto"
+            data-size="flexible"
+            data-action="artist_story_submission"
+          />
+        </div>
+      ) : null}
 
       {message ? (
         <div

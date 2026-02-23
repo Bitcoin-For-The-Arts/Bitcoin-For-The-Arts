@@ -13,6 +13,10 @@ type StorySubmissionPayload = {
   mediaFormats?: unknown;
   storySummary?: string;
   portfolioUrl?: string;
+  preferredContactWindow?: string;
+  timezone?: string;
+  publicationConsent?: unknown;
+  'cf-turnstile-response'?: string;
   notes?: string;
   website?: string; // honeypot
 };
@@ -54,6 +58,28 @@ function escapeHtml(input: string) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
+}
+
+async function verifyTurnstile(args: { secret: string; token: string; ip: string }) {
+  const body = new URLSearchParams();
+  body.set('secret', args.secret);
+  body.set('response', args.token);
+  if (args.ip && args.ip !== 'unknown') body.set('remoteip', args.ip);
+
+  const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body,
+  });
+  const data = (await res.json().catch(() => null)) as
+    | { success: boolean; 'error-codes'?: string[]; hostname?: string }
+    | null;
+  if (!res.ok || !data) return { ok: false as const, errorCodes: ['turnstile_fetch_failed'] };
+  return {
+    ok: Boolean(data.success),
+    errorCodes: Array.isArray(data['error-codes']) ? data['error-codes'].slice(0, 10) : [],
+    hostname: typeof data.hostname === 'string' ? data.hostname : null,
+  };
 }
 
 function normalizeMediaFormats(input: unknown) {
@@ -98,12 +124,40 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true }, { status: 200 });
   }
 
+  const turnstileSecret = getEnv('TURNSTILE_SECRET_KEY');
+  const turnstileSiteKey = getEnv('NEXT_PUBLIC_TURNSTILE_SITE_KEY');
+  if (turnstileSecret && turnstileSiteKey) {
+    const token = String(payload['cf-turnstile-response'] ?? '').trim();
+    if (!token) {
+      return NextResponse.json(
+        { ok: false, error: 'Please complete the anti-spam verification and try again.' },
+        { status: 400 },
+      );
+    }
+    const t = await verifyTurnstile({ secret: turnstileSecret, token, ip });
+    if (!t.ok) {
+      return NextResponse.json(
+        { ok: false, error: 'Anti-spam verification failed. Please refresh and try again.' },
+        { status: 403 },
+      );
+    }
+  }
+
   const name = String(payload.name ?? '').trim().slice(0, 120);
   const email = String(payload.email ?? '').trim().toLowerCase().slice(0, 320);
   const discipline = String(payload.discipline ?? '').trim().slice(0, 80);
   const mediaFormats = normalizeMediaFormats(payload.mediaFormats);
   const storySummary = String(payload.storySummary ?? '').trim().slice(0, 6000);
   const portfolioUrl = String(payload.portfolioUrl ?? '').trim().slice(0, 500);
+  const preferredContactWindow = String(payload.preferredContactWindow ?? '')
+    .trim()
+    .slice(0, 200);
+  const timezone = String(payload.timezone ?? '').trim().slice(0, 80);
+  const publicationConsent =
+    payload.publicationConsent === true ||
+    String(payload.publicationConsent ?? '')
+      .trim()
+      .toLowerCase() === 'true';
   const notes = String(payload.notes ?? '').trim().slice(0, 2000);
 
   if (!name || !email || !discipline || !storySummary) {
@@ -121,6 +175,12 @@ export async function POST(req: NextRequest) {
   if (mediaFormats.length === 0) {
     return NextResponse.json(
       { ok: false, error: 'Please select at least one interview format.' },
+      { status: 400 },
+    );
+  }
+  if (!publicationConsent) {
+    return NextResponse.json(
+      { ok: false, error: 'Publication consent is required to submit your story.' },
       { status: 400 },
     );
   }
@@ -144,7 +204,12 @@ export async function POST(req: NextRequest) {
     `Email: ${email}`,
     `Discipline: ${discipline}`,
     `Preferred format(s): ${formatList}`,
+    `Publication consent: ${publicationConsent ? 'yes' : 'no'}`,
     portfolioUrl ? `Portfolio / social: ${portfolioUrl}` : 'Portfolio / social: (not provided)',
+    preferredContactWindow
+      ? `Preferred contact window: ${preferredContactWindow}`
+      : 'Preferred contact window: (not provided)',
+    timezone ? `Timezone: ${timezone}` : 'Timezone: (not provided)',
     '',
     'Story summary:',
     storySummary,
@@ -161,8 +226,15 @@ export async function POST(req: NextRequest) {
       <p style="margin: 0 0 6px;"><strong>Email:</strong> ${escapeHtml(email)}</p>
       <p style="margin: 0 0 6px;"><strong>Discipline:</strong> ${escapeHtml(discipline)}</p>
       <p style="margin: 0 0 12px;"><strong>Preferred format(s):</strong> ${escapeHtml(formatList)}</p>
+      <p style="margin: 0 0 6px;"><strong>Publication consent:</strong> ${publicationConsent ? 'yes' : 'no'}</p>
       <p style="margin: 0 0 12px;"><strong>Portfolio / social:</strong> ${escapeHtml(
         portfolioUrl || '(not provided)',
+      )}</p>
+      <p style="margin: 0 0 6px;"><strong>Preferred contact window:</strong> ${escapeHtml(
+        preferredContactWindow || '(not provided)',
+      )}</p>
+      <p style="margin: 0 0 12px;"><strong>Timezone:</strong> ${escapeHtml(
+        timezone || '(not provided)',
       )}</p>
       <p style="margin: 16px 0 8px;"><strong>Story summary:</strong></p>
       <pre style="white-space: pre-wrap; background: #f6f6f6; padding: 12px; border-radius: 8px;">${escapeHtml(
