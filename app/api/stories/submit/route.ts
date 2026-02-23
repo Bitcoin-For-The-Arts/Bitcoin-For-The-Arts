@@ -60,6 +60,13 @@ function escapeHtml(input: string) {
     .replaceAll("'", '&#039;');
 }
 
+function maskEmail(value?: string) {
+  if (!value) return undefined;
+  const at = value.indexOf('@');
+  if (at <= 1) return '***';
+  return `${value.slice(0, 2)}***${value.slice(at)}`;
+}
+
 async function verifyTurnstile(args: { secret: string; token: string; ip: string }) {
   const body = new URLSearchParams();
   body.set('secret', args.secret);
@@ -185,10 +192,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const toEmail =
-    getEnv('ARTIST_STORIES_TO_EMAIL') ??
-    getEnv('CONTACT_TO_EMAIL') ??
-    'artist@bitcoinforthearts.org';
+  const toEmail = getEnv('ARTIST_STORIES_TO_EMAIL') ?? 'artist@bitcoinforthearts.org';
   const fromEmail =
     getEnv('ARTIST_STORIES_FROM_EMAIL') ??
     getEnv('CONTACT_FROM_EMAIL') ??
@@ -317,4 +321,36 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ ok: true }, { status: 200 });
+}
+
+export async function GET() {
+  const toEmail = getEnv('ARTIST_STORIES_TO_EMAIL') ?? 'artist@bitcoinforthearts.org';
+  const fromEmail =
+    getEnv('ARTIST_STORIES_FROM_EMAIL') ??
+    getEnv('CONTACT_FROM_EMAIL') ??
+    getEnv('RESEND_FROM_EMAIL');
+  const hasResend = Boolean(getEnv('RESEND_API_KEY')) && Boolean(fromEmail);
+  const hasSmtp =
+    Boolean(getEnv('ARTIST_STORIES_SMTP_USER') ?? getEnv('CONTACT_SMTP_USER')) &&
+    Boolean(getEnv('ARTIST_STORIES_SMTP_PASS') ?? getEnv('CONTACT_SMTP_PASS')) &&
+    Boolean(fromEmail);
+  const hasTurnstile =
+    Boolean(getEnv('TURNSTILE_SECRET_KEY')) &&
+    Boolean(getEnv('NEXT_PUBLIC_TURNSTILE_SITE_KEY'));
+
+  return NextResponse.json(
+    {
+      ok: true,
+      configured: {
+        resend: hasResend,
+        smtp: hasSmtp,
+        turnstile: hasTurnstile,
+      },
+      email: {
+        to: maskEmail(toEmail),
+        from: maskEmail(fromEmail),
+      },
+    },
+    { status: 200, headers: { 'Cache-Control': 'no-store' } },
+  );
 }
