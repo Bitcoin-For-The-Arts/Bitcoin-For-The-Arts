@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
+import FullBleedHero from '@/components/FullBleedHero';
 import ArtistStoryInvitationForm from '@/components/ArtistStoryInvitationForm';
 
 export const metadata: Metadata = {
@@ -38,42 +38,19 @@ export default function ShareYourStoryPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <section className="w-full overflow-hidden border-b border-border bg-surface">
-        <div className="relative h-[440px] w-full sm:h-[600px] lg:h-[760px]">
-          <Image
-            src="/21-artist.png"
-            alt="Artists featured in Bitcoin For The Arts community storytelling."
-            fill
-            priority
-            className="object-cover object-center"
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-black/20" />
-        </div>
-      </section>
+      <FullBleedHero
+        imageSrc="/21-artist.png"
+        imageAlt="Artists featured in Bitcoin For The Arts community storytelling."
+        label="Artist Stories • Open call"
+        title="Share your Bitcoin journey and artistic evolution."
+        description="Bitcoin For The Arts, Inc., a 501(c)(3) nonprofit, invites sovereign creators to help other artists learn, grow, and build sovereignty through real lived experience."
+        heightClassName="h-[440px] sm:h-[600px] lg:h-[760px]"
+        overlayClassName="bg-black/35"
+        showScrollHint={false}
+      />
 
       <div className="mx-auto max-w-6xl px-6 py-14">
-        <section className="relative z-10 -mt-24 max-w-4xl rounded-2xl border border-border bg-background/95 p-6 shadow-sm backdrop-blur sm:-mt-32 lg:-mt-40">
-          <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Artist Stories • Open call
-          </div>
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-            Share your Bitcoin journey and artistic evolution.
-          </h1>
-          <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
-            Bitcoin For The Arts, Inc., a 501(c)(3) nonprofit, invites sovereign
-            creators across visual arts, theater, dance, music, writing,
-            storytelling, film, and interdisciplinary practices to share their lived
-            experience at the intersection of Bitcoin and creative work.
-          </p>
-          <p className="mt-4 text-base leading-relaxed text-muted sm:text-lg">
-            We believe sound money is helping artists build long-term creative
-            freedom. Your story can help inspire fellow creators, patrons, and
-            communities navigating this transition.
-          </p>
-        </section>
-
-        <div className="mt-8 rounded-2xl border border-accent/40 bg-surface/80 p-5">
+        <div className="rounded-2xl border border-accent/40 bg-surface/80 p-5">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
             Call for submissions
           </div>
