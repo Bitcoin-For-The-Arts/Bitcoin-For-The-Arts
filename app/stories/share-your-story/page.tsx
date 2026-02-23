@@ -38,21 +38,21 @@ export default function ShareYourStoryPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-14">
-        <section className="mb-10 overflow-hidden rounded-2xl border border-border bg-surface">
-          <div className="relative aspect-[21/7] w-full">
-            <Image
-              src="/21-artist.png"
-              alt="Artists featured in Bitcoin For The Arts community storytelling."
-              fill
-              priority
-              className="object-cover object-center"
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-black/20" />
-          </div>
-        </section>
+      <section className="w-full overflow-hidden border-b border-border bg-surface">
+        <div className="relative h-[220px] w-full sm:h-[300px] lg:h-[380px]">
+          <Image
+            src="/21-artist.png"
+            alt="Artists featured in Bitcoin For The Arts community storytelling."
+            fill
+            priority
+            className="object-cover object-center"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-black/20" />
+        </div>
+      </section>
 
+      <div className="mx-auto max-w-6xl px-6 py-14">
         <section className="max-w-4xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
             Artist Stories • Open call
