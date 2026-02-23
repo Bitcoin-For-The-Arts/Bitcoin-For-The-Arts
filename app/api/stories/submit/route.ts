@@ -18,7 +18,6 @@ type StorySubmissionPayload = {
   publicationConsent?: unknown;
   'cf-turnstile-response'?: string;
   notes?: string;
-  website?: string; // honeypot
 };
 
 function getEnv(name: string) {
@@ -127,10 +126,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: 'Invalid request.' }, { status: 400 });
   }
 
-  if (payload.website && payload.website.trim().length > 0) {
-    return NextResponse.json({ ok: true }, { status: 200 });
-  }
-
   const turnstileSecret = getEnv('TURNSTILE_SECRET_KEY');
   const turnstileSiteKey = getEnv('NEXT_PUBLIC_TURNSTILE_SITE_KEY');
   if (turnstileSecret && turnstileSiteKey) {
@@ -192,7 +187,12 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const toEmail = getEnv('ARTIST_STORIES_TO_EMAIL') ?? 'artist@bitcoinforthearts.org';
+  const primaryStoryEmail =
+    getEnv('ARTIST_STORIES_TO_EMAIL') ?? 'artist@bitcoinforthearts.org';
+  const contactFallback = getEnv('CONTACT_TO_EMAIL');
+  const recipients = Array.from(
+    new Set([primaryStoryEmail, contactFallback].filter(Boolean) as string[]),
+  );
   const fromEmail =
     getEnv('ARTIST_STORIES_FROM_EMAIL') ??
     getEnv('CONTACT_FROM_EMAIL') ??
@@ -253,7 +253,7 @@ export async function POST(req: NextRequest) {
   `.trim();
 
   const resendAttempt = await sendResendEmail({
-    to: toEmail,
+    to: recipients,
     subject,
     text,
     html,
@@ -302,7 +302,7 @@ export async function POST(req: NextRequest) {
 
     await transporter.sendMail({
       from: fromEmail,
-      to: toEmail,
+      to: recipients,
       subject,
       text,
       html,
@@ -324,7 +324,12 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET() {
-  const toEmail = getEnv('ARTIST_STORIES_TO_EMAIL') ?? 'artist@bitcoinforthearts.org';
+  const primaryStoryEmail =
+    getEnv('ARTIST_STORIES_TO_EMAIL') ?? 'artist@bitcoinforthearts.org';
+  const contactFallback = getEnv('CONTACT_TO_EMAIL');
+  const recipients = Array.from(
+    new Set([primaryStoryEmail, contactFallback].filter(Boolean) as string[]),
+  );
   const fromEmail =
     getEnv('ARTIST_STORIES_FROM_EMAIL') ??
     getEnv('CONTACT_FROM_EMAIL') ??
@@ -347,7 +352,7 @@ export async function GET() {
         turnstile: hasTurnstile,
       },
       email: {
-        to: maskEmail(toEmail),
+        to: recipients.map((addr) => maskEmail(addr)),
         from: maskEmail(fromEmail),
       },
     },

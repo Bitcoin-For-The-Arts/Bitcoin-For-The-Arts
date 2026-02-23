@@ -57,7 +57,6 @@ export default function ArtistStoryInvitationForm() {
   const [timezone, setTimezone] = useState('');
   const [publicationConsent, setPublicationConsent] = useState(false);
   const [notes, setNotes] = useState('');
-  const [website, setWebsite] = useState(''); // honeypot
 
   const [status, setStatus] = useState<Status>('idle');
   const [message, setMessage] = useState('');
@@ -134,7 +133,6 @@ export default function ArtistStoryInvitationForm() {
           publicationConsent,
           notes: notes.trim(),
           'cf-turnstile-response': turnstileToken,
-          website,
         }),
       });
 
@@ -163,7 +161,6 @@ export default function ArtistStoryInvitationForm() {
       setTimezone('');
       setPublicationConsent(false);
       setNotes('');
-      setWebsite('');
       if (TURNSTILE_SITE_KEY) {
         const w = window as unknown as { turnstile?: { reset?: () => void } };
         if (typeof w.turnstile?.reset === 'function') {
@@ -188,18 +185,6 @@ export default function ArtistStoryInvitationForm() {
           strategy="afterInteractive"
         />
       ) : null}
-
-      <div className="hidden" aria-hidden="true">
-        <label htmlFor="website">Website</label>
-        <input
-          id="website"
-          name="website"
-          value={website}
-          onChange={(e) => setWebsite(e.target.value)}
-          tabIndex={-1}
-          autoComplete="off"
-        />
-      </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <label className="block md:col-span-1">
