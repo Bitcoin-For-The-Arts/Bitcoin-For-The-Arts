@@ -62,17 +62,7 @@ export default function ArtistStoryInvitationForm() {
   const [status, setStatus] = useState<Status>('idle');
   const [message, setMessage] = useState('');
 
-  const canSubmit = useMemo(() => {
-    if (status === 'submitting') return false;
-    return (
-      name.trim().length > 1 &&
-      isEmail(email) &&
-      discipline.trim().length > 0 &&
-      mediaFormats.length > 0 &&
-      storySummary.trim().length >= 20 &&
-      publicationConsent
-    );
-  }, [name, email, discipline, mediaFormats, storySummary, publicationConsent, status]);
+  const canSubmit = useMemo(() => status !== 'submitting', [status]);
 
   useEffect(() => {
     if (!TURNSTILE_SITE_KEY) return;
@@ -103,10 +93,18 @@ export default function ArtistStoryInvitationForm() {
     const formData = new FormData(form);
     const turnstileToken = String(formData.get('cf-turnstile-response') ?? '').trim();
 
-    if (!canSubmit) {
+    const missing: string[] = [];
+    if (name.trim().length < 2) missing.push('name');
+    if (!isEmail(email)) missing.push('valid email');
+    if (!discipline.trim()) missing.push('artistic discipline');
+    if (mediaFormats.length === 0) missing.push('interview format');
+    if (storySummary.trim().length < 10) missing.push('story summary');
+    if (!publicationConsent) missing.push('publication consent');
+
+    if (missing.length > 0) {
       setStatus('error');
       setMessage(
-        'Please complete all required fields, select at least one media format, and confirm publication consent.',
+        `Please complete: ${missing.join(', ')}.`,
       );
       return;
     }
@@ -398,7 +396,7 @@ export default function ArtistStoryInvitationForm() {
         disabled={!canSubmit}
         className={[
           'inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90',
-          !canSubmit ? 'cursor-not-allowed opacity-60' : '',
+          status === 'submitting' ? 'cursor-wait opacity-60' : '',
         ].join(' ')}
       >
         {status === 'submitting' ? 'Submitting…' : 'Share my story'}
