@@ -60,14 +60,16 @@ export default function StoriesPage() {
                 Artist story invitation
               </div>
               <p className="mt-2 text-sm leading-relaxed text-muted">
-                Want to be featured? Share your Bitcoin journey and artistic evolution with our team.
+                Help us teach artists about Bitcoin through real lived experience.
+                Share your Bitcoin journey and artistic evolution so other creators
+                can learn, grow, and build sovereignty with confidence.
               </p>
               <div className="mt-4">
                 <Link
                   href="/stories/share-your-story"
                   className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-background px-5 py-2 text-sm font-semibold transition-colors hover:bg-surface"
                 >
-                  Share your story
+                  Share your story and help artists
                 </Link>
               </div>
             </div>
