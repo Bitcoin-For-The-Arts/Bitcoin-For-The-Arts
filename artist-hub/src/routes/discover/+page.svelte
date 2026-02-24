@@ -74,7 +74,7 @@
         <input
           class="input"
           bind:value={tagInput}
-          placeholder="#BitcoinArt, #Ordinals…"
+          placeholder="#BitcoinArt, #VisualArt, #Writing…"
           on:keydown={(e) => e.key === 'Enter' && addTag()}
         />
         <button class="btn" on:click={addTag}>Add</button>
