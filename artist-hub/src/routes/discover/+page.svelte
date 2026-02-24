@@ -12,7 +12,24 @@
   } from '$lib/stores/discovery';
 
   const quickCategories = ['Visual Arts', 'Music', 'Film', 'Writing', 'Design', 'Workshops', 'Collaboration'];
-  const quickTags = ['BitcoinArt', 'NostrArt', 'Ordinals', 'Animation', 'Mixing', 'Poster', 'Workshop', 'Collab'];
+  const quickTags = [
+    'BitcoinArt',
+    'NostrArt',
+    'VisualArt',
+    'DigitalArt',
+    'Music',
+    'Writing',
+    'Storytelling',
+    'Theater',
+    'Dance',
+    'Film',
+    'InstallationArt',
+    'Animation',
+    'Mixing',
+    'Poster',
+    'Workshop',
+    'Collab',
+  ];
 
   onMount(() => {
     void startDiscovery();
