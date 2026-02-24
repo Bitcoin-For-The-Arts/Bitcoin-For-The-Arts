@@ -53,6 +53,7 @@ export default function Navigation() {
         label: 'Artists',
         href: '/artists',
         children: [
+          { label: 'Artist Hub', href: '/artist-hub' },
         ],
       },
       {

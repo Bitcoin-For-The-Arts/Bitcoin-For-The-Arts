@@ -6,6 +6,13 @@ function getEnv(name: string) {
   return value && value.trim().length > 0 ? value.trim() : undefined;
 }
 
+function isArtistHubAssetPath(pathname: string): boolean {
+  if (pathname.startsWith('/artist-hub/_app/')) return true;
+  if (pathname.startsWith('/artist-hub/assets/')) return true;
+  const last = pathname.split('/').pop() || '';
+  return last.includes('.');
+}
+
 function unauthorized() {
   return new NextResponse('Authentication required.', {
     status: 401,
@@ -15,6 +22,14 @@ function unauthorized() {
 
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  // Serve the SvelteKit SPA from /public/artist-hub (deep-link safe).
+  if (pathname.startsWith('/artist-hub') && !isArtistHubAssetPath(pathname)) {
+    const url = req.nextUrl.clone();
+    url.pathname = '/artist-hub/index.html';
+    return NextResponse.rewrite(url);
+  }
+
   const needsAuth =
     pathname.startsWith('/admin') ||
     pathname.startsWith('/api/admin') ||
@@ -49,6 +64,11 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/:path*', '/api/grants/files/:path*'],
+  matcher: [
+    '/artist-hub/:path*',
+    '/admin/:path*',
+    '/api/admin/:path*',
+    '/api/grants/files/:path*',
+  ],
 };
 
