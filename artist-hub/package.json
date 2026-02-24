@@ -1,0 +1,27 @@
+{
+  "name": "bfta-artist-hub",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "vite build"
+  },
+  "dependencies": {
+    "@nostr-dev-kit/ndk": "^3.0.3",
+    "@scure/base": "^2.0.0",
+    "@sveltejs/adapter-static": "^3.0.8",
+    "@sveltejs/kit": "^2.22.0",
+    "nanoid": "^5.1.6",
+    "nostr-tools": "^2.16.2",
+    "svelte": "^5.38.2"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^5.1.0",
+    "@types/node": "^20.17.23",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.2"
+  }
+}
