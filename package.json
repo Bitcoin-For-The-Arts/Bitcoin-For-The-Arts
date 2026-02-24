@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/prepare-home-intro-video.mjs && node scripts/prepare-public-images.mjs",
+    "prebuild": "node scripts/prepare-home-intro-video.mjs && node scripts/prepare-public-images.mjs && node scripts/build-artist-hub.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "lint:fix": "eslint --fix"
+    "lint:fix": "eslint --fix",
+    "artist-hub:build": "node scripts/build-artist-hub.mjs"
   },
   "dependencies": {
     "@fontsource/playfair-display": "^5.2.8",
