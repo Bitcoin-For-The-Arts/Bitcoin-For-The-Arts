@@ -1,7 +1,7 @@
 import { browser } from '$app/environment';
 import { writable } from 'svelte/store';
 import { DEFAULT_RELAYS } from '$lib/nostr/constants';
-import * as publicEnv from '$env/static/public';
+import { env as publicEnv } from '$env/dynamic/public';
 
 const RELAYS_KEY = 'bfta:artist-hub:relays';
 

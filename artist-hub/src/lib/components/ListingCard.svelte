@@ -3,19 +3,27 @@
   import type { Listing } from '$lib/nostr/types';
   import { profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
+  import { detectMediaType } from '$lib/ui/media';
+  import { profileHover } from '$lib/ui/profile-hover';
 
   export let listing: Listing;
 
   $: author = $profileByPubkey[listing.pubkey];
   $: authorName = author?.display_name || author?.name || 'Artist';
   $: img = listing.images?.[0];
+  $: thumbType = img ? detectMediaType(img) : 'link';
   $: price = listing.priceSats ? `${listing.priceSats.toLocaleString()} sats` : undefined;
 </script>
 
 <a class="card link" href={`${base}/listing/${listing.eventId}`}>
   <div class="thumb">
     {#if img}
-      <img src={img} alt="" loading="lazy" />
+      {#if thumbType === 'video'}
+        <!-- svelte-ignore a11y_media_has_caption -->
+        <video src={img} controls playsinline preload="metadata"></video>
+      {:else}
+        <img src={img} alt="" loading="lazy" />
+      {/if}
     {:else}
       <div class="placeholder">
         <div class="muted">No image</div>
@@ -34,7 +42,7 @@
     {/if}
 
     <div class="meta">
-      <div class="author">
+      <div class="author" use:profileHover={listing.pubkey}>
         {#if author?.picture}
           <img src={author.picture} alt="" class="avatar" loading="lazy" />
         {/if}
@@ -76,6 +84,12 @@
     border-bottom: 1px solid var(--border);
   }
   .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .thumb video {
     width: 100%;
     height: 100%;
     object-fit: cover;

@@ -6,6 +6,11 @@
 
   const nav = [
     { href: '/discover', label: 'Discover' },
+    { href: '/pulse', label: 'Pulse' },
+    { href: '/live', label: 'Live' },
+    { href: '/studios', label: 'Studios' },
+    { href: '/events', label: 'Events' },
+    { href: '/challenges', label: 'Challenges' },
     { href: '/featured', label: 'Featured' },
     { href: '/create', label: 'Create' },
     { href: '/messages', label: 'Messages' },
@@ -22,8 +27,8 @@
   <div class="container inner">
     <div class="brand">
       <a class="logo" href={`${base}/discover`} aria-label="Artist Hub home">
-        <span class="mark">B</span>
-        <span>Artist Hub</span>
+        <img class="mark" src="/resources/logos/exports/bfta-logo-gold.svg" alt="Bitcoin for the Arts logo" />
+        <span class="hub">Artist Hub</span>
       </a>
       <span class="muted status">Nostr: {$ndkStatus}</span>
     </div>
@@ -74,12 +79,13 @@
     align-items: center;
     justify-content: space-between;
     padding: 0.9rem 0;
+    flex-wrap: wrap;
   }
   .brand {
     display: flex;
     align-items: baseline;
     gap: 0.75rem;
-    min-width: 180px;
+    min-width: 0;
   }
   .logo {
     display: inline-flex;
@@ -87,17 +93,20 @@
     gap: 0.6rem;
     font-weight: 800;
     letter-spacing: 0.2px;
+    min-width: 0;
   }
   .mark {
-    display: inline-flex;
-    width: 28px;
-    height: 28px;
-    border-radius: 10px;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(246, 196, 83, 0.35);
-    background: linear-gradient(180deg, rgba(246, 196, 83, 0.22), rgba(246, 196, 83, 0.1));
-    color: var(--accent);
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(0, 0, 0, 0.25);
+    object-fit: cover;
+    flex: 0 0 auto;
+  }
+  .hub {
+    font-weight: 950;
+    white-space: nowrap;
   }
   .status {
     font-size: 0.85rem;
@@ -108,6 +117,14 @@
     align-items: center;
     justify-content: center;
     flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar {
+    display: none;
   }
   .navlink {
     padding: 0.55rem 0.7rem;
@@ -132,7 +149,8 @@
     gap: 0.5rem;
     align-items: center;
     justify-content: flex-end;
-    min-width: 210px;
+    min-width: 0;
+    margin-left: auto;
   }
   .mono {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',

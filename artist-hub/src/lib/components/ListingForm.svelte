@@ -130,6 +130,11 @@
         <option value="Visual Arts">Visual Arts</option>
         <option value="Music">Music</option>
         <option value="Film">Film</option>
+        <option value="Dance">Dance</option>
+        <option value="Theater">Theater</option>
+        <option value="Animation">Animation</option>
+        <option value="Storytelling">Storytelling</option>
+        <option value="Installation">Installation</option>
         <option value="Writing">Writing</option>
         <option value="Design">Design</option>
         <option value="Workshops">Workshops</option>

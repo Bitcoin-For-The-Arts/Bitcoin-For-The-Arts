@@ -1,7 +1,106 @@
 import { nanoid } from 'nanoid';
+import { nip19 } from 'nostr-tools';
 import { NOSTR_KINDS } from '$lib/nostr/constants';
 import type { Nip15ProductContent, Nip15StallContent, Nip99Classified } from '$lib/nostr/types';
 import { publishSignedEvent, signWithNip07 } from '$lib/nostr/pool';
+
+export async function publishNote(opts: { content: string; tags?: string[] }): Promise<string> {
+  const pubkey = await window.nostr!.getPublicKey();
+  const content = (opts.content || '').trim();
+  if (!content) throw new Error('Post content is empty.');
+
+  const tags: string[][] = [];
+  for (const t of opts.tags ?? []) {
+    const clean = t.replace(/^#/, '').trim();
+    if (clean) tags.push(['t', clean]);
+  }
+
+  const unsigned = {
+    kind: NOSTR_KINDS.note,
+    created_at: Math.floor(Date.now() / 1000),
+    content,
+    tags,
+    pubkey,
+  };
+  const signed = await signWithNip07(unsigned as any);
+  await publishSignedEvent(signed as any);
+  return signed.id;
+}
+
+export async function publishRepost(original: {
+  id: string;
+  pubkey: string;
+  created_at: number;
+  kind: number;
+  content: string;
+  tags: string[][];
+  sig?: string;
+}): Promise<string> {
+  const pubkey = await window.nostr!.getPublicKey();
+  if (!original?.id || !original?.pubkey) throw new Error('Missing original event.');
+
+  const tags: string[][] = [
+    ['e', original.id],
+    ['p', original.pubkey],
+  ];
+
+  const unsigned = {
+    kind: NOSTR_KINDS.repost,
+    created_at: Math.floor(Date.now() / 1000),
+    content: JSON.stringify(original),
+    tags,
+    pubkey,
+  };
+  const signed = await signWithNip07(unsigned as any);
+  await publishSignedEvent(signed as any);
+  return signed.id;
+}
+
+export async function publishQuoteRepost(opts: { eventId: string; eventPubkey: string; quote: string }): Promise<string> {
+  const pubkey = await window.nostr!.getPublicKey();
+  const quote = (opts.quote || '').trim();
+  if (!opts.eventId || !opts.eventPubkey) throw new Error('Missing quoted event.');
+  if (!quote) throw new Error('Quote is empty.');
+
+  const tags: string[][] = [
+    ['q', opts.eventId],
+    ['p', opts.eventPubkey],
+  ];
+
+  const unsigned = {
+    kind: NOSTR_KINDS.note,
+    created_at: Math.floor(Date.now() / 1000),
+    content: `${quote}\n\nnostr:${nip19.noteEncode(opts.eventId)}`,
+    tags,
+    pubkey,
+  };
+  const signed = await signWithNip07(unsigned as any);
+  await publishSignedEvent(signed as any);
+  return signed.id;
+}
+
+export async function publishEdit(opts: { originalEventId: string; content: string }): Promise<string> {
+  const pubkey = await window.nostr!.getPublicKey();
+  const content = (opts.content || '').trim();
+  if (!content) throw new Error('Edited content is empty.');
+  if (!opts.originalEventId) throw new Error('Missing original event id.');
+
+  const tags: string[][] = [
+    ['d', opts.originalEventId],
+    ['e', opts.originalEventId],
+  ];
+
+  const unsigned = {
+    kind: NOSTR_KINDS.nip37_edit,
+    created_at: Math.floor(Date.now() / 1000),
+    content,
+    tags,
+    pubkey,
+  };
+  const signed = await signWithNip07(unsigned as any);
+  await publishSignedEvent(signed as any);
+  return signed.id;
+}
 
 export async function publishNip15Stall(stall: Nip15StallContent): Promise<string> {
   const pubkey = await window.nostr!.getPublicKey();
@@ -69,20 +168,29 @@ export async function publishNip99Classified(listing: Nip99Classified): Promise<
 
 export async function publishComment(opts: {
   rootEventId: string;
+  rootPubkey?: string;
   rootAddress?: string;
+  replyToEventId?: string;
+  replyToPubkey?: string;
   content: string;
   tags?: string[];
 }): Promise<string> {
   const pubkey = await window.nostr!.getPublicKey();
 
+  const content = (opts.content || '').trim();
+  if (!content) throw new Error('Comment is empty.');
+
   const tags: string[][] = [['e', opts.rootEventId, '', 'root']];
   if (opts.rootAddress) tags.push(['a', opts.rootAddress, '', 'root']);
+  if (opts.rootPubkey) tags.push(['p', opts.rootPubkey]);
+  if (opts.replyToEventId) tags.push(['e', opts.replyToEventId, '', 'reply']);
+  if (opts.replyToPubkey) tags.push(['p', opts.replyToPubkey]);
   for (const t of opts.tags ?? []) tags.push(['t', t.replace(/^#/, '')]);
 
   const unsigned = {
     kind: NOSTR_KINDS.note,
     created_at: Math.floor(Date.now() / 1000),
-    content: opts.content,
+    content,
     tags,
     pubkey,
   };

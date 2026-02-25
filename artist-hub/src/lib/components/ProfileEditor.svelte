@@ -1,12 +1,18 @@
 <script lang="ts">
-  import { profile as profileStore, publishProfile, type ArtistProfile } from '$lib/stores/auth';
+  import { browser } from '$app/environment';
+  import { profile as profileStore, publishProfile, pubkey, type ArtistProfile } from '$lib/stores/auth';
 
   let draft: ArtistProfile = {};
   let saving = false;
   let error: string | null = null;
   let ok: string | null = null;
 
-  $: if ($profileStore) draft = { ...$profileStore };
+  let initialized = false;
+  let localSavedAt: number | null = null;
+
+  function keyFor(pk: string) {
+    return `bfta:artist-hub:profile-draft:${pk}`;
+  }
 
   function csvToList(v: string): string[] {
     return v
@@ -24,9 +30,81 @@
   let hashtagsCsv = '';
   let portfolioCsv = '';
 
-  $: skillsCsv = listToCsv(draft.skills);
-  $: hashtagsCsv = listToCsv(draft.hashtags);
-  $: portfolioCsv = listToCsv(draft.portfolio);
+  function hydrateFromProfile(p: ArtistProfile) {
+    draft = { ...p };
+    skillsCsv = listToCsv(p.skills);
+    hashtagsCsv = listToCsv(p.hashtags);
+    portfolioCsv = listToCsv(p.portfolio);
+  }
+
+  function loadLocal(pk: string): boolean {
+    if (!browser) return false;
+    try {
+      const raw = localStorage.getItem(keyFor(pk));
+      if (!raw) return false;
+      const parsed = JSON.parse(raw) as any;
+      if (!parsed?.draft || typeof parsed.draft !== 'object') return false;
+      draft = parsed.draft as ArtistProfile;
+      skillsCsv = typeof parsed.skillsCsv === 'string' ? parsed.skillsCsv : listToCsv(draft.skills);
+      hashtagsCsv = typeof parsed.hashtagsCsv === 'string' ? parsed.hashtagsCsv : listToCsv(draft.hashtags);
+      portfolioCsv = typeof parsed.portfolioCsv === 'string' ? parsed.portfolioCsv : listToCsv(draft.portfolio);
+      localSavedAt = typeof parsed.savedAt === 'number' ? parsed.savedAt : null;
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  function persistLocal(pk: string) {
+    if (!browser) return;
+    const payload = {
+      draft,
+      skillsCsv,
+      hashtagsCsv,
+      portfolioCsv,
+      savedAt: Date.now(),
+    };
+    try {
+      localStorage.setItem(keyFor(pk), JSON.stringify(payload));
+      localSavedAt = payload.savedAt;
+    } catch {
+      // ignore
+    }
+  }
+
+  function clearLocal(pk: string) {
+    if (!browser) return;
+    try {
+      localStorage.removeItem(keyFor(pk));
+      localSavedAt = null;
+    } catch {
+      // ignore
+    }
+  }
+
+  // Initialize editor state: prefer local draft; fallback to published kind:0 profile.
+  $: if (!initialized && $pubkey) {
+    const hadLocal = loadLocal($pubkey);
+    if (!hadLocal && $profileStore) hydrateFromProfile($profileStore);
+    initialized = true;
+  }
+
+  // If published profile arrives later and there is no local draft, hydrate once.
+  $: if (initialized && $pubkey && !localSavedAt && $profileStore && !draft?.name && !draft?.about) {
+    hydrateFromProfile($profileStore);
+  }
+
+  // Auto-save local draft while typing (client-side only).
+  let lastPersistKey = '';
+  let persistTimer: ReturnType<typeof setTimeout> | null = null;
+  $: if (browser && $pubkey && initialized) {
+    const key = JSON.stringify({ draft, skillsCsv, hashtagsCsv, portfolioCsv });
+    if (key !== lastPersistKey) {
+      lastPersistKey = key;
+      if (persistTimer) clearTimeout(persistTimer);
+      persistTimer = setTimeout(() => persistLocal($pubkey!), 450);
+    }
+  }
 
   async function save() {
     error = null;
@@ -39,8 +117,9 @@
         hashtags: csvToList(hashtagsCsv).map((t) => t.replace(/^#/, '')),
         portfolio: csvToList(portfolioCsv),
       };
-      await publishProfile(next);
-      ok = 'Profile published to Nostr (kind:0).';
+      const id = await publishProfile(next);
+      ok = id ? 'Profile published to Nostr (kind:0).' : 'Profile publish attempted.';
+      if ($pubkey) clearLocal($pubkey);
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
     } finally {
@@ -50,6 +129,24 @@
 </script>
 
 <div class="card" style="padding: 1rem;">
+  <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom: 0.75rem;">
+    <div class="muted">
+      {#if localSavedAt}
+        Draft saved locally: {new Date(localSavedAt).toLocaleString()}
+      {:else}
+        No local draft saved.
+      {/if}
+    </div>
+    <div style="display:flex; gap:0.5rem; align-items:center;">
+      <button class="btn" disabled={!$pubkey} on:click={() => $pubkey && $profileStore && hydrateFromProfile($profileStore)}>
+        Reset to published
+      </button>
+      <button class="btn danger" disabled={!$pubkey} on:click={() => $pubkey && clearLocal($pubkey)}>
+        Clear local draft
+      </button>
+    </div>
+  </div>
+
   <div class="grid cols-2">
     <div>
       <div class="muted" style="margin-bottom:0.35rem;">Name</div>

@@ -6,6 +6,7 @@
   import { NOSTR_KINDS } from '$lib/nostr/constants';
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import DMComposer from '$lib/components/DMComposer.svelte';
+  import { profileHover } from '$lib/ui/profile-hover';
 
   type Msg = { id: string; from: string; to: string; at: number; text: string };
   type Thread = { with: string; lastAt: number; lastText: string };
@@ -153,6 +154,7 @@
             class={`card thread ${selected === t.with ? 'active' : ''}`}
             on:click={() => (selected = t.with)}
             style="padding: 0.75rem 0.85rem; text-align:left;"
+            use:profileHover={t.with}
           >
             <div style="font-weight: 850;">
               {$profileByPubkey[t.with]?.display_name || $profileByPubkey[t.with]?.name || t.with.slice(0, 12) + '…'}
@@ -185,7 +187,9 @@
         {/if}
       </div>
       {#if selected}
-        <div class="muted" style="margin-top:0.35rem;">With: <span class="pill">{selectedName}</span></div>
+        <div class="muted" style="margin-top:0.35rem;">
+          With: <span class="pill" use:profileHover={selected}>{selectedName}</span>
+        </div>
       {/if}
 
       <div style="margin-top: 0.85rem; display:grid; gap:0.5rem;">
