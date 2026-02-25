@@ -17,6 +17,7 @@
   export let limit = 50;
   export let compact = false;
   export let maxHeight: number | null = 560;
+  export let showTagPills = true;
 
   let items: Item[] = [];
   let error: string | null = null;
@@ -133,7 +134,7 @@
     <div style="font-weight: 950;">{title}</div>
     <div class="muted">{#if loading}Live…{/if}</div>
   </div>
-  {#if tags.length}
+  {#if showTagPills && tags.length}
     <div style="margin-top:0.55rem; display:flex; gap:0.35rem; flex-wrap:wrap;">
       {#each tags.slice(0, 6) as t}
         <span class="pill muted">#{t.replace(/^#/, '')}</span>
@@ -283,12 +284,19 @@
     width: fit-content;
   }
 
+  .body {
+    line-height: 1.45;
+  }
+
   .compact .row {
     padding: 0.6rem 0.7rem;
   }
   .compact .name {
     max-width: 200px;
     font-weight: 850;
+  }
+  .compact .body {
+    font-size: 0.95rem;
   }
   .compact .m img,
   .compact .m video {

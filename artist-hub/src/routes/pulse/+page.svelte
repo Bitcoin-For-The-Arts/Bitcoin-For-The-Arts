@@ -64,7 +64,7 @@
               #{t} ✕
             </button>
           {/each}
-          <button class="pill" on:click={() => (tags = [])}>Clear</button>
+          <button class="pill" on:click={() => (tags = [])} title="Show all posts (no tag filter)">All posts</button>
         </div>
       {/if}
     </div>
@@ -80,7 +80,7 @@
   </div>
 
   <div>
-    <ActivityFeed title="Live posts" {tags} limit={60} compact={false} maxHeight={null} />
+    <ActivityFeed title="Live posts" {tags} limit={60} compact={true} maxHeight={null} showTagPills={false} />
   </div>
 </div>
 

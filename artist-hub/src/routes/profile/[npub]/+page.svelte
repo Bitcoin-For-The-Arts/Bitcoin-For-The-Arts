@@ -93,7 +93,7 @@
         <button class="btn" on:click={() => (dmOpen = true)}>Message</button>
         <button class="btn primary" on:click={() => (zapOpen = true)}>Zap / Pay</button>
         {#if prof?.website}
-          <a class="btn" href={prof.website} target="_blank" rel="noreferrer">Website</a>
+          <a class="btn" href={prof.website} target="_blank" rel="noreferrer">Website / Portfolio</a>
         {/if}
       </div>
 
