@@ -27,8 +27,9 @@
   <div class="container inner">
     <div class="brand">
       <a class="logo" href={`${base}/discover`} aria-label="Artist Hub home">
-        <span class="mark">B</span>
-        <span>Artist Hub</span>
+        <span class="org">Bitcoin For The Arts, Inc</span>
+        <span class="sep">•</span>
+        <span class="hub">Artist Hub</span>
       </a>
       <span class="muted status">Nostr: {$ndkStatus}</span>
     </div>
@@ -93,16 +94,18 @@
     font-weight: 800;
     letter-spacing: 0.2px;
   }
-  .mark {
-    display: inline-flex;
-    width: 28px;
-    height: 28px;
-    border-radius: 10px;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(246, 196, 83, 0.35);
-    background: linear-gradient(180deg, rgba(246, 196, 83, 0.22), rgba(246, 196, 83, 0.1));
+  .org {
+    font-weight: 950;
     color: var(--accent);
+    white-space: nowrap;
+  }
+  .sep {
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .hub {
+    font-weight: 950;
+    white-space: nowrap;
   }
   .status {
     font-size: 0.85rem;

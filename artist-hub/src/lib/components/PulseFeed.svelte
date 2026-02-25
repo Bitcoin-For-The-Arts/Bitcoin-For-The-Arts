@@ -58,6 +58,10 @@
 
   // Zap modal
   let zapOpenFor: Post | null = null;
+  let zapsOpenFor: Post | null = null;
+  let zapsLoading = false;
+  let zapsError: string | null = null;
+  let zapReceipts: Array<{ id: string; pubkey: string; createdAt: number; sats: number; emoji?: string }> = [];
 
   function cleanTags(xs: string[]): string[] {
     return xs.map((t) => t.replace(/^#/, '').trim()).filter(Boolean).slice(0, 6);
@@ -217,6 +221,47 @@
     }
   }
 
+  async function openZaps(p: Post) {
+    zapsOpenFor = p;
+    zapsLoading = true;
+    zapsError = null;
+    zapReceipts = [];
+
+    try {
+      const ndk = await ensureNdk();
+      // More robust than '#e': query by recipient and filter client-side by embedded zap-request tags.
+      const sub = ndk.subscribe(
+        { kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [p.pubkey], limit: 600 } as any,
+        { closeOnEose: true },
+      );
+      const buf: any[] = [];
+      sub.on('event', (ev) => {
+        const parsed = parseZapReceipt(ev);
+        if (!parsed?.senderPubkey) return;
+        if (!parsed.eTags.includes(p.id)) return;
+        buf.push(parsed);
+      });
+      sub.on('eose', () => {
+        const out = buf
+          .map((z) => ({
+            id: z.receiptId,
+            pubkey: z.senderPubkey!,
+            createdAt: z.createdAt,
+            sats: z.amountSats ?? 0,
+            emoji: z.comment,
+          }))
+          .sort((a, b) => b.createdAt - a.createdAt)
+          .slice(0, 200);
+        zapReceipts = out;
+        for (const z of out.slice(0, 30)) void fetchProfileFor(z.pubkey);
+        zapsLoading = false;
+      });
+    } catch (e) {
+      zapsError = e instanceof Error ? e.message : String(e);
+      zapsLoading = false;
+    }
+  }
+
   async function postComment() {
     if (!commentsOpenFor) return;
     commentError = null;
@@ -350,10 +395,16 @@
             </div>
           </div>
           <div class="stats">
-            <span class="pill muted">{st ? `${st.comments} comments` : '…'}</span>
+            <button class="pill muted pillBtn" on:click={() => openComments(p)}>
+              {st ? `${st.comments} comments` : '…'}
+            </button>
             <span class="pill muted">{st ? `${st.reposts} reposts` : '…'}</span>
-            <span class="pill muted">{st ? `${st.zaps} zaps` : '…'}</span>
-            <span class="pill">{st ? `${st.sats.toLocaleString()} sats` : '…'}</span>
+            <button class="pill muted pillBtn" on:click={() => openZaps(p)}>
+              {st ? `${st.zaps} zaps` : '…'}
+            </button>
+            <button class="pill pillBtn" on:click={() => openZaps(p)}>
+              {st ? `${st.sats.toLocaleString()} sats` : '…'}
+            </button>
           </div>
         </div>
 
@@ -388,6 +439,7 @@
         <div class="actions">
           <button class="btn" on:click={() => openComments(p)}>Comment</button>
           <button class="btn primary" on:click={() => (zapOpenFor = p)}>Zap</button>
+          <button class="btn" on:click={() => openZaps(p)}>View zaps</button>
           <button class="btn" on:click={() => doRepost(p)}>Repost</button>
           {#if $myPubkey === p.pubkey}
             <button class="btn" on:click={() => openEdit(p)}>Edit</button>
@@ -453,6 +505,57 @@
   {/if}
 </Modal>
 
+<Modal open={Boolean(zapsOpenFor)} title="Zaps" onClose={() => (zapsOpenFor = null)}>
+  {#if zapsOpenFor}
+    <div class="muted" style="margin-bottom:0.75rem;">
+      Zaps referencing: <span class="pill">{zapsOpenFor.id.slice(0, 10)}…</span>
+    </div>
+
+    {#if zapsError}
+      <div class="muted" style="color:var(--danger);">{zapsError}</div>
+    {/if}
+
+    {#if zapsLoading}
+      <div class="muted">Loading zap receipts…</div>
+    {:else}
+      <div style="display:flex; gap:0.35rem; flex-wrap:wrap; margin-bottom:0.75rem;">
+        <span class="pill muted">{zapReceipts.length} zap(s)</span>
+        <span class="pill">{zapReceipts.reduce((s, z) => s + (z.sats || 0), 0).toLocaleString()} sats</span>
+      </div>
+
+      <div style="display:grid; gap:0.6rem;">
+        {#each zapReceipts as z (z.id)}
+          {@const zp = $profileByPubkey[z.pubkey]}
+          <div class="card" style="padding: 0.85rem 1rem;">
+            <div style="display:flex; gap:0.55rem; align-items:center; justify-content:space-between;">
+              <div style="display:flex; gap:0.55rem; align-items:center; min-width:0;">
+                {#if zp?.picture}
+                  <img src={zp.picture} alt="" style="width:26px; height:26px; border-radius:10px; border:1px solid var(--border); object-fit:cover;" />
+                {/if}
+                <div style="min-width:0;">
+                  <div style="font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                    {zp?.display_name || zp?.name || npubFor(z.pubkey).slice(0, 18) + '…'}
+                  </div>
+                  <div class="muted small">{new Date(z.createdAt * 1000).toLocaleString()}</div>
+                </div>
+              </div>
+              <div style="display:flex; gap:0.35rem; align-items:center; justify-content:flex-end; flex-wrap:wrap;">
+                <span class="pill">{z.sats.toLocaleString()} sats</span>
+                {#if z.emoji}
+                  <span class="pill muted" title="Emoji attachment">{z.emoji}</span>
+                {/if}
+              </div>
+            </div>
+          </div>
+        {/each}
+        {#if zapReceipts.length === 0}
+          <div class="muted">No zap receipts found yet (depends on relays).</div>
+        {/if}
+      </div>
+    {/if}
+  {/if}
+</Modal>
+
 <ZapEmojiComposer
   open={Boolean(zapOpenFor)}
   recipientPubkey={zapOpenFor?.pubkey || ''}
@@ -503,6 +606,16 @@
     display: flex;
     gap: 0.35rem;
     flex-wrap: wrap;
+  }
+  .pillBtn {
+    cursor: pointer;
+  }
+  button.pill {
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  button.pill:hover {
+    background: rgba(255, 255, 255, 0.08);
   }
 
   .content {
