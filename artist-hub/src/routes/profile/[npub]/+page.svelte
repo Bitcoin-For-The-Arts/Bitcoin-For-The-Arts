@@ -12,6 +12,8 @@
   import ZapComposer from '$lib/components/ZapComposer.svelte';
   import ActivityFeed from '$lib/components/ActivityFeed.svelte';
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
+  import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
+  import { followingError, followingLoading, followingSet, toggleFollow } from '$lib/stores/follows';
 
   let pubkey = '';
   let error: string | null = null;
@@ -260,6 +262,13 @@
   $: hashtags = (prof as any)?.hashtags as string[] | undefined;
   $: portfolio = (prof as any)?.portfolio as string[] | undefined;
   $: nip05 = (prof as any)?.nip05 as string | undefined;
+  $: canFollow = $isAuthed && $myPubkey && pubkey && $myPubkey !== pubkey;
+  $: isFollowing = pubkey ? $followingSet.has(pubkey) : false;
+
+  async function onToggleFollow() {
+    if (!pubkey) return;
+    await toggleFollow(pubkey);
+  }
 </script>
 
 {#if error}
@@ -358,10 +367,18 @@
       <div style="margin-top: 1rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
         <button class="btn" on:click={() => (dmOpen = true)}>Message</button>
         <button class="btn primary" on:click={() => (zapOpen = true)}>Zap / Pay</button>
+        {#if canFollow}
+          <button class={`btn ${isFollowing ? '' : 'primary'}`} disabled={$followingLoading} on:click={onToggleFollow}>
+            {isFollowing ? 'Unfollow' : 'Follow'}
+          </button>
+        {/if}
         {#if prof?.website}
           <a class="btn" href={prof.website} target="_blank" rel="noreferrer">Website / Portfolio</a>
         {/if}
       </div>
+      {#if canFollow && $followingError}
+        <div class="muted" style="margin-top:0.5rem; color:var(--danger);">{$followingError}</div>
+      {/if}
 
       {#if skills?.length}
         <div style="margin-top: 0.9rem;">

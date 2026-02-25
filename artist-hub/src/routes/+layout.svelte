@@ -4,9 +4,11 @@
   import { onMount } from 'svelte';
   import { ensureNdk } from '$lib/stores/ndk';
   import ProfileHoverTooltip from '$lib/components/ProfileHoverTooltip.svelte';
+  import { startFollowingSync } from '$lib/stores/follows';
 
   onMount(() => {
     void ensureNdk();
+    startFollowingSync();
   });
 </script>
 

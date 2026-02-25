@@ -1,7 +1,10 @@
 <script lang="ts">
-  import { hoverProfile } from '$lib/stores/profile-hover';
+  import { base } from '$app/paths';
+  import { hoverProfile, forceClearHoverProfile, pinHoverProfile } from '$lib/stores/profile-hover';
   import { profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
+  import { followingSet, followingError, followingLoading, toggleFollow } from '$lib/stores/follows';
+  import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
 
   let innerWidth = 1200;
   let innerHeight = 800;
@@ -14,17 +17,32 @@
   $: nip05 = (prof as any)?.nip05 as string | undefined;
   $: website = (prof as any)?.website as string | undefined;
   $: lud16 = (prof as any)?.lud16 as string | undefined;
+  $: canFollow = Boolean(pk) && $isAuthed && $myPubkey && $myPubkey !== pk;
+  $: isFollowing = Boolean(pk) && $followingSet.has(pk);
 
   const W = 340;
-  const H = 210;
+  const H = 252;
   $: left = hp ? Math.min(hp.x + 14, Math.max(8, innerWidth - W - 8)) : 0;
   $: top = hp ? Math.min(hp.y + 14, Math.max(8, innerHeight - H - 8)) : 0;
+
+  async function onToggleFollow() {
+    if (!pk) return;
+    await toggleFollow(pk);
+  }
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
 {#if hp}
-  <div class="tip" style={`left:${left}px; top:${top}px; width:${W}px;`}>
+  <div
+    class="tip"
+    style={`left:${left}px; top:${top}px; width:${W}px;`}
+    role="dialog"
+    aria-label="Profile preview"
+    tabindex="-1"
+    on:mouseenter={() => pinHoverProfile(pk)}
+    on:mouseleave={() => forceClearHoverProfile(pk)}
+  >
     <div class="row">
       {#if prof?.picture}
         <img src={prof.picture} alt="" class="avatar" />
@@ -41,6 +59,18 @@
       <div class="muted about">{about}</div>
     {/if}
 
+    <div class="actions">
+      <a class="btn" href={`${base}/profile/${npubFor(pk)}`}>View profile</a>
+      {#if canFollow}
+        <button class={`btn ${isFollowing ? '' : 'primary'}`} disabled={$followingLoading} on:click={onToggleFollow}>
+          {isFollowing ? 'Unfollow' : 'Follow'}
+        </button>
+      {/if}
+    </div>
+    {#if canFollow && $followingError}
+      <div class="muted" style="margin-top:0.45rem; color:var(--danger);">{$followingError}</div>
+    {/if}
+
     <div class="pills">
       {#if nip05}
         <span class="pill muted">NIP-05: {nip05}</span>
@@ -51,6 +81,9 @@
       {#if website}
         <span class="pill muted">🔗 {website}</span>
       {/if}
+      {#if canFollow}
+        <span class={`pill ${isFollowing ? '' : 'muted'}`}>{isFollowing ? 'Following' : 'Not following'}</span>
+      {/if}
     </div>
   </div>
 {/if}
@@ -59,7 +92,7 @@
   .tip {
     position: fixed;
     z-index: 9999;
-    pointer-events: none;
+    pointer-events: auto;
     background: rgba(12, 12, 20, 0.92);
     border: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow:
@@ -113,6 +146,31 @@
     display: flex;
     gap: 0.35rem;
     flex-wrap: wrap;
+  }
+  .actions {
+    margin-top: 0.65rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn {
+    padding: 0.45rem 0.7rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.07);
+    color: inherit;
+    font-weight: 850;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .btn.primary {
+    border-color: rgba(246, 196, 83, 0.35);
+    background: rgba(246, 196, 83, 0.14);
+  }
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
   .pill {
     font-size: 0.82rem;
