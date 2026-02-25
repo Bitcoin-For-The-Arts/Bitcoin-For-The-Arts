@@ -40,8 +40,6 @@
     <div class="muted footer-text">
       Built on Nostr + Lightning. No server-side storage: profiles, listings, comments, and messages are signed events on public relays.
       Your keys, your identity.
-      <br />
-      Bitcoin-only: no ordinals, no NFTs.
     </div>
   </div>
 </footer>
