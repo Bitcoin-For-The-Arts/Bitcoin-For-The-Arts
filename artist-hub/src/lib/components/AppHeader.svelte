@@ -7,6 +7,7 @@
   const nav = [
     { href: '/discover', label: 'Discover' },
     { href: '/live', label: 'Live' },
+    { href: '/studios', label: 'Studios' },
     { href: '/featured', label: 'Featured' },
     { href: '/create', label: 'Create' },
     { href: '/messages', label: 'Messages' },
