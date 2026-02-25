@@ -5,9 +5,10 @@
   import { npubFor } from '$lib/nostr/helpers';
   import { detectMediaType, extractUrls } from '$lib/ui/media';
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
-  import { publishComment, publishEdit, publishNote, publishRepost } from '$lib/nostr/publish';
+  import { publishComment, publishEdit, publishNote, publishQuoteRepost, publishRepost } from '$lib/nostr/publish';
   import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
   import Modal from '$lib/components/Modal.svelte';
+  import ZapComposer from '$lib/components/ZapComposer.svelte';
   import ZapEmojiComposer from '$lib/components/ZapEmojiComposer.svelte';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
 
@@ -69,12 +70,21 @@
   let zapsLoading = false;
   let zapsError: string | null = null;
   let zapReceipts: Array<{ id: string; pubkey: string; createdAt: number; sats: number; emoji?: string }> = [];
+  let zapPayOpenFor: { recipientPubkey: string; recipientLabel: string; eventId?: string } | null = null;
 
   // Reposts modal
   let repostsOpenFor: Post | null = null;
   let repostsLoading = false;
   let repostsError: string | null = null;
   let reposts: Array<{ id: string; pubkey: string; createdAt: number }> = [];
+  let quoteReposts: Array<{ id: string; pubkey: string; createdAt: number; content: string }> = [];
+
+  // Repost / quote composer (for posts + comments)
+  let repostComposeFor: { id: string; pubkey: string; label: string } | null = null;
+  let repostComposeFromPost: Post | null = null;
+  let repostQuote = '';
+  let repostComposeBusy = false;
+  let repostComposeError: string | null = null;
 
   function cleanTags(xs: string[]): string[] {
     return xs.map((t) => t.replace(/^#/, '').trim()).filter(Boolean).slice(0, 6);
@@ -100,6 +110,11 @@
     return statsById.get(id) ?? null;
   }
 
+  async function refreshStatsFor(p: Post): Promise<void> {
+    statsById.delete(p.id);
+    await loadStatsFor(p);
+  }
+
   async function loadStatsFor(p: Post): Promise<void> {
     if (statsById.has(p.id)) return;
     statsById.set(p.id, { comments: 0, reposts: 0, zaps: 0, sats: 0 });
@@ -111,16 +126,21 @@
         { kinds: [NOSTR_KINDS.note, NOSTR_KINDS.repost, NOSTR_KINDS.nip57_zap_receipt, NOSTR_KINDS.nip37_edit], '#e': [p.id], limit: 250 } as any,
         { closeOnEose: true },
       );
+      const subQuotes = ndk.subscribe({ kinds: [NOSTR_KINDS.note], '#q': [p.id], limit: 250 } as any, { closeOnEose: true });
 
       let commentsCount = 0;
       let repostsCount = 0;
+      let quoteRepostsCount = 0;
       let zapsCount = 0;
       let satsSum = 0;
       let latestEdit: { at: number; content: string } | null = null;
 
       sub.on('event', (ev) => {
         if (ev.kind === NOSTR_KINDS.note) {
-          if (ev.id !== p.id) commentsCount += 1;
+          if (ev.id === p.id) return;
+          const tags = (ev.tags as string[][]) || [];
+          const isQuote = tags.some((t) => t[0] === 'q' && t[1] === p.id);
+          if (!isQuote) commentsCount += 1;
         }
         if (ev.kind === NOSTR_KINDS.repost) repostsCount += 1;
         if (ev.kind === NOSTR_KINDS.nip57_zap_receipt) {
@@ -137,18 +157,36 @@
         }
       });
 
-      sub.on('eose', () => {
+      subQuotes.on('event', (ev) => {
+        if (!ev?.id) return;
+        if (ev.id === p.id) return;
+        quoteRepostsCount += 1;
+      });
+
+      let doneA = false;
+      let doneB = false;
+      function finalize() {
+        if (!doneA || !doneB) return;
         const prev = statsById.get(p.id);
         if (!prev) return;
         statsById.set(p.id, {
           comments: commentsCount,
-          reposts: repostsCount,
+          reposts: repostsCount + quoteRepostsCount,
           zaps: zapsCount,
           sats: satsSum,
           editedContent: latestEdit?.content?.trim() ? latestEdit.content.trim() : undefined,
           editedAt: latestEdit?.at,
         });
         tick++;
+      }
+
+      sub.on('eose', () => {
+        doneA = true;
+        finalize();
+      });
+      subQuotes.on('eose', () => {
+        doneB = true;
+        finalize();
       });
     } catch {
       // ignore stats failures
@@ -296,6 +334,7 @@
     repostsLoading = true;
     repostsError = null;
     reposts = [];
+    quoteReposts = [];
 
     try {
       const ndk = await ensureNdk();
@@ -303,18 +342,44 @@
         { kinds: [NOSTR_KINDS.repost], '#e': [p.id], limit: 500 } as any,
         { closeOnEose: true },
       );
+      const subQuotes = ndk.subscribe({ kinds: [NOSTR_KINDS.note], '#q': [p.id], limit: 500 } as any, { closeOnEose: true });
+
       const seen = new Set<string>();
       const buf: Array<{ id: string; pubkey: string; createdAt: number }> = [];
+      const bufQuotes: Array<{ id: string; pubkey: string; createdAt: number; content: string }> = [];
+
       sub.on('event', (ev) => {
         if (!ev?.id || !ev?.pubkey || !ev?.created_at) return;
         if (seen.has(ev.id)) return;
         seen.add(ev.id);
         buf.push({ id: ev.id, pubkey: ev.pubkey, createdAt: ev.created_at });
       });
-      sub.on('eose', () => {
+
+      subQuotes.on('event', (ev) => {
+        if (!ev?.id || !ev?.pubkey || !ev?.created_at) return;
+        if (seen.has(ev.id)) return;
+        seen.add(ev.id);
+        bufQuotes.push({ id: ev.id, pubkey: ev.pubkey, createdAt: ev.created_at, content: (ev.content || '').trim() });
+      });
+
+      let doneA = false;
+      let doneB = false;
+      function finalize() {
+        if (!doneA || !doneB) return;
         reposts = buf.sort((a, b) => b.createdAt - a.createdAt).slice(0, 250);
-        for (const r of reposts.slice(0, 30)) void fetchProfileFor(r.pubkey);
+        quoteReposts = bufQuotes.sort((a, b) => b.createdAt - a.createdAt).slice(0, 250);
+        for (const r of reposts.slice(0, 25)) void fetchProfileFor(r.pubkey);
+        for (const r of quoteReposts.slice(0, 25)) void fetchProfileFor(r.pubkey);
         repostsLoading = false;
+      }
+
+      sub.on('eose', () => {
+        doneA = true;
+        finalize();
+      });
+      subQuotes.on('eose', () => {
+        doneB = true;
+        finalize();
       });
     } catch (e) {
       repostsError = e instanceof Error ? e.message : String(e);
@@ -343,7 +408,7 @@
       commentText = '';
       replyTo = null;
       await openComments(commentsOpenFor);
-      await loadStatsFor(commentsOpenFor);
+      await refreshStatsFor(commentsOpenFor);
     } catch (e) {
       commentError = e instanceof Error ? e.message : String(e);
     } finally {
@@ -372,7 +437,7 @@
     editBusy = true;
     try {
       await publishEdit({ originalEventId: editOpenFor.id, content: editText });
-      await loadStatsFor(editOpenFor);
+      await refreshStatsFor(editOpenFor);
       editOpenFor = null;
     } catch (e) {
       editError = e instanceof Error ? e.message : String(e);
@@ -381,11 +446,24 @@
     }
   }
 
-  async function doRepost(p: Post) {
-    if (!$isAuthed) return;
+  function openRepostComposer(target: { id: string; pubkey: string; label: string }, fromPost: Post | null) {
+    repostComposeFor = target;
+    repostComposeFromPost = fromPost;
+    repostQuote = '';
+    repostComposeError = null;
+  }
+
+  async function doPlainRepostFromComposer() {
+    if (!repostComposeFor) return;
+    repostComposeError = null;
+    if (!$isAuthed) {
+      repostComposeError = 'Connect your npub to repost.';
+      return;
+    }
+    repostComposeBusy = true;
     try {
       const ndk = await ensureNdk();
-      const ev = await ndk.fetchEvent(p.id);
+      const ev = await ndk.fetchEvent(repostComposeFor.id);
       if (!ev) throw new Error('Original event not found on connected relays.');
       await publishRepost({
         id: ev.id!,
@@ -396,9 +474,33 @@
         tags: (ev.tags as any as string[][]) || [],
         sig: (ev as any).sig,
       });
-      await loadStatsFor(p);
-    } catch {
-      // ignore (best-effort)
+      if (repostComposeFromPost) await refreshStatsFor(repostComposeFromPost);
+      repostComposeFor = null;
+      repostComposeFromPost = null;
+    } catch (e) {
+      repostComposeError = e instanceof Error ? e.message : String(e);
+    } finally {
+      repostComposeBusy = false;
+    }
+  }
+
+  async function doQuoteRepostFromComposer() {
+    if (!repostComposeFor) return;
+    repostComposeError = null;
+    if (!$isAuthed) {
+      repostComposeError = 'Connect your npub to repost.';
+      return;
+    }
+    repostComposeBusy = true;
+    try {
+      await publishQuoteRepost({ eventId: repostComposeFor.id, eventPubkey: repostComposeFor.pubkey, quote: repostQuote });
+      if (repostComposeFromPost) await refreshStatsFor(repostComposeFromPost);
+      repostComposeFor = null;
+      repostComposeFromPost = null;
+    } catch (e) {
+      repostComposeError = e instanceof Error ? e.message : String(e);
+    } finally {
+      repostComposeBusy = false;
     }
   }
 
@@ -510,7 +612,7 @@
           <button class="btn primary" on:click={() => (zapOpenFor = p)}>Zap</button>
           <button class="btn" on:click={() => openZaps(p)}>View zaps</button>
           <button class="btn" on:click={() => openReposts(p)}>View reposts</button>
-          <button class="btn" on:click={() => doRepost(p)}>Repost</button>
+          <button class="btn" on:click={() => openRepostComposer({ id: p.id, pubkey: p.pubkey, label: name }, p)}>Repost / Quote</button>
           {#if $myPubkey === p.pubkey}
             <button class="btn" on:click={() => openEdit(p)}>Edit</button>
           {/if}
@@ -550,25 +652,64 @@
     <div style="margin-top: 1rem; display:grid; gap:0.6rem;">
       {#each comments as c (c.id)}
         {@const cp = $profileByPubkey[c.pubkey]}
+        {@const cName = cp?.display_name || cp?.name || npubFor(c.pubkey).slice(0, 18) + '…'}
         <div
           class="card"
           style={`padding: 0.85rem 1rem; ${c.replyTo ? 'border-left: 3px solid rgba(246,196,83,0.35); margin-left: 0.75rem;' : ''}`}
         >
           <div class="muted" style="font-size: 0.88rem;">
-            {cp?.display_name || cp?.name || npubFor(c.pubkey).slice(0, 18) + '…'} • {new Date(c.createdAt * 1000).toLocaleString()}
+            {cName} • {new Date(c.createdAt * 1000).toLocaleString()}
           </div>
           {#if c.replyTo}
             <div class="muted small" style="margin-top:0.2rem;">↳ reply to {c.replyTo.slice(0, 10)}…</div>
           {/if}
           <div style="margin-top: 0.45rem; white-space: pre-wrap; line-height: 1.5;">{c.content}</div>
-          <div style="margin-top:0.6rem;">
+          <div style="margin-top:0.6rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
             <button class="btn" on:click={() => (replyTo = { id: c.id, pubkey: c.pubkey })}>Reply</button>
+            <button
+              class="btn primary"
+              on:click={() => (zapPayOpenFor = { recipientPubkey: c.pubkey, recipientLabel: cName, eventId: c.id })}
+            >
+              Zap
+            </button>
+            <button class="btn" on:click={() => openRepostComposer({ id: c.id, pubkey: c.pubkey, label: cName }, null)}>
+              Repost / Quote
+            </button>
           </div>
         </div>
       {/each}
       {#if comments.length === 0}
         <div class="muted">No comments yet.</div>
       {/if}
+    </div>
+  {/if}
+</Modal>
+
+<Modal open={Boolean(repostComposeFor)} title="Repost / Quote" onClose={() => ((repostComposeFor = null), (repostComposeFromPost = null))}>
+  {#if repostComposeFor}
+    <div class="muted" style="margin-bottom:0.75rem; line-height:1.45;">
+      Target: <span class="pill">{repostComposeFor.label}</span> <span class="pill muted">{repostComposeFor.id.slice(0, 10)}…</span>
+    </div>
+
+    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+      <button class="btn" disabled={repostComposeBusy} on:click={doPlainRepostFromComposer}>Repost (no quote)</button>
+      <button class="btn" on:click={() => ((repostComposeFor = null), (repostComposeFromPost = null))}>Close</button>
+    </div>
+
+    <div style="margin-top:0.9rem;">
+      <div style="font-weight:950;">Quote repost</div>
+      <div class="muted" style="margin-top:0.35rem; line-height:1.45;">
+        This publishes a note with a `q` tag to the target event, plus a `nostr:note…` link.
+      </div>
+      <textarea class="textarea" bind:value={repostQuote} placeholder="Add your quote…"></textarea>
+      <div style="margin-top:0.65rem; display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+        <button class="btn primary" disabled={repostComposeBusy || !repostQuote.trim()} on:click={doQuoteRepostFromComposer}>
+          {repostComposeBusy ? 'Publishing…' : 'Quote repost'}
+        </button>
+        {#if repostComposeError}
+          <span class="muted" style="color:var(--danger);">{repostComposeError}</span>
+        {/if}
+      </div>
     </div>
   {/if}
 </Modal>
@@ -588,7 +729,9 @@
       <div class="muted">Loading reposts…</div>
     {:else}
       <div style="display:flex; gap:0.35rem; flex-wrap:wrap; margin-bottom:0.75rem;">
+        <span class="pill muted">{reposts.length + quoteReposts.length} total</span>
         <span class="pill muted">{reposts.length} repost(s)</span>
+        <span class="pill muted">{quoteReposts.length} quote repost(s)</span>
       </div>
       <div style="display:grid; gap:0.6rem;">
         {#each reposts as r (r.id)}
@@ -614,6 +757,34 @@
           <div class="muted">No reposts found yet (depends on relays).</div>
         {/if}
       </div>
+
+      {#if quoteReposts.length}
+        <div style="margin-top: 1rem; font-weight:950;">Quote reposts</div>
+        <div style="margin-top: 0.6rem; display:grid; gap:0.6rem;">
+          {#each quoteReposts as r (r.id)}
+            {@const rp = $profileByPubkey[r.pubkey]}
+            <div class="card" style="padding: 0.85rem 1rem;">
+              <div style="display:flex; gap:0.55rem; align-items:center; justify-content:space-between;">
+                <div style="display:flex; gap:0.55rem; align-items:center; min-width:0;">
+                  {#if rp?.picture}
+                    <img src={rp.picture} alt="" style="width:26px; height:26px; border-radius:10px; border:1px solid var(--border); object-fit:cover;" />
+                  {/if}
+                  <div style="min-width:0;">
+                    <div style="font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                      {rp?.display_name || rp?.name || npubFor(r.pubkey).slice(0, 18) + '…'}
+                    </div>
+                    <div class="muted small">{new Date(r.createdAt * 1000).toLocaleString()}</div>
+                  </div>
+                </div>
+                <a class="pill muted mono link" href={`https://njump.me/${r.id}`} target="_blank" rel="noreferrer">njump</a>
+              </div>
+              {#if r.content}
+                <div style="margin-top:0.5rem; white-space: pre-wrap; line-height: 1.5;">{r.content.slice(0, 240)}{r.content.length > 240 ? '…' : ''}</div>
+              {/if}
+            </div>
+          {/each}
+        </div>
+      {/if}
     {/if}
   {/if}
 </Modal>
@@ -693,6 +864,14 @@
   recipientLabel={(zapOpenFor && ($profileByPubkey[zapOpenFor.pubkey]?.display_name || $profileByPubkey[zapOpenFor.pubkey]?.name)) || 'Artist'}
   eventId={zapOpenFor?.id}
   onClose={() => (zapOpenFor = null)}
+/>
+
+<ZapComposer
+  open={Boolean(zapPayOpenFor)}
+  recipientPubkey={zapPayOpenFor?.recipientPubkey || ''}
+  recipientLabel={zapPayOpenFor?.recipientLabel || 'Artist'}
+  eventId={zapPayOpenFor?.eventId}
+  onClose={() => (zapPayOpenFor = null)}
 />
 
 <style>

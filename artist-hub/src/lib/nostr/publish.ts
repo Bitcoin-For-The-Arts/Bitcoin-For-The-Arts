@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import { nip19 } from 'nostr-tools';
 import { NOSTR_KINDS } from '$lib/nostr/constants';
 import type { Nip15ProductContent, Nip15StallContent, Nip99Classified } from '$lib/nostr/types';
 import { publishSignedEvent, signWithNip07 } from '$lib/nostr/pool';
@@ -47,6 +48,29 @@ export async function publishRepost(original: {
     kind: NOSTR_KINDS.repost,
     created_at: Math.floor(Date.now() / 1000),
     content: JSON.stringify(original),
+    tags,
+    pubkey,
+  };
+  const signed = await signWithNip07(unsigned as any);
+  await publishSignedEvent(signed as any);
+  return signed.id;
+}
+
+export async function publishQuoteRepost(opts: { eventId: string; eventPubkey: string; quote: string }): Promise<string> {
+  const pubkey = await window.nostr!.getPublicKey();
+  const quote = (opts.quote || '').trim();
+  if (!opts.eventId || !opts.eventPubkey) throw new Error('Missing quoted event.');
+  if (!quote) throw new Error('Quote is empty.');
+
+  const tags: string[][] = [
+    ['q', opts.eventId],
+    ['p', opts.eventPubkey],
+  ];
+
+  const unsigned = {
+    kind: NOSTR_KINDS.note,
+    created_at: Math.floor(Date.now() / 1000),
+    content: `${quote}\n\nnostr:${nip19.noteEncode(opts.eventId)}`,
     tags,
     pubkey,
   };
