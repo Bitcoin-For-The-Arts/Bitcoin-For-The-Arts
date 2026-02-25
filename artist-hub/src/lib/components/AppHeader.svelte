@@ -9,6 +9,7 @@
     { href: '/live', label: 'Live' },
     { href: '/studios', label: 'Studios' },
     { href: '/events', label: 'Events' },
+    { href: '/challenges', label: 'Challenges' },
     { href: '/featured', label: 'Featured' },
     { href: '/create', label: 'Create' },
     { href: '/messages', label: 'Messages' },

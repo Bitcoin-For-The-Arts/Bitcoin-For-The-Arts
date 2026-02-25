@@ -16,6 +16,8 @@ This is a **SvelteKit + TypeScript** single-page app that implements a **Bitcoin
 
 All data lives on public relays as signed events. There is **no backend API** and **no server-side storage**.
 
+**Policy**: Bitcoin for the Arts is **Bitcoin-only**. This project intentionally does **not** support ordinals or NFTs.
+
 ## Routes
 
 - `/artist-hub/discover`: search + category/tag filters across relays
@@ -28,6 +30,8 @@ All data lives on public relays as signed events. There is **no backend API** an
 - `/artist-hub/studios`: browse/publish virtual studios
 - `/artist-hub/studios/<naddr>`: view a studio (guestbook + zaps + optional channel chat)
 - `/artist-hub/events`: browse/publish event listings
+- `/artist-hub/challenges`: browse/publish Zap Challenges (BFTA extension `kind:30051`)
+- `/artist-hub/challenges/<naddr>`: view a challenge + live leaderboard from zap receipts
 - `/artist-hub/me`: publish your profile (kind:0) + see your listings
 
 ## Nostr relays
