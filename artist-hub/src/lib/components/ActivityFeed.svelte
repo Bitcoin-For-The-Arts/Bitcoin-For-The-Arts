@@ -15,6 +15,8 @@
   export let eventId: string | undefined = undefined;
   export let address: string | undefined = undefined;
   export let limit = 50;
+  export let compact = false;
+  export let maxHeight: number | null = 560;
 
   let items: Item[] = [];
   let error: string | null = null;
@@ -126,7 +128,7 @@
   });
 </script>
 
-<div class="card" style="padding: 1rem;">
+<div class={`card ${compact ? 'compact' : ''}`} style="padding: 1rem;">
   <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem;">
     <div style="font-weight: 950;">{title}</div>
     <div class="muted">{#if loading}Live…{/if}</div>
@@ -143,7 +145,12 @@
     <div class="muted" style="margin-top:0.75rem; color: var(--danger);">{error}</div>
   {/if}
 
-  <div style="margin-top: 0.85rem; display:grid; gap:0.6rem;">
+  <div
+    class="feed"
+    style={`margin-top: 0.85rem; display:grid; gap:0.6rem; ${
+      maxHeight ? `max-height:${maxHeight}px; overflow:auto;` : ''
+    }`}
+  >
     {#each items as it (it.id)}
       <div class="row">
         <div class="who">
@@ -274,6 +281,24 @@
   }
   .link {
     width: fit-content;
+  }
+
+  .compact .row {
+    padding: 0.6rem 0.7rem;
+  }
+  .compact .name {
+    max-width: 200px;
+    font-weight: 850;
+  }
+  .compact .m img,
+  .compact .m video {
+    max-height: 220px;
+  }
+  .compact .pill {
+    font-size: 0.82rem;
+  }
+  .compact .small {
+    font-size: 0.82rem;
   }
 </style>
 

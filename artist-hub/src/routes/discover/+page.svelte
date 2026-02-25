@@ -50,6 +50,7 @@
   });
 
   $: activityTags = $discoveryTags.length ? $discoveryTags : ['BitcoinArt', 'NostrArt', 'BFTA'];
+  let showLive = true;
 
   let tagInput = '';
   function addTag() {
@@ -125,22 +126,50 @@
   <div class="card" style="padding: 1rem;">
     <div style="display:flex; align-items:center; justify-content:space-between; gap: 1rem;">
       <div style="font-weight: 850;">Results</div>
-      <div class="muted">{#if $discoveryLoading}Loading relays…{/if}</div>
+      <div style="display:flex; gap:0.5rem; align-items:center; justify-content:flex-end;">
+        <div class="muted">{#if $discoveryLoading}Loading relays…{/if}</div>
+        <button class="btn" on:click={() => (showLive = !showLive)}>
+          {showLive ? 'Hide live' : 'Show live'}
+        </button>
+      </div>
     </div>
 
-    <div style="margin-top: 0.85rem;">
-      <ActivityFeed title="Live Activity" tags={activityTags} limit={25} />
-    </div>
+    <div class="split" style="margin-top: 0.85rem;">
+      <div class="market">
+        <div class="muted" style="margin-bottom:0.55rem;">
+          Showing {$filteredListings.length} listing(s).
+        </div>
+        <div class="grid cols-2">
+          {#each $filteredListings as l (l.eventId)}
+            <ListingCard listing={l} />
+          {/each}
+        </div>
+        {#if $filteredListings.length === 0 && !$discoveryLoading}
+          <div class="card" style="margin-top: 0.85rem; padding: 1rem;">
+            <div class="muted">No listings found yet for these filters.</div>
+          </div>
+        {/if}
+      </div>
 
-    <div class="muted" style="margin-top:0.35rem;">
-      Showing {$filteredListings.length} listing(s).
-    </div>
-
-    <div class="grid cols-2" style="margin-top: 0.9rem;">
-      {#each $filteredListings as l (l.eventId)}
-        <ListingCard listing={l} />
-      {/each}
+      {#if showLive}
+        <div class="live">
+          <ActivityFeed title="Live posts" tags={activityTags} limit={25} compact={true} maxHeight={560} />
+        </div>
+      {/if}
     </div>
   </div>
 </div>
+
+<style>
+  .split {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 980px) {
+    .split {
+      grid-template-columns: 1fr 360px;
+      align-items: start;
+    }
+  }
+</style>
 
