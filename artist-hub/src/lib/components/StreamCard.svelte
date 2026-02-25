@@ -1,5 +1,6 @@
 <script lang="ts">
   import { base } from '$app/paths';
+  import { goto } from '$app/navigation';
   import type { LiveEvent30311 } from '$lib/nostr/nip53';
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
@@ -11,10 +12,17 @@
   $: host = $profileByPubkey[stream.hostPubkey];
   $: hostName = host?.display_name || host?.name || 'Host';
   $: thumb = stream.thumb || stream.image;
+  $: hostHref = `${base}/profile/${npubFor(stream.hostPubkey)}`;
 
   onMount(() => {
     void fetchProfileFor(stream.hostPubkey);
   });
+
+  function openHost(e: MouseEvent | KeyboardEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    void goto(hostHref);
+  }
 </script>
 
 <a class="card item" href={stream.watchUrl} target="_blank" rel="noreferrer" aria-label={`Watch ${stream.title}`}>
@@ -29,9 +37,16 @@
     <div class="name">{stream.title}</div>
     <div class="by muted">
       by
-      <a class="who" href={`${base}/profile/${npubFor(stream.hostPubkey)}`} use:profileHover={stream.hostPubkey}>
+      <span
+        class="who"
+        role="link"
+        tabindex="0"
+        use:profileHover={stream.hostPubkey}
+        on:click={openHost}
+        on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && openHost(e)}
+      >
         {hostName}
-      </a>
+      </span>
     </div>
     {#if stream.summary}
       <div class="muted summary">{stream.summary}</div>
