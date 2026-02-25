@@ -3,6 +3,81 @@ import { NOSTR_KINDS } from '$lib/nostr/constants';
 import type { Nip15ProductContent, Nip15StallContent, Nip99Classified } from '$lib/nostr/types';
 import { publishSignedEvent, signWithNip07 } from '$lib/nostr/pool';
 
+export async function publishNote(opts: { content: string; tags?: string[] }): Promise<string> {
+  const pubkey = await window.nostr!.getPublicKey();
+  const content = (opts.content || '').trim();
+  if (!content) throw new Error('Post content is empty.');
+
+  const tags: string[][] = [];
+  for (const t of opts.tags ?? []) {
+    const clean = t.replace(/^#/, '').trim();
+    if (clean) tags.push(['t', clean]);
+  }
+
+  const unsigned = {
+    kind: NOSTR_KINDS.note,
+    created_at: Math.floor(Date.now() / 1000),
+    content,
+    tags,
+    pubkey,
+  };
+  const signed = await signWithNip07(unsigned as any);
+  await publishSignedEvent(signed as any);
+  return signed.id;
+}
+
+export async function publishRepost(original: {
+  id: string;
+  pubkey: string;
+  created_at: number;
+  kind: number;
+  content: string;
+  tags: string[][];
+  sig?: string;
+}): Promise<string> {
+  const pubkey = await window.nostr!.getPublicKey();
+  if (!original?.id || !original?.pubkey) throw new Error('Missing original event.');
+
+  const tags: string[][] = [
+    ['e', original.id],
+    ['p', original.pubkey],
+  ];
+
+  const unsigned = {
+    kind: NOSTR_KINDS.repost,
+    created_at: Math.floor(Date.now() / 1000),
+    content: JSON.stringify(original),
+    tags,
+    pubkey,
+  };
+  const signed = await signWithNip07(unsigned as any);
+  await publishSignedEvent(signed as any);
+  return signed.id;
+}
+
+export async function publishEdit(opts: { originalEventId: string; content: string }): Promise<string> {
+  const pubkey = await window.nostr!.getPublicKey();
+  const content = (opts.content || '').trim();
+  if (!content) throw new Error('Edited content is empty.');
+  if (!opts.originalEventId) throw new Error('Missing original event id.');
+
+  const tags: string[][] = [
+    ['d', opts.originalEventId],
+    ['e', opts.originalEventId],
+  ];
+
+  const unsigned = {
+    kind: NOSTR_KINDS.nip37_edit,
+    created_at: Math.floor(Date.now() / 1000),
+    content,
+    tags,
+    pubkey,
+  };
+  const signed = await signWithNip07(unsigned as any);
+  await publishSignedEvent(signed as any);
+  return signed.id;
+}
+
 export async function publishNip15Stall(stall: Nip15StallContent): Promise<string> {
   const pubkey = await window.nostr!.getPublicKey();
   const unsigned = {

@@ -10,6 +10,7 @@ export const DEFAULT_RELAYS = [
 export const NOSTR_KINDS = {
   metadata: 0,
   note: 1,
+  repost: 6,
   dm: 4,
 
   nip15_stall: 30017,
@@ -18,6 +19,8 @@ export const NOSTR_KINDS = {
   nip23_longform: 30023,
 
   nip51_curated_set: 30004,
+
+  nip37_edit: 30078,
 
   nip99_classified: 30402,
   nip99_draft: 30403,

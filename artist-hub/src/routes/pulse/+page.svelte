@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ActivityFeed from '$lib/components/ActivityFeed.svelte';
+  import PulseFeed from '$lib/components/PulseFeed.svelte';
 
   const quickTags = [
     'BitcoinArt',
@@ -38,8 +38,8 @@
   }
 </script>
 
-<div class="grid cols-2">
-  <div class="card" style="padding: 1rem;">
+<div class="layout">
+  <div class="card controls" style="padding: 1rem;">
     <div style="font-size: 1.25rem; font-weight: 950;">Pulse</div>
     <div class="muted" style="margin-top: 0.35rem; line-height: 1.55;">
       Live posts (notes + zaps) from public relays. No backend — just signed events.
@@ -79,8 +79,34 @@
     </div>
   </div>
 
-  <div>
-    <ActivityFeed title="Live posts" {tags} limit={60} compact={true} maxHeight={null} showTagPills={false} />
+  <div class="feedWrap">
+    <PulseFeed {tags} limit={40} />
   </div>
 </div>
+
+<style>
+  .layout {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 980px) {
+    .layout {
+      grid-template-columns: 340px 1fr;
+      align-items: start;
+    }
+    .controls {
+      position: sticky;
+      top: 92px;
+      height: fit-content;
+    }
+  }
+  .feedWrap {
+    max-width: 920px;
+  }
+  @media (min-width: 980px) {
+    .feedWrap {
+      margin-left: auto;
+    }
+  }
+</style>
 
