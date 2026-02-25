@@ -45,10 +45,17 @@
 
   // Comment modal
   let commentsOpenFor: Post | null = null;
-  let comments: Array<{ id: string; pubkey: string; createdAt: number; content: string }> = [];
+  let comments: Array<{
+    id: string;
+    pubkey: string;
+    createdAt: number;
+    content: string;
+    replyTo?: string;
+  }> = [];
   let commentText = '';
   let commentBusy = false;
   let commentError: string | null = null;
+  let replyTo: { id: string; pubkey: string } | null = null;
 
   // Edit modal
   let editOpenFor: Post | null = null;
@@ -63,6 +70,12 @@
   let zapsError: string | null = null;
   let zapReceipts: Array<{ id: string; pubkey: string; createdAt: number; sats: number; emoji?: string }> = [];
 
+  // Reposts modal
+  let repostsOpenFor: Post | null = null;
+  let repostsLoading = false;
+  let repostsError: string | null = null;
+  let reposts: Array<{ id: string; pubkey: string; createdAt: number }> = [];
+
   function cleanTags(xs: string[]): string[] {
     return xs.map((t) => t.replace(/^#/, '').trim()).filter(Boolean).slice(0, 6);
   }
@@ -70,6 +83,15 @@
   function isReplyLike(ev: any): boolean {
     const tags = (ev.tags as string[][]) || [];
     return tags.some((t) => t[0] === 'e');
+  }
+
+  function replyTargetFor(ev: any, rootId: string): string | undefined {
+    const tags = (ev.tags as string[][]) || [];
+    const explicit = tags.find((t) => t[0] === 'e' && t[3] === 'reply')?.[1];
+    if (explicit) return explicit;
+    const others = tags.filter((t) => t[0] === 'e' && typeof t[1] === 'string').map((t) => t[1]);
+    const guess = others.find((id) => id !== rootId);
+    return guess;
   }
 
   function getStats(id: string): Stats | null {
@@ -197,6 +219,7 @@
     comments = [];
     commentText = '';
     commentError = null;
+    replyTo = null;
 
     try {
       const ndk = await ensureNdk();
@@ -209,9 +232,15 @@
       });
       sub.on('eose', () => {
         const out = buf
-          .map((ev) => ({ id: ev.id, pubkey: ev.pubkey, createdAt: ev.created_at, content: (ev.content || '').trim() }))
+          .map((ev) => ({
+            id: ev.id,
+            pubkey: ev.pubkey,
+            createdAt: ev.created_at,
+            content: (ev.content || '').trim(),
+            replyTo: replyTargetFor(ev, p.id),
+          }))
           .filter((x) => x.content)
-          .sort((a, b) => b.createdAt - a.createdAt)
+          .sort((a, b) => a.createdAt - b.createdAt)
           .slice(0, 120);
         comments = out;
         for (const c of out.slice(0, 25)) void fetchProfileFor(c.pubkey);
@@ -262,6 +291,37 @@
     }
   }
 
+  async function openReposts(p: Post) {
+    repostsOpenFor = p;
+    repostsLoading = true;
+    repostsError = null;
+    reposts = [];
+
+    try {
+      const ndk = await ensureNdk();
+      const sub = ndk.subscribe(
+        { kinds: [NOSTR_KINDS.repost], '#e': [p.id], limit: 500 } as any,
+        { closeOnEose: true },
+      );
+      const seen = new Set<string>();
+      const buf: Array<{ id: string; pubkey: string; createdAt: number }> = [];
+      sub.on('event', (ev) => {
+        if (!ev?.id || !ev?.pubkey || !ev?.created_at) return;
+        if (seen.has(ev.id)) return;
+        seen.add(ev.id);
+        buf.push({ id: ev.id, pubkey: ev.pubkey, createdAt: ev.created_at });
+      });
+      sub.on('eose', () => {
+        reposts = buf.sort((a, b) => b.createdAt - a.createdAt).slice(0, 250);
+        for (const r of reposts.slice(0, 30)) void fetchProfileFor(r.pubkey);
+        repostsLoading = false;
+      });
+    } catch (e) {
+      repostsError = e instanceof Error ? e.message : String(e);
+      repostsLoading = false;
+    }
+  }
+
   async function postComment() {
     if (!commentsOpenFor) return;
     commentError = null;
@@ -273,8 +333,15 @@
     if (!body) return;
     commentBusy = true;
     try {
-      await publishComment({ rootEventId: commentsOpenFor.id, content: body });
+      await publishComment({
+        rootEventId: commentsOpenFor.id,
+        rootPubkey: commentsOpenFor.pubkey,
+        replyToEventId: replyTo?.id,
+        replyToPubkey: replyTo?.pubkey,
+        content: body,
+      });
       commentText = '';
+      replyTo = null;
       await openComments(commentsOpenFor);
       await loadStatsFor(commentsOpenFor);
     } catch (e) {
@@ -398,7 +465,9 @@
             <button class="pill muted pillBtn" on:click={() => openComments(p)}>
               {st ? `${st.comments} comments` : '…'}
             </button>
-            <span class="pill muted">{st ? `${st.reposts} reposts` : '…'}</span>
+            <button class="pill muted pillBtn" on:click={() => openReposts(p)}>
+              {st ? `${st.reposts} reposts` : '…'}
+            </button>
             <button class="pill muted pillBtn" on:click={() => openZaps(p)}>
               {st ? `${st.zaps} zaps` : '…'}
             </button>
@@ -440,6 +509,7 @@
           <button class="btn" on:click={() => openComments(p)}>Comment</button>
           <button class="btn primary" on:click={() => (zapOpenFor = p)}>Zap</button>
           <button class="btn" on:click={() => openZaps(p)}>View zaps</button>
+          <button class="btn" on:click={() => openReposts(p)}>View reposts</button>
           <button class="btn" on:click={() => doRepost(p)}>Repost</button>
           {#if $myPubkey === p.pubkey}
             <button class="btn" on:click={() => openEdit(p)}>Edit</button>
@@ -462,6 +532,13 @@
       Replying to: <span class="pill">{commentsOpenFor.id.slice(0, 10)}…</span>
     </div>
 
+    {#if replyTo}
+      <div style="margin-bottom:0.6rem; display:flex; gap:0.35rem; flex-wrap:wrap; align-items:center;">
+        <span class="pill">Replying to comment: {replyTo.id.slice(0, 10)}…</span>
+        <button class="pill muted pillBtn" on:click={() => (replyTo = null)}>Cancel reply</button>
+      </div>
+    {/if}
+
     <textarea class="textarea" bind:value={commentText} placeholder="Write a comment (public)…"></textarea>
     <div style="margin-top: 0.65rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
       <button class="btn primary" disabled={commentBusy || !commentText.trim()} on:click={postComment}>
@@ -473,17 +550,71 @@
     <div style="margin-top: 1rem; display:grid; gap:0.6rem;">
       {#each comments as c (c.id)}
         {@const cp = $profileByPubkey[c.pubkey]}
-        <div class="card" style="padding: 0.85rem 1rem;">
+        <div
+          class="card"
+          style={`padding: 0.85rem 1rem; ${c.replyTo ? 'border-left: 3px solid rgba(246,196,83,0.35); margin-left: 0.75rem;' : ''}`}
+        >
           <div class="muted" style="font-size: 0.88rem;">
             {cp?.display_name || cp?.name || npubFor(c.pubkey).slice(0, 18) + '…'} • {new Date(c.createdAt * 1000).toLocaleString()}
           </div>
+          {#if c.replyTo}
+            <div class="muted small" style="margin-top:0.2rem;">↳ reply to {c.replyTo.slice(0, 10)}…</div>
+          {/if}
           <div style="margin-top: 0.45rem; white-space: pre-wrap; line-height: 1.5;">{c.content}</div>
+          <div style="margin-top:0.6rem;">
+            <button class="btn" on:click={() => (replyTo = { id: c.id, pubkey: c.pubkey })}>Reply</button>
+          </div>
         </div>
       {/each}
       {#if comments.length === 0}
         <div class="muted">No comments yet.</div>
       {/if}
     </div>
+  {/if}
+</Modal>
+
+<!-- Reposts (retweets) -->
+<Modal open={Boolean(repostsOpenFor)} title="Reposts" onClose={() => (repostsOpenFor = null)}>
+  {#if repostsOpenFor}
+    <div class="muted" style="margin-bottom:0.75rem;">
+      Reposts of: <span class="pill">{repostsOpenFor.id.slice(0, 10)}…</span>
+    </div>
+
+    {#if repostsError}
+      <div class="muted" style="color:var(--danger);">{repostsError}</div>
+    {/if}
+
+    {#if repostsLoading}
+      <div class="muted">Loading reposts…</div>
+    {:else}
+      <div style="display:flex; gap:0.35rem; flex-wrap:wrap; margin-bottom:0.75rem;">
+        <span class="pill muted">{reposts.length} repost(s)</span>
+      </div>
+      <div style="display:grid; gap:0.6rem;">
+        {#each reposts as r (r.id)}
+          {@const rp = $profileByPubkey[r.pubkey]}
+          <div class="card" style="padding: 0.85rem 1rem;">
+            <div style="display:flex; gap:0.55rem; align-items:center; justify-content:space-between;">
+              <div style="display:flex; gap:0.55rem; align-items:center; min-width:0;">
+                {#if rp?.picture}
+                  <img src={rp.picture} alt="" style="width:26px; height:26px; border-radius:10px; border:1px solid var(--border); object-fit:cover;" />
+                {/if}
+                <div style="min-width:0;">
+                  <div style="font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                    {rp?.display_name || rp?.name || npubFor(r.pubkey).slice(0, 18) + '…'}
+                  </div>
+                  <div class="muted small">{new Date(r.createdAt * 1000).toLocaleString()}</div>
+                </div>
+              </div>
+              <a class="pill muted mono link" href={`https://njump.me/${r.id}`} target="_blank" rel="noreferrer">njump</a>
+            </div>
+          </div>
+        {/each}
+        {#if reposts.length === 0}
+          <div class="muted">No reposts found yet (depends on relays).</div>
+        {/if}
+      </div>
+    {/if}
   {/if}
 </Modal>
 

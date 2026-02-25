@@ -144,20 +144,29 @@ export async function publishNip99Classified(listing: Nip99Classified): Promise<
 
 export async function publishComment(opts: {
   rootEventId: string;
+  rootPubkey?: string;
   rootAddress?: string;
+  replyToEventId?: string;
+  replyToPubkey?: string;
   content: string;
   tags?: string[];
 }): Promise<string> {
   const pubkey = await window.nostr!.getPublicKey();
 
+  const content = (opts.content || '').trim();
+  if (!content) throw new Error('Comment is empty.');
+
   const tags: string[][] = [['e', opts.rootEventId, '', 'root']];
   if (opts.rootAddress) tags.push(['a', opts.rootAddress, '', 'root']);
+  if (opts.rootPubkey) tags.push(['p', opts.rootPubkey]);
+  if (opts.replyToEventId) tags.push(['e', opts.replyToEventId, '', 'reply']);
+  if (opts.replyToPubkey) tags.push(['p', opts.replyToPubkey]);
   for (const t of opts.tags ?? []) tags.push(['t', t.replace(/^#/, '')]);
 
   const unsigned = {
     kind: NOSTR_KINDS.note,
     created_at: Math.floor(Date.now() / 1000),
-    content: opts.content,
+    content,
     tags,
     pubkey,
   };
