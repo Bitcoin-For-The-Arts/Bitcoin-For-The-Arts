@@ -10,6 +10,9 @@ This is a **SvelteKit + TypeScript** single-page app that implements a **Bitcoin
 - **Messaging**: encrypted DMs via **NIP-04** (`kind:4`)
 - **Payments**: WebLN invoices + **NIP-57** zaps (when receiver supports zaps)
 - **Curation**: “Featured Artists” via **NIP-51** curated sets (`kind:30004`)
+- **Live**: NIP-28 public channels (kinds `40/41/42`)
+- **Virtual Studios**: BFTA extension `kind:30050` (parameterized replaceable + `d` tag)
+- **Events**: NIP-99 event listings tagged with `#event` (plus optional `start/end/location/url` tags)
 
 All data lives on public relays as signed events. There is **no backend API** and **no server-side storage**.
 
@@ -21,6 +24,10 @@ All data lives on public relays as signed events. There is **no backend API** an
 - `/artist-hub/create`: publish a listing (NIP-15 or NIP-99)
 - `/artist-hub/messages`: decrypt + read/send NIP-04 DMs
 - `/artist-hub/featured`: admin-curated featured list
+- `/artist-hub/live`: NIP-28 channels + live chat
+- `/artist-hub/studios`: browse/publish virtual studios
+- `/artist-hub/studios/<naddr>`: view a studio (guestbook + zaps + optional channel chat)
+- `/artist-hub/events`: browse/publish event listings
 - `/artist-hub/me`: publish your profile (kind:0) + see your listings
 
 ## Nostr relays
