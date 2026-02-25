@@ -11,7 +11,20 @@
     startDiscovery,
   } from '$lib/stores/discovery';
 
-  const quickCategories = ['Visual Arts', 'Music', 'Film', 'Writing', 'Design', 'Workshops', 'Collaboration'];
+  const quickCategories = [
+    'Visual Arts',
+    'Music',
+    'Film',
+    'Dance',
+    'Theater',
+    'Animation',
+    'Storytelling',
+    'Installation',
+    'Writing',
+    'Design',
+    'Workshops',
+    'Collaboration',
+  ];
   const quickTags = [
     'BitcoinArt',
     'NostrArt',
