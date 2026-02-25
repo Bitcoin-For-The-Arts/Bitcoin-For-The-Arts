@@ -1,5 +1,6 @@
 <script lang="ts">
   import PulseFeed from '$lib/components/PulseFeed.svelte';
+  import ZapStreamScroller from '$lib/components/ZapStreamScroller.svelte';
 
   const quickTags = [
     'BitcoinArt',
@@ -80,6 +81,7 @@
   </div>
 
   <div class="feedWrap">
+    <ZapStreamScroller />
     <PulseFeed {tags} limit={40} />
   </div>
 </div>
