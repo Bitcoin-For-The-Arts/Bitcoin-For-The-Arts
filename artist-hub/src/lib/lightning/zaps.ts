@@ -4,6 +4,8 @@ import { relayUrls } from '$lib/stores/settings';
 import { fetchLnurlPayParams, lnurlpUrlFromLud, requestInvoice } from '$lib/lightning/lnurl';
 import { sendPayment } from '$lib/lightning/webln';
 import { NOSTR_KINDS } from '$lib/nostr/constants';
+import { pubkey as myPubkey } from '$lib/stores/auth';
+import { signWithNip07 } from '$lib/nostr/pool';
 
 export async function zapOrPay(opts: {
   recipientPubkey: string;
@@ -27,8 +29,15 @@ export async function zapOrPay(opts: {
   const comment = (opts.comment || '').slice(0, Math.max(0, commentAllowed));
 
   // If the receiver supports Nostr zaps and the user has a signer, do a real zap request (NIP-57).
-  if (params.allowsNostr && params.nostrPubkey && window.nostr?.signEvent && window.nostr?.getPublicKey) {
-    const payerPubkey = await window.nostr.getPublicKey();
+  let payerPubkey = get(myPubkey);
+  if (!payerPubkey && window.nostr?.getPublicKey) {
+    try {
+      payerPubkey = await window.nostr.getPublicKey();
+    } catch {
+      // ignore
+    }
+  }
+  if (params.allowsNostr && params.nostrPubkey && payerPubkey) {
     const lnurl = lnurlpUrlFromLud(lud);
     const unsigned = {
       kind: NOSTR_KINDS.nip57_zap_request,
@@ -45,7 +54,7 @@ export async function zapOrPay(opts: {
       ],
     };
 
-    const signed = await window.nostr.signEvent(unsigned);
+    const signed = await signWithNip07(unsigned as any);
     const invoice = await requestInvoice({
       callback: params.callback,
       amountMsats,

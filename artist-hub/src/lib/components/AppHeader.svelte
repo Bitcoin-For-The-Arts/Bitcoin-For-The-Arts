@@ -1,8 +1,10 @@
 <script lang="ts">
+  import { browser } from '$app/environment';
   import { base } from '$app/paths';
   import { page } from '$app/stores';
-  import { connectNostr, disconnectNostr, isAuthed, npub, authError } from '$lib/stores/auth';
+  import { connectNostr, disconnectNostr, isAuthed, npub, authError, hasNip07 } from '$lib/stores/auth';
   import { ndkStatus } from '$lib/stores/ndk';
+  import { openOnboarding } from '$lib/stores/onboarding';
 
   let mobileMenuOpen = false;
 
@@ -27,6 +29,14 @@
 
   function toggleMobile() {
     mobileMenuOpen = !mobileMenuOpen;
+  }
+
+  function handleConnect() {
+    if (browser && !window.nostr?.getPublicKey) {
+      openOnboarding();
+      return;
+    }
+    void connectNostr();
   }
 </script>
 
@@ -58,7 +68,7 @@
         </span>
         <button class="btn" on:click={disconnectNostr}>Disconnect</button>
       {:else}
-        <button class="btn primary" on:click={() => connectNostr()}>Connect</button>
+        <button class="btn primary" on:click={handleConnect}>{$hasNip07 ? 'Connect' : 'Get started'}</button>
       {/if}
       <button class="btn mobile-toggle" on:click={toggleMobile} aria-label="Toggle menu">
         {mobileMenuOpen ? '✕' : '☰'}

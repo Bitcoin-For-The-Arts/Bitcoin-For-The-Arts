@@ -1,6 +1,7 @@
 <script lang="ts">
   import Modal from '$lib/components/Modal.svelte';
   import { browser } from '$app/environment';
+  import { connectWithNsec } from '$lib/stores/auth';
 
   export let open = false;
   export let onClose: () => void = () => {};
@@ -12,6 +13,9 @@
   let generatedNsec = '';
   let keysSaved = false;
   let nsecRevealed = false;
+  let rememberOnDevice = false;
+  let existingNsec = '';
+  let busy = false;
   let error: string | null = null;
 
   async function generateKeys() {
@@ -36,6 +40,25 @@
 
   function copyToClipboard(text: string) {
     if (browser) navigator.clipboard.writeText(text);
+  }
+
+  async function signInWithNsec(nsec: string) {
+    error = null;
+    const trimmed = (nsec || '').trim();
+    if (!trimmed) {
+      error = 'Paste your nsec to continue.';
+      return;
+    }
+
+    busy = true;
+    try {
+      await connectWithNsec(trimmed, { remember: rememberOnDevice });
+      onClose();
+    } catch (e) {
+      error = e instanceof Error ? e.message : String(e);
+    } finally {
+      busy = false;
+    }
   }
 </script>
 
@@ -65,15 +88,35 @@
         </div>
 
         <div class="option card">
-          <div class="option-title">Option 2: Generate Keys Here</div>
+          <div class="option-title">Option 2: Create an Account (Generate Keys)</div>
           <p class="muted option-desc">
-            Generate a key pair now for quick access. You must save your private key (nsec) securely — it cannot be recovered.
+            Generate a key pair now. You must save your private key (nsec) securely — it cannot be recovered.
           </p>
           <button class="btn" on:click={generateKeys}>Generate Key Pair</button>
         </div>
 
         <div class="option card">
-          <div class="option-title">Option 3: Browse Read-Only</div>
+          <div class="option-title">Option 3: Sign In with an Existing nsec</div>
+          <p class="muted option-desc">
+            Already have keys? Paste your private key (nsec) to use it in Artist Hub. We recommend using a signer extension instead.
+          </p>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <input class="input" style="flex: 1; min-width: 260px;" bind:value={existingNsec} placeholder="nsec1…" />
+            <button class="btn primary" disabled={busy || !existingNsec.trim()} on:click={() => signInWithNsec(existingNsec)}>
+              {busy ? 'Signing in…' : 'Sign In'}
+            </button>
+          </div>
+          <label class="pill" style="cursor: pointer; margin-top: 0.6rem; display: inline-flex; gap: 0.5rem; align-items: center;">
+            <input type="checkbox" bind:checked={rememberOnDevice} />
+            Remember on this device
+          </label>
+          <div class="muted" style="font-size: 0.82rem; margin-top: 0.5rem; line-height: 1.45;">
+            Only do this on a trusted device. Anyone with access to this browser could potentially use your key.
+          </div>
+        </div>
+
+        <div class="option card">
+          <div class="option-title">Option 4: Browse Read-Only</div>
           <p class="muted option-desc">
             Explore listings, live streams, and forum posts without connecting. You can connect later when ready.
           </p>
@@ -124,15 +167,23 @@
 
       <div style="margin-top: 0.85rem;">
         <p class="muted" style="line-height: 1.5;">
-          To use these keys, import them into a Nostr signer extension like <strong>Alby</strong> or <strong>nos2x</strong>.
-          Paste your nsec into the extension's import flow, then return here and click "Connect" in the header.
+          Recommended: import these keys into a signer extension like <strong>Alby</strong> or <strong>nos2x</strong>.
+          You can also use this key directly inside Artist Hub on this device (not recommended for high-value keys).
         </p>
       </div>
 
-      <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-        <button class="btn primary" disabled={!keysSaved} on:click={() => (step = 'done')}>
-          I've Saved My Keys
+      <div style="margin-top: 1rem;">
+        <label class="pill" style="cursor: pointer; display: inline-flex; gap: 0.5rem; align-items: center;">
+          <input type="checkbox" bind:checked={rememberOnDevice} />
+          Remember on this device
+        </label>
+      </div>
+
+      <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <button class="btn primary" disabled={!keysSaved || busy} on:click={() => signInWithNsec(generatedNsec)}>
+          {busy ? 'Connecting…' : 'Use this key in Artist Hub'}
         </button>
+        <button class="btn" disabled={busy} on:click={() => (step = 'done')}>Done</button>
         <button class="btn" on:click={() => (step = 'intro')}>Back</button>
       </div>
     </div>
@@ -142,8 +193,7 @@
       <div class="step-icon">✅</div>
       <h3 class="step-title">You're Ready</h3>
       <p class="muted step-desc">
-        Import your nsec into a signer extension, then click "Connect" in the header to start publishing,
-        messaging, and zapping on Bitcoin for the Arts.
+        You can use a signer extension (recommended) or an in-app key to start publishing, messaging, and zapping on Bitcoin for the Arts.
       </p>
       <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
         <button class="btn primary" on:click={onClose}>Start Exploring</button>

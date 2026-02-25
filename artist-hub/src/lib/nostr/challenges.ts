@@ -1,8 +1,16 @@
 import { nanoid } from 'nanoid';
 import { nip19 } from 'nostr-tools';
+import { get } from 'svelte/store';
 import { NOSTR_KINDS } from '$lib/nostr/constants';
 import { addressFor, getDTag, safeJsonParse } from '$lib/nostr/helpers';
 import { publishSignedEvent, signWithNip07 } from '$lib/nostr/pool';
+import { pubkey as myPubkey } from '$lib/stores/auth';
+
+function requirePubkey(): string {
+  const pk = get(myPubkey);
+  if (!pk) throw new Error('Connect a signer (or create an in-app key) first.');
+  return pk;
+}
 
 export type ZapChallengeContent = {
   id: string; // also `d` tag
@@ -71,7 +79,7 @@ export function parseZapChallengeEvent(ev: {
 }
 
 export async function publishZapChallenge(input: Omit<ZapChallengeContent, 'id'> & { id?: string }): Promise<string> {
-  const pubkey = await window.nostr!.getPublicKey();
+  const pubkey = requirePubkey();
   const id = (input.id || `challenge-${nanoid(10)}`).trim();
   if (!id) throw new Error('Missing challenge id');
   if (!input.title.trim()) throw new Error('Title is required');

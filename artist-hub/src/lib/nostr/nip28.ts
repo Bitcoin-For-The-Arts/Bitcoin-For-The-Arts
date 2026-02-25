@@ -1,4 +1,12 @@
 import { signWithNip07, publishSignedEvent } from '$lib/nostr/pool';
+import { get } from 'svelte/store';
+import { pubkey as myPubkey } from '$lib/stores/auth';
+
+function requirePubkey(): string {
+  const pk = get(myPubkey);
+  if (!pk) throw new Error('Connect a signer (or create an in-app key) first.');
+  return pk;
+}
 
 export async function publishChannelMessage(opts: {
   channelId: string;
@@ -10,7 +18,7 @@ export async function publishChannelMessage(opts: {
   const content = opts.content.trim();
   if (!content) throw new Error('Message is empty');
 
-  const pubkey = await window.nostr!.getPublicKey();
+  const pubkey = requirePubkey();
   const tags: string[][] = [['e', channelId, '', 'root']];
   if (opts.replyTo) tags.push(['e', opts.replyTo, '', 'reply']);
 

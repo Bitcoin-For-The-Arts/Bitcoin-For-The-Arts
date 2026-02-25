@@ -5,25 +5,26 @@
   import ProfileHoverTooltip from '$lib/components/ProfileHoverTooltip.svelte';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
+  import { get } from 'svelte/store';
   import { ensureNdk } from '$lib/stores/ndk';
   import { startFollowingSync } from '$lib/stores/follows';
-
-  let showOnboarding = false;
+  import { localNsec } from '$lib/stores/local-signer';
+  import { onboardingOpen, openOnboarding, closeOnboarding } from '$lib/stores/onboarding';
 
   onMount(() => {
     void ensureNdk();
     startFollowingSync();
 
-    if (browser && !window.nostr?.getPublicKey) {
+    if (browser && !window.nostr?.getPublicKey && !get(localNsec)) {
       const dismissed = sessionStorage.getItem('bfta:onboarding-dismissed');
       if (!dismissed) {
-        showOnboarding = true;
+        openOnboarding();
       }
     }
   });
 
   function dismissOnboarding() {
-    showOnboarding = false;
+    closeOnboarding();
     if (browser) sessionStorage.setItem('bfta:onboarding-dismissed', '1');
   }
 </script>
@@ -40,13 +41,11 @@
     <div class="muted footer-text">
       Built on Nostr + Lightning. No server-side storage: profiles, listings, comments, and messages are signed events on public relays.
       Your keys, your identity.
-      <br />
-      Bitcoin-only: no ordinals, no NFTs.
     </div>
   </div>
 </footer>
 
-<OnboardingModal open={showOnboarding} onClose={dismissOnboarding} />
+<OnboardingModal open={$onboardingOpen} onClose={dismissOnboarding} />
 
 <ProfileHoverTooltip />
 

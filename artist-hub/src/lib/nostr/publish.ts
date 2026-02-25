@@ -1,11 +1,20 @@
 import { nanoid } from 'nanoid';
-import { nip19 } from 'nostr-tools';
+import { nip04, nip19 } from 'nostr-tools';
+import { get } from 'svelte/store';
 import { NOSTR_KINDS } from '$lib/nostr/constants';
 import type { Nip15ProductContent, Nip15StallContent, Nip99Classified } from '$lib/nostr/types';
 import { publishSignedEvent, signWithNip07 } from '$lib/nostr/pool';
+import { pubkey as myPubkey } from '$lib/stores/auth';
+import { getLocalSecretKey } from '$lib/stores/local-signer';
+
+function requirePubkey(): string {
+  const pk = get(myPubkey);
+  if (!pk) throw new Error('Connect a signer (or create an in-app key) first.');
+  return pk;
+}
 
 export async function publishNote(opts: { content: string; tags?: string[] }): Promise<string> {
-  const pubkey = await window.nostr!.getPublicKey();
+  const pubkey = requirePubkey();
   const content = (opts.content || '').trim();
   if (!content) throw new Error('Post content is empty.');
 
@@ -36,7 +45,7 @@ export async function publishRepost(original: {
   tags: string[][];
   sig?: string;
 }): Promise<string> {
-  const pubkey = await window.nostr!.getPublicKey();
+  const pubkey = requirePubkey();
   if (!original?.id || !original?.pubkey) throw new Error('Missing original event.');
 
   const tags: string[][] = [
@@ -57,7 +66,7 @@ export async function publishRepost(original: {
 }
 
 export async function publishQuoteRepost(opts: { eventId: string; eventPubkey: string; quote: string }): Promise<string> {
-  const pubkey = await window.nostr!.getPublicKey();
+  const pubkey = requirePubkey();
   const quote = (opts.quote || '').trim();
   if (!opts.eventId || !opts.eventPubkey) throw new Error('Missing quoted event.');
   if (!quote) throw new Error('Quote is empty.');
@@ -80,7 +89,7 @@ export async function publishQuoteRepost(opts: { eventId: string; eventPubkey: s
 }
 
 export async function publishEdit(opts: { originalEventId: string; content: string }): Promise<string> {
-  const pubkey = await window.nostr!.getPublicKey();
+  const pubkey = requirePubkey();
   const content = (opts.content || '').trim();
   if (!content) throw new Error('Edited content is empty.');
   if (!opts.originalEventId) throw new Error('Missing original event id.');
@@ -103,7 +112,7 @@ export async function publishEdit(opts: { originalEventId: string; content: stri
 }
 
 export async function publishNip15Stall(stall: Nip15StallContent): Promise<string> {
-  const pubkey = await window.nostr!.getPublicKey();
+  const pubkey = requirePubkey();
   const unsigned = {
     kind: NOSTR_KINDS.nip15_stall,
     created_at: Math.floor(Date.now() / 1000),
@@ -117,7 +126,7 @@ export async function publishNip15Stall(stall: Nip15StallContent): Promise<strin
 }
 
 export async function publishNip15Product(product: Nip15ProductContent): Promise<string> {
-  const pubkey = await window.nostr!.getPublicKey();
+  const pubkey = requirePubkey();
 
   const tags: string[][] = [['d', product.id]];
   for (const t of product.tags ?? []) tags.push(['t', t.replace(/^#/, '')]);
@@ -137,7 +146,7 @@ export async function publishNip15Product(product: Nip15ProductContent): Promise
 }
 
 export async function publishNip99Classified(listing: Nip99Classified): Promise<string> {
-  const pubkey = await window.nostr!.getPublicKey();
+  const pubkey = requirePubkey();
 
   const d = nanoid();
   const tags: string[][] = [
@@ -175,7 +184,7 @@ export async function publishComment(opts: {
   content: string;
   tags?: string[];
 }): Promise<string> {
-  const pubkey = await window.nostr!.getPublicKey();
+  const pubkey = requirePubkey();
 
   const content = (opts.content || '').trim();
   if (!content) throw new Error('Comment is empty.');
@@ -200,11 +209,17 @@ export async function publishComment(opts: {
 }
 
 export async function publishDm(toPubkey: string, plaintext: string): Promise<string> {
-  const pubkey = await window.nostr!.getPublicKey();
-  if (!window.nostr?.nip04?.encrypt) {
-    throw new Error('Your signer does not support NIP-04 encryption for DMs.');
+  const pubkey = requirePubkey();
+
+  let content = '';
+  if (window.nostr?.nip04?.encrypt) {
+    content = await window.nostr.nip04.encrypt(toPubkey, plaintext);
+  } else {
+    const sk = getLocalSecretKey();
+    if (!sk) throw new Error('No NIP-04 encryption available. Install Alby/nos2x or use an in-app key.');
+    content = await nip04.encrypt(sk, toPubkey, plaintext);
   }
-  const content = await window.nostr.nip04.encrypt(toPubkey, plaintext);
+
   const unsigned = {
     kind: NOSTR_KINDS.dm,
     created_at: Math.floor(Date.now() / 1000),
@@ -224,7 +239,7 @@ export async function publishCuratedSet(opts: {
   pubkeys?: string[];
   addresses?: string[];
 }): Promise<string> {
-  const pubkey = await window.nostr!.getPublicKey();
+  const pubkey = requirePubkey();
 
   const tags: string[][] = [
     ['d', opts.d],

@@ -1,7 +1,15 @@
 import { nanoid } from 'nanoid';
+import { get } from 'svelte/store';
 import { publishSignedEvent, signWithNip07 } from '$lib/nostr/pool';
 import { NOSTR_KINDS } from '$lib/nostr/constants';
 import { getAllTagValues, getFirstTagValue, safeJsonParse } from '$lib/nostr/helpers';
+import { pubkey as myPubkey } from '$lib/stores/auth';
+
+function requirePubkey(): string {
+  const pk = get(myPubkey);
+  if (!pk) throw new Error('Connect a signer (or create an in-app key) first.');
+  return pk;
+}
 
 export type HubEvent = {
   eventId: string;
@@ -67,7 +75,7 @@ export async function publishHubEvent(input: {
   location?: string;
   url?: string;
 }): Promise<string> {
-  const pubkey = await window.nostr!.getPublicKey();
+  const pubkey = requirePubkey();
   const d = nanoid();
 
   const tags: string[][] = [
