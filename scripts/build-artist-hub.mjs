@@ -53,7 +53,16 @@ console.log('[artist-hub] Installing dependencies…');
 run(exists(lock) ? `${npmCmd} ci` : `${npmCmd} install`, hubDir);
 
 console.log('[artist-hub] Building static bundle…');
-run(`${npmCmd} run build`, hubDir, { BASE_PATH: '/artist-hub' });
+// Bridge common hosting env var naming conventions into the SvelteKit bundle.
+// The hub reads PUBLIC_* variables at build time.
+const bridgedEnv = {
+  BASE_PATH: '/artist-hub',
+  PUBLIC_BFTA_ADMIN_NPUB:
+    process.env.PUBLIC_BFTA_ADMIN_NPUB || process.env.NEXT_PUBLIC_BFTA_ADMIN_NPUB || '',
+  PUBLIC_BFTA_RELAYS:
+    process.env.PUBLIC_BFTA_RELAYS || process.env.NEXT_PUBLIC_BFTA_RELAYS || '',
+};
+run(`${npmCmd} run build`, hubDir, bridgedEnv);
 
 if (!exists(buildDir)) {
   console.error('[artist-hub] Build output not found at artist-hub/build');
