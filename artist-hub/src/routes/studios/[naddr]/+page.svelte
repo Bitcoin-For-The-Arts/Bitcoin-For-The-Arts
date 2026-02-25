@@ -154,6 +154,15 @@
             <button class="card item" on:click={() => (selectedItem = item)} style="padding: 0; overflow:hidden; text-align:left;">
               {#if item.type === 'image'}
                 <img src={item.url} alt="" loading="lazy" style="width:100%; height:170px; object-fit:cover; display:block;" />
+              {:else if item.type === 'video'}
+                <!-- svelte-ignore a11y_media_has_caption -->
+                <video
+                  src={item.url}
+                  controls
+                  playsinline
+                  preload="metadata"
+                  style="width:100%; height:170px; object-fit:cover; display:block;"
+                ></video>
               {:else}
                 <div style="padding: 0.85rem 0.95rem;">
                   <div style="font-weight: 900;">{item.title || (item.type === 'video' ? 'Video' : 'Link')}</div>
@@ -234,6 +243,17 @@
         {#if selectedItem.type === 'image'}
           <div style="margin-top: 0.85rem;">
             <img src={selectedItem.url} alt="" style="width:100%; border-radius: 14px; border:1px solid var(--border);" />
+          </div>
+        {:else if selectedItem.type === 'video'}
+          <div style="margin-top: 0.85rem;">
+            <!-- svelte-ignore a11y_media_has_caption -->
+            <video
+              src={selectedItem.url}
+              controls
+              playsinline
+              preload="metadata"
+              style="width:100%; border-radius: 14px; border:1px solid var(--border); background: rgba(0,0,0,0.25);"
+            ></video>
           </div>
         {/if}
       </div>
