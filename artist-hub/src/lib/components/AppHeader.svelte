@@ -27,8 +27,7 @@
   <div class="container inner">
     <div class="brand">
       <a class="logo" href={`${base}/discover`} aria-label="Artist Hub home">
-        <span class="org">Bitcoin For The Arts, Inc</span>
-        <span class="sep">•</span>
+        <img class="mark" src="/resources/logos/exports/bfta-logo-gold.svg" alt="Bitcoin for the Arts logo" />
         <span class="hub">Artist Hub</span>
       </a>
       <span class="muted status">Nostr: {$ndkStatus}</span>
@@ -80,12 +79,13 @@
     align-items: center;
     justify-content: space-between;
     padding: 0.9rem 0;
+    flex-wrap: wrap;
   }
   .brand {
     display: flex;
     align-items: baseline;
     gap: 0.75rem;
-    min-width: 180px;
+    min-width: 0;
   }
   .logo {
     display: inline-flex;
@@ -93,15 +93,16 @@
     gap: 0.6rem;
     font-weight: 800;
     letter-spacing: 0.2px;
+    min-width: 0;
   }
-  .org {
-    font-weight: 950;
-    color: var(--accent);
-    white-space: nowrap;
-  }
-  .sep {
-    color: var(--muted);
-    font-weight: 700;
+  .mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(0, 0, 0, 0.25);
+    object-fit: cover;
+    flex: 0 0 auto;
   }
   .hub {
     font-weight: 950;
@@ -116,6 +117,14 @@
     align-items: center;
     justify-content: center;
     flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar {
+    display: none;
   }
   .navlink {
     padding: 0.55rem 0.7rem;
@@ -140,7 +149,8 @@
     gap: 0.5rem;
     align-items: center;
     justify-content: flex-end;
-    min-width: 210px;
+    min-width: 0;
+    margin-left: auto;
   }
   .mono {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
