@@ -3,6 +3,7 @@
   import { npubFor } from '$lib/nostr/helpers';
   import { profileByPubkey } from '$lib/stores/profiles';
   import { profileHover } from '$lib/ui/profile-hover';
+  import { liveByHostPubkey } from '$lib/stores/live-by-host';
 
   export let pubkey: string;
 
@@ -10,6 +11,13 @@
   $: name = prof?.display_name || prof?.name || 'Artist';
   $: about = (prof?.about || '').trim();
   $: npub = npubFor(pubkey);
+  $: live = $liveByHostPubkey[pubkey];
+
+  function openLive(url: string, e: MouseEvent | KeyboardEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
 </script>
 
 <a class="card link" href={`${base}/profile/${npub}`} use:profileHover={pubkey}>
@@ -21,7 +29,21 @@
         <div class="avatar placeholder"></div>
       {/if}
       <div class="who">
-        <div class="name">{name}</div>
+        <div class="name">
+          {name}
+          {#if live}
+            <span
+              class="live"
+              role="link"
+              tabindex="0"
+              title="Live now"
+              on:click={(e) => openLive(live.watchUrl, e)}
+              on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && openLive(live.watchUrl, e)}
+            >
+              LIVE
+            </span>
+          {/if}
+        </div>
         <div class="muted mono">{npub.slice(0, 14)}…</div>
       </div>
     </div>
@@ -61,6 +83,25 @@
   }
   .name {
     font-weight: 850;
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+  .live {
+    font-size: 0.7rem;
+    font-weight: 950;
+    letter-spacing: 0.6px;
+    padding: 0.16rem 0.45rem;
+    border-radius: 999px;
+    background: rgba(239, 68, 68, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: white;
+    flex: 0 0 auto;
+    text-decoration: none;
+  }
+  .live:hover {
+    text-decoration: none;
+    opacity: 0.92;
   }
   .mono {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',

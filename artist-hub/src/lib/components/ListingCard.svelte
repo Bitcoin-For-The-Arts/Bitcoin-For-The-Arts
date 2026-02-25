@@ -5,6 +5,7 @@
   import { npubFor } from '$lib/nostr/helpers';
   import { detectMediaType } from '$lib/ui/media';
   import { profileHover } from '$lib/ui/profile-hover';
+  import { liveByHostPubkey } from '$lib/stores/live-by-host';
 
   export let listing: Listing;
 
@@ -13,6 +14,13 @@
   $: img = listing.images?.[0];
   $: thumbType = img ? detectMediaType(img) : 'link';
   $: price = listing.priceSats ? `${listing.priceSats.toLocaleString()} sats` : undefined;
+  $: live = $liveByHostPubkey[listing.pubkey];
+
+  function openLive(url: string, e: MouseEvent | KeyboardEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
 </script>
 
 <a class="card link" href={`${base}/listing/${listing.eventId}`}>
@@ -47,7 +55,21 @@
           <img src={author.picture} alt="" class="avatar" loading="lazy" />
         {/if}
         <div class="who">
-          <div class="name">{authorName}</div>
+          <div class="name">
+            {authorName}
+            {#if live}
+              <span
+                class="live"
+                role="link"
+                tabindex="0"
+                title="Live now"
+                on:click={(e) => openLive(live.watchUrl, e)}
+                on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && openLive(live.watchUrl, e)}
+              >
+                LIVE
+              </span>
+            {/if}
+          </div>
           <div class="muted npub">{npubFor(listing.pubkey).slice(0, 14)}…</div>
         </div>
       </div>
@@ -156,6 +178,25 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 220px;
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+  .live {
+    font-size: 0.7rem;
+    font-weight: 950;
+    letter-spacing: 0.6px;
+    padding: 0.16rem 0.45rem;
+    border-radius: 999px;
+    background: rgba(239, 68, 68, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: white;
+    flex: 0 0 auto;
+    text-decoration: none;
+  }
+  .live:hover {
+    text-decoration: none;
+    opacity: 0.92;
   }
   .npub {
     font-size: 0.82rem;
