@@ -564,20 +564,6 @@
               </div>
             </div>
           </div>
-          <div class="stats">
-            <button class="pill muted pillBtn" on:click={() => openComments(p)}>
-              {st ? `${st.comments} comments` : '…'}
-            </button>
-            <button class="pill muted pillBtn" on:click={() => openReposts(p)}>
-              {st ? `${st.reposts} reposts` : '…'}
-            </button>
-            <button class="pill muted pillBtn" on:click={() => openZaps(p)}>
-              {st ? `${st.zaps} zaps` : '…'}
-            </button>
-            <button class="pill pillBtn" on:click={() => openZaps(p)}>
-              {st ? `${st.sats.toLocaleString()} sats` : '…'}
-            </button>
-          </div>
         </div>
 
         <div class="content">
@@ -608,14 +594,89 @@
           {/if}
         </div>
 
-        <div class="actions">
-          <button class="btn" on:click={() => openComments(p)}>Comment</button>
-          <button class="btn primary" on:click={() => (zapOpenFor = p)}>Zap</button>
-          <button class="btn" on:click={() => openZaps(p)}>View zaps</button>
-          <button class="btn" on:click={() => openReposts(p)}>View reposts</button>
-          <button class="btn" on:click={() => openRepostComposer({ id: p.id, pubkey: p.pubkey, label: name }, p)}>Repost / Quote</button>
+        <div class="actions" aria-label="Post actions">
+          <div class="aw" title="Comments">
+            <button class="iconBtn" on:click={() => openComments(p)} aria-label="Comment">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M8 10h8M8 14h5M6 20l-2 2V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-3 2z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+              </svg>
+            </button>
+            {#if st}
+              <button class="badgeBtn" on:click={() => openComments(p)} aria-label={`${st.comments} comments`}>
+                {st.comments}
+              </button>
+            {/if}
+          </div>
+
+          <div class="aw" title="Zaps">
+            <button class="iconBtn primary" on:click={() => (zapOpenFor = p)} aria-label="Zap">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M13 2L3 14h7l-1 8 12-14h-7l-1-6z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                ></path>
+              </svg>
+            </button>
+            {#if st}
+              <button
+                class="badgeBtn"
+                title={`${st.sats.toLocaleString()} sats`}
+                on:click={() => openZaps(p)}
+                aria-label={`${st.zaps} zaps`}
+              >
+                {st.zaps}
+              </button>
+            {/if}
+          </div>
+
+          <div class="aw" title="Reposts">
+            <button
+              class="iconBtn"
+              on:click={() => openRepostComposer({ id: p.id, pubkey: p.pubkey, label: name }, p)}
+              aria-label="Repost / quote repost"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M7 7h11l-2-2m2 2-2 2M17 17H6l2 2m-2-2 2-2"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+              </svg>
+            </button>
+            {#if st}
+              <button class="badgeBtn" on:click={() => openReposts(p)} aria-label={`${st.reposts} reposts`}>
+                {st.reposts}
+              </button>
+            {/if}
+          </div>
+
           {#if $myPubkey === p.pubkey}
-            <button class="btn" on:click={() => openEdit(p)}>Edit</button>
+            <div class="aw" title="Edit">
+              <button class="iconBtn" on:click={() => openEdit(p)} aria-label="Edit">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M4 20h4l10.5-10.5a2 2 0 0 0 0-3L16.5 4a2 2 0 0 0-3 0L3 14.5V20z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  ></path>
+                </svg>
+              </button>
+            </div>
           {/if}
         </div>
       </div>
@@ -913,21 +974,6 @@
   .small {
     font-size: 0.86rem;
   }
-  .stats {
-    display: flex;
-    gap: 0.35rem;
-    flex-wrap: wrap;
-  }
-  .pillBtn {
-    cursor: pointer;
-  }
-  button.pill {
-    border: 1px solid var(--border);
-    background: rgba(255, 255, 255, 0.05);
-  }
-  button.pill:hover {
-    background: rgba(255, 255, 255, 0.08);
-  }
 
   .content {
     margin-top: 0.75rem;
@@ -971,8 +1017,58 @@
   .actions {
     margin-top: 0.9rem;
     display: flex;
-    gap: 0.5rem;
+    gap: 0.65rem;
     flex-wrap: wrap;
+    align-items: center;
+  }
+  .aw {
+    position: relative;
+    width: 42px;
+    height: 42px;
+  }
+  .iconBtn {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.06);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  .iconBtn:hover {
+    background: rgba(255, 255, 255, 0.09);
+  }
+  .iconBtn.primary {
+    border-color: rgba(246, 196, 83, 0.35);
+    background: rgba(246, 196, 83, 0.14);
+  }
+  .iconBtn.primary:hover {
+    background: rgba(246, 196, 83, 0.18);
+  }
+  .iconBtn svg {
+    width: 20px;
+    height: 20px;
+    opacity: 0.95;
+  }
+  .badgeBtn {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(0, 0, 0, 0.78);
+    color: var(--text);
+    font-size: 0.75rem;
+    font-weight: 900;
+    line-height: 18px;
+    cursor: pointer;
+  }
+  .badgeBtn:hover {
+    background: rgba(0, 0, 0, 0.9);
   }
   .mono {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
