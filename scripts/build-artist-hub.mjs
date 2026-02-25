@@ -7,6 +7,7 @@ const hubDir = path.join(root, 'artist-hub');
 const hubPkg = path.join(hubDir, 'package.json');
 const buildDir = path.join(hubDir, 'build');
 const outDir = path.join(root, 'public', 'artist-hub');
+const defaultHubRepo = 'https://github.com/Bitcoin-For-The-Arts/Artist-Hub.git';
 
 function exists(p) {
   try {
@@ -41,10 +42,27 @@ function run(cmd, cwd, env) {
   });
 }
 
-if (!exists(hubPkg)) {
-  console.log('[artist-hub] Skipping (no artist-hub/package.json found).');
-  process.exit(0);
+function ensureHubSource() {
+  if (exists(hubPkg)) return;
+
+  const repo = process.env.ARTIST_HUB_GIT_URL || defaultHubRepo;
+  const ref = process.env.ARTIST_HUB_REF || 'main';
+
+  console.log(`[artist-hub] artist-hub/ not found, cloning from ${repo} (${ref})…`);
+  fs.rmSync(hubDir, { recursive: true, force: true });
+  fs.mkdirSync(hubDir, { recursive: true });
+
+  // Clone then checkout ref (ref can be a branch, tag, or commit SHA).
+  run(`git clone ${repo} ${hubDir}`, root);
+  run(`git checkout ${ref}`, hubDir);
+
+  if (!exists(hubPkg)) {
+    console.error('[artist-hub] package.json not found after clone/checkout.');
+    process.exit(1);
+  }
 }
+
+ensureHubSource();
 
 const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const lock = path.join(hubDir, 'package-lock.json');
