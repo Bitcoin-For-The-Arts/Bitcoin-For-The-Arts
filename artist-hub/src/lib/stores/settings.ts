@@ -1,11 +1,12 @@
 import { browser } from '$app/environment';
 import { writable } from 'svelte/store';
 import { DEFAULT_RELAYS } from '$lib/nostr/constants';
+import * as publicEnv from '$env/static/public';
 
 const RELAYS_KEY = 'bfta:artist-hub:relays';
 
 function loadRelays(): string[] {
-  const fromEnv = (import.meta.env.PUBLIC_BFTA_RELAYS || '')
+  const fromEnv = (((publicEnv as any).PUBLIC_BFTA_RELAYS as string | undefined) || '')
     .split(',')
     .map((s: string) => s.trim())
     .filter(Boolean);
@@ -36,6 +37,6 @@ if (browser) {
 }
 
 export const bftaAdminNpub = writable<string>(
-  import.meta.env.PUBLIC_BFTA_ADMIN_NPUB || ''
+  ((publicEnv as any).PUBLIC_BFTA_ADMIN_NPUB as string | undefined) || ''
 );
 
