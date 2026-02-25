@@ -27,6 +27,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # Important: don't persist GITHUB_TOKEN credentials, since we push
+          # to a different repo using a separate PAT secret.
+          persist-credentials: false
 
       - name: Configure git identity
         run: |
@@ -47,6 +50,8 @@ jobs:
             echo "Missing secret ARTIST_HUB_PUSH_TOKEN"
             exit 1
           fi
+          # actions/checkout may set an auth header for github.com; ensure we don't use it.
+          git config --unset-all http.https://github.com/.extraheader || true
           git remote add target "https://x-access-token:${PUSH_TOKEN}@github.com/${TARGET_REPO}.git"
           git push -u target hub-split:"${TARGET_BRANCH}"
 
