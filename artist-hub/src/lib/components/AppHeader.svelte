@@ -4,40 +4,48 @@
   import { connectNostr, disconnectNostr, isAuthed, npub, authError } from '$lib/stores/auth';
   import { ndkStatus } from '$lib/stores/ndk';
 
+  let mobileMenuOpen = false;
+
   const nav = [
-    { href: '/discover', label: 'Discover' },
-    { href: '/pulse', label: 'Pulse' },
-    { href: '/live', label: 'Live' },
-    { href: '/studios', label: 'Studios' },
-    { href: '/events', label: 'Events' },
-    { href: '/challenges', label: 'Challenges' },
-    { href: '/featured', label: 'Featured' },
-    { href: '/create', label: 'Create' },
-    { href: '/messages', label: 'Messages' },
-    { href: '/me', label: 'Me' },
+    { href: '/discover', label: 'Discover', icon: '🔍' },
+    { href: '/pulse', label: 'Pulse', icon: '🫀' },
+    { href: '/live', label: 'Live', icon: '📡' },
+    { href: '/studios', label: 'Studios', icon: '🏛️' },
+    { href: '/events', label: 'Events', icon: '📅' },
+    { href: '/challenges', label: 'Challenges', icon: '🏆' },
+    { href: '/artstack', label: 'ArtStack', icon: '💬' },
+    { href: '/featured', label: 'Featured', icon: '⭐' },
+    { href: '/create', label: 'Create', icon: '✨' },
+    { href: '/messages', label: 'Messages', icon: '✉️' },
+    { href: '/me', label: 'Me', icon: '👤' },
   ];
 
   function isActive(pathname: string, href: string): boolean {
     const full = `${base}${href}`;
     return pathname === full || pathname.startsWith(`${full}/`);
   }
+
+  function toggleMobile() {
+    mobileMenuOpen = !mobileMenuOpen;
+  }
 </script>
 
 <header class="header">
   <div class="container inner">
     <div class="brand">
-      <a class="logo" href={`${base}/discover`} aria-label="Artist Hub home">
-        <img class="mark" src="/resources/logos/exports/bfta-logo-gold.svg" alt="Bitcoin for the Arts logo" />
-        <span class="hub">Artist Hub</span>
+      <a class="logo" href={`${base}/`} aria-label="Bitcoin for the Arts — Artist Hub">
+        <img class="logo-img" src={`${base}/bfta-logo.png`} alt="Bitcoin for the Arts, Inc." width="44" height="44" />
+        <span class="logo-title">Artist Hub</span>
       </a>
-      <span class="muted status">Nostr: {$ndkStatus}</span>
+      <span class="muted status">
+        <span class="status-dot" class:connected={$ndkStatus === 'connected'}></span>
+        {$ndkStatus}
+      </span>
     </div>
 
     <nav class="nav">
       {#each nav as item}
-        <a
-          class={`navlink ${isActive($page.url.pathname, item.href) ? 'active' : ''}`}
-          href={`${base}${item.href}`}
+        <a class={`navlink ${isActive($page.url.pathname, item.href) ? 'active' : ''}`} href={`${base}${item.href}`}
           >{item.label}</a
         >
       {/each}
@@ -50,10 +58,26 @@
         </span>
         <button class="btn" on:click={disconnectNostr}>Disconnect</button>
       {:else}
-        <button class="btn primary" on:click={() => connectNostr()}>Connect npub</button>
+        <button class="btn primary" on:click={() => connectNostr()}>Connect</button>
       {/if}
+      <button class="btn mobile-toggle" on:click={toggleMobile} aria-label="Toggle menu">
+        {mobileMenuOpen ? '✕' : '☰'}
+      </button>
     </div>
   </div>
+
+  {#if mobileMenuOpen}
+    <nav class="mobile-nav container">
+      {#each nav as item}
+        <a
+          class={`navlink ${isActive($page.url.pathname, item.href) ? 'active' : ''}`}
+          href={`${base}${item.href}`}
+          on:click={() => (mobileMenuOpen = false)}
+          >{item.icon} {item.label}</a
+        >
+      {/each}
+    </nav>
+  {/if}
 
   {#if $authError}
     <div class="container" style="margin-top: 0.6rem;">
@@ -70,7 +94,7 @@
     top: 0;
     z-index: 50;
     backdrop-filter: blur(14px);
-    background: rgba(11, 11, 15, 0.7);
+    background: rgba(11, 11, 15, 0.82);
     border-bottom: 1px solid var(--border);
   }
   .inner {
@@ -78,61 +102,77 @@
     gap: 1rem;
     align-items: center;
     justify-content: space-between;
-    padding: 0.9rem 0;
-    flex-wrap: wrap;
+    padding: 0.7rem 0;
   }
   .brand {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 0.75rem;
     min-width: 0;
+    flex-shrink: 0;
   }
   .logo {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
-    font-weight: 800;
-    letter-spacing: 0.2px;
-    min-width: 0;
+    text-decoration: none;
   }
-  .mark {
-    width: 34px;
-    height: 34px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    background: rgba(0, 0, 0, 0.25);
+  .logo:hover {
+    text-decoration: none;
+    opacity: 0.92;
+  }
+  .logo-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     object-fit: cover;
-    flex: 0 0 auto;
+    flex-shrink: 0;
   }
-  .hub {
-    font-weight: 950;
+  .logo-title {
+    font-size: 1.12rem;
+    font-weight: 900;
+    color: var(--text);
     white-space: nowrap;
+    letter-spacing: -0.2px;
+    text-transform: uppercase;
   }
   .status {
-    font-size: 0.85rem;
+    font-size: 0.78rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    white-space: nowrap;
+  }
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    flex-shrink: 0;
+  }
+  .status-dot.connected {
+    background: #4ade80;
+    box-shadow: 0 0 6px rgba(74, 222, 128, 0.5);
   }
   .nav {
     display: none;
-    gap: 0.4rem;
+    gap: 0.25rem;
     align-items: center;
     justify-content: center;
     flex: 1;
-    min-width: 0;
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .nav::-webkit-scrollbar {
-    display: none;
   }
   .navlink {
-    padding: 0.55rem 0.7rem;
+    padding: 0.5rem 0.65rem;
     border-radius: 10px;
     border: 1px solid transparent;
     color: var(--muted);
     font-weight: 650;
-    font-size: 0.92rem;
+    font-size: 0.88rem;
+    transition:
+      background 0.15s,
+      color 0.15s;
+    white-space: nowrap;
   }
   .navlink:hover {
     text-decoration: none;
@@ -140,26 +180,53 @@
     color: var(--text);
   }
   .navlink.active {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: var(--border);
-    color: var(--text);
+    background: rgba(246, 196, 83, 0.1);
+    border-color: rgba(246, 196, 83, 0.25);
+    color: var(--accent);
   }
   .auth {
     display: flex;
     gap: 0.5rem;
     align-items: center;
     justify-content: flex-end;
-    min-width: 0;
-    margin-left: auto;
+    flex-shrink: 0;
   }
   .mono {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
-      'Courier New', monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     font-size: 0.84rem;
   }
-  @media (min-width: 900px) {
+  .mobile-toggle {
+    display: flex;
+    font-size: 1.15rem;
+    padding: 0.4rem 0.55rem;
+  }
+  .mobile-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    padding-bottom: 0.75rem;
+  }
+  @media (min-width: 960px) {
     .nav {
       display: flex;
+    }
+    .mobile-toggle {
+      display: none;
+    }
+    .mobile-nav {
+      display: none;
+    }
+  }
+  @media (max-width: 600px) {
+    .logo-title {
+      font-size: 0.92rem;
+    }
+    .logo-img {
+      width: 36px;
+      height: 36px;
+    }
+    .mono {
+      display: none;
     }
   }
 </style>
