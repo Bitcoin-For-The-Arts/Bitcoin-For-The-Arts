@@ -2,7 +2,7 @@ import { browser } from '$app/environment';
 import { derived, get, writable } from 'svelte/store';
 import { nip19 } from 'nostr-tools';
 import { ensureNdk } from '$lib/stores/ndk';
-import { NDKEvent } from '@nostr-dev-kit/ndk';
+import { signWithNip07, publishSignedEvent } from '$lib/nostr/pool';
 
 export type ArtistProfile = {
   name?: string;
@@ -46,17 +46,21 @@ export async function connectNostr(): Promise<void> {
     return;
   }
 
-  const ndk = await ensureNdk({ withSigner: true });
-  const pk = await window.nostr.getPublicKey();
-  pubkey.set(pk);
-
-  // Fetch current metadata (kind:0) from relays
   try {
-    const user = ndk.getUser({ pubkey: pk });
-    await user.fetchProfile();
-    profile.set((user.profile as unknown as ArtistProfile) || null);
-  } catch {
-    // non-fatal
+    const pk = await window.nostr.getPublicKey();
+    pubkey.set(pk);
+
+    // Fetch current metadata (kind:0) from relays (non-fatal)
+    try {
+      const ndk = await ensureNdk();
+      const user = ndk.getUser({ pubkey: pk });
+      await user.fetchProfile();
+      profile.set((user.profile as unknown as ArtistProfile) || null);
+    } catch {
+      // ignore
+    }
+  } catch (e) {
+    authError.set(e instanceof Error ? e.message : String(e));
   }
 }
 
@@ -66,20 +70,28 @@ export function disconnectNostr(): void {
   authError.set(null);
 }
 
-export async function publishProfile(next: ArtistProfile): Promise<NDKEvent | null> {
+export async function publishProfile(next: ArtistProfile): Promise<string | null> {
   const pk = get(pubkey);
   if (!pk) {
     authError.set('Connect your Nostr signer first.');
     return null;
   }
 
-  const ndk = await ensureNdk({ withSigner: true });
-  // Use NDKEvent directly to avoid NDKUser mutations
-  const ev = new NDKEvent(ndk);
-  ev.kind = 0;
-  ev.content = JSON.stringify(next);
-  await ev.publish();
-  profile.set(next);
-  return ev;
+  try {
+    const unsigned = {
+      kind: 0,
+      created_at: Math.floor(Date.now() / 1000),
+      content: JSON.stringify(next),
+      tags: [],
+      pubkey: pk,
+    };
+    const signed = await signWithNip07(unsigned as any);
+    await publishSignedEvent(signed as any);
+    profile.set(next);
+    return signed.id;
+  } catch (e) {
+    authError.set(e instanceof Error ? e.message : String(e));
+    return null;
+  }
 }
 
