@@ -82,8 +82,8 @@
             : { enabled: false },
         };
 
-        const ev = await publishNip15Product(prod);
-        await goto(`${base}/listing/${ev.id}`);
+        const id = await publishNip15Product(prod);
+        await goto(`${base}/listing/${id}`);
         return;
       }
 
@@ -97,8 +97,8 @@
         status,
         price: priceSats != null ? { amount: String(Math.max(0, Number(priceSats))) , currency: 'sat' } : undefined,
       };
-      const ev = await publishNip99Classified(classified);
-      await goto(`${base}/listing/${ev.id}`);
+      const id = await publishNip99Classified(classified);
+      await goto(`${base}/listing/${id}`);
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
     } finally {

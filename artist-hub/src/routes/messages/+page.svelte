@@ -50,7 +50,7 @@
       return;
     }
 
-    const ndk = await ensureNdk({ withSigner: true });
+    const ndk = await ensureNdk();
     const me = $pubkey;
 
     const sub = ndk.subscribe(
