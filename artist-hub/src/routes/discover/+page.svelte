@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import ListingCard from '$lib/components/ListingCard.svelte';
+  import ActivityFeed from '$lib/components/ActivityFeed.svelte';
   import {
     discoveryCategory,
     discoveryLoading,
@@ -47,6 +48,8 @@
   onMount(() => {
     void startDiscovery();
   });
+
+  $: activityTags = $discoveryTags.length ? $discoveryTags : ['BitcoinArt', 'NostrArt', 'BFTA'];
 
   let tagInput = '';
   function addTag() {
@@ -123,6 +126,10 @@
     <div style="display:flex; align-items:center; justify-content:space-between; gap: 1rem;">
       <div style="font-weight: 850;">Results</div>
       <div class="muted">{#if $discoveryLoading}Loading relays…{/if}</div>
+    </div>
+
+    <div style="margin-top: 0.85rem;">
+      <ActivityFeed title="Live Activity" tags={activityTags} limit={25} />
     </div>
 
     <div class="muted" style="margin-top:0.35rem;">

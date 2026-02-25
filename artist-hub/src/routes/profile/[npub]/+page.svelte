@@ -10,6 +10,7 @@
   import { eventToListing } from '$lib/nostr/parse';
   import DMComposer from '$lib/components/DMComposer.svelte';
   import ZapComposer from '$lib/components/ZapComposer.svelte';
+  import ActivityFeed from '$lib/components/ActivityFeed.svelte';
 
   let pubkey = '';
   let error: string | null = null;
@@ -145,6 +146,14 @@
             <div class="muted">No listings found on the connected relays yet.</div>
           </div>
         {/if}
+      </div>
+
+      <div style="margin-top: 1rem;">
+        <ActivityFeed
+          title="Recent activity (notes & zaps)"
+          tags={(hashtags && hashtags.length ? hashtags : ['BitcoinArt', 'NostrArt']).map((t) => t.replace(/^#/, ''))}
+          limit={20}
+        />
       </div>
     </div>
   </div>
