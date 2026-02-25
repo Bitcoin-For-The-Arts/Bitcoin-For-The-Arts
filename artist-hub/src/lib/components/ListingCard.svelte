@@ -4,6 +4,7 @@
   import { profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
   import { detectMediaType } from '$lib/ui/media';
+  import { profileHover } from '$lib/ui/profile-hover';
 
   export let listing: Listing;
 
@@ -41,7 +42,7 @@
     {/if}
 
     <div class="meta">
-      <div class="author">
+      <div class="author" use:profileHover={listing.pubkey}>
         {#if author?.picture}
           <img src={author.picture} alt="" class="avatar" loading="lazy" />
         {/if}

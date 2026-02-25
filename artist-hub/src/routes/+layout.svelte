@@ -3,6 +3,7 @@
   import AppHeader from '$lib/components/AppHeader.svelte';
   import { onMount } from 'svelte';
   import { ensureNdk } from '$lib/stores/ndk';
+  import ProfileHoverTooltip from '$lib/components/ProfileHoverTooltip.svelte';
 
   onMount(() => {
     void ensureNdk();
@@ -20,4 +21,6 @@
   <br />
   Bitcoin-only: no ordinals, no NFTs.
 </footer>
+
+<ProfileHoverTooltip />
 

@@ -2,6 +2,7 @@
   import { base } from '$app/paths';
   import { npubFor } from '$lib/nostr/helpers';
   import { profileByPubkey } from '$lib/stores/profiles';
+  import { profileHover } from '$lib/ui/profile-hover';
 
   export let pubkey: string;
 
@@ -11,7 +12,7 @@
   $: npub = npubFor(pubkey);
 </script>
 
-<a class="card link" href={`${base}/profile/${npub}`}>
+<a class="card link" href={`${base}/profile/${npub}`} use:profileHover={pubkey}>
   <div class="inner">
     <div class="left">
       {#if prof?.picture}

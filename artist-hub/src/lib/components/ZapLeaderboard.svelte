@@ -5,6 +5,7 @@
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
   import type { ZapChallenge } from '$lib/nostr/challenges';
+  import { profileHover } from '$lib/ui/profile-hover';
 
   export let challenge: ZapChallenge;
 
@@ -132,7 +133,7 @@
     {#each rows as r, idx (r.pubkey)}
       <div class="row">
         <div class="rank">#{idx + 1}</div>
-        <div class="who">
+        <div class="who" use:profileHover={r.pubkey}>
           {#if $profileByPubkey[r.pubkey]?.picture}
             <img src={$profileByPubkey[r.pubkey].picture} alt="" class="avatar" />
           {/if}

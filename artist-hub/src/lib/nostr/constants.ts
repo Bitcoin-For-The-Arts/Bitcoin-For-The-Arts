@@ -10,6 +10,7 @@ export const DEFAULT_RELAYS = [
 export const NOSTR_KINDS = {
   metadata: 0,
   note: 1,
+  contacts: 3,
   repost: 6,
   dm: 4,
 
@@ -27,6 +28,9 @@ export const NOSTR_KINDS = {
 
   nip57_zap_request: 9734,
   nip57_zap_receipt: 9735,
+
+  nip58_badge_award: 8,
+  nip58_badge_definition: 30009,
 
   // BFTA Artist Hub extensions (client-side only; published to public relays)
   // Use parameterized replaceable events (NIP-33 style) with a `d` tag.

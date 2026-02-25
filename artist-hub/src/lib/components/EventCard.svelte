@@ -2,6 +2,7 @@
   import type { HubEvent } from '$lib/nostr/events';
   import { profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
+  import { profileHover } from '$lib/ui/profile-hover';
 
   export let ev: HubEvent;
 
@@ -27,8 +28,8 @@
     <div class="meta">
       {#if startText}<span class="pill">{startText}</span>{/if}
       {#if ev.location}<span class="pill muted">{ev.location}</span>{/if}
-      <span class="pill muted">{authorName}</span>
-      <span class="pill muted">{npubFor(ev.pubkey).slice(0, 12)}…</span>
+      <span class="pill muted" use:profileHover={ev.pubkey}>{authorName}</span>
+      <span class="pill muted" use:profileHover={ev.pubkey}>{npubFor(ev.pubkey).slice(0, 12)}…</span>
     </div>
     <div class="row">
       {#if ev.url}

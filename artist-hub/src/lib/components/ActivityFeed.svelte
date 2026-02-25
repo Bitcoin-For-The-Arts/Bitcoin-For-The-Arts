@@ -5,6 +5,7 @@
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
   import { detectMediaType, extractUrls } from '$lib/ui/media';
+  import { profileHover } from '$lib/ui/profile-hover';
 
   type Item =
     | { kind: 'note'; id: string; pubkey: string; createdAt: number; content: string; urls: string[] }
@@ -156,10 +157,10 @@
       <div class="row">
         <div class="who">
           {#if $profileByPubkey[it.pubkey]?.picture}
-            <img src={$profileByPubkey[it.pubkey].picture} alt="" class="avatar" />
+            <img src={$profileByPubkey[it.pubkey].picture} alt="" class="avatar" use:profileHover={it.pubkey} />
           {/if}
           <div class="meta">
-            <a class="name" href={`${base}/profile/${npubFor(it.pubkey)}`}>
+            <a class="name" href={`${base}/profile/${npubFor(it.pubkey)}`} use:profileHover={it.pubkey}>
               {$profileByPubkey[it.pubkey]?.display_name ||
                 $profileByPubkey[it.pubkey]?.name ||
                 npubFor(it.pubkey).slice(0, 12) + '…'}

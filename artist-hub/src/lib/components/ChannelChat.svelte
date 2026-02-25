@@ -7,6 +7,7 @@
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
   import { detectMediaType, extractUrls } from '$lib/ui/media';
+  import { profileHover } from '$lib/ui/profile-hover';
 
   export let channelId: string;
   export let compact = false;
@@ -94,10 +95,10 @@
       <div class="msg">
         <div class="who">
           {#if $profileByPubkey[m.pubkey]?.picture}
-            <img src={$profileByPubkey[m.pubkey].picture} alt="" class="avatar" />
+            <img src={$profileByPubkey[m.pubkey].picture} alt="" class="avatar" use:profileHover={m.pubkey} />
           {/if}
           <div class="meta">
-            <a class="name" href={`${base}/profile/${npubFor(m.pubkey)}`}>
+            <a class="name" href={`${base}/profile/${npubFor(m.pubkey)}`} use:profileHover={m.pubkey}>
               {$profileByPubkey[m.pubkey]?.display_name ||
                 $profileByPubkey[m.pubkey]?.name ||
                 npubFor(m.pubkey).slice(0, 12) + '…'}

@@ -2,6 +2,7 @@
   import { base } from '$app/paths';
   import type { Studio } from '$lib/nostr/studios';
   import { profileByPubkey } from '$lib/stores/profiles';
+  import { profileHover } from '$lib/ui/profile-hover';
 
   export let studio: Studio;
 
@@ -30,7 +31,7 @@
       <div class="muted about">{studio.content.about}</div>
     {/if}
     <div class="meta">
-      <span class="pill muted">{authorName}</span>
+      <span class="pill muted" use:profileHover={studio.pubkey}>{authorName}</span>
       <span class="pill muted">{studio.content.items.length} item(s)</span>
       {#if studio.content.channelId}
         <span class="pill">Live chat</span>

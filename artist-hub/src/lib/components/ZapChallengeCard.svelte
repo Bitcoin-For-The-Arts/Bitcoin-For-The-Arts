@@ -2,6 +2,7 @@
   import { base } from '$app/paths';
   import type { ZapChallenge } from '$lib/nostr/challenges';
   import { profileByPubkey } from '$lib/stores/profiles';
+  import { profileHover } from '$lib/ui/profile-hover';
 
   export let challenge: ZapChallenge;
 
@@ -37,8 +38,8 @@
       <div class="muted about">{challenge.content.about}</div>
     {/if}
     <div class="meta">
-      <span class="pill muted">Target: {targetName}</span>
-      <span class="pill muted">Host: {hostName}</span>
+      <span class="pill muted" use:profileHover={challenge.content.targetPubkey}>Target: {targetName}</span>
+      <span class="pill muted" use:profileHover={challenge.pubkey}>Host: {hostName}</span>
       <span class="pill muted">
         {new Date(challenge.content.startsAt * 1000).toLocaleString()}
       </span>

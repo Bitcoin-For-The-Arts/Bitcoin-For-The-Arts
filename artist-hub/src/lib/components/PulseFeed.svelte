@@ -11,6 +11,7 @@
   import ZapComposer from '$lib/components/ZapComposer.svelte';
   import ZapEmojiComposer from '$lib/components/ZapEmojiComposer.svelte';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
+  import { profileHover } from '$lib/ui/profile-hover';
 
   export let tags: string[] = [];
   export let limit = 40;
@@ -553,10 +554,10 @@
         <div class="head">
           <div class="who">
             {#if prof?.picture}
-              <img src={prof.picture} alt="" class="avatar" />
+              <img src={prof.picture} alt="" class="avatar" use:profileHover={p.pubkey} />
             {/if}
             <div class="meta">
-              <div class="name">{name}</div>
+              <div class="name" use:profileHover={p.pubkey}>{name}</div>
               <div class="muted small">
                 {new Date(p.createdAt * 1000).toLocaleString()}
                 {#if st?.editedAt} • edited{/if}
@@ -657,7 +658,7 @@
           class="card"
           style={`padding: 0.85rem 1rem; ${c.replyTo ? 'border-left: 3px solid rgba(246,196,83,0.35); margin-left: 0.75rem;' : ''}`}
         >
-          <div class="muted" style="font-size: 0.88rem;">
+          <div class="muted" style="font-size: 0.88rem;" use:profileHover={c.pubkey}>
             {cName} • {new Date(c.createdAt * 1000).toLocaleString()}
           </div>
           {#if c.replyTo}
@@ -738,7 +739,7 @@
           {@const rp = $profileByPubkey[r.pubkey]}
           <div class="card" style="padding: 0.85rem 1rem;">
             <div style="display:flex; gap:0.55rem; align-items:center; justify-content:space-between;">
-              <div style="display:flex; gap:0.55rem; align-items:center; min-width:0;">
+              <div style="display:flex; gap:0.55rem; align-items:center; min-width:0;" use:profileHover={r.pubkey}>
                 {#if rp?.picture}
                   <img src={rp.picture} alt="" style="width:26px; height:26px; border-radius:10px; border:1px solid var(--border); object-fit:cover;" />
                 {/if}
@@ -765,7 +766,7 @@
             {@const rp = $profileByPubkey[r.pubkey]}
             <div class="card" style="padding: 0.85rem 1rem;">
               <div style="display:flex; gap:0.55rem; align-items:center; justify-content:space-between;">
-                <div style="display:flex; gap:0.55rem; align-items:center; min-width:0;">
+                <div style="display:flex; gap:0.55rem; align-items:center; min-width:0;" use:profileHover={r.pubkey}>
                   {#if rp?.picture}
                     <img src={rp.picture} alt="" style="width:26px; height:26px; border-radius:10px; border:1px solid var(--border); object-fit:cover;" />
                   {/if}
@@ -830,7 +831,7 @@
           {@const zp = $profileByPubkey[z.pubkey]}
           <div class="card" style="padding: 0.85rem 1rem;">
             <div style="display:flex; gap:0.55rem; align-items:center; justify-content:space-between;">
-              <div style="display:flex; gap:0.55rem; align-items:center; min-width:0;">
+              <div style="display:flex; gap:0.55rem; align-items:center; min-width:0;" use:profileHover={z.pubkey}>
                 {#if zp?.picture}
                   <img src={zp.picture} alt="" style="width:26px; height:26px; border-radius:10px; border:1px solid var(--border); object-fit:cover;" />
                 {/if}
