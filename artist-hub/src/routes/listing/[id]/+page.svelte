@@ -145,6 +145,7 @@
           {#each listing.images.slice(0, 6) as img}
             <a href={img} target="_blank" rel="noreferrer" class="card" style="overflow:hidden;">
               {#if img.toLowerCase().match(/\.(mp4|webm|mov|m4v)(\?|#|$)/)}
+                <!-- svelte-ignore a11y_media_has_caption -->
                 <video
                   src={img}
                   controls

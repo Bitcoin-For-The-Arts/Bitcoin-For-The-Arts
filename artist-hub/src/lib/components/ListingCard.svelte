@@ -18,6 +18,7 @@
   <div class="thumb">
     {#if img}
       {#if thumbType === 'video'}
+        <!-- svelte-ignore a11y_media_has_caption -->
         <video src={img} muted autoplay loop playsinline preload="metadata"></video>
       {:else}
         <img src={img} alt="" loading="lazy" />

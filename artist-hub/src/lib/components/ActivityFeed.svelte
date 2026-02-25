@@ -7,8 +7,8 @@
   import { detectMediaType, extractUrls } from '$lib/ui/media';
 
   type Item =
-    | { kind: 'note'; id: string; pubkey: string; createdAt: number; content: string }
-    | { kind: 'zap'; id: string; pubkey: string; createdAt: number; sats?: number; comment?: string };
+    | { kind: 'note'; id: string; pubkey: string; createdAt: number; content: string; urls: string[] }
+    | { kind: 'zap'; id: string; pubkey: string; createdAt: number; sats?: number; comment?: string; urls: string[] };
 
   export let title = 'Live Activity';
   export let tags: string[] = [];
@@ -20,11 +20,6 @@
   let error: string | null = null;
   let loading = false;
   let stop: (() => void) | null = null;
-
-  function urlsFor(it: Item): string[] {
-    if (it.kind === 'note') return extractUrls(it.content);
-    return it.comment ? extractUrls(it.comment) : [];
-  }
 
   function parseZap(ev: any): Item | null {
     const tags = (ev.tags as string[][]) || [];
@@ -54,6 +49,7 @@
       createdAt: ev.created_at,
       sats,
       comment,
+      urls: comment ? extractUrls(comment) : [],
     };
   }
 
@@ -66,6 +62,7 @@
       pubkey: ev.pubkey,
       createdAt: ev.created_at,
       content,
+      urls: extractUrls(content),
     };
   }
 
@@ -175,10 +172,9 @@
             <div style="line-height:1.45; white-space: pre-wrap;">{it.content}</div>
           {/if}
 
-          {@const urls = urlsFor(it)}
-          {#if urls.length}
+          {#if it.urls.length}
             <div class="media">
-              {#each urls.slice(0, 4) as u (u)}
+              {#each it.urls.slice(0, 4) as u (u)}
                 {@const t = detectMediaType(u)}
                 {#if t === 'image'}
                   <a href={u} target="_blank" rel="noreferrer" class="m">
@@ -186,6 +182,7 @@
                   </a>
                 {:else if t === 'video'}
                   <div class="m">
+                    <!-- svelte-ignore a11y_media_has_caption -->
                     <video src={u} controls playsinline preload="metadata"></video>
                   </div>
                 {:else if t === 'audio'}

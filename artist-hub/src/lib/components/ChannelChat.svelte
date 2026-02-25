@@ -56,9 +56,6 @@
 
   $: for (const m of msgs.slice(-30)) void fetchProfileFor(m.pubkey);
 
-  function urlsFor(content: string): string[] {
-    return extractUrls(content);
-  }
 </script>
 
 <div class={`card wrap ${compact ? 'compact' : ''}`}>
@@ -110,29 +107,27 @@
         </div>
         <div class="body">
           <div style="white-space: pre-wrap;">{m.content}</div>
-          {@const urls = urlsFor(m.content)}
-          {#if urls.length}
-            <div class="media">
-              {#each urls.slice(0, 3) as u (u)}
-                {@const t = detectMediaType(u)}
-                {#if t === 'image'}
-                  <a href={u} target="_blank" rel="noreferrer" class="m">
-                    <img src={u} alt="" loading="lazy" />
-                  </a>
-                {:else if t === 'video'}
-                  <div class="m">
-                    <video src={u} controls playsinline preload="metadata"></video>
-                  </div>
-                {:else if t === 'audio'}
-                  <div class="m">
-                    <audio src={u} controls preload="none"></audio>
-                  </div>
-                {:else}
-                  <a href={u} target="_blank" rel="noreferrer" class="pill muted mono link">{u}</a>
-                {/if}
-              {/each}
-            </div>
-          {/if}
+          <div class="media">
+            {#each extractUrls(m.content).slice(0, 3) as u (u)}
+              {@const t = detectMediaType(u)}
+              {#if t === 'image'}
+                <a href={u} target="_blank" rel="noreferrer" class="m">
+                  <img src={u} alt="" loading="lazy" />
+                </a>
+              {:else if t === 'video'}
+                <div class="m">
+                  <!-- svelte-ignore a11y_media_has_caption -->
+                  <video src={u} controls playsinline preload="metadata"></video>
+                </div>
+              {:else if t === 'audio'}
+                <div class="m">
+                  <audio src={u} controls preload="none"></audio>
+                </div>
+              {:else}
+                <a href={u} target="_blank" rel="noreferrer" class="pill muted mono link">{u}</a>
+              {/if}
+            {/each}
+          </div>
         </div>
       </div>
     {/each}
@@ -244,6 +239,9 @@
     margin-top: 0.55rem;
     display: grid;
     gap: 0.45rem;
+  }
+  .media:empty {
+    display: none;
   }
   .m {
     overflow: hidden;
