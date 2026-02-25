@@ -10,10 +10,12 @@
   import { startFollowingSync } from '$lib/stores/follows';
   import { localNsec } from '$lib/stores/local-signer';
   import { onboardingOpen, openOnboarding, closeOnboarding } from '$lib/stores/onboarding';
+  import { startLiveStreams } from '$lib/stores/live-streams';
 
   onMount(() => {
     void ensureNdk();
     startFollowingSync();
+    void startLiveStreams({ source: 'zapstream', limit: 60 });
 
     if (browser && !window.nostr?.getPublicKey && !get(localNsec)) {
       const dismissed = sessionStorage.getItem('bfta:onboarding-dismissed');

@@ -1,141 +1,14 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte';
-  import { ensureNdk } from '$lib/stores/ndk';
-  import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
+  import { onMount } from 'svelte';
+  import { base } from '$app/paths';
+  import { profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
-  import { nip19 } from 'nostr-tools';
   import { profileHover } from '$lib/ui/profile-hover';
-
-  type Stream = {
-    eventId: string;
-    pubkey: string; // event pubkey (usually zap.stream service key)
-    d: string;
-    hostPubkey: string;
-    title: string;
-    summary?: string;
-    image?: string;
-    thumb?: string;
-    watchUrl: string;
-    status: string;
-    currentParticipants: number;
-    updatedAt: number;
-    starts?: number;
-  };
+  import { liveStreams, liveStreamsError, liveStreamsLoading, startLiveStreams } from '$lib/stores/live-streams';
 
   export let limit = 24;
-
-  let streams: Stream[] = [];
-  let loading = true;
-  let error: string | null = null;
-  let stop: (() => void) | null = null;
-
-  function getFirstTag(tags: string[][], name: string): string | undefined {
-    return (tags || []).find((t) => t[0] === name)?.[1];
-  }
-
-  function getAllTag(tags: string[][], name: string): string[] {
-    return (tags || []).filter((t) => t[0] === name && typeof t[1] === 'string').map((t) => t[1]);
-  }
-
-  function hostFromTags(tags: string[][], fallback: string): string {
-    const host = (tags || []).find((t) => t[0] === 'p' && (t[3] || '').toLowerCase() === 'host')?.[1];
-    return (host && typeof host === 'string' && host) ? host : fallback;
-  }
-
-  function watchUrlFromTags(evPubkey: string, d: string, tags: string[][]): string {
-    const alt = getFirstTag(tags, 'alt') || '';
-    const m = alt.match(/https:\/\/zap\.stream\/[a-z0-9]+/i);
-    if (m?.[0]) return m[0];
-
-    if (d && evPubkey) {
-      try {
-        const naddr = nip19.naddrEncode({ kind: 30311, pubkey: evPubkey, identifier: d, relays: [] });
-        return `https://zap.stream/${naddr}`;
-      } catch {
-        // ignore
-      }
-    }
-    return 'https://zap.stream';
-  }
-
-  function isZapStreamEvent(tags: string[][]): boolean {
-    const alt = (getFirstTag(tags, 'alt') || '').toLowerCase();
-    if (alt.includes('zap.stream')) return true;
-    const service = (getFirstTag(tags, 'service') || '').toLowerCase();
-    if (service.includes('zap.stream')) return true;
-    const streaming = getAllTag(tags, 'streaming').join(' ').toLowerCase();
-    if (streaming.includes('zap.stream')) return true;
-    return false;
-  }
-
-  function parse(ev: any): Stream | null {
-    if (!ev?.id || !ev?.pubkey || !ev?.created_at) return null;
-    const tags = (ev.tags as string[][]) || [];
-    if (!isZapStreamEvent(tags)) return null;
-
-    const d = (getFirstTag(tags, 'd') || '').trim();
-    if (!d) return null;
-
-    const status = (getFirstTag(tags, 'status') || '').trim().toLowerCase();
-    const title = (getFirstTag(tags, 'title') || '').trim() || 'Live on zap.stream';
-    const summary = (getFirstTag(tags, 'summary') || '').trim() || undefined;
-    const image = (getFirstTag(tags, 'image') || '').trim() || undefined;
-    const thumb = (getFirstTag(tags, 'thumb') || '').trim() || undefined;
-
-    const cur = Number(getFirstTag(tags, 'current_participants') || '');
-    const currentParticipants = Number.isFinite(cur) && cur >= 0 ? cur : 0;
-    const starts = Number(getFirstTag(tags, 'starts') || '');
-
-    const hostPubkey = hostFromTags(tags, ev.pubkey);
-    void fetchProfileFor(hostPubkey);
-
-    return {
-      eventId: ev.id,
-      pubkey: ev.pubkey,
-      d,
-      hostPubkey,
-      title,
-      summary,
-      image,
-      thumb,
-      watchUrl: watchUrlFromTags(ev.pubkey, d, tags),
-      status,
-      currentParticipants,
-      updatedAt: ev.created_at,
-      starts: Number.isFinite(starts) ? starts : undefined,
-    };
-  }
-
-  async function start(): Promise<void> {
-    if (stop) stop();
-    streams = [];
-    loading = true;
-    error = null;
-
-    try {
-      const ndk = await ensureNdk();
-      const since = Math.floor(Date.now() / 1000) - 60 * 60 * 24;
-
-      const sub = ndk.subscribe({ kinds: [30311], since, limit: 400 } as any, { closeOnEose: false });
-      sub.on('event', (ev) => {
-        const s = parse(ev);
-        if (!s) return;
-        streams = [s, ...streams.filter((x) => x.eventId !== s.eventId)]
-          .filter((x) => x.status === 'live')
-          .sort((a, b) => b.currentParticipants - a.currentParticipants || b.updatedAt - a.updatedAt)
-          .slice(0, limit);
-      });
-      sub.on('eose', () => (loading = false));
-      stop = () => sub.stop();
-    } catch (e) {
-      error = e instanceof Error ? e.message : String(e);
-      loading = false;
-    }
-  }
-
-  onMount(() => void start());
-  onDestroy(() => {
-    if (stop) stop();
+  onMount(() => {
+    void startLiveStreams({ source: 'zapstream', limit: Math.max(1, Math.min(60, limit)) });
   });
 </script>
 
@@ -143,29 +16,32 @@
   <div class="head">
     <div class="titleRow">
       <div class="title">Live on zap.stream</div>
-      <a class="muted link" href="https://zap.stream" target="_blank" rel="noreferrer">Open zap.stream</a>
+      <div style="display:flex; gap:0.6rem; align-items:baseline;">
+        <a class="muted link" href={`${base}/streams`} style="text-decoration: underline;">All streams</a>
+        <a class="muted link" href="https://zap.stream" target="_blank" rel="noreferrer">Open zap.stream</a>
+      </div>
     </div>
     <div class="muted desc">Click a stream to watch on zap.stream.</div>
   </div>
 
-  {#if error}
+  {#if $liveStreamsError}
     <div class="card" style="padding: 0.85rem 1rem; border-color: rgba(251,113,133,0.35);">
-      <div class="muted">{error}</div>
+      <div class="muted">{$liveStreamsError}</div>
     </div>
-  {:else if loading && streams.length === 0}
+  {:else if $liveStreamsLoading && $liveStreams.length === 0}
     <div class="row">
       {#each Array(6) as _}
         <div class="card skel"></div>
       {/each}
     </div>
-  {:else if streams.length === 0}
+  {:else if $liveStreams.length === 0}
     <div class="card empty">
       <div class="muted">No live zap.stream streams found right now.</div>
     </div>
   {:else}
     <div class="row" aria-label="zap.stream live streams">
-      {#each streams as s (s.eventId)}
-        <a class="card item" href={s.watchUrl} target="_blank" rel="noreferrer" aria-label={`Watch ${s.title} on zap.stream`}>
+      {#each $liveStreams.slice(0, limit) as s (s.eventId)}
+        <a class="card item" href={s.watchUrl} target="_blank" rel="noreferrer" aria-label={`Watch ${s.title}`}>
           <div
             class="thumb"
             style={`background-image:url('${(s.thumb || s.image || '').replace(/'/g, '%27')}')`}

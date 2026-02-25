@@ -11,6 +11,7 @@
   const nav = [
     { href: '/discover', label: 'Discover', icon: '🔍' },
     { href: '/pulse', label: 'Pulse', icon: '🫀' },
+    { href: '/streams', label: 'Streams', icon: '📺' },
     { href: '/live', label: 'Live', icon: '📡' },
     { href: '/studios', label: 'Studios', icon: '🏛️' },
     { href: '/events', label: 'Events', icon: '📅' },
