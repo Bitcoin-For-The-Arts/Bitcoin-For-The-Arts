@@ -27,6 +27,7 @@ All data lives on public relays as signed events. There is **no backend API** an
 - `/artist-hub/messages`: decrypt + read/send NIP-04 DMs
 - `/artist-hub/featured`: admin-curated featured list
 - `/artist-hub/live`: NIP-28 channels + live chat
+- `/artist-hub/pulse`: live posts feed (notes + zaps) with media previews
 - `/artist-hub/studios`: browse/publish virtual studios
 - `/artist-hub/studios/<naddr>`: view a studio (guestbook + zaps + optional channel chat)
 - `/artist-hub/events`: browse/publish event listings
