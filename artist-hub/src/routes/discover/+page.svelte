@@ -60,8 +60,8 @@
   }
 </script>
 
-<div class="grid cols-2">
-  <div class="card" style="padding: 1rem;">
+<div class="layout">
+  <div class="card filters" style="padding: 1rem;">
     <div style="font-size: 1.25rem; font-weight: 900;">Discover</div>
     <div class="muted" style="margin-top: 0.35rem; line-height: 1.5;">
       Search decentralized listings across public relays (NIP-15 services + NIP-99 classifieds).
@@ -119,7 +119,7 @@
     </div>
   </div>
 
-  <div class="card" style="padding: 1rem;">
+  <div class="card results" style="padding: 1rem;">
     <div style="display:flex; align-items:center; justify-content:space-between; gap: 1rem;">
       <div style="font-weight: 850;">Results</div>
       <div class="muted">{#if $discoveryLoading}Loading relays…{/if}</div>
@@ -144,20 +144,25 @@
 </div>
 
 <style>
+  .layout {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 980px) {
+    .layout {
+      grid-template-columns: 340px 1fr;
+      align-items: start;
+    }
+    .filters {
+      position: sticky;
+      top: 92px;
+      height: fit-content;
+    }
+  }
   .listings {
     display: grid;
     gap: 1rem;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-  @media (min-width: 800px) {
-    .listings {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  @media (min-width: 1100px) {
-    .listings {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 </style>
 
