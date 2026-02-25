@@ -144,7 +144,22 @@
         <div style="margin-top: 0.9rem; display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:0.5rem;">
           {#each listing.images.slice(0, 6) as img}
             <a href={img} target="_blank" rel="noreferrer" class="card" style="overflow:hidden;">
-              <img src={img} alt="" loading="lazy" style="width:100%; height:160px; object-fit:cover; display:block;" />
+              {#if img.toLowerCase().match(/\.(mp4|webm|mov|m4v)(\?|#|$)/)}
+                <video
+                  src={img}
+                  controls
+                  playsinline
+                  preload="metadata"
+                  style="width:100%; height:160px; object-fit:cover; display:block;"
+                ></video>
+              {:else}
+                <img
+                  src={img}
+                  alt=""
+                  loading="lazy"
+                  style="width:100%; height:160px; object-fit:cover; display:block;"
+                />
+              {/if}
             </a>
           {/each}
         </div>

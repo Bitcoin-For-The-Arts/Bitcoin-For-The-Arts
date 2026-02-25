@@ -1,10 +1,12 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
+  import { base } from '$app/paths';
   import { channels, channelMessages, channelParticipants, startChannelMessages, stopChannelMessages } from '$lib/stores/channels';
   import { isAuthed } from '$lib/stores/auth';
   import { publishChannelMessage } from '$lib/nostr/nip28';
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
+  import { detectMediaType, extractUrls } from '$lib/ui/media';
 
   export let channelId: string;
   export let compact = false;
@@ -53,6 +55,10 @@
   }
 
   $: for (const m of msgs.slice(-30)) void fetchProfileFor(m.pubkey);
+
+  function urlsFor(content: string): string[] {
+    return extractUrls(content);
+  }
 </script>
 
 <div class={`card wrap ${compact ? 'compact' : ''}`}>
@@ -94,15 +100,40 @@
             <img src={$profileByPubkey[m.pubkey].picture} alt="" class="avatar" />
           {/if}
           <div class="meta">
-            <div class="name">
+            <a class="name" href={`${base}/profile/${npubFor(m.pubkey)}`}>
               {$profileByPubkey[m.pubkey]?.display_name ||
                 $profileByPubkey[m.pubkey]?.name ||
                 npubFor(m.pubkey).slice(0, 12) + '…'}
-            </div>
+            </a>
             <div class="muted small">{new Date(m.createdAt * 1000).toLocaleTimeString()}</div>
           </div>
         </div>
-        <div class="body">{m.content}</div>
+        <div class="body">
+          <div style="white-space: pre-wrap;">{m.content}</div>
+          {@const urls = urlsFor(m.content)}
+          {#if urls.length}
+            <div class="media">
+              {#each urls.slice(0, 3) as u (u)}
+                {@const t = detectMediaType(u)}
+                {#if t === 'image'}
+                  <a href={u} target="_blank" rel="noreferrer" class="m">
+                    <img src={u} alt="" loading="lazy" />
+                  </a>
+                {:else if t === 'video'}
+                  <div class="m">
+                    <video src={u} controls playsinline preload="metadata"></video>
+                  </div>
+                {:else if t === 'audio'}
+                  <div class="m">
+                    <audio src={u} controls preload="none"></audio>
+                  </div>
+                {:else}
+                  <a href={u} target="_blank" rel="noreferrer" class="pill muted mono link">{u}</a>
+                {/if}
+              {/each}
+            </div>
+          {/if}
+        </div>
       </div>
     {/each}
     {#if msgs.length === 0}
@@ -202,10 +233,42 @@
     text-overflow: ellipsis;
     max-width: 320px;
   }
+  .name:hover {
+    text-decoration: underline;
+  }
   .body {
     line-height: 1.45;
-    white-space: pre-wrap;
     word-break: break-word;
+  }
+  .media {
+    margin-top: 0.55rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+  .m {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.12);
+  }
+  .m img,
+  .m video {
+    width: 100%;
+    max-height: 320px;
+    object-fit: cover;
+    display: block;
+  }
+  .m audio {
+    width: 100%;
+    display: block;
+  }
+  .mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+      monospace;
+    font-size: 0.84rem;
+  }
+  .link {
+    width: fit-content;
   }
   .composer {
     border-top: 1px solid var(--border);

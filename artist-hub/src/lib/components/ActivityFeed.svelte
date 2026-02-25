@@ -1,8 +1,10 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
+  import { base } from '$app/paths';
   import { ensureNdk } from '$lib/stores/ndk';
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
+  import { detectMediaType, extractUrls } from '$lib/ui/media';
 
   type Item =
     | { kind: 'note'; id: string; pubkey: string; createdAt: number; content: string }
@@ -18,6 +20,11 @@
   let error: string | null = null;
   let loading = false;
   let stop: (() => void) | null = null;
+
+  function urlsFor(it: Item): string[] {
+    if (it.kind === 'note') return extractUrls(it.content);
+    return it.comment ? extractUrls(it.comment) : [];
+  }
 
   function parseZap(ev: any): Item | null {
     const tags = (ev.tags as string[][]) || [];
@@ -147,11 +154,11 @@
             <img src={$profileByPubkey[it.pubkey].picture} alt="" class="avatar" />
           {/if}
           <div class="meta">
-            <div class="name">
+            <a class="name" href={`${base}/profile/${npubFor(it.pubkey)}`}>
               {$profileByPubkey[it.pubkey]?.display_name ||
                 $profileByPubkey[it.pubkey]?.name ||
                 npubFor(it.pubkey).slice(0, 12) + '…'}
-            </div>
+            </a>
             <div class="muted small">{new Date(it.createdAt * 1000).toLocaleTimeString()}</div>
           </div>
         </div>
@@ -166,6 +173,30 @@
             {/if}
           {:else}
             <div style="line-height:1.45; white-space: pre-wrap;">{it.content}</div>
+          {/if}
+
+          {@const urls = urlsFor(it)}
+          {#if urls.length}
+            <div class="media">
+              {#each urls.slice(0, 4) as u (u)}
+                {@const t = detectMediaType(u)}
+                {#if t === 'image'}
+                  <a href={u} target="_blank" rel="noreferrer" class="m">
+                    <img src={u} alt="" loading="lazy" />
+                  </a>
+                {:else if t === 'video'}
+                  <div class="m">
+                    <video src={u} controls playsinline preload="metadata"></video>
+                  </div>
+                {:else if t === 'audio'}
+                  <div class="m">
+                    <audio src={u} controls preload="none"></audio>
+                  </div>
+                {:else}
+                  <a href={u} target="_blank" rel="noreferrer" class="pill muted mono link">{u}</a>
+                {/if}
+              {/each}
+            </div>
           {/if}
         </div>
       </div>
@@ -211,8 +242,41 @@
     text-overflow: ellipsis;
     max-width: 260px;
   }
+  .name:hover {
+    text-decoration: underline;
+  }
   .small {
     font-size: 0.86rem;
+  }
+  .media {
+    margin-top: 0.55rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+  .m {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.12);
+  }
+  .m img,
+  .m video {
+    width: 100%;
+    max-height: 360px;
+    object-fit: cover;
+    display: block;
+  }
+  .m audio {
+    width: 100%;
+    display: block;
+  }
+  .mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+      'Courier New', monospace;
+    font-size: 0.84rem;
+  }
+  .link {
+    width: fit-content;
   }
 </style>
 
