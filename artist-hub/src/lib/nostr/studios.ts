@@ -1,7 +1,15 @@
 import { nip19 } from 'nostr-tools';
+import { get } from 'svelte/store';
 import { NOSTR_KINDS } from '$lib/nostr/constants';
 import { getDTag, safeJsonParse, addressFor } from '$lib/nostr/helpers';
 import { publishSignedEvent, signWithNip07 } from '$lib/nostr/pool';
+import { pubkey as myPubkey } from '$lib/stores/auth';
+
+function requirePubkey(): string {
+  const pk = get(myPubkey);
+  if (!pk) throw new Error('Connect a signer (or create an in-app key) first.');
+  return pk;
+}
 
 export type StudioItem =
   | { type: 'image'; url: string; title?: string }
@@ -62,7 +70,7 @@ export function parseStudioEvent(ev: { id?: string; pubkey?: string; created_at?
 }
 
 export async function publishStudio(studio: StudioContent): Promise<string> {
-  const pubkey = await window.nostr!.getPublicKey();
+  const pubkey = requirePubkey();
   const d = studio.id.trim();
   if (!d) throw new Error('Studio id is required');
   if (!studio.name.trim()) throw new Error('Studio name is required');

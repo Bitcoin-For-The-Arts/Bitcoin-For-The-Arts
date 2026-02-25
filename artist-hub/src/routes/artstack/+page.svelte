@@ -177,7 +177,8 @@
     if (!selectedPost || !replyText.trim() || !$isAuthed) return;
     replyBusy = true;
     try {
-      const pk = await window.nostr!.getPublicKey();
+      const pk = $pubkey;
+      if (!pk) throw new Error('Connect a signer (or create an in-app key) first.');
       const unsigned = {
         kind: NOSTR_KINDS.note,
         created_at: Math.floor(Date.now() / 1000),

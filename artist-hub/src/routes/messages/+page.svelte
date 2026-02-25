@@ -1,12 +1,13 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
-  import { nip19 } from 'nostr-tools';
+  import { nip04, nip19 } from 'nostr-tools';
   import { ensureNdk } from '$lib/stores/ndk';
   import { isAuthed, pubkey } from '$lib/stores/auth';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import DMComposer from '$lib/components/DMComposer.svelte';
   import { profileHover } from '$lib/ui/profile-hover';
+  import { getLocalSecretKey } from '$lib/stores/local-signer';
 
   type Msg = { id: string; from: string; to: string; at: number; text: string };
   type Thread = { with: string; lastAt: number; lastText: string };
@@ -35,8 +36,15 @@
     if (!to) return null;
     const counterparty = from === me ? to : from;
 
-    if (!window.nostr?.nip04?.decrypt) return null;
-    const text = await window.nostr.nip04.decrypt(counterparty, ev.content || '');
+    const ciphertext = ev.content || '';
+    let text: string | null = null;
+    if (window.nostr?.nip04?.decrypt) {
+      text = await window.nostr.nip04.decrypt(counterparty, ciphertext);
+    } else {
+      const sk = getLocalSecretKey();
+      if (!sk) return null;
+      text = await nip04.decrypt(sk, counterparty, ciphertext);
+    }
     return { id: ev.id, from, to, at: ev.created_at, text };
   }
 
@@ -45,8 +53,9 @@
     error = null;
     loading = true;
 
-    if (!window.nostr?.nip04?.decrypt) {
-      error = 'Your signer does not support NIP-04 decrypt. Install Alby or a Nostr signer with DM support.';
+    const hasDecrypt = Boolean(window.nostr?.nip04?.decrypt) || Boolean(getLocalSecretKey());
+    if (!hasDecrypt) {
+      error = 'No NIP-04 decrypt available. Install Alby/nos2x, or sign in with an in-app key to use DMs.';
       loading = false;
       return;
     }
