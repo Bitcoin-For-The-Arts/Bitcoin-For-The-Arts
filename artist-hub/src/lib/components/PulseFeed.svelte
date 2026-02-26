@@ -14,6 +14,7 @@
   import { profileHover } from '$lib/ui/profile-hover';
 
   export let tags: string[] = [];
+  export let authors: string[] = [];
   export let limit = 40;
 
   type Post = {
@@ -89,6 +90,17 @@
 
   function cleanTags(xs: string[]): string[] {
     return xs.map((t) => t.replace(/^#/, '').trim()).filter(Boolean).slice(0, 6);
+  }
+
+  function cleanAuthors(xs: string[]): string[] {
+    const out: string[] = [];
+    for (const x of xs || []) {
+      const pk = (x || '').trim().toLowerCase();
+      if (!pk) continue;
+      if (!/^[0-9a-f]{64}$/.test(pk)) continue;
+      if (!out.includes(pk)) out.push(pk);
+    }
+    return out.slice(0, 3);
   }
 
   function isReplyLike(ev: any): boolean {
@@ -204,8 +216,10 @@
     try {
       const ndk = await ensureNdk();
       const t = cleanTags(tags);
+      const a = cleanAuthors(authors);
       const filter: any = { kinds: [NOSTR_KINDS.note], limit };
       if (t.length) filter['#t'] = t;
+      if (a.length) filter.authors = a;
 
       const sub = ndk.subscribe(filter, { closeOnEose: false });
       sub.on('event', (ev) => {
@@ -508,7 +522,7 @@
   onMount(() => void start());
   let lastKey = '';
   $: {
-    const key = JSON.stringify({ tags: cleanTags(tags), limit });
+    const key = JSON.stringify({ tags: cleanTags(tags), authors: cleanAuthors(authors), limit });
     if (key !== lastKey) {
       lastKey = key;
       void start();
@@ -684,7 +698,7 @@
 
     {#if !posts.length && !loading}
       <div class="card" style="padding: 1rem;">
-        <div class="muted">No posts found yet for these tags.</div>
+        <div class="muted">No posts found yet for these filters.</div>
       </div>
     {/if}
   </div>
