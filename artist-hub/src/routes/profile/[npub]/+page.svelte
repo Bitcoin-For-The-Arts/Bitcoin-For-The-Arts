@@ -14,6 +14,7 @@
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
   import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
   import { followingError, followingLoading, followingSet, toggleFollow } from '$lib/stores/follows';
+  import NpubShareModal from '$lib/components/NpubShareModal.svelte';
 
   let pubkey = '';
   let error: string | null = null;
@@ -22,6 +23,7 @@
 
   let dmOpen = false;
   let zapOpen = false;
+  let shareOpen = false;
 
   type Metrics = {
     following: { value: number; approx: boolean } | null;
@@ -367,6 +369,7 @@
       <div style="margin-top: 1rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
         <button class="btn" on:click={() => (dmOpen = true)}>Message</button>
         <button class="btn primary" on:click={() => (zapOpen = true)}>Zap / Pay</button>
+        <button class="btn" on:click={() => (shareOpen = true)}>Copy npub</button>
         {#if canFollow}
           <button class={`btn ${isFollowing ? '' : 'primary'}`} disabled={$followingLoading} on:click={onToggleFollow}>
             {isFollowing ? 'Unfollow' : 'Follow'}
@@ -448,5 +451,6 @@
     recipientLabel={name}
     onClose={() => (zapOpen = false)}
   />
+  <NpubShareModal open={shareOpen} npub={$page.params.npub} label={name} onClose={() => (shareOpen = false)} />
 {/if}
 
