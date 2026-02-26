@@ -30,6 +30,24 @@
   let hashtagsCsv = '';
   let portfolioCsv = '';
 
+  function faviconForSite(site: string): string {
+    const raw = (site || '').trim();
+    if (!raw) return '';
+    try {
+      const u = raw.startsWith('http://') || raw.startsWith('https://') ? new URL(raw) : new URL(`https://${raw}`);
+      const domain = u.hostname;
+      if (!domain) return '';
+      return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
+    } catch {
+      return '';
+    }
+  }
+
+  function useWebsiteFavicon() {
+    const icon = faviconForSite(draft.website || '');
+    if (icon) draft = { ...draft, website_icon: icon };
+  }
+
   function hydrateFromProfile(p: ArtistProfile) {
     draft = { ...p };
     skillsCsv = listToCsv(p.skills);
@@ -169,8 +187,28 @@
       <input class="input" bind:value={draft.picture} placeholder="https://…" />
     </div>
     <div>
+      <div class="muted" style="margin-bottom:0.35rem;">Banner image URL</div>
+      <input class="input" bind:value={draft.banner} placeholder="https://…" />
+    </div>
+  </div>
+
+  <div class="grid cols-2" style="margin-top: 0.9rem;">
+    <div>
       <div class="muted" style="margin-bottom:0.35rem;">Website / portfolio</div>
       <input class="input" bind:value={draft.website} placeholder="https://…" />
+    </div>
+    <div>
+      <div class="muted" style="margin-bottom:0.35rem;">Website logo URL (optional)</div>
+      <input class="input" bind:value={draft.website_icon} placeholder="https://… (favicon/logo)" />
+      <div class="muted" style="margin-top:0.35rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+        <button class="pill muted" type="button" on:click={useWebsiteFavicon}>Use site favicon</button>
+        {#if draft.website_icon}
+          <span class="pill muted" style="display:inline-flex; gap:0.35rem; align-items:center;">
+            <img src={draft.website_icon} alt="" style="width:16px; height:16px; border-radius:6px; border:1px solid var(--border); object-fit:cover;" />
+            Preview
+          </span>
+        {/if}
+      </div>
     </div>
   </div>
 

@@ -282,6 +282,7 @@
   {@const nip05 = (p as any)?.nip05 as string | undefined}
   {@const banner = ((p as any)?.banner as string | undefined) || ''}
   {@const website = (p?.website || '').trim()}
+  {@const websiteIcon = (((p as any)?.website_icon as string | undefined) || '').trim()}
   {@const lud16 = ((p as any)?.lud16 as string | undefined) || ((p as any)?.lud06 as string | undefined) || ''}
   {@const npub = $pubkey ? npubFor($pubkey) : ''}
   {@const skills = (p as any)?.skills as string[] | undefined}
@@ -317,7 +318,14 @@
         <div class="actions">
           <button class={`btn ${tab === 'edit' ? 'primary' : ''}`} on:click={() => (tab = 'edit')}>Edit profile</button>
           {#if website}
-            <a class="btn" href={website} target="_blank" rel="noreferrer">Website</a>
+            {@const host = (() => { try { return new URL(website.startsWith('http') ? website : `https://${website}`).hostname; } catch { return ''; } })()}
+            {@const fav = host ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64` : ''}
+            <a class="btn websiteBtn" href={website} target="_blank" rel="noreferrer">
+              {#if websiteIcon || fav}
+                <img class="wicon" src={websiteIcon || fav} alt="" />
+              {/if}
+              Website
+            </a>
           {/if}
           <button class="btn" on:click={copyNpub}>{copied ? 'Copied' : 'Copy npub'}</button>
         </div>
@@ -523,6 +531,16 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: flex-end;
+  }
+  .websiteBtn {
+    gap: 0.45rem;
+  }
+  .wicon {
+    width: 16px;
+    height: 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    object-fit: cover;
   }
   .about {
     margin-top: 0.9rem;
