@@ -4,6 +4,7 @@
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
   import { detectMediaType, extractUrls } from '$lib/ui/media';
+  import { autoPauseVideo } from '$lib/ui/video';
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
   import { publishComment, publishEdit, publishNote, publishQuoteRepost, publishRepost } from '$lib/nostr/publish';
   import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
@@ -37,7 +38,13 @@
   let posts: Post[] = [];
   let loading = false;
   let error: string | null = null;
-  let stop: (() => void) | null = null;
+  let stop: (() => void) | null = null; // live subscription
+  let backfillBusy = false;
+  let backfillDone = false;
+  let cursorUntil: number | null = null; // unix seconds
+  let loadMoreError: string | null = null;
+  let sentinel: HTMLDivElement | null = null;
+  let io: IntersectionObserver | null = null;
   const statsById = new Map<string, Stats>();
   let tick = 0; // invalidate for stats changes
 
@@ -101,6 +108,27 @@
       if (!out.includes(pk)) out.push(pk);
     }
     return out.slice(0, 3);
+  }
+
+  function eventToPost(ev: any): Post | null {
+    if (!ev?.id || !ev?.pubkey || !ev?.created_at) return null;
+    if (isReplyLike(ev)) return null; // keep Pulse as a top-level timeline
+    const content = (ev.content || '').trim();
+    if (!content) return null;
+    return {
+      id: ev.id,
+      pubkey: ev.pubkey,
+      createdAt: ev.created_at,
+      content,
+      urls: extractUrls(content),
+    };
+  }
+
+  function upsertPost(post: Post, opts?: { cap?: number }): void {
+    const cap = Math.max(80, Math.min(1200, opts?.cap ?? 600));
+    posts = [post, ...posts.filter((x) => x.id !== post.id)]
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .slice(0, cap);
   }
 
   function isReplyLike(ev: any): boolean {
@@ -209,7 +237,10 @@
   async function start(): Promise<void> {
     error = null;
     loading = true;
+    loadMoreError = null;
     posts = [];
+    backfillDone = false;
+    cursorUntil = null;
     if (stop) stop();
     stop = null;
 
@@ -217,33 +248,75 @@
       const ndk = await ensureNdk();
       const t = cleanTags(tags);
       const a = cleanAuthors(authors);
-      const filter: any = { kinds: [NOSTR_KINDS.note], limit };
+
+      // Initial backfill (latest page).
+      await loadMore({ ndk, t, a, initial: true });
+
+      // Live subscription for new posts going forward.
+      const since = Math.floor(Date.now() / 1000) - 60;
+      const filter: any = { kinds: [NOSTR_KINDS.note], limit: Math.max(120, limit), since };
       if (t.length) filter['#t'] = t;
       if (a.length) filter.authors = a;
 
       const sub = ndk.subscribe(filter, { closeOnEose: false });
       sub.on('event', (ev) => {
-        if (!ev?.id || !ev?.pubkey || !ev?.created_at) return;
-        if (isReplyLike(ev)) return; // keep Pulse as a top-level timeline
-        const content = (ev.content || '').trim();
-        if (!content) return;
-
-        const post: Post = {
-          id: ev.id,
-          pubkey: ev.pubkey,
-          createdAt: ev.created_at,
-          content,
-          urls: extractUrls(content),
-        };
-
-        posts = [post, ...posts.filter((x) => x.id !== post.id)].sort((a, b) => b.createdAt - a.createdAt).slice(0, limit);
+        const post = eventToPost(ev);
+        if (!post) return;
+        upsertPost(post);
         void fetchProfileFor(post.pubkey);
-        void loadStatsFor(post);
+        // Stats are expensive; prefetch for a bounded window.
+        if (posts.length <= Math.max(60, limit)) void loadStatsFor(post);
       });
       sub.on('eose', () => (loading = false));
       stop = () => sub.stop();
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
+      loading = false;
+    }
+  }
+
+  async function loadMore(opts?: { ndk?: any; t?: string[]; a?: string[]; initial?: boolean }): Promise<void> {
+    if (backfillBusy || backfillDone) return;
+    backfillBusy = true;
+    loadMoreError = null;
+    try {
+      const ndk = opts?.ndk ?? (await ensureNdk());
+      const t = opts?.t ?? cleanTags(tags);
+      const a = opts?.a ?? cleanAuthors(authors);
+
+      const pageSize = Math.max(20, limit);
+      const until = cursorUntil ?? Math.floor(Date.now() / 1000);
+      const filter: any = { kinds: [NOSTR_KINDS.note], limit: pageSize, until };
+      if (t.length) filter['#t'] = t;
+      if (a.length) filter.authors = a;
+
+      const sub = ndk.subscribe(filter, { closeOnEose: true });
+      let minTs = until;
+      let added = 0;
+      sub.on('event', (ev) => {
+        const post = eventToPost(ev);
+        if (!post) return;
+        const had = posts.some((p) => p.id === post.id);
+        upsertPost(post);
+        if (!had) added += 1;
+        if (post.createdAt && post.createdAt < minTs) minTs = post.createdAt;
+        void fetchProfileFor(post.pubkey);
+      });
+
+      await new Promise<void>((resolve) => sub.on('eose', () => resolve()));
+
+      if (minTs <= 0 || minTs >= until) {
+        backfillDone = true;
+      } else {
+        cursorUntil = Math.max(0, minTs - 1);
+      }
+
+      // For subsequent pages, if we didn’t add anything new, assume we’re done.
+      if (!opts?.initial && added === 0) backfillDone = true;
+    } catch (e) {
+      loadMoreError = e instanceof Error ? e.message : String(e);
+    } finally {
+      backfillBusy = false;
       loading = false;
     }
   }
@@ -520,6 +593,18 @@
   }
 
   onMount(() => void start());
+  onMount(() => {
+    if (typeof IntersectionObserver === 'undefined') return;
+    if (!sentinel) return;
+    if (io) io.disconnect();
+    io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) void loadMore();
+      },
+      { rootMargin: '700px 0px' },
+    );
+    io.observe(sentinel);
+  });
   let lastKey = '';
   $: {
     const key = JSON.stringify({ tags: cleanTags(tags), authors: cleanAuthors(authors), limit });
@@ -531,6 +616,7 @@
 
   onDestroy(() => {
     if (stop) stop();
+    if (io) io.disconnect();
   });
 </script>
 
@@ -594,7 +680,7 @@
                 {:else if t === 'video'}
                   <div class="m video">
                     <!-- svelte-ignore a11y_media_has_caption -->
-                    <video src={u} controls playsinline preload="metadata"></video>
+                    <video src={u} controls playsinline preload="metadata" use:autoPauseVideo></video>
                   </div>
                 {:else if t === 'audio'}
                   <div class="m audio">
@@ -701,6 +787,20 @@
         <div class="muted">No posts found yet for these filters.</div>
       </div>
     {/if}
+
+    {#if posts.length}
+      <div style="margin-top: 0.75rem;">
+        {#if loadMoreError}
+          <div class="muted" style="color: var(--danger);">{loadMoreError}</div>
+        {:else if backfillBusy}
+          <div class="muted">Loading more…</div>
+        {:else if backfillDone}
+          <div class="muted">You’ve reached the end of the feed (for your current relays/filters).</div>
+        {/if}
+      </div>
+    {/if}
+
+    <div bind:this={sentinel} style="height: 1px;"></div>
   </div>
 </div>
 
