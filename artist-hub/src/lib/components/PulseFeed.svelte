@@ -11,8 +11,10 @@
   import Modal from '$lib/components/Modal.svelte';
   import ZapComposer from '$lib/components/ZapComposer.svelte';
   import ZapEmojiComposer from '$lib/components/ZapEmojiComposer.svelte';
+  import EmojiPicker from '$lib/components/EmojiPicker.svelte';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
   import { profileHover } from '$lib/ui/profile-hover';
+  import { insertAtCursor } from '$lib/ui/text';
 
   export let tags: string[] = [];
   export let authors: string[] = [];
@@ -92,6 +94,7 @@
 
   // Composer
   let newPost = '';
+  let newPostEl: HTMLTextAreaElement | null = null;
   let publishBusy = false;
   let publishError: string | null = null;
 
@@ -105,6 +108,7 @@
     replyTo?: string;
   }> = [];
   let commentText = '';
+  let commentEl: HTMLTextAreaElement | null = null;
   let commentBusy = false;
   let commentError: string | null = null;
   let replyTo: { id: string; pubkey: string } | null = null;
@@ -112,6 +116,7 @@
   // Edit modal
   let editOpenFor: Post | null = null;
   let editText = '';
+  let editEl: HTMLTextAreaElement | null = null;
   let editBusy = false;
   let editError: string | null = null;
 
@@ -134,6 +139,7 @@
   let repostComposeFor: { id: string; pubkey: string; label: string } | null = null;
   let repostComposeFromPost: Post | null = null;
   let repostQuote = '';
+  let repostQuoteEl: HTMLTextAreaElement | null = null;
   let repostComposeBusy = false;
   let repostComposeError: string | null = null;
 
@@ -671,8 +677,14 @@
       Publish a note to Nostr. Comments are replies. Zaps are Lightning payments with optional emoji attachments.
     </div>
     <div style="margin-top: 0.75rem;">
-      <textarea class="textarea" bind:value={newPost} placeholder="Share an update, drop a link, announce a listing…"></textarea>
+      <textarea
+        class="textarea"
+        bind:this={newPostEl}
+        bind:value={newPost}
+        placeholder="Share an update, drop a link, announce a listing…"
+      ></textarea>
       <div style="margin-top:0.65rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+        <EmojiPicker on:pick={(e) => (newPost = insertAtCursor(newPostEl, newPost, e.detail.emoji))} />
         <button class="btn primary" disabled={publishBusy || !newPost.trim()} on:click={doPublishPost}>
           {publishBusy ? 'Publishing…' : 'Publish'}
         </button>
@@ -879,8 +891,14 @@
       </div>
     {/if}
 
-    <textarea class="textarea" bind:value={commentText} placeholder="Write a comment (public)…"></textarea>
+    <textarea
+      class="textarea"
+      bind:this={commentEl}
+      bind:value={commentText}
+      placeholder="Write a comment (public)…"
+    ></textarea>
     <div style="margin-top: 0.65rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+      <EmojiPicker on:pick={(e) => (commentText = insertAtCursor(commentEl, commentText, e.detail.emoji))} />
       <button class="btn primary" disabled={commentBusy || !commentText.trim()} on:click={postComment}>
         {commentBusy ? 'Posting…' : 'Post comment'}
       </button>
@@ -956,8 +974,9 @@
       <div class="muted" style="margin-top:0.35rem; line-height:1.45;">
         This publishes a note with a `q` tag to the target event, plus a `nostr:note…` link.
       </div>
-      <textarea class="textarea" bind:value={repostQuote} placeholder="Add your quote…"></textarea>
+      <textarea class="textarea" bind:this={repostQuoteEl} bind:value={repostQuote} placeholder="Add your quote…"></textarea>
       <div style="margin-top:0.65rem; display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+        <EmojiPicker on:pick={(e) => (repostQuote = insertAtCursor(repostQuoteEl, repostQuote, e.detail.emoji))} />
         <button class="btn primary" disabled={repostComposeBusy || !repostQuote.trim()} on:click={doQuoteRepostFromComposer}>
           {repostComposeBusy ? 'Publishing…' : 'Quote repost'}
         </button>
@@ -1049,8 +1068,9 @@
     <div class="muted" style="margin-bottom:0.75rem;">
       This publishes an edit event (NIP-37). Some clients may still show the original note.
     </div>
-    <textarea class="textarea" bind:value={editText} placeholder="Edit your post…"></textarea>
+    <textarea class="textarea" bind:this={editEl} bind:value={editText} placeholder="Edit your post…"></textarea>
     <div style="margin-top: 0.65rem; display:flex; gap:0.5rem; align-items:center;">
+      <EmojiPicker on:pick={(e) => (editText = insertAtCursor(editEl, editText, e.detail.emoji))} />
       <button class="btn primary" disabled={editBusy || !editText.trim()} on:click={saveEdit}>
         {editBusy ? 'Saving…' : 'Publish edit'}
       </button>

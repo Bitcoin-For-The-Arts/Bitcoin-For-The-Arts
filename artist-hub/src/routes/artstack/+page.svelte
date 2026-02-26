@@ -8,6 +8,8 @@
   import { npubFor } from '$lib/nostr/helpers';
   import { signWithNip07, publishSignedEvent } from '$lib/nostr/pool';
   import ZapComposer from '$lib/components/ZapComposer.svelte';
+  import EmojiPicker from '$lib/components/EmojiPicker.svelte';
+  import { insertAtCursor } from '$lib/ui/text';
 
   type Post = {
     id: string;
@@ -47,11 +49,13 @@
   let replyStop: (() => void) | null = null;
 
   let newPostContent = '';
+  let newPostEl: HTMLTextAreaElement | null = null;
   let newPostTags = '';
   let postBusy = false;
   let postError: string | null = null;
 
   let replyText = '';
+  let replyEl: HTMLInputElement | null = null;
   let replyBusy = false;
 
   let sortBy: 'recent' | 'zaps' = 'recent';
@@ -244,8 +248,15 @@
   <div class="main-content">
     {#if $isAuthed}
       <div class="card compose-card">
-        <textarea class="textarea" bind:value={newPostContent} placeholder="Share a thought, ask for feedback, post a bounty..." style="min-height: 80px;"></textarea>
+        <textarea
+          class="textarea"
+          bind:this={newPostEl}
+          bind:value={newPostContent}
+          placeholder="Share a thought, ask for feedback, post a bounty..."
+          style="min-height: 80px;"
+        ></textarea>
         <div class="compose-footer">
+          <EmojiPicker on:pick={(e) => (newPostContent = insertAtCursor(newPostEl, newPostContent, e.detail.emoji))} />
           <input class="input" style="max-width: 280px;" bind:value={newPostTags} placeholder="Tags: #Commission, #Feedback..." />
           <button class="btn primary" disabled={postBusy || !newPostContent.trim()} on:click={publishPost}>
             {postBusy ? 'Posting...' : 'Post to #' + activeChannel}
@@ -364,7 +375,14 @@
 
           {#if $isAuthed}
             <div style="display: flex; gap: 0.5rem; margin-top: 0.65rem;">
-              <input class="input" bind:value={replyText} placeholder="Reply..." on:keydown={(e) => e.key === 'Enter' && publishReply()} />
+              <EmojiPicker on:pick={(e) => (replyText = insertAtCursor(replyEl, replyText, e.detail.emoji))} />
+              <input
+                class="input"
+                bind:this={replyEl}
+                bind:value={replyText}
+                placeholder="Reply..."
+                on:keydown={(e) => e.key === 'Enter' && publishReply()}
+              />
               <button class="btn primary" disabled={replyBusy || !replyText.trim()} on:click={publishReply}>Reply</button>
             </div>
           {/if}
