@@ -16,6 +16,7 @@
     "@sveltejs/kit": "^2.22.0",
     "nanoid": "^5.1.6",
     "nostr-tools": "^2.16.2",
+    "qrcode": "^1.5.4",
     "svelte": "^5.38.2"
   },
   "devDependencies": {

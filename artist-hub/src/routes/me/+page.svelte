@@ -11,6 +11,7 @@
   import RichText from '$lib/components/RichText.svelte';
   import { npubFor } from '$lib/nostr/helpers';
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
+  import NpubShareModal from '$lib/components/NpubShareModal.svelte';
 
   let mine: Listing[] = [];
   let stop: (() => void) | null = null;
@@ -34,8 +35,7 @@
   let badgesError: string | null = null;
 
   let tab: 'posts' | 'listings' | 'edit' = 'posts';
-  let copied = false;
-  let copiedTimer: any = null;
+  let shareOpen = false;
   let statsPk = '';
 
   function tagValue(tags: string[][], name: string): string | undefined {
@@ -205,18 +205,8 @@
     }
   }
 
-  function copyNpub() {
-    copied = false;
-    const npub = $pubkey ? npubFor($pubkey) : '';
-    if (!npub) return;
-    try {
-      void navigator.clipboard.writeText(npub);
-      copied = true;
-      if (copiedTimer) clearTimeout(copiedTimer);
-      copiedTimer = setTimeout(() => (copied = false), 1200);
-    } catch {
-      // ignore
-    }
+  function openShare() {
+    shareOpen = true;
   }
 
   async function start() {
@@ -267,7 +257,6 @@
 
   onDestroy(() => {
     if (stop) stop();
-    if (copiedTimer) clearTimeout(copiedTimer);
   });
 </script>
 
@@ -327,7 +316,7 @@
               Website
             </a>
           {/if}
-          <button class="btn" on:click={copyNpub}>{copied ? 'Copied' : 'Copy npub'}</button>
+          <button class="btn" on:click={openShare}>Copy npub</button>
         </div>
       </div>
 
@@ -455,6 +444,8 @@
       <ProfileEditor />
     </div>
   {/if}
+
+  <NpubShareModal open={shareOpen} npub={npub} label={name} onClose={() => (shareOpen = false)} />
 {/if}
 
 <style>
