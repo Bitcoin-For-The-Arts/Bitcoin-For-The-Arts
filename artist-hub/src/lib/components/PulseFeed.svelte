@@ -48,6 +48,48 @@
   const statsById = new Map<string, Stats>();
   let tick = 0; // invalidate for stats changes
 
+  type MyZap = { amountSats: number; comment?: string; at: number };
+  type MyRepost = { at: number; quote?: string };
+  const myZapsById = new Map<string, MyZap>();
+  const myRepostsById = new Map<string, MyRepost>();
+  let myTick = 0;
+
+  function getMyZap(id: string): MyZap | null {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _ = myTick;
+    return myZapsById.get(id) ?? null;
+  }
+  function getMyRepost(id: string): MyRepost | null {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _ = myTick;
+    return myRepostsById.get(id) ?? null;
+  }
+
+  function noteMyZap(eventId: string | undefined, amountSats: number, comment?: string) {
+    if (!eventId) return;
+    myZapsById.set(eventId, { amountSats: Math.max(0, Math.floor(amountSats)), comment, at: Date.now() });
+    myTick++;
+
+    // Optimistically bump stats for posts (comments won't have stats here).
+    const prev = statsById.get(eventId);
+    if (prev) {
+      statsById.set(eventId, { ...prev, zaps: (prev.zaps || 0) + 1, sats: (prev.sats || 0) + Math.max(0, Math.floor(amountSats)) });
+      tick++;
+    }
+  }
+
+  function noteMyRepost(eventId: string | undefined, quote?: string) {
+    if (!eventId) return;
+    myRepostsById.set(eventId, { at: Date.now(), quote: quote?.trim() || undefined });
+    myTick++;
+
+    const prev = statsById.get(eventId);
+    if (prev) {
+      statsById.set(eventId, { ...prev, reposts: (prev.reposts || 0) + 1 });
+      tick++;
+    }
+  }
+
   // Composer
   let newPost = '';
   let publishBusy = false;
@@ -562,6 +604,7 @@
         tags: (ev.tags as any as string[][]) || [],
         sig: (ev as any).sig,
       });
+      noteMyRepost(repostComposeFor.id);
       if (repostComposeFromPost) await refreshStatsFor(repostComposeFromPost);
       repostComposeFor = null;
       repostComposeFromPost = null;
@@ -582,6 +625,7 @@
     repostComposeBusy = true;
     try {
       await publishQuoteRepost({ eventId: repostComposeFor.id, eventPubkey: repostComposeFor.pubkey, quote: repostQuote });
+      noteMyRepost(repostComposeFor.id, repostQuote);
       if (repostComposeFromPost) await refreshStatsFor(repostComposeFromPost);
       repostComposeFor = null;
       repostComposeFromPost = null;
@@ -648,6 +692,8 @@
       {@const prof = $profileByPubkey[p.pubkey]}
       {@const name = prof?.display_name || prof?.name || npubFor(p.pubkey).slice(0, 12) + '…'}
       {@const st = getStats(p.id)}
+      {@const mz = getMyZap(p.id)}
+      {@const mr = getMyRepost(p.id)}
       {@const body = st?.editedContent ?? p.content}
 
       <div class="card post">
@@ -716,7 +762,7 @@
           </div>
 
           <div class="aw" title="Zaps">
-            <button class="iconBtn primary" on:click={() => (zapOpenFor = p)} aria-label="Zap">
+            <button class="iconBtn primary" class:sent={Boolean(mz)} on:click={() => (zapOpenFor = p)} aria-label="Zap">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   d="M13 2L3 14h7l-1 8 12-14h-7l-1-6z"
@@ -742,6 +788,7 @@
           <div class="aw" title="Reposts">
             <button
               class="iconBtn"
+              class:sent={Boolean(mr)}
               on:click={() => openRepostComposer({ id: p.id, pubkey: p.pubkey, label: name }, p)}
               aria-label="Repost / quote repost"
             >
@@ -779,6 +826,21 @@
             </div>
           {/if}
         </div>
+
+        {#if mz || mr}
+          <div class="myRow" aria-label="Your recent actions">
+            {#if mz}
+              <span class="pill myPill" title="Your zap">
+                ⚡ You zapped {mz.amountSats.toLocaleString()} sats{mz.comment ? ` ${mz.comment}` : ''}
+              </span>
+            {/if}
+            {#if mr}
+              <span class="pill muted myPill" title="Your repost">
+                🔁 Reposted{mr.quote ? ' (quote)' : ''}{mr.quote ? `: ${mr.quote.slice(0, 42)}${mr.quote.length > 42 ? '…' : ''}` : ''}
+              </span>
+            {/if}
+          </div>
+        {/if}
       </div>
     {/each}
 
@@ -829,6 +891,8 @@
       {#each comments as c (c.id)}
         {@const cp = $profileByPubkey[c.pubkey]}
         {@const cName = cp?.display_name || cp?.name || npubFor(c.pubkey).slice(0, 18) + '…'}
+        {@const cmz = getMyZap(c.id)}
+        {@const cmr = getMyRepost(c.id)}
         <div
           class="card"
           style={`padding: 0.85rem 1rem; ${c.replyTo ? 'border-left: 3px solid rgba(246,196,83,0.35); margin-left: 0.75rem;' : ''}`}
@@ -844,14 +908,29 @@
             <button class="btn" on:click={() => (replyTo = { id: c.id, pubkey: c.pubkey })}>Reply</button>
             <button
               class="btn primary"
+              class:sent={Boolean(cmz)}
               on:click={() => (zapPayOpenFor = { recipientPubkey: c.pubkey, recipientLabel: cName, eventId: c.id })}
             >
               Zap
             </button>
-            <button class="btn" on:click={() => openRepostComposer({ id: c.id, pubkey: c.pubkey, label: cName }, null)}>
+            <button class="btn" class:sent={Boolean(cmr)} on:click={() => openRepostComposer({ id: c.id, pubkey: c.pubkey, label: cName }, null)}>
               Repost / Quote
             </button>
           </div>
+          {#if cmz || cmr}
+            <div class="myRow" style="margin-top:0.6rem;">
+              {#if cmz}
+                <span class="pill myPill" title="Your zap">
+                  ⚡ You zapped {cmz.amountSats.toLocaleString()} sats{cmz.comment ? ` ${cmz.comment}` : ''}
+                </span>
+              {/if}
+              {#if cmr}
+                <span class="pill muted myPill" title="Your repost">
+                  🔁 Reposted{cmr.quote ? ' (quote)' : ''}
+                </span>
+              {/if}
+            </div>
+          {/if}
         </div>
       {/each}
       {#if comments.length === 0}
@@ -1039,6 +1118,7 @@
   recipientPubkey={zapOpenFor?.pubkey || ''}
   recipientLabel={(zapOpenFor && ($profileByPubkey[zapOpenFor.pubkey]?.display_name || $profileByPubkey[zapOpenFor.pubkey]?.name)) || 'Artist'}
   eventId={zapOpenFor?.id}
+  on:sent={(e) => noteMyZap(e.detail.eventId, e.detail.amountSats, e.detail.comment)}
   onClose={() => (zapOpenFor = null)}
 />
 
@@ -1047,6 +1127,7 @@
   recipientPubkey={zapPayOpenFor?.recipientPubkey || ''}
   recipientLabel={zapPayOpenFor?.recipientLabel || 'Artist'}
   eventId={zapPayOpenFor?.eventId}
+  on:sent={(e) => noteMyZap(e.detail.eventId, e.detail.amountSats, e.detail.comment)}
   onClose={() => (zapPayOpenFor = null)}
 />
 
@@ -1160,6 +1241,10 @@
   .iconBtn.primary:hover {
     background: rgba(246, 196, 83, 0.18);
   }
+  .iconBtn.sent {
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.25);
+    border-color: rgba(74, 222, 128, 0.25);
+  }
   .iconBtn svg {
     width: 20px;
     height: 20px;
@@ -1191,6 +1276,23 @@
   }
   .link {
     width: fit-content;
+  }
+
+  .myRow {
+    margin-top: 0.65rem;
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .myPill {
+    font-size: 0.82rem;
+    padding: 0.18rem 0.5rem;
+  }
+
+  :global(.btn.sent) {
+    border-color: rgba(74, 222, 128, 0.25);
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.18);
   }
 </style>
 
