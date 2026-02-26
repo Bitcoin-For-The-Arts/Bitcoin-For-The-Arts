@@ -232,6 +232,26 @@ export async function publishDm(toPubkey: string, plaintext: string): Promise<st
   return signed.id;
 }
 
+export async function publishDeletion(opts: { eventIds: string[]; reason?: string }): Promise<string> {
+  const pubkey = requirePubkey();
+  const ids = (opts.eventIds || []).map((x) => (x || '').trim()).filter(Boolean).slice(0, 200);
+  if (!ids.length) throw new Error('Nothing to delete.');
+
+  const tags: string[][] = [];
+  for (const id of ids) tags.push(['e', id]);
+
+  const unsigned = {
+    kind: NOSTR_KINDS.deletion,
+    created_at: Math.floor(Date.now() / 1000),
+    content: (opts.reason || '').trim(),
+    tags,
+    pubkey,
+  };
+  const signed = await signWithNip07(unsigned as any);
+  await publishSignedEvent(signed as any);
+  return signed.id;
+}
+
 export async function publishCuratedSet(opts: {
   d: string;
   title: string;

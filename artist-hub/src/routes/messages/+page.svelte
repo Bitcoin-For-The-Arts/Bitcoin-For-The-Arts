@@ -9,6 +9,7 @@
   import { profileHover } from '$lib/ui/profile-hover';
   import { getLocalSecretKey } from '$lib/stores/local-signer';
   import ContentBody from '$lib/components/ContentBody.svelte';
+  import { publishDeletion } from '$lib/nostr/publish';
 
   type Msg = { id: string; from: string; to: string; at: number; text: string };
   type Thread = { with: string; lastAt: number; lastText: string };
@@ -25,10 +26,73 @@
   let composerTo = '';
   let composerLabel = '';
 
-  function upsertThread(withPk: string, msg: Msg) {
-    const next = threads.filter((t) => t.with !== withPk);
-    next.unshift({ with: withPk, lastAt: msg.at, lastText: msg.text.slice(0, 140) });
-    threads = next.sort((a, b) => b.lastAt - a.lastAt).slice(0, 50);
+  let deleted = new Set<string>();
+  let cleared: Record<string, number> = {}; // withPubkey -> unix seconds
+  let actionError: string | null = null;
+  let actionBusy = false;
+
+  function deletedKey(me: string) {
+    return `bfta:dm:deleted:${me}`;
+  }
+  function clearedKey(me: string) {
+    return `bfta:dm:cleared:${me}`;
+  }
+  function loadLocalState(me: string) {
+    deleted = new Set<string>();
+    cleared = {};
+    actionError = null;
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = localStorage.getItem(deletedKey(me));
+      const arr = raw ? (JSON.parse(raw) as any) : [];
+      if (Array.isArray(arr)) for (const id of arr) if (typeof id === 'string') deleted.add(id);
+    } catch {
+      // ignore
+    }
+    try {
+      const raw = localStorage.getItem(clearedKey(me));
+      const obj = raw ? (JSON.parse(raw) as any) : null;
+      if (obj && typeof obj === 'object') cleared = obj as Record<string, number>;
+    } catch {
+      // ignore
+    }
+  }
+  function persistDeleted(me: string) {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(deletedKey(me), JSON.stringify(Array.from(deleted).slice(-2000)));
+    } catch {
+      // ignore
+    }
+  }
+  function persistCleared(me: string) {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(clearedKey(me), JSON.stringify(cleared));
+    } catch {
+      // ignore
+    }
+  }
+
+  function withPkFor(msg: Msg, me: string): string {
+    return msg.from === me ? msg.to : msg.from;
+  }
+
+  function rebuildThreads(me: string) {
+    const best = new Map<string, Msg>();
+    for (const m of messages) {
+      if (deleted.has(m.id)) continue;
+      const withPk = withPkFor(m, me);
+      const cutoff = cleared[withPk] || 0;
+      if (m.at <= cutoff) continue;
+      const prev = best.get(withPk);
+      if (!prev || m.at > prev.at) best.set(withPk, m);
+    }
+    threads = Array.from(best.entries())
+      .map(([withPk, m]) => ({ with: withPk, lastAt: m.at, lastText: m.text.slice(0, 140) }))
+      .sort((a, b) => b.lastAt - a.lastAt)
+      .slice(0, 50);
+    if (selected && !threads.some((t) => t.with === selected)) selected = threads[0]?.with ?? null;
   }
 
   async function decrypt(ev: any, me: string): Promise<Msg | null> {
@@ -53,6 +117,7 @@
     if (!$pubkey) return;
     error = null;
     loading = true;
+    actionError = null;
 
     const hasDecrypt = Boolean(window.nostr?.nip04?.decrypt) || Boolean(getLocalSecretKey());
     if (!hasDecrypt) {
@@ -63,6 +128,7 @@
 
     const ndk = await ensureNdk();
     const me = $pubkey;
+    loadLocalState(me);
 
     const sub = ndk.subscribe(
       [
@@ -77,17 +143,74 @@
         const msg = await decrypt(ev, me);
         if (!msg) return;
         const withPk = msg.from === me ? msg.to : msg.from;
+        if (deleted.has(msg.id)) return;
+        const cutoff = cleared[withPk] || 0;
+        if (msg.at <= cutoff) return;
         void fetchProfileFor(withPk);
         messages = [...messages.filter((m) => m.id !== msg.id), msg].sort((a, b) => a.at - b.at).slice(-200);
-        upsertThread(withPk, msg);
+        rebuildThreads(me);
         if (!selected) selected = withPk;
       } catch {
         // ignore undecryptable messages
       }
     });
 
-    stop = () => sub.stop();
+    // Listen for your deletion events (NIP-09) so deletions from other clients are respected.
+    const subDel = ndk.subscribe({ kinds: [NOSTR_KINDS.deletion], authors: [me], limit: 200 } as any, { closeOnEose: false });
+    subDel.on('event', (ev: any) => {
+      const tags = (ev?.tags as string[][]) || [];
+      const ids = tags.filter((t) => t[0] === 'e' && typeof t[1] === 'string').map((t) => t[1]);
+      let changed = false;
+      for (const id of ids) {
+        if (!deleted.has(id)) {
+          deleted.add(id);
+          changed = true;
+        }
+      }
+      if (!changed) return;
+      persistDeleted(me);
+      messages = messages.filter((m) => !deleted.has(m.id));
+      rebuildThreads(me);
+    });
+
+    stop = () => {
+      sub.stop();
+      subDel.stop();
+    };
     loading = false;
+  }
+
+  async function removeMessage(m: Msg) {
+    if (!$pubkey) return;
+    const me = $pubkey;
+    actionError = null;
+    actionBusy = true;
+    try {
+      deleted.add(m.id);
+      persistDeleted(me);
+      messages = messages.filter((x) => x.id !== m.id);
+      rebuildThreads(me);
+
+      // If you authored it, publish a NIP-09 deletion event (best-effort).
+      if (m.from === me) {
+        await publishDeletion({ eventIds: [m.id], reason: 'deleted' });
+      }
+    } catch (e) {
+      actionError = e instanceof Error ? e.message : String(e);
+    } finally {
+      actionBusy = false;
+    }
+  }
+
+  function clearConversation(withPk: string) {
+    if (!$pubkey) return;
+    const me = $pubkey;
+    actionError = null;
+    const now = Math.floor(Date.now() / 1000);
+    cleared = { ...cleared, [withPk]: now };
+    persistCleared(me);
+    messages = messages.filter((m) => withPkFor(m, me) !== withPk || m.at > now);
+    rebuildThreads(me);
   }
 
   function openNew() {
@@ -121,6 +244,9 @@
     selected = null;
     if (stop) stop();
     stop = null;
+    deleted = new Set();
+    cleared = {};
+    actionError = null;
   }
 
   onDestroy(() => {
@@ -184,16 +310,19 @@
       <div style="display:flex; align-items:center; justify-content:space-between; gap: 1rem;">
         <div style="font-weight: 900;">Conversation</div>
         {#if selected}
-          <button
-            class="btn primary"
-            on:click={() => {
-              composerTo = selected!;
-              composerLabel = selectedName;
-              composerOpen = true;
-            }}
-          >
-            Send message
-          </button>
+          <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+            <button class="btn" disabled={actionBusy} on:click={() => clearConversation(selected!)}>Clear</button>
+            <button
+              class="btn primary"
+              on:click={() => {
+                composerTo = selected!;
+                composerLabel = selectedName;
+                composerOpen = true;
+              }}
+            >
+              Send message
+            </button>
+          </div>
         {/if}
       </div>
       {#if selected}
@@ -203,10 +332,15 @@
       {/if}
 
       <div style="margin-top: 0.85rem; display:grid; gap:0.5rem;">
-        {#each messages.filter((m) => selected && (m.from === selected || m.to === selected)) as m (m.id)}
+        {#each messages.filter((m) => selected && (m.from === selected || m.to === selected) && !deleted.has(m.id)) as m (m.id)}
           <div class="card" style="padding: 0.75rem 0.85rem; background: rgba(0,0,0,0.18);">
-            <div class="muted" style="font-size: 0.86rem;">
-              {m.from === $pubkey ? 'You' : 'Them'} • {new Date(m.at * 1000).toLocaleString()}
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:0.75rem;">
+              <div class="muted" style="font-size: 0.86rem;">
+                {m.from === $pubkey ? 'You' : 'Them'} • {new Date(m.at * 1000).toLocaleString()}
+              </div>
+              <button class="pill muted" disabled={actionBusy} on:click={() => removeMessage(m)} title={m.from === $pubkey ? 'Delete (publish NIP-09)' : 'Remove from your inbox'}>
+                🗑
+              </button>
             </div>
             <div style="margin-top:0.35rem; line-height: 1.5;"><ContentBody text={m.text} maxUrls={2} compactLinks={true} /></div>
           </div>
@@ -214,7 +348,13 @@
         {#if !selected}
           <div class="muted">Pick a thread to view messages.</div>
         {/if}
+        {#if selected && messages.filter((m) => (m.from === selected || m.to === selected) && !deleted.has(m.id)).length === 0}
+          <div class="muted">No messages in this conversation.</div>
+        {/if}
       </div>
+      {#if actionError}
+        <div class="muted" style="margin-top:0.65rem; color: var(--danger);">{actionError}</div>
+      {/if}
     </div>
   </div>
 
