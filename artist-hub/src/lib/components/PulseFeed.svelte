@@ -20,6 +20,7 @@
   export let tags: string[] = [];
   export let authors: string[] = [];
   export let limit = 40;
+  export let showComposer = true;
 
   type Post = {
     id: string;
@@ -672,27 +673,29 @@
 </script>
 
 <div class="grid" style="gap: 1rem;">
-  <div class="card" style="padding: 1rem;">
-    <div style="font-weight: 950;">Post</div>
-    <div class="muted" style="margin-top: 0.35rem; line-height:1.55;">
-      Publish a note to Nostr. Comments are replies. Zaps are Lightning payments with optional emoji attachments.
-    </div>
-    <div style="margin-top: 0.75rem;">
-      <textarea
-        class="textarea"
-        bind:this={newPostEl}
-        bind:value={newPost}
-        placeholder="Share an update, drop a link, announce a listing…"
-      ></textarea>
-      <div style="margin-top:0.65rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
-        <EmojiPicker on:pick={(e) => (newPost = insertAtCursor(newPostEl, newPost, e.detail.emoji))} />
-        <button class="btn primary" disabled={publishBusy || !newPost.trim()} on:click={doPublishPost}>
-          {publishBusy ? 'Publishing…' : 'Publish'}
-        </button>
-        {#if publishError}<span class="muted" style="color:var(--danger);">{publishError}</span>{/if}
+  {#if showComposer}
+    <div class="card" style="padding: 1rem;">
+      <div style="font-weight: 950;">Post</div>
+      <div class="muted" style="margin-top: 0.35rem; line-height:1.55;">
+        Publish a note to Nostr. Comments are replies. Zaps are Lightning payments with optional emoji attachments.
+      </div>
+      <div style="margin-top: 0.75rem;">
+        <textarea
+          class="textarea"
+          bind:this={newPostEl}
+          bind:value={newPost}
+          placeholder="Share an update, drop a link, announce a listing…"
+        ></textarea>
+        <div style="margin-top:0.65rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+          <EmojiPicker on:pick={(e) => (newPost = insertAtCursor(newPostEl, newPost, e.detail.emoji))} />
+          <button class="btn primary" disabled={publishBusy || !newPost.trim()} on:click={doPublishPost}>
+            {publishBusy ? 'Publishing…' : 'Publish'}
+          </button>
+          {#if publishError}<span class="muted" style="color:var(--danger);">{publishError}</span>{/if}
+        </div>
       </div>
     </div>
-  </div>
+  {/if}
 
   {#if error}
     <div class="card" style="padding: 1rem; border-color: rgba(251,113,133,0.35);">
