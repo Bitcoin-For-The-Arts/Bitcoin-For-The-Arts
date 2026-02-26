@@ -11,6 +11,8 @@
   import ZapComposer from '$lib/components/ZapComposer.svelte';
   import { publishComment } from '$lib/nostr/publish';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
+  import ContentBody from '$lib/components/ContentBody.svelte';
+  import { parseZapReceipt } from '$lib/nostr/zap-receipts';
 
   type Comment = { id: string; pubkey: string; content: string; createdAt: number };
 
@@ -58,9 +60,14 @@
       const sub = ndk.subscribe(
         {
           kinds: [NOSTR_KINDS.note, NOSTR_KINDS.nip57_zap_receipt],
+          // Notes use '#e' reliably; zap receipts are best-effort here and filtered client-side.
           '#e': [id],
           limit: 200,
         },
+        { closeOnEose: false },
+      );
+      const subZaps = ndk.subscribe(
+        { kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [ev.pubkey!], since: Math.max(0, (ev.created_at || 0) - 60), limit: 800 } as any,
         { closeOnEose: false },
       );
 
@@ -72,12 +79,17 @@
           ].sort((a, b) => b.createdAt - a.createdAt);
           void fetchProfileFor(cev.pubkey!);
         }
-        if (cev.kind === NOSTR_KINDS.nip57_zap_receipt) {
-          zapReceipts += 1;
-        }
+      });
+      subZaps.on('event', (z) => {
+        const parsed = parseZapReceipt(z as any);
+        if (!parsed?.eTags?.includes(id)) return;
+        zapReceipts += 1;
       });
 
-      stop = () => sub.stop();
+      stop = () => {
+        sub.stop();
+        subZaps.stop();
+      };
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
     } finally {
@@ -219,7 +231,7 @@
             <div class="muted" style="font-size: 0.88rem;">
               {npubFor(c.pubkey).slice(0, 18)}… • {new Date(c.createdAt * 1000).toLocaleString()}
             </div>
-            <div style="margin-top: 0.45rem; white-space: pre-wrap; line-height: 1.5;">{c.content}</div>
+            <div style="margin-top: 0.45rem; line-height: 1.5;"><ContentBody text={c.content} maxUrls={3} compactLinks={true} /></div>
           </div>
         {/each}
         {#if comments.length === 0}

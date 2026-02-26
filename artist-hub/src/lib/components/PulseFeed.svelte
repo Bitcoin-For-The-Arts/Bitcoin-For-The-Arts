@@ -3,8 +3,7 @@
   import { ensureNdk } from '$lib/stores/ndk';
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
-  import { detectMediaType, extractUrls } from '$lib/ui/media';
-  import { autoPauseVideo } from '$lib/ui/video';
+  import { extractUrls } from '$lib/ui/media';
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
   import { publishComment, publishEdit, publishNote, publishQuoteRepost, publishRepost } from '$lib/nostr/publish';
   import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
@@ -12,7 +11,7 @@
   import ZapComposer from '$lib/components/ZapComposer.svelte';
   import ZapEmojiComposer from '$lib/components/ZapEmojiComposer.svelte';
   import EmojiPicker from '$lib/components/EmojiPicker.svelte';
-  import RichText from '$lib/components/RichText.svelte';
+  import ContentBody from '$lib/components/ContentBody.svelte';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
   import { profileHover } from '$lib/ui/profile-hover';
   import { insertAtCursor } from '$lib/ui/text';
@@ -35,6 +34,7 @@
     reposts: number;
     zaps: number;
     sats: number;
+    zapEmojis?: string[];
     editedContent?: string;
     editedAt?: number;
   };
@@ -214,16 +214,23 @@
     try {
       const ndk = await ensureNdk();
       const sub = ndk.subscribe(
-        { kinds: [NOSTR_KINDS.note, NOSTR_KINDS.repost, NOSTR_KINDS.nip57_zap_receipt, NOSTR_KINDS.nip37_edit], '#e': [p.id], limit: 250 } as any,
+        { kinds: [NOSTR_KINDS.note, NOSTR_KINDS.repost, NOSTR_KINDS.nip37_edit], '#e': [p.id], limit: 350 } as any,
         { closeOnEose: true },
       );
       const subQuotes = ndk.subscribe({ kinds: [NOSTR_KINDS.note], '#q': [p.id], limit: 250 } as any, { closeOnEose: true });
+      // Zap receipts are not reliably indexable by '#e' (the 'e' tag lives inside the embedded zap-request JSON),
+      // so we query by recipient '#p' then filter client-side by parsed e-tags.
+      const subZaps = ndk.subscribe(
+        { kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [p.pubkey], since: Math.max(0, (p.createdAt || 0) - 60), limit: 900 } as any,
+        { closeOnEose: true },
+      );
 
       let commentsCount = 0;
       let repostsCount = 0;
       let quoteRepostsCount = 0;
       let zapsCount = 0;
       let satsSum = 0;
+      const emojis: string[] = [];
       let latestEdit: { at: number; content: string } | null = null;
 
       sub.on('event', (ev) => {
@@ -234,13 +241,6 @@
           if (!isQuote) commentsCount += 1;
         }
         if (ev.kind === NOSTR_KINDS.repost) repostsCount += 1;
-        if (ev.kind === NOSTR_KINDS.nip57_zap_receipt) {
-          const parsed = parseZapReceipt(ev);
-          if (parsed?.eTags.includes(p.id)) {
-            zapsCount += 1;
-            satsSum += parsed.amountSats ?? 0;
-          }
-        }
         if (ev.kind === NOSTR_KINDS.nip37_edit) {
           if (ev.pubkey !== p.pubkey) return;
           const at = ev.created_at || 0;
@@ -254,10 +254,21 @@
         quoteRepostsCount += 1;
       });
 
+      subZaps.on('event', (ev) => {
+        const parsed = parseZapReceipt(ev);
+        if (!parsed?.eTags?.includes(p.id)) return;
+        zapsCount += 1;
+        satsSum += parsed.amountSats ?? 0;
+        const c = (parsed.comment || '').trim();
+        if (c && c.length <= 8 && !emojis.includes(c)) emojis.unshift(c);
+        if (emojis.length > 6) emojis.length = 6;
+      });
+
       let doneA = false;
       let doneB = false;
+      let doneC = false;
       function finalize() {
-        if (!doneA || !doneB) return;
+        if (!doneA || !doneB || !doneC) return;
         const prev = statsById.get(p.id);
         if (!prev) return;
         statsById.set(p.id, {
@@ -265,6 +276,7 @@
           reposts: repostsCount + quoteRepostsCount,
           zaps: zapsCount,
           sats: satsSum,
+          zapEmojis: emojis.length ? emojis : undefined,
           editedContent: latestEdit?.content?.trim() ? latestEdit.content.trim() : undefined,
           editedAt: latestEdit?.at,
         });
@@ -277,6 +289,10 @@
       });
       subQuotes.on('eose', () => {
         doneB = true;
+        finalize();
+      });
+      subZaps.on('eose', () => {
+        doneC = true;
         finalize();
       });
     } catch {
@@ -354,6 +370,12 @@
       });
 
       await new Promise<void>((resolve) => sub.on('eose', () => resolve()));
+
+      // Prefetch stats for the newest slice (so `/me` and initial load show counts immediately).
+      if (opts?.initial) {
+        const n = Math.max(20, Math.min(50, Math.max(30, limit)));
+        for (const p of posts.slice(0, n)) void loadStatsFor(p);
+      }
 
       if (minTs <= 0 || minTs >= until) {
         backfillDone = true;
@@ -729,31 +751,7 @@
         </div>
 
         <div class="content">
-          <div class="text"><RichText text={body} /></div>
-
-          {#if p.urls.length}
-            <div class="media">
-              {#each p.urls.slice(0, 4) as u (u)}
-                {@const t = detectMediaType(u)}
-                {#if t === 'image'}
-                  <a href={u} target="_blank" rel="noreferrer" class="m image">
-                    <img src={u} alt="" loading="lazy" />
-                  </a>
-                {:else if t === 'video'}
-                  <div class="m video">
-                    <!-- svelte-ignore a11y_media_has_caption -->
-                    <video src={u} controls playsinline preload="metadata" use:autoPauseVideo></video>
-                  </div>
-                {:else if t === 'audio'}
-                  <div class="m audio">
-                    <audio src={u} controls preload="none"></audio>
-                  </div>
-                {:else}
-                  <a href={u} target="_blank" rel="noreferrer" class="pill muted mono link">{u}</a>
-                {/if}
-              {/each}
-            </div>
-          {/if}
+          <ContentBody text={body} maxUrls={4} />
         </div>
 
         <div class="actions" aria-label="Post actions">
@@ -843,6 +841,17 @@
           {/if}
         </div>
 
+        {#if st && (st.sats > 0 || (st.zapEmojis && st.zapEmojis.length))}
+          <div class="zapMetaRow" aria-label="Zap totals">
+            {#if st.sats > 0}
+              <span class="pill muted">⚡ {st.sats.toLocaleString()} sats</span>
+            {/if}
+            {#if st.zapEmojis?.length}
+              <span class="pill muted" title="Emoji attachments">{st.zapEmojis.slice(0, 6).join(' ')}</span>
+            {/if}
+          </div>
+        {/if}
+
         {#if mz || mr}
           <div class="myRow" aria-label="Your recent actions">
             {#if mz}
@@ -925,7 +934,9 @@
           {#if c.replyTo}
             <div class="muted small" style="margin-top:0.2rem;">↳ reply to {c.replyTo.slice(0, 10)}…</div>
           {/if}
-          <div style="margin-top: 0.45rem; line-height: 1.5;"><RichText text={c.content} /></div>
+          <div style="margin-top: 0.45rem; line-height: 1.5;">
+            <ContentBody text={c.content} maxUrls={3} compactLinks={true} />
+          </div>
           <div style="margin-top:0.6rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
             <button class="btn" on:click={() => (replyTo = { id: c.id, pubkey: c.pubkey })}>Reply</button>
             <button
@@ -1199,41 +1210,6 @@
   .content {
     margin-top: 0.75rem;
   }
-  .text {
-    line-height: 1.55;
-    white-space: pre-wrap;
-    word-break: break-word;
-    max-width: 72ch;
-  }
-  .media {
-    margin-top: 0.65rem;
-    display: grid;
-    gap: 0.55rem;
-    max-width: 860px;
-  }
-  .m {
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    background: rgba(0, 0, 0, 0.18);
-  }
-  .m.image img {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    display: block;
-  }
-  .m.video video {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: contain;
-    background: rgba(0, 0, 0, 0.55);
-    display: block;
-  }
-  .m.audio audio {
-    width: 100%;
-    display: block;
-  }
 
   .actions {
     margin-top: 0.9rem;
@@ -1314,6 +1290,13 @@
   .myPill {
     font-size: 0.82rem;
     padding: 0.18rem 0.5rem;
+  }
+  .zapMetaRow {
+    margin-top: 0.65rem;
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    align-items: center;
   }
 
   :global(.btn.sent) {
