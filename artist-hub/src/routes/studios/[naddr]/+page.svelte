@@ -9,6 +9,7 @@
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import ZapComposer from '$lib/components/ZapComposer.svelte';
   import ChannelChat from '$lib/components/ChannelChat.svelte';
+  import ContentBody from '$lib/components/ContentBody.svelte';
   import { publishComment } from '$lib/nostr/publish';
   import { npubFor } from '$lib/nostr/helpers';
 
@@ -203,7 +204,7 @@
             <div class="muted" style="font-size: 0.88rem;">
               {npubFor(g.pubkey).slice(0, 18)}… • {new Date(g.createdAt * 1000).toLocaleString()}
             </div>
-            <div style="margin-top: 0.45rem; white-space: pre-wrap; line-height: 1.5;">{g.content}</div>
+            <div style="margin-top: 0.45rem; line-height: 1.5;"><ContentBody text={g.content} maxUrls={3} compactLinks={true} /></div>
           </div>
         {/each}
         {#if guestbook.length === 0}

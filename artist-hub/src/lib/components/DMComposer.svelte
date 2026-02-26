@@ -3,6 +3,8 @@
   import { publishDm } from '$lib/nostr/publish';
   import { isAuthed } from '$lib/stores/auth';
   import { npubFor } from '$lib/nostr/helpers';
+  import EmojiPicker from '$lib/components/EmojiPicker.svelte';
+  import { insertAtCursor } from '$lib/ui/text';
 
   export let open = false;
   export let toPubkey: string;
@@ -10,6 +12,7 @@
   export let onClose: () => void = () => {};
 
   let message = '';
+  let messageEl: HTMLTextAreaElement | null = null;
   let sending = false;
   let error: string | null = null;
   let ok: string | null = null;
@@ -43,9 +46,15 @@
     <span class="pill muted">{toNpub.slice(0, 16)}…</span>
   </div>
 
-  <textarea class="textarea" bind:value={message} placeholder="Write a message (NIP-04 encrypted DM)…"></textarea>
+  <textarea
+    class="textarea"
+    bind:this={messageEl}
+    bind:value={message}
+    placeholder="Write a message (NIP-04 encrypted DM)…"
+  ></textarea>
 
   <div class="row">
+    <EmojiPicker on:pick={(e) => (message = insertAtCursor(messageEl, message, e.detail.emoji))} />
     <button class="btn primary" disabled={sending || !message.trim()} on:click={send}>
       {sending ? 'Sending…' : 'Send DM'}
     </button>

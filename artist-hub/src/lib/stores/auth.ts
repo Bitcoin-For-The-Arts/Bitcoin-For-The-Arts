@@ -10,7 +10,10 @@ export type ArtistProfile = {
   display_name?: string;
   about?: string;
   picture?: string;
+  banner?: string;
   website?: string;
+  // Non-standard, used for UI (optional)
+  website_icon?: string;
   nip05?: string;
   lud16?: string;
   lud06?: string;

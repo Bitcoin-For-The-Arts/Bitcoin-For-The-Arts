@@ -3,20 +3,23 @@
   import { ensureNdk } from '$lib/stores/ndk';
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
-  import { detectMediaType, extractUrls } from '$lib/ui/media';
-  import { autoPauseVideo } from '$lib/ui/video';
+  import { extractUrls } from '$lib/ui/media';
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
   import { publishComment, publishEdit, publishNote, publishQuoteRepost, publishRepost } from '$lib/nostr/publish';
   import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
   import Modal from '$lib/components/Modal.svelte';
   import ZapComposer from '$lib/components/ZapComposer.svelte';
   import ZapEmojiComposer from '$lib/components/ZapEmojiComposer.svelte';
+  import EmojiPicker from '$lib/components/EmojiPicker.svelte';
+  import ContentBody from '$lib/components/ContentBody.svelte';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
   import { profileHover } from '$lib/ui/profile-hover';
+  import { insertAtCursor } from '$lib/ui/text';
 
   export let tags: string[] = [];
   export let authors: string[] = [];
   export let limit = 40;
+  export let showComposer = true;
 
   type Post = {
     id: string;
@@ -31,6 +34,7 @@
     reposts: number;
     zaps: number;
     sats: number;
+    zapEmojis?: string[];
     editedContent?: string;
     editedAt?: number;
   };
@@ -92,6 +96,7 @@
 
   // Composer
   let newPost = '';
+  let newPostEl: HTMLTextAreaElement | null = null;
   let publishBusy = false;
   let publishError: string | null = null;
 
@@ -105,6 +110,7 @@
     replyTo?: string;
   }> = [];
   let commentText = '';
+  let commentEl: HTMLTextAreaElement | null = null;
   let commentBusy = false;
   let commentError: string | null = null;
   let replyTo: { id: string; pubkey: string } | null = null;
@@ -112,6 +118,7 @@
   // Edit modal
   let editOpenFor: Post | null = null;
   let editText = '';
+  let editEl: HTMLTextAreaElement | null = null;
   let editBusy = false;
   let editError: string | null = null;
 
@@ -134,6 +141,7 @@
   let repostComposeFor: { id: string; pubkey: string; label: string } | null = null;
   let repostComposeFromPost: Post | null = null;
   let repostQuote = '';
+  let repostQuoteEl: HTMLTextAreaElement | null = null;
   let repostComposeBusy = false;
   let repostComposeError: string | null = null;
 
@@ -206,16 +214,23 @@
     try {
       const ndk = await ensureNdk();
       const sub = ndk.subscribe(
-        { kinds: [NOSTR_KINDS.note, NOSTR_KINDS.repost, NOSTR_KINDS.nip57_zap_receipt, NOSTR_KINDS.nip37_edit], '#e': [p.id], limit: 250 } as any,
+        { kinds: [NOSTR_KINDS.note, NOSTR_KINDS.repost, NOSTR_KINDS.nip37_edit], '#e': [p.id], limit: 350 } as any,
         { closeOnEose: true },
       );
       const subQuotes = ndk.subscribe({ kinds: [NOSTR_KINDS.note], '#q': [p.id], limit: 250 } as any, { closeOnEose: true });
+      // Zap receipts are not reliably indexable by '#e' (the 'e' tag lives inside the embedded zap-request JSON),
+      // so we query by recipient '#p' then filter client-side by parsed e-tags.
+      const subZaps = ndk.subscribe(
+        { kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [p.pubkey], since: Math.max(0, (p.createdAt || 0) - 60), limit: 900 } as any,
+        { closeOnEose: true },
+      );
 
       let commentsCount = 0;
       let repostsCount = 0;
       let quoteRepostsCount = 0;
       let zapsCount = 0;
       let satsSum = 0;
+      const emojis: string[] = [];
       let latestEdit: { at: number; content: string } | null = null;
 
       sub.on('event', (ev) => {
@@ -226,13 +241,6 @@
           if (!isQuote) commentsCount += 1;
         }
         if (ev.kind === NOSTR_KINDS.repost) repostsCount += 1;
-        if (ev.kind === NOSTR_KINDS.nip57_zap_receipt) {
-          const parsed = parseZapReceipt(ev);
-          if (parsed?.eTags.includes(p.id)) {
-            zapsCount += 1;
-            satsSum += parsed.amountSats ?? 0;
-          }
-        }
         if (ev.kind === NOSTR_KINDS.nip37_edit) {
           if (ev.pubkey !== p.pubkey) return;
           const at = ev.created_at || 0;
@@ -246,10 +254,21 @@
         quoteRepostsCount += 1;
       });
 
+      subZaps.on('event', (ev) => {
+        const parsed = parseZapReceipt(ev);
+        if (!parsed?.eTags?.includes(p.id)) return;
+        zapsCount += 1;
+        satsSum += parsed.amountSats ?? 0;
+        const c = (parsed.comment || '').trim();
+        if (c && c.length <= 8 && !emojis.includes(c)) emojis.unshift(c);
+        if (emojis.length > 6) emojis.length = 6;
+      });
+
       let doneA = false;
       let doneB = false;
+      let doneC = false;
       function finalize() {
-        if (!doneA || !doneB) return;
+        if (!doneA || !doneB || !doneC) return;
         const prev = statsById.get(p.id);
         if (!prev) return;
         statsById.set(p.id, {
@@ -257,6 +276,7 @@
           reposts: repostsCount + quoteRepostsCount,
           zaps: zapsCount,
           sats: satsSum,
+          zapEmojis: emojis.length ? emojis : undefined,
           editedContent: latestEdit?.content?.trim() ? latestEdit.content.trim() : undefined,
           editedAt: latestEdit?.at,
         });
@@ -269,6 +289,10 @@
       });
       subQuotes.on('eose', () => {
         doneB = true;
+        finalize();
+      });
+      subZaps.on('eose', () => {
+        doneC = true;
         finalize();
       });
     } catch {
@@ -346,6 +370,12 @@
       });
 
       await new Promise<void>((resolve) => sub.on('eose', () => resolve()));
+
+      // Prefetch stats for the newest slice (so `/me` and initial load show counts immediately).
+      if (opts?.initial) {
+        const n = Math.max(20, Math.min(50, Math.max(30, limit)));
+        for (const p of posts.slice(0, n)) void loadStatsFor(p);
+      }
 
       if (minTs <= 0 || minTs >= until) {
         backfillDone = true;
@@ -665,21 +695,29 @@
 </script>
 
 <div class="grid" style="gap: 1rem;">
-  <div class="card" style="padding: 1rem;">
-    <div style="font-weight: 950;">Post</div>
-    <div class="muted" style="margin-top: 0.35rem; line-height:1.55;">
-      Publish a note to Nostr. Comments are replies. Zaps are Lightning payments with optional emoji attachments.
-    </div>
-    <div style="margin-top: 0.75rem;">
-      <textarea class="textarea" bind:value={newPost} placeholder="Share an update, drop a link, announce a listing…"></textarea>
-      <div style="margin-top:0.65rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
-        <button class="btn primary" disabled={publishBusy || !newPost.trim()} on:click={doPublishPost}>
-          {publishBusy ? 'Publishing…' : 'Publish'}
-        </button>
-        {#if publishError}<span class="muted" style="color:var(--danger);">{publishError}</span>{/if}
+  {#if showComposer}
+    <div class="card" style="padding: 1rem;">
+      <div style="font-weight: 950;">Post</div>
+      <div class="muted" style="margin-top: 0.35rem; line-height:1.55;">
+        Publish a note to Nostr. Comments are replies. Zaps are Lightning payments with optional emoji attachments.
+      </div>
+      <div style="margin-top: 0.75rem;">
+        <textarea
+          class="textarea"
+          bind:this={newPostEl}
+          bind:value={newPost}
+          placeholder="Share an update, drop a link, announce a listing…"
+        ></textarea>
+        <div style="margin-top:0.65rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+          <EmojiPicker on:pick={(e) => (newPost = insertAtCursor(newPostEl, newPost, e.detail.emoji))} />
+          <button class="btn primary" disabled={publishBusy || !newPost.trim()} on:click={doPublishPost}>
+            {publishBusy ? 'Publishing…' : 'Publish'}
+          </button>
+          {#if publishError}<span class="muted" style="color:var(--danger);">{publishError}</span>{/if}
+        </div>
       </div>
     </div>
-  </div>
+  {/if}
 
   {#if error}
     <div class="card" style="padding: 1rem; border-color: rgba(251,113,133,0.35);">
@@ -713,31 +751,7 @@
         </div>
 
         <div class="content">
-          <div class="text">{body}</div>
-
-          {#if p.urls.length}
-            <div class="media">
-              {#each p.urls.slice(0, 4) as u (u)}
-                {@const t = detectMediaType(u)}
-                {#if t === 'image'}
-                  <a href={u} target="_blank" rel="noreferrer" class="m image">
-                    <img src={u} alt="" loading="lazy" />
-                  </a>
-                {:else if t === 'video'}
-                  <div class="m video">
-                    <!-- svelte-ignore a11y_media_has_caption -->
-                    <video src={u} controls playsinline preload="metadata" use:autoPauseVideo></video>
-                  </div>
-                {:else if t === 'audio'}
-                  <div class="m audio">
-                    <audio src={u} controls preload="none"></audio>
-                  </div>
-                {:else}
-                  <a href={u} target="_blank" rel="noreferrer" class="pill muted mono link">{u}</a>
-                {/if}
-              {/each}
-            </div>
-          {/if}
+          <ContentBody text={body} maxUrls={4} />
         </div>
 
         <div class="actions" aria-label="Post actions">
@@ -827,6 +841,17 @@
           {/if}
         </div>
 
+        {#if st && (st.sats > 0 || (st.zapEmojis && st.zapEmojis.length))}
+          <div class="zapMetaRow" aria-label="Zap totals">
+            {#if st.sats > 0}
+              <span class="pill muted">⚡ {st.sats.toLocaleString()} sats</span>
+            {/if}
+            {#if st.zapEmojis?.length}
+              <span class="pill muted" title="Emoji attachments">{st.zapEmojis.slice(0, 6).join(' ')}</span>
+            {/if}
+          </div>
+        {/if}
+
         {#if mz || mr}
           <div class="myRow" aria-label="Your recent actions">
             {#if mz}
@@ -879,8 +904,14 @@
       </div>
     {/if}
 
-    <textarea class="textarea" bind:value={commentText} placeholder="Write a comment (public)…"></textarea>
+    <textarea
+      class="textarea"
+      bind:this={commentEl}
+      bind:value={commentText}
+      placeholder="Write a comment (public)…"
+    ></textarea>
     <div style="margin-top: 0.65rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+      <EmojiPicker on:pick={(e) => (commentText = insertAtCursor(commentEl, commentText, e.detail.emoji))} />
       <button class="btn primary" disabled={commentBusy || !commentText.trim()} on:click={postComment}>
         {commentBusy ? 'Posting…' : 'Post comment'}
       </button>
@@ -903,7 +934,9 @@
           {#if c.replyTo}
             <div class="muted small" style="margin-top:0.2rem;">↳ reply to {c.replyTo.slice(0, 10)}…</div>
           {/if}
-          <div style="margin-top: 0.45rem; white-space: pre-wrap; line-height: 1.5;">{c.content}</div>
+          <div style="margin-top: 0.45rem; line-height: 1.5;">
+            <ContentBody text={c.content} maxUrls={3} compactLinks={true} />
+          </div>
           <div style="margin-top:0.6rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
             <button class="btn" on:click={() => (replyTo = { id: c.id, pubkey: c.pubkey })}>Reply</button>
             <button
@@ -956,8 +989,9 @@
       <div class="muted" style="margin-top:0.35rem; line-height:1.45;">
         This publishes a note with a `q` tag to the target event, plus a `nostr:note…` link.
       </div>
-      <textarea class="textarea" bind:value={repostQuote} placeholder="Add your quote…"></textarea>
+      <textarea class="textarea" bind:this={repostQuoteEl} bind:value={repostQuote} placeholder="Add your quote…"></textarea>
       <div style="margin-top:0.65rem; display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+        <EmojiPicker on:pick={(e) => (repostQuote = insertAtCursor(repostQuoteEl, repostQuote, e.detail.emoji))} />
         <button class="btn primary" disabled={repostComposeBusy || !repostQuote.trim()} on:click={doQuoteRepostFromComposer}>
           {repostComposeBusy ? 'Publishing…' : 'Quote repost'}
         </button>
@@ -1034,7 +1068,9 @@
                 <a class="pill muted mono link" href={`https://njump.me/${r.id}`} target="_blank" rel="noreferrer">njump</a>
               </div>
               {#if r.content}
-                <div style="margin-top:0.5rem; white-space: pre-wrap; line-height: 1.5;">{r.content.slice(0, 240)}{r.content.length > 240 ? '…' : ''}</div>
+                <div style="margin-top:0.5rem; line-height: 1.5;">
+                  <RichText text={`${r.content.slice(0, 240)}${r.content.length > 240 ? '…' : ''}`} />
+                </div>
               {/if}
             </div>
           {/each}
@@ -1049,8 +1085,9 @@
     <div class="muted" style="margin-bottom:0.75rem;">
       This publishes an edit event (NIP-37). Some clients may still show the original note.
     </div>
-    <textarea class="textarea" bind:value={editText} placeholder="Edit your post…"></textarea>
+    <textarea class="textarea" bind:this={editEl} bind:value={editText} placeholder="Edit your post…"></textarea>
     <div style="margin-top: 0.65rem; display:flex; gap:0.5rem; align-items:center;">
+      <EmojiPicker on:pick={(e) => (editText = insertAtCursor(editEl, editText, e.detail.emoji))} />
       <button class="btn primary" disabled={editBusy || !editText.trim()} on:click={saveEdit}>
         {editBusy ? 'Saving…' : 'Publish edit'}
       </button>
@@ -1173,41 +1210,6 @@
   .content {
     margin-top: 0.75rem;
   }
-  .text {
-    line-height: 1.55;
-    white-space: pre-wrap;
-    word-break: break-word;
-    max-width: 72ch;
-  }
-  .media {
-    margin-top: 0.65rem;
-    display: grid;
-    gap: 0.55rem;
-    max-width: 860px;
-  }
-  .m {
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    background: rgba(0, 0, 0, 0.18);
-  }
-  .m.image img {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    display: block;
-  }
-  .m.video video {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: contain;
-    background: rgba(0, 0, 0, 0.55);
-    display: block;
-  }
-  .m.audio audio {
-    width: 100%;
-    display: block;
-  }
 
   .actions {
     margin-top: 0.9rem;
@@ -1288,6 +1290,13 @@
   .myPill {
     font-size: 0.82rem;
     padding: 0.18rem 0.5rem;
+  }
+  .zapMetaRow {
+    margin-top: 0.65rem;
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    align-items: center;
   }
 
   :global(.btn.sent) {

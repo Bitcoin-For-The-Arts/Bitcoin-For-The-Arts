@@ -13,6 +13,7 @@ export const NOSTR_KINDS = {
   contacts: 3,
   repost: 6,
   dm: 4,
+  deletion: 5,
 
   nip15_stall: 30017,
   nip15_product: 30018,
