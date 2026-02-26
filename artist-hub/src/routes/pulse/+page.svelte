@@ -291,5 +291,20 @@
       margin-left: auto;
     }
   }
+
+  @media (max-width: 560px) {
+    .controls {
+      padding: 0.85rem !important;
+    }
+    .feedWrap {
+      max-width: 100%;
+    }
+    .layout :global(.row) {
+      flex-wrap: wrap;
+    }
+    .layout :global(.input) {
+      min-width: 0;
+    }
+  }
 </style>
 
