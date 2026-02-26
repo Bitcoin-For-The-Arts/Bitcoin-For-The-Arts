@@ -2,6 +2,7 @@
   import Modal from '$lib/components/Modal.svelte';
   import { zapOrPay } from '$lib/lightning/zaps';
   import { profileByPubkey } from '$lib/stores/profiles';
+  import { createEventDispatcher } from 'svelte';
 
   export let open = false;
   export let recipientPubkey: string;
@@ -9,6 +10,10 @@
   export let eventId: string | undefined = undefined;
   export let address: string | undefined = undefined;
   export let onClose: () => void = () => {};
+
+  const dispatch = createEventDispatcher<{
+    sent: { eventId?: string; amountSats: number; comment?: string; mode: 'zap' | 'pay' };
+  }>();
 
   let amount = 1000;
   let comment = '';
@@ -35,6 +40,8 @@
         address,
       });
       ok = res.mode === 'zap' ? 'Zap sent.' : 'Payment sent.';
+      dispatch('sent', { eventId, amountSats: amount, comment: comment.trim() || undefined, mode: res.mode });
+      onClose();
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
     } finally {

@@ -4,6 +4,7 @@
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
   import { detectMediaType, extractUrls } from '$lib/ui/media';
+  import { autoPauseVideo } from '$lib/ui/video';
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
   import { publishComment, publishEdit, publishNote, publishQuoteRepost, publishRepost } from '$lib/nostr/publish';
   import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
@@ -14,6 +15,7 @@
   import { profileHover } from '$lib/ui/profile-hover';
 
   export let tags: string[] = [];
+  export let authors: string[] = [];
   export let limit = 40;
 
   type Post = {
@@ -36,9 +38,57 @@
   let posts: Post[] = [];
   let loading = false;
   let error: string | null = null;
-  let stop: (() => void) | null = null;
+  let stop: (() => void) | null = null; // live subscription
+  let backfillBusy = false;
+  let backfillDone = false;
+  let cursorUntil: number | null = null; // unix seconds
+  let loadMoreError: string | null = null;
+  let sentinel: HTMLDivElement | null = null;
+  let io: IntersectionObserver | null = null;
   const statsById = new Map<string, Stats>();
   let tick = 0; // invalidate for stats changes
+
+  type MyZap = { amountSats: number; comment?: string; at: number };
+  type MyRepost = { at: number; quote?: string };
+  const myZapsById = new Map<string, MyZap>();
+  const myRepostsById = new Map<string, MyRepost>();
+  let myTick = 0;
+
+  function getMyZap(id: string): MyZap | null {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _ = myTick;
+    return myZapsById.get(id) ?? null;
+  }
+  function getMyRepost(id: string): MyRepost | null {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _ = myTick;
+    return myRepostsById.get(id) ?? null;
+  }
+
+  function noteMyZap(eventId: string | undefined, amountSats: number, comment?: string) {
+    if (!eventId) return;
+    myZapsById.set(eventId, { amountSats: Math.max(0, Math.floor(amountSats)), comment, at: Date.now() });
+    myTick++;
+
+    // Optimistically bump stats for posts (comments won't have stats here).
+    const prev = statsById.get(eventId);
+    if (prev) {
+      statsById.set(eventId, { ...prev, zaps: (prev.zaps || 0) + 1, sats: (prev.sats || 0) + Math.max(0, Math.floor(amountSats)) });
+      tick++;
+    }
+  }
+
+  function noteMyRepost(eventId: string | undefined, quote?: string) {
+    if (!eventId) return;
+    myRepostsById.set(eventId, { at: Date.now(), quote: quote?.trim() || undefined });
+    myTick++;
+
+    const prev = statsById.get(eventId);
+    if (prev) {
+      statsById.set(eventId, { ...prev, reposts: (prev.reposts || 0) + 1 });
+      tick++;
+    }
+  }
 
   // Composer
   let newPost = '';
@@ -89,6 +139,38 @@
 
   function cleanTags(xs: string[]): string[] {
     return xs.map((t) => t.replace(/^#/, '').trim()).filter(Boolean).slice(0, 6);
+  }
+
+  function cleanAuthors(xs: string[]): string[] {
+    const out: string[] = [];
+    for (const x of xs || []) {
+      const pk = (x || '').trim().toLowerCase();
+      if (!pk) continue;
+      if (!/^[0-9a-f]{64}$/.test(pk)) continue;
+      if (!out.includes(pk)) out.push(pk);
+    }
+    return out.slice(0, 3);
+  }
+
+  function eventToPost(ev: any): Post | null {
+    if (!ev?.id || !ev?.pubkey || !ev?.created_at) return null;
+    if (isReplyLike(ev)) return null; // keep Pulse as a top-level timeline
+    const content = (ev.content || '').trim();
+    if (!content) return null;
+    return {
+      id: ev.id,
+      pubkey: ev.pubkey,
+      createdAt: ev.created_at,
+      content,
+      urls: extractUrls(content),
+    };
+  }
+
+  function upsertPost(post: Post, opts?: { cap?: number }): void {
+    const cap = Math.max(80, Math.min(1200, opts?.cap ?? 600));
+    posts = [post, ...posts.filter((x) => x.id !== post.id)]
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .slice(0, cap);
   }
 
   function isReplyLike(ev: any): boolean {
@@ -197,39 +279,86 @@
   async function start(): Promise<void> {
     error = null;
     loading = true;
+    loadMoreError = null;
     posts = [];
+    backfillDone = false;
+    cursorUntil = null;
     if (stop) stop();
     stop = null;
 
     try {
       const ndk = await ensureNdk();
       const t = cleanTags(tags);
-      const filter: any = { kinds: [NOSTR_KINDS.note], limit };
+      const a = cleanAuthors(authors);
+
+      // Initial backfill (latest page).
+      await loadMore({ ndk, t, a, initial: true });
+
+      // Live subscription for new posts going forward.
+      const since = Math.floor(Date.now() / 1000) - 60;
+      const filter: any = { kinds: [NOSTR_KINDS.note], limit: Math.max(120, limit), since };
       if (t.length) filter['#t'] = t;
+      if (a.length) filter.authors = a;
 
       const sub = ndk.subscribe(filter, { closeOnEose: false });
       sub.on('event', (ev) => {
-        if (!ev?.id || !ev?.pubkey || !ev?.created_at) return;
-        if (isReplyLike(ev)) return; // keep Pulse as a top-level timeline
-        const content = (ev.content || '').trim();
-        if (!content) return;
-
-        const post: Post = {
-          id: ev.id,
-          pubkey: ev.pubkey,
-          createdAt: ev.created_at,
-          content,
-          urls: extractUrls(content),
-        };
-
-        posts = [post, ...posts.filter((x) => x.id !== post.id)].sort((a, b) => b.createdAt - a.createdAt).slice(0, limit);
+        const post = eventToPost(ev);
+        if (!post) return;
+        upsertPost(post);
         void fetchProfileFor(post.pubkey);
-        void loadStatsFor(post);
+        // Stats are expensive; prefetch for a bounded window.
+        if (posts.length <= Math.max(60, limit)) void loadStatsFor(post);
       });
       sub.on('eose', () => (loading = false));
       stop = () => sub.stop();
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
+      loading = false;
+    }
+  }
+
+  async function loadMore(opts?: { ndk?: any; t?: string[]; a?: string[]; initial?: boolean }): Promise<void> {
+    if (backfillBusy || backfillDone) return;
+    backfillBusy = true;
+    loadMoreError = null;
+    try {
+      const ndk = opts?.ndk ?? (await ensureNdk());
+      const t = opts?.t ?? cleanTags(tags);
+      const a = opts?.a ?? cleanAuthors(authors);
+
+      const pageSize = Math.max(20, limit);
+      const until = cursorUntil ?? Math.floor(Date.now() / 1000);
+      const filter: any = { kinds: [NOSTR_KINDS.note], limit: pageSize, until };
+      if (t.length) filter['#t'] = t;
+      if (a.length) filter.authors = a;
+
+      const sub = ndk.subscribe(filter, { closeOnEose: true });
+      let minTs = until;
+      let added = 0;
+      sub.on('event', (ev) => {
+        const post = eventToPost(ev);
+        if (!post) return;
+        const had = posts.some((p) => p.id === post.id);
+        upsertPost(post);
+        if (!had) added += 1;
+        if (post.createdAt && post.createdAt < minTs) minTs = post.createdAt;
+        void fetchProfileFor(post.pubkey);
+      });
+
+      await new Promise<void>((resolve) => sub.on('eose', () => resolve()));
+
+      if (minTs <= 0 || minTs >= until) {
+        backfillDone = true;
+      } else {
+        cursorUntil = Math.max(0, minTs - 1);
+      }
+
+      // For subsequent pages, if we didn’t add anything new, assume we’re done.
+      if (!opts?.initial && added === 0) backfillDone = true;
+    } catch (e) {
+      loadMoreError = e instanceof Error ? e.message : String(e);
+    } finally {
+      backfillBusy = false;
       loading = false;
     }
   }
@@ -475,6 +604,7 @@
         tags: (ev.tags as any as string[][]) || [],
         sig: (ev as any).sig,
       });
+      noteMyRepost(repostComposeFor.id);
       if (repostComposeFromPost) await refreshStatsFor(repostComposeFromPost);
       repostComposeFor = null;
       repostComposeFromPost = null;
@@ -495,6 +625,7 @@
     repostComposeBusy = true;
     try {
       await publishQuoteRepost({ eventId: repostComposeFor.id, eventPubkey: repostComposeFor.pubkey, quote: repostQuote });
+      noteMyRepost(repostComposeFor.id, repostQuote);
       if (repostComposeFromPost) await refreshStatsFor(repostComposeFromPost);
       repostComposeFor = null;
       repostComposeFromPost = null;
@@ -506,9 +637,21 @@
   }
 
   onMount(() => void start());
+  onMount(() => {
+    if (typeof IntersectionObserver === 'undefined') return;
+    if (!sentinel) return;
+    if (io) io.disconnect();
+    io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) void loadMore();
+      },
+      { rootMargin: '700px 0px' },
+    );
+    io.observe(sentinel);
+  });
   let lastKey = '';
   $: {
-    const key = JSON.stringify({ tags: cleanTags(tags), limit });
+    const key = JSON.stringify({ tags: cleanTags(tags), authors: cleanAuthors(authors), limit });
     if (key !== lastKey) {
       lastKey = key;
       void start();
@@ -517,6 +660,7 @@
 
   onDestroy(() => {
     if (stop) stop();
+    if (io) io.disconnect();
   });
 </script>
 
@@ -548,6 +692,8 @@
       {@const prof = $profileByPubkey[p.pubkey]}
       {@const name = prof?.display_name || prof?.name || npubFor(p.pubkey).slice(0, 12) + '…'}
       {@const st = getStats(p.id)}
+      {@const mz = getMyZap(p.id)}
+      {@const mr = getMyRepost(p.id)}
       {@const body = st?.editedContent ?? p.content}
 
       <div class="card post">
@@ -580,7 +726,7 @@
                 {:else if t === 'video'}
                   <div class="m video">
                     <!-- svelte-ignore a11y_media_has_caption -->
-                    <video src={u} controls playsinline preload="metadata"></video>
+                    <video src={u} controls playsinline preload="metadata" use:autoPauseVideo></video>
                   </div>
                 {:else if t === 'audio'}
                   <div class="m audio">
@@ -616,7 +762,7 @@
           </div>
 
           <div class="aw" title="Zaps">
-            <button class="iconBtn primary" on:click={() => (zapOpenFor = p)} aria-label="Zap">
+            <button class="iconBtn primary" class:sent={Boolean(mz)} on:click={() => (zapOpenFor = p)} aria-label="Zap">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   d="M13 2L3 14h7l-1 8 12-14h-7l-1-6z"
@@ -642,6 +788,7 @@
           <div class="aw" title="Reposts">
             <button
               class="iconBtn"
+              class:sent={Boolean(mr)}
               on:click={() => openRepostComposer({ id: p.id, pubkey: p.pubkey, label: name }, p)}
               aria-label="Repost / quote repost"
             >
@@ -679,14 +826,43 @@
             </div>
           {/if}
         </div>
+
+        {#if mz || mr}
+          <div class="myRow" aria-label="Your recent actions">
+            {#if mz}
+              <span class="pill myPill" title="Your zap">
+                ⚡ You zapped {mz.amountSats.toLocaleString()} sats{mz.comment ? ` ${mz.comment}` : ''}
+              </span>
+            {/if}
+            {#if mr}
+              <span class="pill muted myPill" title="Your repost">
+                🔁 Reposted{mr.quote ? ' (quote)' : ''}{mr.quote ? `: ${mr.quote.slice(0, 42)}${mr.quote.length > 42 ? '…' : ''}` : ''}
+              </span>
+            {/if}
+          </div>
+        {/if}
       </div>
     {/each}
 
     {#if !posts.length && !loading}
       <div class="card" style="padding: 1rem;">
-        <div class="muted">No posts found yet for these tags.</div>
+        <div class="muted">No posts found yet for these filters.</div>
       </div>
     {/if}
+
+    {#if posts.length}
+      <div style="margin-top: 0.75rem;">
+        {#if loadMoreError}
+          <div class="muted" style="color: var(--danger);">{loadMoreError}</div>
+        {:else if backfillBusy}
+          <div class="muted">Loading more…</div>
+        {:else if backfillDone}
+          <div class="muted">You’ve reached the end of the feed (for your current relays/filters).</div>
+        {/if}
+      </div>
+    {/if}
+
+    <div bind:this={sentinel} style="height: 1px;"></div>
   </div>
 </div>
 
@@ -715,6 +891,8 @@
       {#each comments as c (c.id)}
         {@const cp = $profileByPubkey[c.pubkey]}
         {@const cName = cp?.display_name || cp?.name || npubFor(c.pubkey).slice(0, 18) + '…'}
+        {@const cmz = getMyZap(c.id)}
+        {@const cmr = getMyRepost(c.id)}
         <div
           class="card"
           style={`padding: 0.85rem 1rem; ${c.replyTo ? 'border-left: 3px solid rgba(246,196,83,0.35); margin-left: 0.75rem;' : ''}`}
@@ -730,14 +908,29 @@
             <button class="btn" on:click={() => (replyTo = { id: c.id, pubkey: c.pubkey })}>Reply</button>
             <button
               class="btn primary"
+              class:sent={Boolean(cmz)}
               on:click={() => (zapPayOpenFor = { recipientPubkey: c.pubkey, recipientLabel: cName, eventId: c.id })}
             >
               Zap
             </button>
-            <button class="btn" on:click={() => openRepostComposer({ id: c.id, pubkey: c.pubkey, label: cName }, null)}>
+            <button class="btn" class:sent={Boolean(cmr)} on:click={() => openRepostComposer({ id: c.id, pubkey: c.pubkey, label: cName }, null)}>
               Repost / Quote
             </button>
           </div>
+          {#if cmz || cmr}
+            <div class="myRow" style="margin-top:0.6rem;">
+              {#if cmz}
+                <span class="pill myPill" title="Your zap">
+                  ⚡ You zapped {cmz.amountSats.toLocaleString()} sats{cmz.comment ? ` ${cmz.comment}` : ''}
+                </span>
+              {/if}
+              {#if cmr}
+                <span class="pill muted myPill" title="Your repost">
+                  🔁 Reposted{cmr.quote ? ' (quote)' : ''}
+                </span>
+              {/if}
+            </div>
+          {/if}
         </div>
       {/each}
       {#if comments.length === 0}
@@ -925,6 +1118,7 @@
   recipientPubkey={zapOpenFor?.pubkey || ''}
   recipientLabel={(zapOpenFor && ($profileByPubkey[zapOpenFor.pubkey]?.display_name || $profileByPubkey[zapOpenFor.pubkey]?.name)) || 'Artist'}
   eventId={zapOpenFor?.id}
+  on:sent={(e) => noteMyZap(e.detail.eventId, e.detail.amountSats, e.detail.comment)}
   onClose={() => (zapOpenFor = null)}
 />
 
@@ -933,6 +1127,7 @@
   recipientPubkey={zapPayOpenFor?.recipientPubkey || ''}
   recipientLabel={zapPayOpenFor?.recipientLabel || 'Artist'}
   eventId={zapPayOpenFor?.eventId}
+  on:sent={(e) => noteMyZap(e.detail.eventId, e.detail.amountSats, e.detail.comment)}
   onClose={() => (zapPayOpenFor = null)}
 />
 
@@ -1046,6 +1241,10 @@
   .iconBtn.primary:hover {
     background: rgba(246, 196, 83, 0.18);
   }
+  .iconBtn.sent {
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.25);
+    border-color: rgba(74, 222, 128, 0.25);
+  }
   .iconBtn svg {
     width: 20px;
     height: 20px;
@@ -1077,6 +1276,23 @@
   }
   .link {
     width: fit-content;
+  }
+
+  .myRow {
+    margin-top: 0.65rem;
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .myPill {
+    font-size: 0.82rem;
+    padding: 0.18rem 0.5rem;
+  }
+
+  :global(.btn.sent) {
+    border-color: rgba(74, 222, 128, 0.25);
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.18);
   }
 </style>
 
