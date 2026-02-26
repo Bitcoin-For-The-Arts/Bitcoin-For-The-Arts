@@ -1,7 +1,7 @@
 import { browser } from '$app/environment';
 import NDK from '@nostr-dev-kit/ndk';
 import { get, writable } from 'svelte/store';
-import { relayUrls } from '$lib/stores/settings';
+import { normalizeRelayUrls, relayUrls } from '$lib/stores/settings';
 
 export type NdkStatus = 'idle' | 'connecting' | 'connected' | 'error';
 
@@ -25,7 +25,7 @@ export async function ensureNdk(): Promise<NDK> {
     ndkStatus.set('connecting');
     ndkError.set(null);
 
-    const urls = get(relayUrls);
+    const urls = normalizeRelayUrls(get(relayUrls));
     const client = new NDK({
       explicitRelayUrls: urls,
     });
