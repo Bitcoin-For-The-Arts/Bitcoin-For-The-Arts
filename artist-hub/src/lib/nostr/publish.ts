@@ -88,6 +88,28 @@ export async function publishQuoteRepost(opts: { eventId: string; eventPubkey: s
   return signed.id;
 }
 
+export async function publishReaction(opts: { eventId: string; eventPubkey: string; content?: string }): Promise<string> {
+  const pubkey = requirePubkey();
+  if (!opts?.eventId || !opts?.eventPubkey) throw new Error('Missing reacted event.');
+  const content = (opts.content || '+').trim() || '+';
+
+  const tags: string[][] = [
+    ['e', opts.eventId],
+    ['p', opts.eventPubkey],
+  ];
+
+  const unsigned = {
+    kind: NOSTR_KINDS.reaction,
+    created_at: Math.floor(Date.now() / 1000),
+    content,
+    tags,
+    pubkey,
+  };
+  const signed = await signWithNip07(unsigned as any);
+  await publishSignedEvent(signed as any);
+  return signed.id;
+}
+
 export async function publishEdit(opts: { originalEventId: string; content: string }): Promise<string> {
   const pubkey = requirePubkey();
   const content = (opts.content || '').trim();

@@ -10,6 +10,7 @@ export const DEFAULT_RELAYS = [
 export const NOSTR_KINDS = {
   metadata: 0,
   note: 1,
+  reaction: 7,
   contacts: 3,
   repost: 6,
   dm: 4,
