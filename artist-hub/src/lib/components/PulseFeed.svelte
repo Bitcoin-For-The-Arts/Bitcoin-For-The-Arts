@@ -35,6 +35,7 @@
     zaps: number;
     sats: number;
     zapEmojis?: string[];
+    finalized?: boolean;
     editedContent?: string;
     editedAt?: number;
   };
@@ -207,8 +208,10 @@
   }
 
   async function loadStatsFor(p: Post): Promise<void> {
-    if (statsById.has(p.id)) return;
-    statsById.set(p.id, { comments: 0, reposts: 0, zaps: 0, sats: 0 });
+    const existing = statsById.get(p.id);
+    if (existing?.finalized) return;
+    // If a previous attempt got stuck, allow retry by overwriting.
+    statsById.set(p.id, { comments: 0, reposts: 0, zaps: 0, sats: 0, finalized: false });
     tick++;
 
     try {
@@ -267,8 +270,25 @@
       let doneA = false;
       let doneB = false;
       let doneC = false;
+      let timeoutHit = false;
+      const timeout = setTimeout(() => {
+        timeoutHit = true;
+        doneA = true;
+        doneB = true;
+        doneC = true;
+        try {
+          sub.stop();
+          subQuotes.stop();
+          subZaps.stop();
+        } catch {
+          // ignore
+        }
+        finalize();
+      }, 2600);
+
       function finalize() {
         if (!doneA || !doneB || !doneC) return;
+        clearTimeout(timeout);
         const prev = statsById.get(p.id);
         if (!prev) return;
         statsById.set(p.id, {
@@ -277,6 +297,7 @@
           zaps: zapsCount,
           sats: satsSum,
           zapEmojis: emojis.length ? emojis : undefined,
+          finalized: true,
           editedContent: latestEdit?.content?.trim() ? latestEdit.content.trim() : undefined,
           editedAt: latestEdit?.at,
         });
@@ -768,10 +789,12 @@
                 ></path>
               </svg>
             </button>
-            {#if st}
+            {#if st?.finalized}
               <button class="badgeBtn" on:click={() => openComments(p)} aria-label={`${st.comments} comments`}>
                 {st.comments}
               </button>
+            {:else if st}
+              <button class="badgeBtn" on:click={() => openComments(p)} aria-label="Loading comments">…</button>
             {/if}
           </div>
 
@@ -787,7 +810,7 @@
                 ></path>
               </svg>
             </button>
-            {#if st}
+            {#if st?.finalized}
               <button
                 class="badgeBtn"
                 title={`${st.sats.toLocaleString()} sats`}
@@ -796,6 +819,8 @@
               >
                 {st.zaps}
               </button>
+            {:else if st}
+              <button class="badgeBtn" on:click={() => openZaps(p)} aria-label="Loading zaps">…</button>
             {/if}
           </div>
 
@@ -817,10 +842,12 @@
                 ></path>
               </svg>
             </button>
-            {#if st}
+            {#if st?.finalized}
               <button class="badgeBtn" on:click={() => openReposts(p)} aria-label={`${st.reposts} reposts`}>
                 {st.reposts}
               </button>
+            {:else if st}
+              <button class="badgeBtn" on:click={() => openReposts(p)} aria-label="Loading reposts">…</button>
             {/if}
           </div>
 
