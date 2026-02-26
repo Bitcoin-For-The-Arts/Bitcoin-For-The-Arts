@@ -3,7 +3,7 @@
   import { base } from '$app/paths';
   import { page } from '$app/stores';
   import { connectNostr, disconnectNostr, isAuthed, npub, authError, hasNip07 } from '$lib/stores/auth';
-  import { ndkStatus } from '$lib/stores/ndk';
+  import { ndkError, ndkStatus, reconnectNdk } from '$lib/stores/ndk';
   import { openOnboarding } from '$lib/stores/onboarding';
 
   let mobileMenuOpen = false;
@@ -52,6 +52,11 @@
         <span class="status-dot" class:connected={$ndkStatus === 'connected'}></span>
         {$ndkStatus}
       </span>
+      {#if $ndkStatus === 'error'}
+        <button class="pill muted" style="cursor:pointer;" on:click={() => void reconnectNdk()} title={$ndkError || 'Reconnect'}>
+          Reconnect
+        </button>
+      {/if}
     </div>
 
     <nav class="nav">
@@ -94,6 +99,13 @@
     <div class="container" style="margin-top: 0.6rem;">
       <div class="card" style="padding: 0.8rem 1rem; border-color: rgba(251,113,133,0.35);">
         <div class="muted">{$authError}</div>
+      </div>
+    </div>
+  {/if}
+  {#if $ndkStatus === 'error' && $ndkError}
+    <div class="container" style="margin-top: 0.6rem;">
+      <div class="card" style="padding: 0.8rem 1rem; border-color: rgba(251,113,133,0.35);">
+        <div class="muted">Relay connection error: {$ndkError}</div>
       </div>
     </div>
   {/if}
