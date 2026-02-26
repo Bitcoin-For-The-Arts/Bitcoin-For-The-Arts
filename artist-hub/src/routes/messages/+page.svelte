@@ -8,6 +8,7 @@
   import DMComposer from '$lib/components/DMComposer.svelte';
   import { profileHover } from '$lib/ui/profile-hover';
   import { getLocalSecretKey } from '$lib/stores/local-signer';
+  import RichText from '$lib/components/RichText.svelte';
 
   type Msg = { id: string; from: string; to: string; at: number; text: string };
   type Thread = { with: string; lastAt: number; lastText: string };
@@ -207,7 +208,7 @@
             <div class="muted" style="font-size: 0.86rem;">
               {m.from === $pubkey ? 'You' : 'Them'} • {new Date(m.at * 1000).toLocaleString()}
             </div>
-            <div style="margin-top:0.35rem; white-space: pre-wrap; line-height: 1.5;">{m.text}</div>
+            <div style="margin-top:0.35rem; line-height: 1.5;"><RichText text={m.text} /></div>
           </div>
         {/each}
         {#if !selected}

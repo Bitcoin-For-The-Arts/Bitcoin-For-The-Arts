@@ -10,6 +10,7 @@
   import ZapComposer from '$lib/components/ZapComposer.svelte';
   import EmojiPicker from '$lib/components/EmojiPicker.svelte';
   import { insertAtCursor } from '$lib/ui/text';
+  import RichText from '$lib/components/RichText.svelte';
 
   type Post = {
     id: string;
@@ -309,7 +310,7 @@
             </div>
           </div>
 
-          <div class="post-content">{post.content}</div>
+          <div class="post-content"><RichText text={post.content} linksAs="span" /></div>
 
           {#if post.tags.length}
             <div class="post-tags">
@@ -354,7 +355,7 @@
           </button>
         </div>
 
-        <div class="detail-content">{selectedPost.content}</div>
+        <div class="detail-content"><RichText text={selectedPost.content} /></div>
 
         <div class="replies-section">
           <div style="font-weight: 850; margin-bottom: 0.5rem;">Replies ({replies.length})</div>
@@ -368,7 +369,7 @@
                   </span>
                   <span class="muted reply-time">{new Date(r.createdAt * 1000).toLocaleString()}</span>
                 </div>
-                <div class="reply-content">{r.content}</div>
+                <div class="reply-content"><RichText text={r.content} /></div>
               </div>
             {/each}
           </div>

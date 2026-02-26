@@ -12,6 +12,7 @@
   import ZapComposer from '$lib/components/ZapComposer.svelte';
   import ZapEmojiComposer from '$lib/components/ZapEmojiComposer.svelte';
   import EmojiPicker from '$lib/components/EmojiPicker.svelte';
+  import RichText from '$lib/components/RichText.svelte';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
   import { profileHover } from '$lib/ui/profile-hover';
   import { insertAtCursor } from '$lib/ui/text';
@@ -725,7 +726,7 @@
         </div>
 
         <div class="content">
-          <div class="text">{body}</div>
+          <div class="text"><RichText text={body} /></div>
 
           {#if p.urls.length}
             <div class="media">
@@ -921,7 +922,7 @@
           {#if c.replyTo}
             <div class="muted small" style="margin-top:0.2rem;">↳ reply to {c.replyTo.slice(0, 10)}…</div>
           {/if}
-          <div style="margin-top: 0.45rem; white-space: pre-wrap; line-height: 1.5;">{c.content}</div>
+          <div style="margin-top: 0.45rem; line-height: 1.5;"><RichText text={c.content} /></div>
           <div style="margin-top:0.6rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
             <button class="btn" on:click={() => (replyTo = { id: c.id, pubkey: c.pubkey })}>Reply</button>
             <button
@@ -1053,7 +1054,9 @@
                 <a class="pill muted mono link" href={`https://njump.me/${r.id}`} target="_blank" rel="noreferrer">njump</a>
               </div>
               {#if r.content}
-                <div style="margin-top:0.5rem; white-space: pre-wrap; line-height: 1.5;">{r.content.slice(0, 240)}{r.content.length > 240 ? '…' : ''}</div>
+                <div style="margin-top:0.5rem; line-height: 1.5;">
+                  <RichText text={`${r.content.slice(0, 240)}${r.content.length > 240 ? '…' : ''}`} />
+                </div>
               {/if}
             </div>
           {/each}
