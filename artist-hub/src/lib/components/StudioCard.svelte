@@ -3,6 +3,7 @@
   import type { Studio } from '$lib/nostr/studios';
   import { profileByPubkey } from '$lib/stores/profiles';
   import { profileHover } from '$lib/ui/profile-hover';
+  import { liveByHostPubkey } from '$lib/stores/live-by-host';
 
   export let studio: Studio;
 
@@ -12,6 +13,13 @@
     studio.content.picture ||
     studio.content.items.find((i) => i.type === 'image')?.url ||
     author?.picture;
+  $: live = $liveByHostPubkey[studio.pubkey];
+
+  function openLive(url: string, e: MouseEvent | KeyboardEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
 </script>
 
 <a class="card link" href={`${base}/studios/${studio.naddr}`}>
@@ -31,7 +39,21 @@
       <div class="muted about">{studio.content.about}</div>
     {/if}
     <div class="meta">
-      <span class="pill muted" use:profileHover={studio.pubkey}>{authorName}</span>
+      <span class="pill muted" use:profileHover={studio.pubkey}>
+        {authorName}
+        {#if live}
+          <span
+            class="live"
+            role="link"
+            tabindex="0"
+            title="Live now"
+            on:click={(e) => openLive(live.watchUrl, e)}
+            on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && openLive(live.watchUrl, e)}
+          >
+            LIVE
+          </span>
+        {/if}
+      </span>
       <span class="pill muted">{studio.content.items.length} item(s)</span>
       {#if studio.content.channelId}
         <span class="pill">Live chat</span>
@@ -85,6 +107,22 @@
     flex-wrap: wrap;
     gap: 0.35rem;
     margin-top: 0.2rem;
+  }
+  .live {
+    margin-left: 0.45rem;
+    font-size: 0.7rem;
+    font-weight: 950;
+    letter-spacing: 0.6px;
+    padding: 0.06rem 0.4rem;
+    border-radius: 999px;
+    background: rgba(239, 68, 68, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: white;
+    text-decoration: none;
+  }
+  .live:hover {
+    text-decoration: none;
+    opacity: 0.92;
   }
 </style>
 
