@@ -6,6 +6,8 @@
   import { profileByPubkey } from '$lib/stores/profiles';
   import { ensureNdk } from '$lib/stores/ndk';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
+  import { isAuthed } from '$lib/stores/auth';
+  import { followingError, followingLoading, followingSet, refreshFollowing } from '$lib/stores/follows';
 
   const quickTags = [
     'BitcoinArt',
@@ -27,6 +29,13 @@
 
   let tags: string[] = [];
   let authors: string[] = [];
+  let mode: 'all' | 'following' = 'all';
+
+  $: if (mode === 'following') {
+    tags = [];
+    const list = Array.from($followingSet || []).filter(Boolean);
+    authors = list.slice(0, 120);
+  }
 
   let tagInput = '';
   let search = '';
@@ -37,6 +46,7 @@
   let searchTimer: ReturnType<typeof setTimeout> | null = null;
 
   function addTag() {
+    mode = 'all';
     const t = tagInput.trim().replace(/^#/, '');
     if (!t) return;
     const has = tags.some((x) => x.toLowerCase() === t.toLowerCase());
@@ -45,6 +55,7 @@
   }
 
   function addTagFromSearch() {
+    mode = 'all';
     const t = search.trim().replace(/^#/, '');
     if (!t) return;
     const has = tags.some((x) => x.toLowerCase() === t.toLowerCase());
@@ -53,6 +64,7 @@
   }
 
   function addAuthor(pubkeyHex: string) {
+    mode = 'all';
     const pk = (pubkeyHex || '').trim();
     if (!pk) return;
     const has = authors.some((x) => x === pk);
@@ -81,6 +93,7 @@
   }
 
   function applySearch() {
+    mode = 'all';
     const q = search.trim();
     if (!q) return;
     if (q.startsWith('#')) {
@@ -91,6 +104,7 @@
   }
 
   function addQuick(t: string) {
+    mode = 'all';
     const clean = t.replace(/^#/, '').trim();
     if (!clean) return;
     const has = tags.some((x) => x.toLowerCase() === clean.toLowerCase());
@@ -192,6 +206,32 @@
     </div>
 
     <div style="margin-top: 0.9rem;">
+      <div class="muted" style="margin-bottom: 0.35rem;">Feed</div>
+      <div style="display:flex; gap:0.35rem; flex-wrap:wrap; align-items:center;">
+        <button class={`pill ${mode === 'all' ? '' : 'muted'}`} on:click={() => ((mode = 'all'), (tags = []), (authors = []))} title="Show all posts">
+          All
+        </button>
+        <button
+          class={`pill ${mode === 'following' ? '' : 'muted'}`}
+          disabled={!$isAuthed || $followingLoading}
+          on:click={() => {
+            mode = 'following';
+            void refreshFollowing();
+          }}
+          title={$isAuthed ? 'Show only people you follow' : 'Connect to use Following feed'}
+        >
+          Following
+        </button>
+        {#if mode === 'following'}
+          <span class="muted" style="font-size:0.85rem;">
+            {$followingLoading ? 'Loading…' : `${$followingSet.size.toLocaleString()} following`}
+          </span>
+        {/if}
+      </div>
+      {#if mode === 'following' && $followingError}
+        <div class="muted" style="margin-top:0.55rem; color: var(--danger);">{$followingError}</div>
+      {/if}
+
       <div class="muted" style="margin-bottom: 0.35rem;">Search</div>
       <div style="display:flex; gap:0.5rem; align-items:center;">
         <input
@@ -247,7 +287,16 @@
       {/if}
 
       <div style="margin-top:0.55rem;">
-        <button class="pill" on:click={() => { tags = []; authors = []; }} title="Show all posts">All posts</button>
+        <button
+          class="pill"
+          on:click={() => {
+            mode = 'all';
+            tags = [];
+            authors = [];
+          }}
+          title="Show all posts"
+          >All posts</button
+        >
       </div>
     </div>
 

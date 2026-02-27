@@ -191,7 +191,8 @@
       if (!/^[0-9a-f]{64}$/.test(pk)) continue;
       if (!out.includes(pk)) out.push(pk);
     }
-    return out.slice(0, 3);
+    // Allow "Following" feeds (can be >3 authors) while still preventing runaway filter sizes.
+    return out.slice(0, 120);
   }
 
   function eventToPost(ev: any): Post | null {

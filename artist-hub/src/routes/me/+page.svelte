@@ -12,6 +12,9 @@
   import { npubFor } from '$lib/nostr/helpers';
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
   import NpubShareModal from '$lib/components/NpubShareModal.svelte';
+  import ProfileCard from '$lib/components/ProfileCard.svelte';
+  import { fetchProfileFor } from '$lib/stores/profiles';
+  import { followingError, followingLoading, followingSet, refreshFollowing } from '$lib/stores/follows';
 
   let mine: Listing[] = [];
   let stop: (() => void) | null = null;
@@ -34,7 +37,7 @@
   let badgesLoading = false;
   let badgesError: string | null = null;
 
-  let tab: 'posts' | 'listings' | 'edit' = 'posts';
+  let tab: 'posts' | 'listings' | 'following' | 'edit' = 'posts';
   let shareOpen = false;
   let statsPk = '';
 
@@ -207,6 +210,12 @@
 
   function openShare() {
     shareOpen = true;
+  }
+
+  $: followingList = Array.from($followingSet || []).filter(Boolean).slice(0, 800);
+  $: if (tab === 'following') {
+    // Seed profile cache so names/avatars render quickly.
+    for (const pk of followingList.slice(0, 80)) void fetchProfileFor(pk);
   }
 
   async function start() {
@@ -418,6 +427,7 @@
       <div class="tabs">
         <button class={`tab ${tab === 'posts' ? 'active' : ''}`} on:click={() => (tab = 'posts')}>Posts</button>
         <button class={`tab ${tab === 'listings' ? 'active' : ''}`} on:click={() => (tab = 'listings')}>Listings</button>
+        <button class={`tab ${tab === 'following' ? 'active' : ''}`} on:click={() => (tab = 'following')}>Following</button>
         <button class={`tab ${tab === 'edit' ? 'active' : ''}`} on:click={() => (tab = 'edit')}>Edit</button>
       </div>
     </div>
@@ -439,6 +449,34 @@
       {#if mine.length === 0}
         <div class="card" style="padding: 1rem; grid-column: 1 / -1;">
           <div class="muted">No listings found yet. Create one from the “Create” tab.</div>
+        </div>
+      {/if}
+    </div>
+  {:else if tab === 'following'}
+    <div class="card" style="padding: 1rem; margin-top: 1rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+        <div>
+          <div style="font-size: 1.15rem; font-weight: 900;">Following</div>
+          <div class="muted" style="margin-top:0.35rem;">
+            Profiles from your Nostr contacts list (kind:3) — no central server.
+          </div>
+        </div>
+        <button class="btn" disabled={$followingLoading} on:click={() => void refreshFollowing()}>
+          {$followingLoading ? 'Refreshing…' : 'Refresh'}
+        </button>
+      </div>
+      {#if $followingError}
+        <div class="muted" style="margin-top:0.65rem; color:var(--danger);">{$followingError}</div>
+      {/if}
+    </div>
+
+    <div class="grid cols-2" style="margin-top: 1rem;">
+      {#each followingList as pk (pk)}
+        <ProfileCard pubkey={pk} />
+      {/each}
+      {#if followingList.length === 0}
+        <div class="card" style="padding: 1rem; grid-column: 1 / -1;">
+          <div class="muted">You’re not following anyone yet (or your relays haven’t returned your contacts list).</div>
         </div>
       {/if}
     </div>
