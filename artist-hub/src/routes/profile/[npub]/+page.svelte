@@ -68,18 +68,30 @@
 
     try {
       const ndk = await ensureNdk();
+      const author = (pk || '').trim().toLowerCase();
+      if (!author) throw new Error('Missing pubkey');
 
       // Following (NIP-02 contacts list, kind 3)
-      const contacts = await ndk.fetchEvent({ kinds: [NOSTR_KINDS.contacts], authors: [pk] } as any);
-      const following = contacts?.tags ? (contacts.tags as any as string[][]).filter((t) => t[0] === 'p').length : 0;
+      const contacts = await ndk.fetchEvent({ kinds: [NOSTR_KINDS.contacts], authors: [author] } as any);
+      const followingSet = new Set<string>();
+      if (contacts?.tags) {
+        for (const t of (contacts.tags as any as string[][]) || []) {
+          if (t?.[0] !== 'p') continue;
+          const p = (t?.[1] || '').trim().toLowerCase();
+          if (p) followingSet.add(p);
+        }
+      }
+      const following = followingSet.size;
 
       // Followers (best-effort): unique authors of kind 3 that include '#p' = pk.
       const followersLimit = 1200;
       const followerAuthors = new Set<string>();
-      const followerEvents = await ndk.fetchEvents({ kinds: [NOSTR_KINDS.contacts], '#p': [pk], limit: followersLimit } as any);
+      const followerEvents = await ndk.fetchEvents({ kinds: [NOSTR_KINDS.contacts], '#p': [author], limit: followersLimit } as any);
       const followerArr = Array.from(followerEvents || []);
       for (const ev of followerArr as any[]) {
-        if (typeof ev?.pubkey === 'string') followerAuthors.add(ev.pubkey);
+        const p = typeof ev?.pubkey === 'string' ? ev.pubkey.trim().toLowerCase() : '';
+        if (!p || p === author) continue;
+        followerAuthors.add(p);
       }
       const followersSeen = followerArr.length;
 
@@ -88,60 +100,43 @@
       let posts = 0;
       let replies = 0;
       let quoteReposts = 0;
+      const noteEvents = await ndk.fetchEvents({ kinds: [NOSTR_KINDS.note], authors: [author], limit: notesLimit } as any);
+      const noteArr = Array.from(noteEvents || []);
       let notesSeen = 0;
-      await new Promise<void>((resolve, reject) => {
-        const sub = ndk.subscribe({ kinds: [NOSTR_KINDS.note], authors: [pk], limit: notesLimit } as any, { closeOnEose: true });
-        sub.on('event', (ev) => {
-          notesSeen += 1;
-          if (isQuote(ev)) {
-            quoteReposts += 1;
-            return;
-          }
-          if (isReply(ev)) {
-            replies += 1;
-            return;
-          }
-          posts += 1;
-        });
-        sub.on('eose', () => resolve());
-        sub.on('error', (e: any) => reject(e));
-      });
+      for (const ev of noteArr as any[]) {
+        notesSeen += 1;
+        if (isQuote(ev)) {
+          quoteReposts += 1;
+          continue;
+        }
+        if (isReply(ev)) {
+          replies += 1;
+          continue;
+        }
+        posts += 1;
+      }
 
       // Plain reposts (kind 6)
       const repostLimit = 1000;
-      let plainReposts = 0;
-      let repostsSeen = 0;
-      await new Promise<void>((resolve, reject) => {
-        const sub = ndk.subscribe({ kinds: [NOSTR_KINDS.repost], authors: [pk], limit: repostLimit } as any, { closeOnEose: true });
-        sub.on('event', () => {
-          repostsSeen += 1;
-          plainReposts += 1;
-        });
-        sub.on('eose', () => resolve());
-        sub.on('error', (e: any) => reject(e));
-      });
+      const repostEvents = await ndk.fetchEvents({ kinds: [NOSTR_KINDS.repost], authors: [author], limit: repostLimit } as any);
+      const repostArr = Array.from(repostEvents || []);
+      const repostsSeen = repostArr.length;
+      const plainReposts = repostArr.length;
 
       // Zap receipts (kind 9735) to this pubkey (best-effort totals)
       const zapsLimit = 1000;
       let zapCount = 0;
       let zapSats = 0;
-      let zapsSeen = 0;
-      await new Promise<void>((resolve, reject) => {
-        const sub = ndk.subscribe(
-          { kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [pk], limit: zapsLimit } as any,
-          { closeOnEose: true },
-        );
-        sub.on('event', (ev) => {
-          zapsSeen += 1;
-          const parsed = parseZapReceipt(ev);
-          if (!parsed) return;
-          if (parsed.recipientPubkey !== pk) return;
-          zapCount += 1;
-          zapSats += parsed.amountSats ?? 0;
-        });
-        sub.on('eose', () => resolve());
-        sub.on('error', (e: any) => reject(e));
-      });
+      const zapEvents = await ndk.fetchEvents({ kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [author], limit: zapsLimit } as any);
+      const zapArr = Array.from(zapEvents || []);
+      const zapsSeen = zapArr.length;
+      for (const ev of zapArr as any[]) {
+        const parsed = parseZapReceipt(ev);
+        if (!parsed) continue;
+        if ((parsed.recipientPubkey || '').trim().toLowerCase() !== author) continue;
+        zapCount += 1;
+        zapSats += parsed.amountSats ?? 0;
+      }
 
       metrics = {
         following: { value: following, approx: false },

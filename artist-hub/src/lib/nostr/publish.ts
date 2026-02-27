@@ -358,3 +358,60 @@ export async function publishFollowPackAccept(opts: { packAuthorPubkey: string; 
   return signed.id;
 }
 
+function normHexPubkey(pk: string): string | null {
+  const v = (pk || '').trim().toLowerCase();
+  if (!v) return null;
+  return /^[0-9a-f]{64}$/i.test(v) ? v : null;
+}
+
+export async function publishFollowPack(opts: {
+  d: string;
+  title: string;
+  description?: string;
+  image?: string;
+  entries: { pubkey: string; relay?: string }[];
+}): Promise<string> {
+  const pubkey = requirePubkey();
+  const d = (opts.d || '').trim();
+  const title = (opts.title || '').trim();
+  const description = (opts.description || '').trim();
+  const image = (opts.image || '').trim();
+
+  if (!d) throw new Error('Missing follow pack id (d tag).');
+  if (!title) throw new Error('Missing follow pack title.');
+
+  const tags: string[][] = [
+    ['title', title],
+    ['d', d],
+  ];
+  if (image) tags.push(['image', image]);
+  if (description) tags.push(['description', description]);
+
+  const seen = new Set<string>();
+  const entries = (opts.entries || []).slice(0, 5000);
+  for (const e of entries) {
+    const pk = normHexPubkey(e?.pubkey || '');
+    if (!pk) continue;
+    if (pk === pubkey.toLowerCase()) {
+      // allow self-inclusion? following.space allows it, but it's rarely useful; keep it allowed.
+    }
+    if (seen.has(pk)) continue;
+    seen.add(pk);
+    const relay = (e?.relay || '').trim();
+    if (relay) tags.push(['p', pk, relay]);
+    else tags.push(['p', pk]);
+  }
+
+  const unsigned = {
+    kind: NOSTR_KINDS.follow_pack,
+    created_at: Math.floor(Date.now() / 1000),
+    content: '',
+    tags,
+    pubkey,
+  };
+
+  const signed = await signWithNip07(unsigned as any);
+  await publishSignedEvent(signed as any);
+  return signed.id;
+}
+

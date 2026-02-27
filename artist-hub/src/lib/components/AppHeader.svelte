@@ -2,15 +2,18 @@
   import { browser } from '$app/environment';
   import { base } from '$app/paths';
   import { page } from '$app/stores';
+  import { env as publicEnv } from '$env/dynamic/public';
   import { connectNostr, disconnectNostr, isAuthed, npub, authError, hasNip07 } from '$lib/stores/auth';
   import { ndkError, ndkStatus, reconnectNdk } from '$lib/stores/ndk';
   import { openOnboarding } from '$lib/stores/onboarding';
   import { unreadCount } from '$lib/stores/notifications';
 
   let mobileMenuOpen = false;
+  const mainSiteUrl = ((((publicEnv as any).PUBLIC_MAIN_SITE_URL as string | undefined) || 'https://bitcoinforthearts.org') + '').trim();
 
   const nav = [
     { href: '/discover', label: 'Discover', icon: '🔍' },
+    { href: '/packs', label: 'Packs', icon: '📦' },
     { href: '/pulse', label: 'Pulse', icon: '🫀' },
     { href: '/streams', label: 'Streams', icon: '📺' },
     { href: '/live', label: 'Live', icon: '📡' },
@@ -45,10 +48,14 @@
 <header class="header">
   <div class="container inner">
     <div class="brand">
-      <a class="logo" href={`${base}/`} aria-label="Bitcoin for the Arts — Artist Hub">
-        <img class="logo-img" src={`${base}/bfta-logo.png`} alt="Bitcoin for the Arts, Inc." width="44" height="44" />
-        <span class="logo-title">Artist Hub</span>
-      </a>
+      <div class="logo" aria-label="Bitcoin for the Arts — Artist Hub">
+        <a class="logo-img-link" href={mainSiteUrl} aria-label="Back to Bitcoin for the Arts main website">
+          <img class="logo-img" src={`${base}/bfta-logo.png`} alt="Bitcoin for the Arts, Inc." width="44" height="44" />
+        </a>
+        <a class="logo-home-link" href={`${base}/`} aria-label="Artist Hub home">
+          <span class="logo-title">Artist Hub</span>
+        </a>
+      </div>
       <span class="muted status">
         <span class="status-dot" class:connected={$ndkStatus === 'connected'}></span>
         {$ndkStatus}
@@ -164,7 +171,15 @@
     gap: 0.6rem;
     text-decoration: none;
   }
-  .logo:hover {
+  .logo-img-link,
+  .logo-home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+  }
+  .logo-img-link:hover,
+  .logo-home-link:hover {
     text-decoration: none;
     opacity: 0.92;
   }
