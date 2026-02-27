@@ -5,7 +5,7 @@
   import { npubFor } from '$lib/nostr/helpers';
   import { extractUrls } from '$lib/ui/media';
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
-  import { publishComment, publishEdit, publishNote, publishQuoteRepost, publishRepost } from '$lib/nostr/publish';
+  import { publishComment, publishEdit, publishNote, publishQuoteRepost, publishReaction, publishRepost } from '$lib/nostr/publish';
   import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
   import Modal from '$lib/components/Modal.svelte';
   import ZapComposer from '$lib/components/ZapComposer.svelte';
@@ -33,6 +33,7 @@
     comments: number;
     reposts: number;
     zaps: number;
+    likes: number;
     sats: number;
     zapEmojis?: string[];
     finalized?: boolean;
@@ -55,8 +56,10 @@
 
   type MyZap = { amountSats: number; comment?: string; at: number };
   type MyRepost = { at: number; quote?: string };
+  type MyLike = { at: number };
   const myZapsById = new Map<string, MyZap>();
   const myRepostsById = new Map<string, MyRepost>();
+  const myLikesById = new Map<string, MyLike>();
   let myTick = 0;
 
   function getMyZap(id: string): MyZap | null {
@@ -68,6 +71,11 @@
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const _ = myTick;
     return myRepostsById.get(id) ?? null;
+  }
+  function getMyLike(id: string): MyLike | null {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _ = myTick;
+    return myLikesById.get(id) ?? null;
   }
 
   function noteMyZap(eventId: string | undefined, amountSats: number, comment?: string) {
@@ -93,6 +101,31 @@
       statsById.set(eventId, { ...prev, reposts: (prev.reposts || 0) + 1 });
       tick++;
     }
+  }
+
+  function noteMyLike(eventId: string | undefined) {
+    if (!eventId) return;
+    myLikesById.set(eventId, { at: Date.now() });
+    myTick++;
+    const prev = statsById.get(eventId);
+    if (prev) {
+      statsById.set(eventId, { ...prev, likes: (prev.likes || 0) + 1 });
+      tick++;
+    }
+  }
+
+  function isLikeReactionContent(content: unknown): boolean {
+    const c = typeof content === 'string' ? content.trim() : '';
+    if (!c) return false;
+    return c !== '-';
+  }
+
+  let toast: string | null = null;
+  let toastTimer: any = null;
+  function showToast(msg: string) {
+    toast = msg;
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => (toast = null), 2200);
   }
 
   // Composer
@@ -202,6 +235,15 @@
     return statsById.get(id) ?? null;
   }
 
+  const statsQueue = new Set<string>();
+  function ensureStatsFor(p: Post) {
+    if (!p?.id) return;
+    if (statsById.has(p.id)) return;
+    if (statsQueue.has(p.id)) return;
+    statsQueue.add(p.id);
+    void loadStatsFor(p).finally(() => statsQueue.delete(p.id));
+  }
+
   async function refreshStatsFor(p: Post): Promise<void> {
     statsById.delete(p.id);
     await loadStatsFor(p);
@@ -211,7 +253,7 @@
     const existing = statsById.get(p.id);
     if (existing?.finalized) return;
     // If a previous attempt got stuck, allow retry by overwriting.
-    statsById.set(p.id, { comments: 0, reposts: 0, zaps: 0, sats: 0, finalized: false });
+    statsById.set(p.id, { comments: 0, reposts: 0, zaps: 0, likes: 0, sats: 0, finalized: false });
     tick++;
 
     try {
@@ -221,6 +263,7 @@
         { closeOnEose: true },
       );
       const subQuotes = ndk.subscribe({ kinds: [NOSTR_KINDS.note], '#q': [p.id], limit: 250 } as any, { closeOnEose: true });
+      const subLikes = ndk.subscribe({ kinds: [NOSTR_KINDS.reaction], '#e': [p.id], limit: 900 } as any, { closeOnEose: true });
       // Zap receipts are not reliably indexable by '#e' (the 'e' tag lives inside the embedded zap-request JSON),
       // so we query by recipient '#p' then filter client-side by parsed e-tags.
       const subZaps = ndk.subscribe(
@@ -232,6 +275,7 @@
       let repostsCount = 0;
       let quoteRepostsCount = 0;
       let zapsCount = 0;
+      let likesCount = 0;
       let satsSum = 0;
       const emojis: string[] = [];
       let latestEdit: { at: number; content: string } | null = null;
@@ -257,6 +301,18 @@
         quoteRepostsCount += 1;
       });
 
+      subLikes.on('event', (ev) => {
+        if (!ev?.id) return;
+        if (!isLikeReactionContent(ev.content)) return;
+        likesCount += 1;
+        if ($myPubkey && ev.pubkey === $myPubkey) {
+          if (!myLikesById.has(p.id)) {
+            myLikesById.set(p.id, { at: Date.now() });
+            myTick++;
+          }
+        }
+      });
+
       subZaps.on('event', (ev) => {
         const parsed = parseZapReceipt(ev);
         if (!parsed?.eTags?.includes(p.id)) return;
@@ -270,16 +326,19 @@
       let doneA = false;
       let doneB = false;
       let doneC = false;
+      let doneD = false;
       let timeoutHit = false;
       const timeout = setTimeout(() => {
         timeoutHit = true;
         doneA = true;
         doneB = true;
         doneC = true;
+        doneD = true;
         try {
           sub.stop();
           subQuotes.stop();
           subZaps.stop();
+          subLikes.stop();
         } catch {
           // ignore
         }
@@ -287,7 +346,7 @@
       }, 2600);
 
       function finalize() {
-        if (!doneA || !doneB || !doneC) return;
+        if (!doneA || !doneB || !doneC || !doneD) return;
         clearTimeout(timeout);
         const prev = statsById.get(p.id);
         if (!prev) return;
@@ -295,6 +354,7 @@
           comments: commentsCount,
           reposts: repostsCount + quoteRepostsCount,
           zaps: zapsCount,
+          likes: likesCount,
           sats: satsSum,
           zapEmojis: emojis.length ? emojis : undefined,
           finalized: true,
@@ -316,8 +376,31 @@
         doneC = true;
         finalize();
       });
+      subLikes.on('eose', () => {
+        doneD = true;
+        finalize();
+      });
     } catch {
       // ignore stats failures
+    }
+  }
+
+  let likeBusy = false;
+  async function doLike(p: Post) {
+    if (!p?.id) return;
+    if (!$isAuthed) {
+      showToast('Connect your npub to like.');
+      return;
+    }
+    if (getMyLike(p.id)) return;
+    likeBusy = true;
+    try {
+      await publishReaction({ eventId: p.id, eventPubkey: p.pubkey, content: '+' });
+      noteMyLike(p.id);
+    } catch (e) {
+      showToast(e instanceof Error ? e.message : String(e));
+    } finally {
+      likeBusy = false;
     }
   }
 
@@ -710,6 +793,7 @@
   }
 
   onDestroy(() => {
+    if (toastTimer) clearTimeout(toastTimer);
     if (stop) stop();
     if (io) io.disconnect();
   });
@@ -735,6 +819,7 @@
             {publishBusy ? 'Publishing…' : 'Publish'}
           </button>
           {#if publishError}<span class="muted" style="color:var(--danger);">{publishError}</span>{/if}
+          {#if toast}<span class="muted">{toast}</span>{/if}
         </div>
       </div>
     </div>
@@ -751,8 +836,10 @@
       {@const prof = $profileByPubkey[p.pubkey]}
       {@const name = prof?.display_name || prof?.name || npubFor(p.pubkey).slice(0, 12) + '…'}
       {@const st = getStats(p.id)}
+      {@const _ensure = (ensureStatsFor(p), 0)}
       {@const mz = getMyZap(p.id)}
       {@const mr = getMyRepost(p.id)}
+      {@const ml = getMyLike(p.id)}
       {@const body = st?.editedContent ?? p.content}
 
       <div class="card post">
@@ -795,6 +882,33 @@
               </button>
             {:else if st}
               <button class="badgeBtn" on:click={() => openComments(p)} aria-label="Loading comments">…</button>
+            {/if}
+          </div>
+
+          <div class="aw" title="Likes">
+            <button
+              class="iconBtn likeBtn"
+              class:liked={Boolean(ml)}
+              disabled={likeBusy || Boolean(ml)}
+              on:click={() => void doLike(p)}
+              aria-label="Like"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 21s-7-4.6-9.5-8.3C.5 9.8 2.3 6.5 6 6.1c2-.2 3.4.9 4 2 0 0 .9-2.4 4-2 3.7.4 5.5 3.7 3.5 6.6C19 16.4 12 21 12 21z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                ></path>
+              </svg>
+            </button>
+            {#if st?.finalized}
+              <button class="badgeBtn" disabled={true} aria-label={`${st.likes} likes`}>
+                {st.likes}
+              </button>
+            {:else if st}
+              <button class="badgeBtn" disabled={true} aria-label="Loading likes">…</button>
             {/if}
           </div>
 
@@ -879,8 +993,11 @@
           </div>
         {/if}
 
-        {#if mz || mr}
+        {#if mz || mr || ml}
           <div class="myRow" aria-label="Your recent actions">
+            {#if ml}
+              <span class="pill muted myPill" title="Your like">🧡 Liked</span>
+            {/if}
             {#if mz}
               <span class="pill myPill" title="Your zap">
                 ⚡ You zapped {mz.amountSats.toLocaleString()} sats{mz.comment ? ` ${mz.comment}` : ''}
@@ -1273,6 +1390,11 @@
   .iconBtn.sent {
     box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.25);
     border-color: rgba(74, 222, 128, 0.25);
+  }
+  .iconBtn.liked {
+    color: rgba(251, 146, 60, 0.98);
+    box-shadow: 0 0 0 2px rgba(251, 146, 60, 0.18);
+    border-color: rgba(251, 146, 60, 0.25);
   }
   .iconBtn svg {
     width: 20px;
