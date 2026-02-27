@@ -1,6 +1,6 @@
 <script lang="ts">
   import { browser } from '$app/environment';
-  import { profile as profileStore, publishProfile, pubkey, type ArtistProfile } from '$lib/stores/auth';
+  import { profile as profileStore, publishProfile, pubkey, refreshMyProfile, type ArtistProfile } from '$lib/stores/auth';
 
   let draft: ArtistProfile = {};
   let saving = false;
@@ -9,6 +9,10 @@
 
   let initialized = false;
   let localSavedAt: number | null = null;
+  let activePk: string | null = null;
+  let publishedNorm: any = null;
+  let draftNorm: any = null;
+  let isDirty = false;
 
   function keyFor(pk: string) {
     return `bfta:artist-hub:profile-draft:${pk}`;
@@ -100,6 +104,17 @@
     }
   }
 
+  // Reset editor when switching accounts (or disconnecting).
+  $: if ($pubkey !== activePk) {
+    activePk = $pubkey;
+    initialized = false;
+    localSavedAt = null;
+    draft = {};
+    skillsCsv = '';
+    hashtagsCsv = '';
+    portfolioCsv = '';
+  }
+
   // Initialize editor state: prefer local draft; fallback to published kind:0 profile.
   $: if (!initialized && $pubkey) {
     const hadLocal = loadLocal($pubkey);
@@ -107,9 +122,25 @@
     initialized = true;
   }
 
-  // If published profile arrives later and there is no local draft, hydrate once.
-  $: if (initialized && $pubkey && !localSavedAt && $profileStore && !draft?.name && !draft?.about) {
-    hydrateFromProfile($profileStore);
+  // If the published profile arrives later and there is no local draft, hydrate (always).
+  $: if (initialized && $pubkey && !localSavedAt && $profileStore) {
+    // Avoid clobbering a user-typed draft: only hydrate when draft is effectively empty.
+    const hasAny =
+      Boolean(draft?.name?.trim()) ||
+      Boolean(draft?.display_name?.trim()) ||
+      Boolean(draft?.about?.trim()) ||
+      Boolean(draft?.picture?.trim()) ||
+      Boolean((draft as any)?.banner?.trim()) ||
+      Boolean(draft?.website?.trim()) ||
+      Boolean((draft as any)?.website_icon?.trim()) ||
+      Boolean((draft as any)?.nip05?.trim()) ||
+      Boolean((draft as any)?.lud16?.trim()) ||
+      Boolean((draft as any)?.lud06?.trim()) ||
+      Boolean((draft as any)?.location?.trim()) ||
+      Boolean((draft?.skills || []).length) ||
+      Boolean((draft?.hashtags || []).length) ||
+      Boolean((draft?.portfolio || []).length);
+    if (!hasAny) hydrateFromProfile($profileStore);
   }
 
   // Auto-save local draft while typing (client-side only).
@@ -123,6 +154,40 @@
       persistTimer = setTimeout(() => persistLocal($pubkey!), 450);
     }
   }
+
+  function normalizeProfile(p: ArtistProfile): any {
+    const norm = (s: any) => (typeof s === 'string' ? s.trim() : '');
+    const list = (xs: any) =>
+      (Array.isArray(xs) ? xs : [])
+        .map((x) => String(x || '').trim())
+        .filter(Boolean)
+        .slice(0, 64);
+    return {
+      name: norm(p.name),
+      display_name: norm(p.display_name),
+      about: norm(p.about),
+      picture: norm(p.picture),
+      banner: norm((p as any).banner),
+      website: norm(p.website),
+      website_icon: norm((p as any).website_icon),
+      nip05: norm((p as any).nip05),
+      lud16: norm((p as any).lud16),
+      lud06: norm((p as any).lud06),
+      location: norm((p as any).location),
+      skills: list((p as any).skills),
+      hashtags: list((p as any).hashtags).map((t: string) => t.replace(/^#/, '')),
+      portfolio: list((p as any).portfolio),
+    };
+  }
+
+  $: publishedNorm = $profileStore ? normalizeProfile($profileStore) : null;
+  $: draftNorm = normalizeProfile({
+    ...draft,
+    skills: csvToList(skillsCsv),
+    hashtags: csvToList(hashtagsCsv).map((t) => t.replace(/^#/, '')),
+    portfolio: csvToList(portfolioCsv),
+  });
+  $: isDirty = Boolean($pubkey && publishedNorm && JSON.stringify(publishedNorm) !== JSON.stringify(draftNorm));
 
   async function save() {
     error = null;
@@ -156,6 +221,9 @@
       {/if}
     </div>
     <div style="display:flex; gap:0.5rem; align-items:center;">
+      <button class="btn" disabled={!$pubkey || saving} on:click={() => void refreshMyProfile()}>
+        Reload from Nostr
+      </button>
       <button class="btn" disabled={!$pubkey} on:click={() => $pubkey && $profileStore && hydrateFromProfile($profileStore)}>
         Reset to published
       </button>
@@ -163,6 +231,19 @@
         Clear local draft
       </button>
     </div>
+  </div>
+
+  <div class="muted" style="margin-bottom: 0.85rem; line-height:1.45;">
+    Editing here updates your global Nostr profile (kind:0) across clients. Your draft auto-saves locally until you publish.
+    {#if $profileStore}
+      {#if isDirty}
+        <span style="color: var(--accent); font-weight: 850;"> Unsaved changes.</span>
+      {:else}
+        <span> Up to date with your published profile.</span>
+      {/if}
+    {:else}
+      <span> Loading your published profile…</span>
+    {/if}
   </div>
 
   <div class="grid cols-2">
@@ -239,8 +320,8 @@
   </div>
 
   <div style="margin-top: 1rem; display:flex; gap:0.5rem; align-items:center;">
-    <button class="btn primary" disabled={saving} on:click={save}>
-      {saving ? 'Publishing…' : 'Publish profile'}
+    <button class="btn primary" disabled={saving || !$pubkey || !isDirty} on:click={save}>
+      {saving ? 'Publishing…' : 'Publish changes'}
     </button>
     {#if ok}<span class="muted">{ok}</span>{/if}
   </div>

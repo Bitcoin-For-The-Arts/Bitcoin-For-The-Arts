@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
-  import { isAuthed, pubkey, profile } from '$lib/stores/auth';
+  import { isAuthed, pubkey, profile, refreshMyProfile } from '$lib/stores/auth';
   import ProfileEditor from '$lib/components/ProfileEditor.svelte';
   import { ensureNdk } from '$lib/stores/ndk';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
@@ -231,7 +231,10 @@
   }
 
   onMount(() => {
-    if ($pubkey) void start();
+    if ($pubkey) {
+      void start();
+      if (!$profile) void refreshMyProfile();
+    }
   });
 
   $: if ($pubkey) {
