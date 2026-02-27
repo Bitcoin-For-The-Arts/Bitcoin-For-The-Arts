@@ -9,6 +9,7 @@
   import { ensureNdk } from '$lib/stores/ndk';
   import { startFollowingSync } from '$lib/stores/follows';
   import { localNsec } from '$lib/stores/local-signer';
+  import { pubkey } from '$lib/stores/auth';
   import { onboardingOpen, openOnboarding, closeOnboarding } from '$lib/stores/onboarding';
   import { startLiveStreams } from '$lib/stores/live-streams';
 
@@ -17,7 +18,7 @@
     startFollowingSync();
     void startLiveStreams({ source: 'zapstream', limit: 60 });
 
-    if (browser && !window.nostr?.getPublicKey && !get(localNsec)) {
+    if (browser && !window.nostr?.getPublicKey && !get(localNsec) && !get(pubkey)) {
       const dismissed = sessionStorage.getItem('bfta:onboarding-dismissed');
       if (!dismissed) {
         openOnboarding();

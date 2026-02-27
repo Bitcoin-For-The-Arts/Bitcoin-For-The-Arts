@@ -3,7 +3,7 @@
   import { env as publicEnv } from '$env/dynamic/public';
   import { nip19 } from 'nostr-tools';
   import { goto } from '$app/navigation';
-  import { isAuthed } from '$lib/stores/auth';
+  import { canSign, isAuthed } from '$lib/stores/auth';
   import { notifications } from '$lib/stores/notifications';
 
   const rawPackD = ((publicEnv as any).PUBLIC_BFTA_FOLLOW_PACK_D as string | undefined) || '';
@@ -74,7 +74,7 @@
         Following.space-compatible follow packs (kind:39089). Open a pack link, accept an invite, and follow everyone in the pack — all inside Artist Hub.
       </div>
     </div>
-    {#if $isAuthed}
+    {#if $canSign}
       <a class="btn primary" href={`${base}/packs/create`}>Create pack</a>
     {/if}
   </div>

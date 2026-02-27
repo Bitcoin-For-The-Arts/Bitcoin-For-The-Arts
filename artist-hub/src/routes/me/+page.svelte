@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
-  import { isAuthed, pubkey, profile, refreshMyProfile } from '$lib/stores/auth';
+  import { canSign, isAuthed, pubkey, profile, refreshMyProfile } from '$lib/stores/auth';
   import ProfileEditor from '$lib/components/ProfileEditor.svelte';
   import { ensureNdk } from '$lib/stores/ndk';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
@@ -378,7 +378,11 @@
         </div>
 
         <div class="actions">
-          <button class={`btn ${tab === 'edit' ? 'primary' : ''}`} on:click={() => (tab = 'edit')}>Edit profile</button>
+          {#if $canSign}
+            <button class={`btn ${tab === 'edit' ? 'primary' : ''}`} on:click={() => (tab = 'edit')}>Edit profile</button>
+          {:else}
+            <button class="btn" on:click={() => (tab = 'posts')}>Read-only</button>
+          {/if}
           {#if website}
             {@const host = (() => { try { return new URL(website.startsWith('http') ? website : `https://${website}`).hostname; } catch { return ''; } })()}
             {@const fav = host ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64` : ''}
@@ -517,7 +521,9 @@
         <button class={`tab ${tab === 'followers' ? 'active' : ''}`} on:click={() => (tab = 'followers')}>
           Followers {metricsLoading ? '…' : metrics?.followers ? `(${metrics.followers.value})` : ''}
         </button>
-        <button class={`tab ${tab === 'edit' ? 'active' : ''}`} on:click={() => (tab = 'edit')}>Edit</button>
+        {#if $canSign}
+          <button class={`tab ${tab === 'edit' ? 'active' : ''}`} on:click={() => (tab = 'edit')}>Edit</button>
+        {/if}
       </div>
     </div>
   </div>
@@ -619,9 +625,15 @@
       {/if}
     </div>
   {:else if tab === 'edit'}
-    <div style="margin-top: 1rem;">
-      <ProfileEditor />
-    </div>
+    {#if $canSign}
+      <div style="margin-top: 1rem;">
+        <ProfileEditor />
+      </div>
+    {:else}
+      <div class="card" style="padding: 1rem; margin-top: 1rem; border-color: rgba(246,196,83,0.35);">
+        <div class="muted">This profile is read-only. Connect a signer to edit.</div>
+      </div>
+    {/if}
   {/if}
 
   <NpubShareModal open={shareOpen} npub={npub} label={name} onClose={() => (shareOpen = false)} />

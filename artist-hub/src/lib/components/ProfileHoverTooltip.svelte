@@ -4,7 +4,7 @@
   import { profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
   import { followingSet, followingError, followingLoading, toggleFollow } from '$lib/stores/follows';
-  import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
+  import { canSign, pubkey as myPubkey } from '$lib/stores/auth';
 
   let innerWidth = 1200;
   let innerHeight = 800;
@@ -17,7 +17,7 @@
   $: nip05 = (prof as any)?.nip05 as string | undefined;
   $: website = (prof as any)?.website as string | undefined;
   $: lud16 = (prof as any)?.lud16 as string | undefined;
-  $: canFollow = Boolean(pk) && $isAuthed && $myPubkey && $myPubkey !== pk;
+  $: canFollow = Boolean(pk) && $canSign && $myPubkey && $myPubkey !== pk;
   $: isFollowing = Boolean(pk) && $followingSet.has(pk);
 
   const W = 340;

@@ -1,6 +1,6 @@
 <script lang="ts">
   import ListingForm from '$lib/components/ListingForm.svelte';
-  import { isAuthed } from '$lib/stores/auth';
+  import { canSign } from '$lib/stores/auth';
 </script>
 
 <div class="card" style="padding: 1rem;">
@@ -12,7 +12,7 @@
 </div>
 
 <div style="margin-top: 1rem;">
-  {#if $isAuthed}
+  {#if $canSign}
     <ListingForm />
   {:else}
     <div class="card" style="padding: 1rem; border-color: rgba(246,196,83,0.35);">

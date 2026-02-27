@@ -6,7 +6,7 @@
   import { ensureNdk } from '$lib/stores/ndk';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
   import { parseFollowPackEvent, type FollowPack, type FollowPackEntry } from '$lib/nostr/follow-packs';
-  import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
+  import { canSign, isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
   import { publishFollowPack } from '$lib/nostr/publish';
 
   function randomId(len = 12): string {
@@ -111,7 +111,7 @@
   async function save() {
     saveError = null;
     saveOk = null;
-    if (!$isAuthed || !$myPubkey) {
+    if (!$canSign || !$myPubkey) {
       saveError = 'Connect your signer to publish a pack.';
       return;
     }
@@ -167,7 +167,7 @@
   </div>
 </div>
 
-{#if !$isAuthed}
+{#if !$canSign}
   <div class="card" style="margin-top: 1rem; padding: 1rem; border-color: rgba(246,196,83,0.35);">
     <div class="muted">Connect your signer to create or update follow packs.</div>
   </div>
@@ -204,7 +204,7 @@
   <textarea class="textarea" style="min-height: 220px;" bind:value={entriesText} placeholder="one per line"></textarea>
 
   <div style="margin-top: 0.85rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
-    <button class="btn primary" disabled={!$isAuthed || saving} on:click={save}>
+    <button class="btn primary" disabled={!$canSign || saving} on:click={save}>
       {saving ? 'Publishing…' : 'Publish pack'}
     </button>
     {#if saveOk}<span class="muted">{saveOk}</span>{/if}

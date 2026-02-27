@@ -2,7 +2,7 @@
   import { onDestroy, onMount } from 'svelte';
   import { base } from '$app/paths';
   import { channels, channelMessages, channelParticipants, startChannelMessages, stopChannelMessages } from '$lib/stores/channels';
-  import { isAuthed } from '$lib/stores/auth';
+  import { canSign } from '$lib/stores/auth';
   import { publishChannelMessage } from '$lib/nostr/nip28';
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
@@ -34,8 +34,8 @@
 
   async function send() {
     error = null;
-    if (!$isAuthed) {
-      error = 'Connect your npub to chat.';
+    if (!$canSign) {
+      error = 'Connect your signer to chat.';
       return;
     }
     const body = text.trim();

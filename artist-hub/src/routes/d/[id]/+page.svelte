@@ -7,7 +7,7 @@
   import { NOSTR_KINDS } from '$lib/nostr/constants';
   import { parseFollowPackEvent, type FollowPack } from '$lib/nostr/follow-packs';
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
-  import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
+  import { canSign, isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
   import { followMany, followingError, followingLoading, followingSet } from '$lib/stores/follows';
   import ProfileCard from '$lib/components/ProfileCard.svelte';
   import { publishFollowPack, publishFollowPackAccept, publishFollowPackInvite } from '$lib/nostr/publish';
@@ -104,8 +104,8 @@
       pack = chosen;
       void fetchProfileFor(pack.pubkey);
       for (const e of pack.entries.slice(0, 60)) void fetchProfileFor(e.pubkey);
-      if ($isAuthed && $myPubkey) void loadInviteState();
-      if ($isAuthed && $myPubkey && $myPubkey === pack.pubkey) void loadPendingAccepts();
+      if ($canSign && $myPubkey) void loadInviteState();
+      if ($canSign && $myPubkey && $myPubkey === pack.pubkey) void loadPendingAccepts();
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
     } finally {
@@ -126,7 +126,7 @@
   async function loadPendingAccepts() {
     pendingAccepts = [];
     pendingError = null;
-    if (!$isAuthed || !$myPubkey || !pack) return;
+    if (!$canSign || !$myPubkey || !pack) return;
     if ($myPubkey !== pack.pubkey) return;
     pendingLoading = true;
     try {
@@ -153,7 +153,7 @@
   async function addAcceptedToPack() {
     addError = null;
     success = null;
-    if (!$isAuthed || !$myPubkey) {
+    if (!$canSign || !$myPubkey) {
       addError = 'Connect your signer to update the pack.';
       return;
     }
@@ -191,7 +191,7 @@
   }
 
   async function loadInviteState() {
-    if (!$isAuthed || !$myPubkey || !pack) return;
+    if (!$canSign || !$myPubkey || !pack) return;
     invited = false;
     accepted = false;
     try {
@@ -224,7 +224,7 @@
   }
 
   async function followAll() {
-    if (!$isAuthed) {
+    if (!$canSign) {
       success = null;
       error = 'Connect your signer to follow this pack.';
       return;
@@ -269,7 +269,7 @@
     if (!pack) return;
     inviteError = null;
     acceptError = null;
-    if (!$isAuthed || !$myPubkey) {
+    if (!$canSign || !$myPubkey) {
       inviteError = 'Connect your signer to invite.';
       return;
     }
@@ -298,7 +298,7 @@
     if (!pack) return;
     acceptError = null;
     inviteError = null;
-    if (!$isAuthed || !$myPubkey) {
+    if (!$canSign || !$myPubkey) {
       acceptError = 'Connect your signer to accept.';
       return;
     }
@@ -349,7 +349,7 @@
         <a class="btn" href={`${base}/packs`}>Exit pack</a>
         <a class="btn" href={`${base}/packs`}>Open different pack</a>
         <a class="btn" href={`${base}/packs/create`}>Create pack</a>
-        <button class="btn primary" disabled={!$isAuthed || $followingLoading || followingAll} on:click={followAll}>
+        <button class="btn primary" disabled={!$canSign || $followingLoading || followingAll} on:click={followAll}>
           {followingAll ? 'Following…' : 'Follow all'}
         </button>
         <button class="btn" on:click={load}>Reload</button>
@@ -371,7 +371,7 @@
       <div class="muted" style="margin-top:0.35rem; line-height:1.5;">
         Following this pack is public. Being included in the pack is invite-based: the pack owner invites you, you accept, then the owner updates the pack.
       </div>
-      {#if $isAuthed && $myPubkey === pack.pubkey}
+      {#if $canSign && $myPubkey === pack.pubkey}
         <div class="muted" style="margin-top:0.65rem;">Invite someone (paste their npub)</div>
         <div style="margin-top:0.35rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
           <input class="input" style="min-width: 260px;" bind:value={inviteNpub} placeholder="npub…" />
@@ -386,7 +386,7 @@
           {#if accepted}
             <div class="muted" style="margin-top:0.35rem; color: rgba(74,222,128,0.95);">Accepted.</div>
           {:else}
-            <button class="btn primary" style="margin-top:0.5rem;" disabled={acceptBusy} on:click={acceptInvite}>
+            <button class="btn primary" style="margin-top:0.5rem;" disabled={!$canSign || acceptBusy} on:click={acceptInvite}>
               {acceptBusy ? 'Accepting…' : 'Accept invite'}
             </button>
             {#if acceptError}<div class="muted" style="margin-top:0.5rem; color: var(--danger);">{acceptError}</div>{/if}
@@ -401,7 +401,7 @@
       {/if}
     </div>
 
-    {#if $isAuthed && $myPubkey === pack.pubkey}
+    {#if $canSign && $myPubkey === pack.pubkey}
       <div class="card" style="margin-top: 0.9rem; padding: 0.9rem; background: rgba(0,0,0,0.18);">
         <div style="font-weight: 950;">Pack owner tools</div>
         <div class="muted" style="margin-top:0.35rem; line-height:1.5;">

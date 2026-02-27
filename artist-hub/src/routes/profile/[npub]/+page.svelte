@@ -14,7 +14,7 @@
   import PulseFeed from '$lib/components/PulseFeed.svelte';
   import RichText from '$lib/components/RichText.svelte';
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
-  import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
+  import { canSign, isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
   import { followingError, followingLoading, followingSet, toggleFollow } from '$lib/stores/follows';
   import NpubShareModal from '$lib/components/NpubShareModal.svelte';
   import ZapReceiptsList from '$lib/components/ZapReceiptsList.svelte';
@@ -290,7 +290,7 @@
   $: website = (prof?.website || '').trim();
   $: websiteIcon = (((prof as any)?.website_icon as string | undefined) || '').trim();
   $: lud16 = ((prof as any)?.lud16 as string | undefined) || ((prof as any)?.lud06 as string | undefined) || '';
-  $: canFollow = $isAuthed && $myPubkey && pubkey && $myPubkey !== pubkey;
+  $: canFollow = $canSign && $myPubkey && pubkey && $myPubkey !== pubkey;
   $: isFollowing = pubkey ? $followingSet.has(pubkey) : false;
 
   // Followers list (best-effort)

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { base } from '$app/paths';
-  import { isAuthed } from '$lib/stores/auth';
+  import { canSign } from '$lib/stores/auth';
   import { publishHubEvent } from '$lib/nostr/events';
 
   let title = '';
@@ -35,8 +35,8 @@
   async function publish() {
     error = null;
     ok = null;
-    if (!$isAuthed) {
-      error = 'Connect your npub to publish an event.';
+    if (!$canSign) {
+      error = 'Connect your signer to publish an event.';
       return;
     }
     if (!title.trim()) {

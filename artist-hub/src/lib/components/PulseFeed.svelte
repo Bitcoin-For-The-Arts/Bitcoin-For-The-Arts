@@ -6,7 +6,7 @@
   import { extractUrls } from '$lib/ui/media';
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
   import { publishComment, publishEdit, publishNote, publishQuoteRepost, publishReaction, publishRepost } from '$lib/nostr/publish';
-  import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
+  import { canSign, pubkey as myPubkey } from '$lib/stores/auth';
   import Modal from '$lib/components/Modal.svelte';
   import ZapComposer from '$lib/components/ZapComposer.svelte';
   import ZapEmojiComposer from '$lib/components/ZapEmojiComposer.svelte';
@@ -349,8 +349,8 @@
   let likeBusy = false;
   async function doLike(p: Post) {
     if (!p?.id) return;
-    if (!$isAuthed) {
-      showToast('Connect your npub to like.');
+    if (!$canSign) {
+      showToast('Connect a signer to like.');
       return;
     }
     if (getMyLike(p.id)) return;
@@ -460,8 +460,8 @@
 
   async function doPublishPost() {
     publishError = null;
-    if (!$isAuthed) {
-      publishError = 'Connect your npub to post.';
+    if (!$canSign) {
+      publishError = 'Connect a signer to post.';
       return;
     }
     const body = newPost.trim();
@@ -615,8 +615,8 @@
   async function postComment() {
     if (!commentsOpenFor) return;
     commentError = null;
-    if (!$isAuthed) {
-      commentError = 'Connect your npub to comment.';
+    if (!$canSign) {
+      commentError = 'Connect a signer to comment.';
       return;
     }
     const body = commentText.trim();
@@ -651,8 +651,8 @@
   async function saveEdit() {
     if (!editOpenFor) return;
     editError = null;
-    if (!$isAuthed) {
-      editError = 'Connect your npub to edit.';
+    if (!$canSign) {
+      editError = 'Connect a signer to edit.';
       return;
     }
     if ($myPubkey !== editOpenFor.pubkey) {
@@ -681,8 +681,8 @@
   async function doPlainRepostFromComposer() {
     if (!repostComposeFor) return;
     repostComposeError = null;
-    if (!$isAuthed) {
-      repostComposeError = 'Connect your npub to repost.';
+    if (!$canSign) {
+      repostComposeError = 'Connect a signer to repost.';
       return;
     }
     repostComposeBusy = true;
@@ -713,8 +713,8 @@
   async function doQuoteRepostFromComposer() {
     if (!repostComposeFor) return;
     repostComposeError = null;
-    if (!$isAuthed) {
-      repostComposeError = 'Connect your npub to repost.';
+    if (!$canSign) {
+      repostComposeError = 'Connect a signer to repost.';
       return;
     }
     repostComposeBusy = true;

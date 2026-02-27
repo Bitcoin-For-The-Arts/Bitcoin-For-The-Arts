@@ -1,7 +1,7 @@
 <script lang="ts">
   import Modal from '$lib/components/Modal.svelte';
   import { browser } from '$app/environment';
-  import { connectWithNsec } from '$lib/stores/auth';
+  import { connectNostr, connectReadOnly, connectWithNsec, hasNip07 } from '$lib/stores/auth';
 
   export let open = false;
   export let onClose: () => void = () => {};
@@ -15,6 +15,7 @@
   let nsecRevealed = false;
   let rememberOnDevice = false;
   let existingNsec = '';
+  let readonlyNpub = '';
   let busy = false;
   let error: string | null = null;
 
@@ -60,6 +61,37 @@
       busy = false;
     }
   }
+
+  async function signInReadOnly(npub: string) {
+    error = null;
+    const trimmed = (npub || '').trim();
+    if (!trimmed) {
+      error = 'Paste an npub to continue.';
+      return;
+    }
+    busy = true;
+    try {
+      await connectReadOnly(trimmed, { remember: rememberOnDevice });
+      onClose();
+    } catch (e) {
+      error = e instanceof Error ? e.message : String(e);
+    } finally {
+      busy = false;
+    }
+  }
+
+  async function connectWithExtension() {
+    error = null;
+    busy = true;
+    try {
+      await connectNostr();
+      onClose();
+    } catch (e) {
+      error = e instanceof Error ? e.message : String(e);
+    } finally {
+      busy = false;
+    }
+  }
 </script>
 
 <Modal {open} title="Welcome to Bitcoin for the Arts" onClose={onClose}>
@@ -81,6 +113,9 @@
           <div class="option-links">
             <a href="https://getalby.com" target="_blank" rel="noreferrer" class="btn primary">Alby (Browser + Lightning)</a>
             <a href="https://github.com/nicnocquee/nos2x" target="_blank" rel="noreferrer" class="btn">nos2x (Chrome)</a>
+            {#if $hasNip07}
+              <button class="btn" disabled={busy} on:click={connectWithExtension}>{busy ? 'Connecting…' : 'Use extension now'}</button>
+            {/if}
           </div>
           <p class="muted" style="font-size: 0.82rem; margin-top: 0.5rem;">
             After installing, reload this page and click "Connect" in the header.
@@ -121,6 +156,23 @@
             Explore listings, live streams, and forum posts without connecting. You can connect later when ready.
           </p>
           <button class="btn" on:click={onClose}>Continue Browsing</button>
+        </div>
+
+        <div class="option card">
+          <div class="option-title">Option 5: View a Profile (Read-Only npub)</div>
+          <p class="muted option-desc">
+            Paste an <strong>npub</strong> to browse as that profile in read-only mode. You won’t be able to post, follow, DM, or zap without a signer.
+          </p>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <input class="input" style="flex: 1; min-width: 260px;" bind:value={readonlyNpub} placeholder="npub1…" />
+            <button class="btn primary" disabled={busy || !readonlyNpub.trim()} on:click={() => signInReadOnly(readonlyNpub)}>
+              {busy ? 'Loading…' : 'View'}
+            </button>
+          </div>
+          <label class="pill" style="cursor: pointer; margin-top: 0.6rem; display: inline-flex; gap: 0.5rem; align-items: center;">
+            <input type="checkbox" bind:checked={rememberOnDevice} />
+            Remember on this device
+          </label>
         </div>
       </div>
     </div>

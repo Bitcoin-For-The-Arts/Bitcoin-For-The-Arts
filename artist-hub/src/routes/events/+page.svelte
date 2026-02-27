@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { isAuthed } from '$lib/stores/auth';
+  import { canSign } from '$lib/stores/auth';
   import { hubEvents, hubEventsLoading, startHubEvents } from '$lib/stores/events';
   import EventCard from '$lib/components/EventCard.svelte';
   import EventForm from '$lib/components/EventForm.svelte';
@@ -26,20 +26,20 @@
       </div>
     </div>
     <div style="display:flex; gap:0.5rem; align-items:center;">
-      <button class="btn primary" on:click={() => (showCreate = !showCreate)} disabled={!$isAuthed}>
+      <button class="btn primary" on:click={() => (showCreate = !showCreate)} disabled={!$canSign}>
         {showCreate ? 'Close' : 'Publish event'}
       </button>
     </div>
   </div>
 </div>
 
-{#if !$isAuthed}
+{#if !$canSign}
   <div class="card" style="margin-top: 1rem; padding: 1rem; border-color: rgba(246,196,83,0.35);">
-    <div class="muted">Connect your npub to publish events.</div>
+    <div class="muted">Connect your signer to publish events.</div>
   </div>
 {/if}
 
-{#if showCreate && $isAuthed}
+{#if showCreate && $canSign}
   <div style="margin-top: 1rem;">
     <EventForm />
   </div>

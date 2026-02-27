@@ -3,7 +3,7 @@
   import ProfileCard from '$lib/components/ProfileCard.svelte';
   import { featuredError, featuredPubkeys, startFeatured } from '$lib/stores/featured';
   import { bftaAdminNpub } from '$lib/stores/settings';
-  import { pubkey, isAuthed } from '$lib/stores/auth';
+  import { pubkey, canSign } from '$lib/stores/auth';
   import { nip19 } from 'nostr-tools';
   import { publishCuratedSet } from '$lib/nostr/publish';
   import { BFTA_DEFAULT_FEATURED_SET_D } from '$lib/nostr/constants';
@@ -22,7 +22,7 @@
     }
   }
 
-  $: isAdmin = Boolean($isAuthed && adminPubkey && $pubkey === adminPubkey);
+  $: isAdmin = Boolean($canSign && adminPubkey && $pubkey === adminPubkey);
 
   let npubsCsv = '';
   let saving = false;

@@ -2,7 +2,7 @@
   import { nanoid } from 'nanoid';
   import { goto } from '$app/navigation';
   import { base } from '$app/paths';
-  import { isAuthed } from '$lib/stores/auth';
+  import { canSign } from '$lib/stores/auth';
   import { publishStudio, type StudioContent, type StudioItem } from '$lib/nostr/studios';
 
   let name = '';
@@ -46,8 +46,8 @@
 
   async function publish() {
     error = null;
-    if (!$isAuthed) {
-      error = 'Connect your npub to publish a studio.';
+    if (!$canSign) {
+      error = 'Connect your signer to publish a studio.';
       return;
     }
     busy = true;

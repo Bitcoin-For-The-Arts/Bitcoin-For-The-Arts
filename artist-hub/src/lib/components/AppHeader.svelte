@@ -3,7 +3,7 @@
   import { base } from '$app/paths';
   import { page } from '$app/stores';
   import { env as publicEnv } from '$env/dynamic/public';
-  import { connectNostr, disconnectNostr, isAuthed, npub, authError, hasNip07 } from '$lib/stores/auth';
+  import { connectNostr, disconnectNostr, isAuthed, npub, authError, hasNip07, authMode, canSign } from '$lib/stores/auth';
   import { ndkError, ndkStatus, reconnectNdk } from '$lib/stores/ndk';
   import { openOnboarding } from '$lib/stores/onboarding';
   import { unreadCount } from '$lib/stores/notifications';
@@ -103,7 +103,11 @@
         <span class="pill muted mono" title={$npub ?? ''}>
           {($npub ?? '').slice(0, 10)}…{($npub ?? '').slice(-8)}
         </span>
-        <button class="btn" on:click={disconnectNostr}>Disconnect</button>
+        {#if !$canSign}
+          <span class="pill muted" title="Read-only profile (no signer)">Read-only</span>
+        {/if}
+        <button class="btn" on:click={() => openOnboarding()}>Switch</button>
+        <button class="btn" on:click={disconnectNostr}>Log out</button>
       {:else}
         <button class="btn primary" on:click={handleConnect}>{$hasNip07 ? 'Connect' : 'Get started'}</button>
       {/if}

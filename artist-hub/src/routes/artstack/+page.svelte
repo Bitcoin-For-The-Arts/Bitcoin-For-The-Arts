@@ -3,7 +3,7 @@
   import { base } from '$app/paths';
   import { ensureNdk } from '$lib/stores/ndk';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
-  import { isAuthed, pubkey } from '$lib/stores/auth';
+  import { canSign, pubkey } from '$lib/stores/auth';
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
   import { signWithNip07, publishSignedEvent } from '$lib/nostr/pool';
@@ -148,7 +148,7 @@
 
   async function publishPost() {
     postError = null;
-    if (!$isAuthed || !$pubkey) { postError = 'Connect your signer first.'; return; }
+    if (!$canSign || !$pubkey) { postError = 'Connect your signer first.'; return; }
     if (!newPostContent.trim()) { postError = 'Write something first.'; return; }
     postBusy = true;
 
@@ -179,7 +179,7 @@
   }
 
   async function publishReply() {
-    if (!selectedPost || !replyText.trim() || !$isAuthed) return;
+    if (!selectedPost || !replyText.trim() || !$canSign) return;
     replyBusy = true;
     try {
       const pk = $pubkey;
@@ -247,7 +247,7 @@
   </aside>
 
   <div class="main-content">
-    {#if $isAuthed}
+  {#if $canSign}
       <div class="card compose-card">
         <textarea
           class="textarea"
@@ -374,7 +374,7 @@
             {/each}
           </div>
 
-          {#if $isAuthed}
+          {#if $canSign}
             <div style="display: flex; gap: 0.5rem; margin-top: 0.65rem;">
               <EmojiPicker on:pick={(e) => (replyText = insertAtCursor(replyEl, replyText, e.detail.emoji))} />
               <input
