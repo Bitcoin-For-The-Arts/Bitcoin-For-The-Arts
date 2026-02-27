@@ -3,7 +3,7 @@
   import { base } from '$app/paths';
   import StudioCard from '$lib/components/StudioCard.svelte';
   import StudioForm from '$lib/components/StudioForm.svelte';
-  import { isAuthed } from '$lib/stores/auth';
+  import { canSign, isAuthed } from '$lib/stores/auth';
   import { startStudios, studios, studiosLoading } from '$lib/stores/studios';
 
   let showCreate = false;
@@ -23,7 +23,7 @@
       </div>
     </div>
     <div style="display:flex; gap:0.5rem; align-items:center;">
-      <button class="btn primary" on:click={() => (showCreate = !showCreate)} disabled={!$isAuthed}>
+      <button class="btn primary" on:click={() => (showCreate = !showCreate)} disabled={!$canSign}>
         {showCreate ? 'Close' : 'Create studio'}
       </button>
       <a class="btn" href={`${base}/discover`}>Back to Discover</a>
@@ -31,13 +31,13 @@
   </div>
 </div>
 
-{#if !$isAuthed}
+{#if !$canSign}
   <div class="card" style="margin-top: 1rem; padding: 1rem; border-color: rgba(246,196,83,0.35);">
-    <div class="muted">Connect your npub to create a studio.</div>
+    <div class="muted">Connect your signer to create a studio.</div>
   </div>
 {/if}
 
-{#if showCreate && $isAuthed}
+{#if showCreate && $canSign}
   <div style="margin-top: 1rem;">
     <StudioForm />
   </div>

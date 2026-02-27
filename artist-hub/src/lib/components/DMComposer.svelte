@@ -1,7 +1,7 @@
 <script lang="ts">
   import Modal from '$lib/components/Modal.svelte';
   import { publishDm } from '$lib/nostr/publish';
-  import { isAuthed } from '$lib/stores/auth';
+  import { canSign } from '$lib/stores/auth';
   import { npubFor } from '$lib/nostr/helpers';
   import EmojiPicker from '$lib/components/EmojiPicker.svelte';
   import { insertAtCursor } from '$lib/ui/text';
@@ -22,7 +22,7 @@
   async function send() {
     error = null;
     ok = null;
-    if (!$isAuthed) {
+    if (!$canSign) {
       error = 'Connect your signer to send encrypted DMs.';
       return;
     }

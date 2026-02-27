@@ -4,7 +4,7 @@
   import { nanoid } from 'nanoid';
   import { publishNip15Product, publishNip15Stall, publishNip99Classified } from '$lib/nostr/publish';
   import type { Nip15ProductContent, Nip15StallContent, Nip99Classified } from '$lib/nostr/types';
-  import { isAuthed, pubkey, profile } from '$lib/stores/auth';
+  import { canSign, pubkey, profile } from '$lib/stores/auth';
 
   type Mode = 'service' | 'classified';
   let mode: Mode = 'service';
@@ -38,7 +38,7 @@
 
   async function publish() {
     error = null;
-    if (!$isAuthed || !$pubkey) {
+    if (!$canSign || !$pubkey) {
       error = 'Connect your signer first.';
       return;
     }

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { base } from '$app/paths';
-  import { isAuthed, pubkey } from '$lib/stores/auth';
+  import { canSign, pubkey } from '$lib/stores/auth';
   import { publishZapChallenge } from '$lib/nostr/challenges';
 
   let title = '';
@@ -40,8 +40,8 @@
 
   async function publish() {
     error = null;
-    if (!$isAuthed) {
-      error = 'Connect your npub to publish a challenge.';
+    if (!$canSign) {
+      error = 'Connect your signer to publish a challenge.';
       return;
     }
     busy = true;

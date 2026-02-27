@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { isAuthed } from '$lib/stores/auth';
+  import { canSign } from '$lib/stores/auth';
   import { startZapChallenges, zapChallenges, zapChallengesLoading } from '$lib/stores/challenges';
   import ZapChallengeCard from '$lib/components/ZapChallengeCard.svelte';
   import ZapChallengeForm from '$lib/components/ZapChallengeForm.svelte';
@@ -26,7 +26,7 @@
         </div>
       </div>
       <div style="display:flex; gap:0.5rem; align-items:center; justify-content:flex-end;">
-        {#if $isAuthed}
+        {#if $canSign}
           <button class="btn primary" on:click={() => (showForm = !showForm)}>
             {showForm ? 'Close' : 'Create'}
           </button>

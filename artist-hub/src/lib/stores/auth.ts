@@ -26,7 +26,7 @@ export type ArtistProfile = {
 };
 
 export const pubkey = writable<string | null>(null);
-export const authMode = writable<'none' | 'nip07' | 'local'>('none');
+export const authMode = writable<'none' | 'nip07' | 'local' | 'readonly'>('none');
 export const npub = derived(pubkey, ($pubkey) => {
   if (!$pubkey) return null;
   try {
@@ -41,8 +41,55 @@ export const authError = writable<string | null>(null);
 export const hasNip07 = derived([], () => (browser ? Boolean(window.nostr?.getPublicKey) : false));
 
 export const isAuthed = derived(pubkey, ($pubkey) => Boolean($pubkey));
+export const canSign = derived(authMode, ($m) => $m === 'nip07' || $m === 'local');
 
 const STORAGE_NIP07_PUBKEY = 'bfta:nip07-pubkey';
+const STORAGE_READONLY_PUBKEY = 'bfta:readonly-pubkey';
+const STORAGE_READONLY_PUBKEY_SESSION = 'bfta:session-readonly-pubkey';
+
+function persistReadonlyPubkey(pk: string, opts?: { remember?: boolean }) {
+  if (!browser) return;
+  try {
+    localStorage.removeItem(STORAGE_READONLY_PUBKEY);
+    sessionStorage.removeItem(STORAGE_READONLY_PUBKEY_SESSION);
+    if (opts?.remember) localStorage.setItem(STORAGE_READONLY_PUBKEY, pk);
+    else sessionStorage.setItem(STORAGE_READONLY_PUBKEY_SESSION, pk);
+  } catch {
+    // ignore
+  }
+}
+
+function clearReadonlyPubkey() {
+  if (!browser) return;
+  try {
+    localStorage.removeItem(STORAGE_READONLY_PUBKEY);
+    sessionStorage.removeItem(STORAGE_READONLY_PUBKEY_SESSION);
+  } catch {
+    // ignore
+  }
+}
+
+function loadReadonlyPubkey(): string | null {
+  if (!browser) return null;
+  try {
+    const raw = (localStorage.getItem(STORAGE_READONLY_PUBKEY) || sessionStorage.getItem(STORAGE_READONLY_PUBKEY_SESSION) || '').trim();
+    if (raw && /^[0-9a-f]{64}$/i.test(raw)) return raw.toLowerCase();
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function parsePubkeyInput(input: string): string {
+  const raw = (input || '').trim();
+  if (!raw) throw new Error('Missing npub.');
+  const noPrefix = raw.startsWith('nostr:') ? raw.slice('nostr:'.length) : raw;
+  if (/^[0-9a-f]{64}$/i.test(noPrefix)) return noPrefix.toLowerCase();
+  const decoded = nip19.decode(noPrefix);
+  if (decoded.type === 'npub') return String(decoded.data).toLowerCase();
+  if (decoded.type === 'nprofile') return String((decoded.data as any)?.pubkey || '').toLowerCase();
+  throw new Error('Unsupported identifier. Paste an npub (or hex pubkey).');
+}
 
 async function fetchMyProfile(pk: string): Promise<void> {
   try {
@@ -69,11 +116,18 @@ if (browser) {
     authMode.set('local');
     void fetchMyProfile(pk);
   } else {
+    const ro = loadReadonlyPubkey();
+    if (ro) {
+      pubkey.set(ro);
+      authMode.set('readonly');
+      void fetchMyProfile(ro);
+    }
+
     // Best-effort: restore previous NIP-07 pubkey so the UI doesn't "disconnect" on refresh.
     // We still may need to re-authorize signing when the user performs an action.
     try {
       const saved = (localStorage.getItem(STORAGE_NIP07_PUBKEY) || '').trim();
-      if (saved && /^[0-9a-f]{64}$/i.test(saved) && window.nostr?.getPublicKey) {
+      if (!ro && saved && /^[0-9a-f]{64}$/i.test(saved) && window.nostr?.getPublicKey) {
         pubkey.set(saved.toLowerCase());
         authMode.set('nip07');
         void fetchMyProfile(saved.toLowerCase());
@@ -110,6 +164,7 @@ export async function connectNostr(): Promise<void> {
 
   try {
     clearLocalSigner();
+    clearReadonlyPubkey();
     const pk = await window.nostr.getPublicKey();
     pubkey.set(pk);
     authMode.set('nip07');
@@ -141,9 +196,29 @@ export async function connectWithNsec(nsec: string, opts?: { remember?: boolean 
     const sk = decoded.data as Uint8Array;
     const pk = getPublicKey(sk);
 
+    clearReadonlyPubkey();
     setLocalSigner(trimmed, { remember: Boolean(opts?.remember) });
     pubkey.set(pk);
     authMode.set('local');
+    await fetchMyProfile(pk);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    authError.set(msg);
+    throw new Error(msg);
+  }
+}
+
+export async function connectReadOnly(input: string, opts?: { remember?: boolean }): Promise<void> {
+  if (!browser) return;
+  authError.set(null);
+  try {
+    const pk = parsePubkeyInput(input);
+    clearLocalSigner();
+    clearReadonlyPubkey();
+    // do not clear nip07 saved key; user may later switch back to extension
+    pubkey.set(pk);
+    authMode.set('readonly');
+    persistReadonlyPubkey(pk, { remember: Boolean(opts?.remember) });
     await fetchMyProfile(pk);
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
@@ -158,6 +233,7 @@ export function disconnectNostr(): void {
   authError.set(null);
   authMode.set('none');
   clearLocalSigner();
+  clearReadonlyPubkey();
   if (browser) {
     try {
       localStorage.removeItem(STORAGE_NIP07_PUBKEY);

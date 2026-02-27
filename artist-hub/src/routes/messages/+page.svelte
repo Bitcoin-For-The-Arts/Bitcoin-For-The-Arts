@@ -2,7 +2,7 @@
   import { onDestroy, onMount } from 'svelte';
   import { nip04, nip19 } from 'nostr-tools';
   import { ensureNdk } from '$lib/stores/ndk';
-  import { isAuthed, pubkey } from '$lib/stores/auth';
+  import { canSign, pubkey } from '$lib/stores/auth';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import DMComposer from '$lib/components/DMComposer.svelte';
@@ -369,13 +369,13 @@
   }
 
   onMount(() => {
-    if ($isAuthed) void start();
+    if ($canSign) void start();
   });
 
-  $: if ($isAuthed && $pubkey && !stop) {
+  $: if ($canSign && $pubkey && !stop) {
     void start();
   }
-  $: if (!$isAuthed) {
+  $: if (!$canSign) {
     threads = [];
     messages = [];
     selected = null;
@@ -398,7 +398,7 @@
   </div>
 </div>
 
-{#if !$isAuthed}
+{#if !$canSign}
   <div class="card" style="margin-top: 1rem; padding: 1rem; border-color: rgba(246,196,83,0.35);">
     <div class="muted">Connect your signer to decrypt and send DMs.</div>
   </div>
