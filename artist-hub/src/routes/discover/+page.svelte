@@ -4,7 +4,6 @@
   import {
     discoveryCategory,
     discoveryLoading,
-    discoveryQuery,
     discoveryTags,
     filteredListings,
     setQuickTag,
@@ -65,10 +64,6 @@
     <div style="font-size: 1.25rem; font-weight: 900;">Discover</div>
     <div class="muted" style="margin-top: 0.35rem; line-height: 1.5;">
       Search decentralized listings across public relays (NIP-15 services + NIP-99 classifieds).
-    </div>
-
-    <div style="margin-top: 0.85rem;">
-      <input class="input" bind:value={$discoveryQuery} placeholder="Search: illustration, mixing, collaboration…" />
     </div>
 
     <div style="margin-top: 0.75rem;">

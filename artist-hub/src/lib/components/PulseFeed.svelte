@@ -22,6 +22,7 @@
   export let showComposer = true;
   export let includeReplies = false;
   export let onlyReplies = false;
+  export let onTrending: ((items: any[]) => void) | null = null;
 
   type Post = {
     id: string;
@@ -43,6 +44,19 @@
     editedAt?: number;
   };
 
+  type TrendingItem = {
+    id: string;
+    pubkey: string;
+    createdAt: number;
+    content: string;
+    score: number;
+    sats: number;
+    zaps: number;
+    likes: number;
+    reposts: number;
+    comments: number;
+  };
+
   let posts: Post[] = [];
   let loading = false;
   let error: string | null = null;
@@ -55,6 +69,7 @@
   let io: IntersectionObserver | null = null;
   const statsById = new Map<string, Stats>();
   let tick = 0; // invalidate for stats changes
+  let trendingTimer: ReturnType<typeof setTimeout> | null = null;
 
   type MyZap = { amountSats: number; comment?: string; at: number };
   type MyRepost = { at: number; quote?: string };
@@ -218,6 +233,7 @@
     posts = [post, ...posts.filter((x) => x.id !== post.id)]
       .sort((a, b) => b.createdAt - a.createdAt)
       .slice(0, cap);
+    emitTrendingSoon();
   }
 
   function isReplyLike(ev: any): boolean {
@@ -238,6 +254,47 @@
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const _ = tick;
     return statsById.get(id) ?? null;
+  }
+
+  function computeTrending(): TrendingItem[] {
+    const now = Math.floor(Date.now() / 1000);
+    const windowSecs = 60 * 60 * 18; // ~18h
+    const out: TrendingItem[] = [];
+    for (const p of posts) {
+      if (!p?.id) continue;
+      if (now - (p.createdAt || 0) > windowSecs) continue;
+      const s = statsById.get(p.id);
+      if (!s) continue;
+      const sats = Math.max(0, Math.floor(s.sats || 0));
+      const zaps = Math.max(0, Math.floor(s.zaps || 0));
+      const likes = Math.max(0, Math.floor(s.likes || 0));
+      const reposts = Math.max(0, Math.floor(s.reposts || 0));
+      const comments = Math.max(0, Math.floor(s.comments || 0));
+      const score = sats + zaps * 250 + likes * 40 + reposts * 80 + comments * 60;
+      if (score <= 0) continue;
+      out.push({ id: p.id, pubkey: p.pubkey, createdAt: p.createdAt, content: p.content, score, sats, zaps, likes, reposts, comments });
+    }
+    out.sort((a, b) => b.score - a.score);
+    return out.slice(0, 8);
+  }
+
+  function emitTrendingSoon() {
+    if (!onTrending) return;
+    if (trendingTimer) clearTimeout(trendingTimer);
+    trendingTimer = setTimeout(() => {
+      try {
+        onTrending?.(computeTrending());
+      } catch {
+        // ignore
+      }
+    }, 150);
+  }
+
+  // Recompute trending when stats update.
+  $: if (onTrending) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _t = tick;
+    emitTrendingSoon();
   }
 
   const statsQueue = new Set<string>();
@@ -755,6 +812,7 @@
 
   onDestroy(() => {
     if (toastTimer) clearTimeout(toastTimer);
+    if (trendingTimer) clearTimeout(trendingTimer);
     if (stop) stop();
     if (io) io.disconnect();
   });

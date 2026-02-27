@@ -3,12 +3,14 @@
   import { base } from '$app/paths';
   import { page } from '$app/stores';
   import { env as publicEnv } from '$env/dynamic/public';
-  import { connectNostr, disconnectNostr, isAuthed, npub, authError, hasNip07, authMode, canSign } from '$lib/stores/auth';
+  import { connectNostr, disconnectNostr, isAuthed, npub, authError, hasNip07, authMode, canSign, profile } from '$lib/stores/auth';
   import { ndkError, ndkStatus, reconnectNdk } from '$lib/stores/ndk';
   import { openOnboarding } from '$lib/stores/onboarding';
   import { unreadCount } from '$lib/stores/notifications';
+  import GlobalSearch from '$lib/components/GlobalSearch.svelte';
 
   let mobileMenuOpen = false;
+  let searchOpen = false;
   const mainSiteUrl = ((((publicEnv as any).PUBLIC_MAIN_SITE_URL as string | undefined) || 'https://bitcoinforthearts.org') + '').trim();
 
   const nav = [
@@ -34,6 +36,10 @@
 
   function toggleMobile() {
     mobileMenuOpen = !mobileMenuOpen;
+  }
+
+  function toggleSearch() {
+    searchOpen = !searchOpen;
   }
 
   function handleConnect() {
@@ -77,6 +83,13 @@
 
     <div class="auth">
       {#if $isAuthed}
+        <a class="me" href={`${base}/me`} aria-label="Your profile" title="Your profile">
+          {#if $profile?.picture}
+            <img class="meImg" src={$profile.picture} alt="" />
+          {:else}
+            <span class="mePh" aria-hidden="true"></span>
+          {/if}
+        </a>
         <a class="bell" href={`${base}/notifications`} aria-label="Notifications" title="Notifications">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path
@@ -111,11 +124,28 @@
       {:else}
         <button class="btn primary" on:click={handleConnect}>{$hasNip07 ? 'Connect' : 'Get started'}</button>
       {/if}
+      <button class="btn search-toggle" on:click={toggleSearch} aria-label="Search" title="Search">
+        🔎
+      </button>
       <button class="btn mobile-toggle" on:click={toggleMobile} aria-label="Toggle menu">
         {mobileMenuOpen ? '✕' : '☰'}
       </button>
     </div>
   </div>
+
+  {#if searchOpen}
+    <div class="container search-pop">
+      <div class="card" style="padding: 0.85rem;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap: 0.75rem; flex-wrap:wrap;">
+          <div style="font-weight: 900;">Search</div>
+          <button class="pill muted" style="cursor:pointer;" on:click={() => (searchOpen = false)}>Close</button>
+        </div>
+        <div style="margin-top: 0.65rem;">
+          <GlobalSearch placeholder="Search people (name or npub)…" />
+        </div>
+      </div>
+    </div>
+  {/if}
 
   {#if mobileMenuOpen}
     <nav class="mobile-nav container">
@@ -256,6 +286,10 @@
     align-items: center;
     justify-content: flex-end;
     flex-shrink: 0;
+    min-width: 0;
+  }
+  .search-pop {
+    padding-bottom: 0.75rem;
   }
   .bell {
     position: relative;
@@ -268,6 +302,33 @@
     background: rgba(255, 255, 255, 0.06);
     color: var(--text);
     text-decoration: none;
+  }
+  .me {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.06);
+    text-decoration: none;
+    overflow: hidden;
+  }
+  .me:hover {
+    background: rgba(255, 255, 255, 0.09);
+    text-decoration: none;
+  }
+  .meImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .mePh {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(246, 196, 83, 0.16), rgba(139, 92, 246, 0.12));
+    display: block;
   }
   .bell:hover {
     background: rgba(255, 255, 255, 0.09);
@@ -319,6 +380,18 @@
       display: none;
     }
   }
+  @media (max-width: 760px) {
+    .inner {
+      flex-wrap: wrap;
+    }
+    .brand {
+      flex: 1 1 auto;
+    }
+    .auth {
+      flex: 1 1 auto;
+      flex-wrap: wrap;
+    }
+  }
   @media (max-width: 600px) {
     .logo-title {
       font-size: 0.92rem;
@@ -329,6 +402,12 @@
     }
     .mono {
       display: none;
+    }
+  }
+  @media (max-width: 420px) {
+    .search-toggle {
+      padding-left: 0.7rem;
+      padding-right: 0.7rem;
     }
   }
 </style>

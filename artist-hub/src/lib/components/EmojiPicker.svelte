@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { createEventDispatcher, onDestroy } from 'svelte';
+  import { browser } from '$app/environment';
+  import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 
   export let disabled = false;
   export let title = 'Add emoji';
+  export let hideOnMobile = true;
 
   const dispatch = createEventDispatcher<{ pick: { emoji: string } }>();
 
@@ -71,6 +73,7 @@
 
   let open = false;
   let root: HTMLDivElement | null = null;
+  let hidden = false;
 
   function toggle() {
     if (disabled) return;
@@ -93,28 +96,54 @@
     document.addEventListener('mousedown', onDocDown);
   }
 
+  function computeHidden() {
+    if (!browser) return;
+    if (!hideOnMobile) {
+      hidden = false;
+      return;
+    }
+    try {
+      const coarse = window.matchMedia?.('(hover: none) and (pointer: coarse)')?.matches ?? false;
+      const narrow = window.matchMedia?.('(max-width: 600px)')?.matches ?? false;
+      hidden = coarse || narrow;
+      if (hidden) open = false;
+    } catch {
+      hidden = false;
+    }
+  }
+
+  onMount(() => {
+    computeHidden();
+    if (!browser) return;
+    const onResize = () => computeHidden();
+    window.addEventListener('resize', onResize, { passive: true });
+    return () => window.removeEventListener('resize', onResize);
+  });
+
   onDestroy(() => {
     if (typeof document !== 'undefined') document.removeEventListener('mousedown', onDocDown);
   });
 </script>
 
-<div class="wrap" bind:this={root}>
-  <button class="btn emojiBtn" type="button" disabled={disabled} on:click|preventDefault={toggle} aria-label={title} title={title}>
-    🙂
-  </button>
+{#if !hidden}
+  <div class="wrap" bind:this={root}>
+    <button class="btn emojiBtn" type="button" disabled={disabled} on:click|preventDefault={toggle} aria-label={title} title={title}>
+      🙂
+    </button>
 
-  {#if open}
-    <div class="pop card" role="dialog" aria-label="Emoji picker">
-      <div class="grid">
-        {#each emojis as e (e)}
-          <button class="emo" type="button" on:click|preventDefault={() => pick(e)} aria-label={`Insert ${e}`}>
-            {e}
-          </button>
-        {/each}
+    {#if open}
+      <div class="pop card" role="dialog" aria-label="Emoji picker">
+        <div class="grid">
+          {#each emojis as e (e)}
+            <button class="emo" type="button" on:click|preventDefault={() => pick(e)} aria-label={`Insert ${e}`}>
+              {e}
+            </button>
+          {/each}
+        </div>
       </div>
-    </div>
-  {/if}
-</div>
+    {/if}
+  </div>
+{/if}
 
 <style>
   .wrap {

@@ -2,6 +2,7 @@ import { writable } from 'svelte/store';
 import { ensureNdk } from '$lib/stores/ndk';
 import { fetchProfileFor } from '$lib/stores/profiles';
 import { isZapStreamLiveEvent, parseLiveEvent30311, type LiveEvent30311 } from '$lib/nostr/nip53';
+import { collectEventsWithDeadline } from '$lib/nostr/collect';
 
 export const liveStreams = writable<LiveEvent30311[]>([]);
 export const liveStreamsLoading = writable(false);
@@ -42,7 +43,8 @@ export async function startLiveStreams(opts?: { source?: 'zapstream' | 'all'; li
 
       // Backfill first (avoids infinite skeleton if EOSE never fires).
       try {
-        const evs = await ndk.fetchEvents({ kinds: [30311], since, limit: 800 } as any);
+        const res = await collectEventsWithDeadline(ndk as any, { kinds: [30311], since, limit: 800 } as any, { timeoutMs: 12_000, maxEvents: 800 });
+        const evs = res.events;
         const out: LiveEvent30311[] = [];
         for (const ev of Array.from(evs || [])) {
           const parsed = accept(ev as any);
