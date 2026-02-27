@@ -67,9 +67,16 @@
 </script>
 
 <div class="card" style="padding: 1rem;">
-  <div style="font-size: 1.25rem; font-weight: 900;">Follow Packs</div>
-  <div class="muted" style="margin-top: 0.35rem; line-height: 1.5;">
-    Following.space-compatible follow packs (kind:39089). Open a pack link, accept an invite, and follow everyone in the pack — all inside Artist Hub.
+  <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+    <div>
+      <div style="font-size: 1.25rem; font-weight: 900;">Follow Packs</div>
+      <div class="muted" style="margin-top: 0.35rem; line-height: 1.5;">
+        Following.space-compatible follow packs (kind:39089). Open a pack link, accept an invite, and follow everyone in the pack — all inside Artist Hub.
+      </div>
+    </div>
+    {#if $isAuthed}
+      <a class="btn primary" href={`${base}/packs/create`}>Create pack</a>
+    {/if}
   </div>
 </div>
 
