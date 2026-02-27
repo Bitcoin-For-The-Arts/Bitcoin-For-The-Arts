@@ -44,6 +44,8 @@ export function isZapStreamLiveEvent(tags: string[][]): boolean {
   if (alt.includes('zap.stream')) return true;
   const service = (getFirstTagValue(tags, 'service') || '').toLowerCase();
   if (service.includes('zap.stream')) return true;
+  const url = (getFirstTagValue(tags, 'url') || '').toLowerCase();
+  if (url.includes('zap.stream')) return true;
   const streaming = getAllTagValues(tags, 'streaming').join(' ').toLowerCase();
   if (streaming.includes('zap.stream')) return true;
   return false;

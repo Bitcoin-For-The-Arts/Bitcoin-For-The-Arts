@@ -12,7 +12,15 @@
   import { publishDeletion, publishDm } from '$lib/nostr/publish';
   import Modal from '$lib/components/Modal.svelte';
 
-  type Msg = { id: string; from: string; to: string; at: number; text: string };
+  type Msg = {
+    id: string;
+    from: string;
+    to: string;
+    at: number;
+    text: string; // plaintext when decrypted; placeholder otherwise
+    ciphertext?: string; // present if not yet decrypted (or kept for re-decrypt)
+    decrypted?: boolean;
+  };
   type Thread = { with: string; lastAt: number; lastText: string };
 
   let threads: Thread[] = [];
@@ -37,6 +45,9 @@
   let editText = '';
   let editBusy = false;
   let editError: string | null = null;
+
+  let decryptBusy = false;
+  let decryptError: string | null = null;
 
   function deletedKey(me: string) {
     return `bfta:dm:deleted:${me}`;
@@ -96,28 +107,78 @@
       if (!prev || m.at > prev.at) best.set(withPk, m);
     }
     threads = Array.from(best.entries())
-      .map(([withPk, m]) => ({ with: withPk, lastAt: m.at, lastText: m.text.slice(0, 140) }))
+      .map(([withPk, m]) => ({
+        with: withPk,
+        lastAt: m.at,
+        lastText: (m.text || '🔒 Encrypted DM').slice(0, 140),
+      }))
       .sort((a, b) => b.lastAt - a.lastAt)
       .slice(0, 50);
     if (selected && !threads.some((t) => t.with === selected)) selected = threads[0]?.with ?? null;
   }
 
-  async function decrypt(ev: any, me: string): Promise<Msg | null> {
-    const from = ev.pubkey as string;
-    const to = (ev.tags as string[][]).find((t) => t[0] === 'p')?.[1] as string | undefined;
-    if (!to) return null;
-    const counterparty = from === me ? to : from;
-
-    const ciphertext = ev.content || '';
-    let text: string | null = null;
+  async function decryptText(counterparty: string, ciphertext: string): Promise<string | null> {
+    if (!ciphertext) return null;
     if (window.nostr?.nip04?.decrypt) {
-      text = await window.nostr.nip04.decrypt(counterparty, ciphertext);
-    } else {
-      const sk = getLocalSecretKey();
-      if (!sk) return null;
-      text = await nip04.decrypt(sk, counterparty, ciphertext);
+      // NIP-07 decrypt: may trigger a permission popup; keep calls sequential.
+      return await window.nostr.nip04.decrypt(counterparty, ciphertext);
     }
-    return { id: ev.id, from, to, at: ev.created_at, text };
+    const sk = getLocalSecretKey();
+    if (!sk) return null;
+    return await nip04.decrypt(sk, counterparty, ciphertext);
+  }
+
+  function parseDmEnvelope(ev: any): { from: string; to: string; at: number; counterparty: string; ciphertext: string } | null {
+    const from = ev?.pubkey as string;
+    const to = ((ev?.tags as string[][]) || []).find((t) => t[0] === 'p')?.[1] as string | undefined;
+    if (!from || !to) return null;
+    const me = $pubkey;
+    if (!me) return null;
+    const counterparty = from === me ? to : from;
+    const at = Number(ev?.created_at || 0) || Math.floor(Date.now() / 1000);
+    const ciphertext = String(ev?.content || '');
+    return { from, to, at, counterparty, ciphertext };
+  }
+
+  async function decryptThread(withPk: string): Promise<void> {
+    if (!$pubkey) return;
+    if (!withPk) return;
+    decryptError = null;
+    if (decryptBusy) return;
+
+    const hasDecrypt = Boolean(window.nostr?.nip04?.decrypt) || Boolean(getLocalSecretKey());
+    if (!hasDecrypt) return;
+
+    const me = $pubkey;
+    const pending = messages
+      .filter((m) => withPkFor(m, me) === withPk && !deleted.has(m.id) && m.ciphertext && !m.decrypted)
+      .sort((a, b) => a.at - b.at)
+      .slice(-40);
+
+    if (pending.length === 0) return;
+
+    decryptBusy = true;
+    try {
+      for (const m of pending) {
+        try {
+          const counterparty = withPk;
+          const text = await decryptText(counterparty, m.ciphertext || '');
+          if (!text) continue;
+          messages = messages.map((x) =>
+            x.id === m.id
+              ? { ...x, text, decrypted: true }
+              : x,
+          );
+        } catch (e) {
+          // Stop early if signer is prompting / blocked.
+          decryptError = e instanceof Error ? e.message : String(e);
+          break;
+        }
+      }
+      rebuildThreads(me);
+    } finally {
+      decryptBusy = false;
+    }
   }
 
   async function start() {
@@ -125,6 +186,7 @@
     error = null;
     loading = true;
     actionError = null;
+    decryptError = null;
 
     const hasDecrypt = Boolean(window.nostr?.nip04?.decrypt) || Boolean(getLocalSecretKey());
     if (!hasDecrypt) {
@@ -146,20 +208,44 @@
     );
 
     sub.on('event', async (ev) => {
-      try {
-        const msg = await decrypt(ev, me);
-        if (!msg) return;
-        const withPk = msg.from === me ? msg.to : msg.from;
-        if (deleted.has(msg.id)) return;
-        const cutoff = cleared[withPk] || 0;
-        if (msg.at <= cutoff) return;
-        void fetchProfileFor(withPk);
-        messages = [...messages.filter((m) => m.id !== msg.id), msg].sort((a, b) => a.at - b.at).slice(-200);
-        rebuildThreads(me);
-        if (!selected) selected = withPk;
-      } catch {
-        // ignore undecryptable messages
+      // IMPORTANT: do NOT auto-decrypt all messages.
+      // Auto-decrypt can trigger many concurrent NIP-07 permission popups and break Alby.
+      const env = parseDmEnvelope(ev);
+      if (!env) return;
+      const withPk = env.counterparty;
+      if (deleted.has(ev.id)) return;
+      const cutoff = cleared[withPk] || 0;
+      if (env.at <= cutoff) return;
+      void fetchProfileFor(withPk);
+
+      const baseMsg: Msg = {
+        id: ev.id,
+        from: env.from,
+        to: env.to,
+        at: env.at,
+        text: '🔒 Encrypted DM (click thread to decrypt)',
+        ciphertext: env.ciphertext,
+        decrypted: false,
+      };
+
+      // If user is using an in-app key (no popups), we can decrypt quietly.
+      if (!window.nostr?.nip04?.decrypt && getLocalSecretKey()) {
+        try {
+          const text = await decryptText(withPk, env.ciphertext);
+          if (text) {
+            baseMsg.text = text;
+            baseMsg.decrypted = true;
+          }
+        } catch {
+          // ignore
+        }
       }
+
+      messages = [...messages.filter((m) => m.id !== baseMsg.id), baseMsg]
+        .sort((a, b) => a.at - b.at)
+        .slice(-200);
+      rebuildThreads(me);
+      if (!selected) selected = withPk;
     });
 
     // Listen for your deletion events (NIP-09) so deletions from other clients are respected.
@@ -268,6 +354,7 @@
       composerLabel = ($profileByPubkey[composerTo]?.display_name || $profileByPubkey[composerTo]?.name || '').trim();
       composerOpen = true;
       selected = composerTo;
+      void decryptThread(composerTo);
       newNpub = '';
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
@@ -276,6 +363,10 @@
 
   $: selectedProfile = selected ? $profileByPubkey[selected] : undefined;
   $: selectedName = selectedProfile?.display_name || selectedProfile?.name || (selected ? selected.slice(0, 10) + '…' : '');
+  $: if (selected) {
+    // Decrypt on-demand (user gesture happens when selecting a thread).
+    void decryptThread(selected);
+  }
 
   onMount(() => {
     if ($isAuthed) void start();
@@ -336,7 +427,10 @@
           {@const tname = (tp?.display_name || tp?.name || t.with.slice(0, 12) + '…').trim()}
           <button
             class={`card thread ${selected === t.with ? 'active' : ''}`}
-            on:click={() => (selected = t.with)}
+            on:click={() => {
+              selected = t.with;
+              void decryptThread(t.with);
+            }}
             style="padding: 0.75rem 0.85rem; text-align:left;"
           >
             <div style="display:flex; gap:0.6rem; align-items:center; min-width:0;">
@@ -367,6 +461,9 @@
         <div style="font-weight: 900;">Conversation</div>
         {#if selected}
           <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+            <button class="btn" disabled={decryptBusy} on:click={() => void decryptThread(selected!)}>
+              {decryptBusy ? 'Decrypting…' : 'Decrypt'}
+            </button>
             <button class="btn" disabled={actionBusy} on:click={() => clearConversation(selected!)}>Clear</button>
             <button
               class="btn primary"
@@ -402,7 +499,7 @@
                 {m.from === $pubkey ? 'You' : 'Them'} • {new Date(m.at * 1000).toLocaleString()}
               </div>
               <div style="display:flex; gap:0.35rem; align-items:center;">
-                {#if m.from === $pubkey}
+                {#if m.from === $pubkey && m.decrypted}
                   <button class="pill muted" disabled={actionBusy} on:click={() => openEditMsg(m)} title="Edit (delete + resend)">
                     ✎
                   </button>
@@ -424,6 +521,9 @@
       </div>
       {#if actionError}
         <div class="muted" style="margin-top:0.65rem; color: var(--danger);">{actionError}</div>
+      {/if}
+      {#if decryptError}
+        <div class="muted" style="margin-top:0.65rem; color: var(--danger);">{decryptError}</div>
       {/if}
     </div>
   </div>
