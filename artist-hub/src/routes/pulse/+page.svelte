@@ -255,7 +255,7 @@
   }
   @media (min-width: 980px) {
     .layout {
-      grid-template-columns: 340px 1fr;
+      grid-template-columns: 360px minmax(0, 1fr);
       align-items: start;
     }
     .controls {
@@ -265,17 +265,18 @@
     }
   }
   .feedWrap {
-    max-width: 1040px;
+    width: 100%;
+    max-width: none;
   }
   @media (min-width: 980px) {
     .feedWrap {
-      margin-left: auto;
+      margin-left: 0;
     }
   }
   @media (min-width: 1120px) {
     .feedWrap {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 320px;
+      grid-template-columns: minmax(0, 1fr) 360px;
       gap: 1rem;
       align-items: start;
     }
