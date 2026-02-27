@@ -3,7 +3,7 @@
   import { base } from '$app/paths';
   import { page } from '$app/stores';
   import { env as publicEnv } from '$env/dynamic/public';
-  import { connectNostr, disconnectNostr, isAuthed, npub, authError, hasNip07, authMode, canSign } from '$lib/stores/auth';
+  import { connectNostr, disconnectNostr, isAuthed, npub, authError, hasNip07, authMode, canSign, profile } from '$lib/stores/auth';
   import { ndkError, ndkStatus, reconnectNdk } from '$lib/stores/ndk';
   import { openOnboarding } from '$lib/stores/onboarding';
   import { unreadCount } from '$lib/stores/notifications';
@@ -83,6 +83,13 @@
 
     <div class="auth">
       {#if $isAuthed}
+        <a class="me" href={`${base}/me`} aria-label="Your profile" title="Your profile">
+          {#if $profile?.picture}
+            <img class="meImg" src={$profile.picture} alt="" />
+          {:else}
+            <span class="mePh" aria-hidden="true"></span>
+          {/if}
+        </a>
         <a class="bell" href={`${base}/notifications`} aria-label="Notifications" title="Notifications">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path
@@ -296,6 +303,33 @@
     color: var(--text);
     text-decoration: none;
   }
+  .me {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.06);
+    text-decoration: none;
+    overflow: hidden;
+  }
+  .me:hover {
+    background: rgba(255, 255, 255, 0.09);
+    text-decoration: none;
+  }
+  .meImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .mePh {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(246, 196, 83, 0.16), rgba(139, 92, 246, 0.12));
+    display: block;
+  }
   .bell:hover {
     background: rgba(255, 255, 255, 0.09);
     text-decoration: none;
@@ -344,6 +378,18 @@
     }
     .mobile-nav {
       display: none;
+    }
+  }
+  @media (max-width: 760px) {
+    .inner {
+      flex-wrap: wrap;
+    }
+    .brand {
+      flex: 1 1 auto;
+    }
+    .auth {
+      flex: 1 1 auto;
+      flex-wrap: wrap;
     }
   }
   @media (max-width: 600px) {

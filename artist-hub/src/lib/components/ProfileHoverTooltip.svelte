@@ -29,9 +29,17 @@
     if (!pk) return;
     await toggleFollow(pk);
   }
+
+  function closeIfOutside(e: Event) {
+    if (!pk) return;
+    const t = e.target as any;
+    const el: HTMLElement | null = t && typeof t.closest === 'function' ? t.closest('.tip') : null;
+    if (el) return;
+    forceClearHoverProfile(pk);
+  }
 </script>
 
-<svelte:window bind:innerWidth bind:innerHeight />
+<svelte:window bind:innerWidth bind:innerHeight on:scroll={closeIfOutside} on:mousedown={closeIfOutside} on:touchstart={closeIfOutside} />
 
 {#if hp}
   <div
@@ -62,7 +70,7 @@
     {/if}
 
     <div class="actions">
-      <a class="btn" href={`${base}/profile/${npubFor(pk)}`}>View profile</a>
+      <a class="btn" href={`${base}/profile/${npubFor(pk)}`} on:click={() => forceClearHoverProfile(pk)}>View profile</a>
       {#if canFollow}
         <button class={`btn ${isFollowing ? '' : 'primary'}`} disabled={$followingLoading} on:click={onToggleFollow}>
           {isFollowing ? 'Unfollow' : 'Follow'}
