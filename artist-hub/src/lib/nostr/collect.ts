@@ -25,10 +25,13 @@ export async function collectEventsWithDeadline(
   let error: string | undefined;
 
   return await new Promise<CollectResult>((resolve) => {
+    let sub: any = null;
     let done = false;
+    let t: any = null;
     const finish = () => {
       if (done) return;
       done = true;
+      if (t) clearTimeout(t);
       try {
         sub?.stop();
       } catch {
@@ -37,29 +40,31 @@ export async function collectEventsWithDeadline(
       resolve({ events, timedOut, eose, error });
     };
 
-    const t = setTimeout(() => {
+    t = setTimeout(() => {
       timedOut = true;
       finish();
     }, timeoutMs);
 
-    const sub = ndk.subscribe(filter, { closeOnEose: true });
-    sub.on('event', (ev: any) => {
-      events.push(ev);
-      if (events.length >= maxEvents) {
-        clearTimeout(t);
+    try {
+      sub = ndk.subscribe(filter, { closeOnEose: true });
+      sub.on('event', (ev: any) => {
+        events.push(ev);
+        if (events.length >= maxEvents) {
+          finish();
+        }
+      });
+      sub.on('eose', () => {
+        eose = true;
         finish();
-      }
-    });
-    sub.on('eose', () => {
-      eose = true;
-      clearTimeout(t);
-      finish();
-    });
-    sub.on('error', (e: any) => {
+      });
+      sub.on('error', (e: any) => {
+        error = e instanceof Error ? e.message : String(e);
+        finish();
+      });
+    } catch (e) {
       error = e instanceof Error ? e.message : String(e);
-      clearTimeout(t);
       finish();
-    });
+    }
   });
 }
 
