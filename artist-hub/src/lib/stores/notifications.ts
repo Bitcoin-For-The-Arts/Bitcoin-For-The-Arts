@@ -135,7 +135,7 @@ function toNotification(ev: any, me: string): NotificationItem | null {
     const isInvite = tags.some((t) => t[0] === 't' && t[1] === 'follow-pack-invite');
     if (isInvite) {
       const d = tagValue(tags, 'd') || '';
-      const href = d ? `/d/${d}?p=${ev.pubkey}` : '/pulse';
+      const href = d ? `/d?d=${encodeURIComponent(d)}&p=${encodeURIComponent(ev.pubkey)}` : '/pulse';
       return {
         id: ev.id,
         type: 'invite',
