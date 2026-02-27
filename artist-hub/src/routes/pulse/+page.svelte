@@ -1,10 +1,12 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
+  import { base } from '$app/paths';
   import PulseFeed from '$lib/components/PulseFeed.svelte';
   import ZapStreamScroller from '$lib/components/ZapStreamScroller.svelte';
   import { nip19 } from 'nostr-tools';
   import { profileByPubkey } from '$lib/stores/profiles';
   import { fetchProfileFor } from '$lib/stores/profiles';
+  import { npubFor } from '$lib/nostr/helpers';
   import { ensureNdk } from '$lib/stores/ndk';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
   import { isAuthed } from '$lib/stores/auth';
@@ -272,14 +274,19 @@
           {#each followingPreview as pk (pk)}
             {@const p = $profileByPubkey[pk]}
             {@const name = (p?.display_name || p?.name || pk.slice(0, 10) + '…').trim()}
-            <span class="pill muted" title={name} style="display:inline-flex; gap:0.35rem; align-items:center;">
+            <a
+              class="pill muted"
+              href={`${base}/profile/${npubFor(pk)}`}
+              title={name}
+              style="display:inline-flex; gap:0.35rem; align-items:center;"
+            >
               {#if p?.picture}
                 <img src={p.picture} alt="" style="width:16px; height:16px; border-radius:6px; border:1px solid var(--border); object-fit:cover;" />
               {:else}
                 <span style="width:16px; height:16px; border-radius:6px; border:1px solid var(--border); background: rgba(255,255,255,0.06); display:inline-block;"></span>
               {/if}
               {name.length > 16 ? `${name.slice(0, 16)}…` : name}
-            </span>
+            </a>
           {/each}
           {#if $followingSet.size > followingPreview.length}
             <span class="muted" style="font-size:0.85rem;">+{$followingSet.size - followingPreview.length} more</span>

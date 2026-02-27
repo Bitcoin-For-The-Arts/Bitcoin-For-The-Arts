@@ -1,6 +1,7 @@
 <script lang="ts">
   import { browser } from '$app/environment';
   import { profile as profileStore, publishProfile, pubkey, refreshMyProfile, type ArtistProfile } from '$lib/stores/auth';
+  import { uploadImage } from '$lib/ui/upload';
 
   let draft: ArtistProfile = {};
   let saving = false;
@@ -13,6 +14,11 @@
   let publishedNorm: any = null;
   let draftNorm: any = null;
   let isDirty = false;
+
+  let avatarUploading = false;
+  let bannerUploading = false;
+  let avatarUploadError: string | null = null;
+  let bannerUploadError: string | null = null;
 
   function keyFor(pk: string) {
     return `bfta:artist-hub:profile-draft:${pk}`;
@@ -209,6 +215,36 @@
       saving = false;
     }
   }
+
+  async function onPickAvatar(file: File | null) {
+    avatarUploadError = null;
+    if (!file) return;
+    avatarUploading = true;
+    try {
+      const res = await uploadImage(file);
+      draft = { ...draft, picture: res.url };
+      ok = 'Avatar uploaded.';
+    } catch (e) {
+      avatarUploadError = e instanceof Error ? e.message : String(e);
+    } finally {
+      avatarUploading = false;
+    }
+  }
+
+  async function onPickBanner(file: File | null) {
+    bannerUploadError = null;
+    if (!file) return;
+    bannerUploading = true;
+    try {
+      const res = await uploadImage(file);
+      draft = { ...draft, banner: res.url };
+      ok = 'Banner uploaded.';
+    } catch (e) {
+      bannerUploadError = e instanceof Error ? e.message : String(e);
+    } finally {
+      bannerUploading = false;
+    }
+  }
 </script>
 
 <div class="card" style="padding: 1rem;">
@@ -266,10 +302,45 @@
     <div>
       <div class="muted" style="margin-bottom:0.35rem;">Avatar image URL</div>
       <input class="input" bind:value={draft.picture} placeholder="https://…" />
+      <div class="muted" style="margin-top:0.45rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+        <label class="pill muted" style="cursor:pointer;">
+          {avatarUploading ? 'Uploading…' : 'Upload PNG/JPEG'}
+          <input
+            type="file"
+            accept="image/png,image/jpeg,image/jpg,image/webp"
+            style="display:none;"
+            disabled={avatarUploading}
+            on:change={(e) => onPickAvatar((e.currentTarget as HTMLInputElement).files?.[0] ?? null)}
+          />
+        </label>
+        {#if draft.picture}
+          <span class="pill muted" style="display:inline-flex; gap:0.35rem; align-items:center;">
+            <img src={draft.picture} alt="" style="width:16px; height:16px; border-radius:6px; border:1px solid var(--border); object-fit:cover;" />
+            Preview
+          </span>
+        {/if}
+      </div>
+      {#if avatarUploadError}<div class="muted" style="margin-top:0.35rem; color:var(--danger);">{avatarUploadError}</div>{/if}
     </div>
     <div>
       <div class="muted" style="margin-bottom:0.35rem;">Banner image URL</div>
       <input class="input" bind:value={draft.banner} placeholder="https://…" />
+      <div class="muted" style="margin-top:0.45rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+        <label class="pill muted" style="cursor:pointer;">
+          {bannerUploading ? 'Uploading…' : 'Upload PNG/JPEG'}
+          <input
+            type="file"
+            accept="image/png,image/jpeg,image/jpg,image/webp"
+            style="display:none;"
+            disabled={bannerUploading}
+            on:change={(e) => onPickBanner((e.currentTarget as HTMLInputElement).files?.[0] ?? null)}
+          />
+        </label>
+        {#if draft.banner}
+          <span class="pill muted" title="Banner set">✓ Banner</span>
+        {/if}
+      </div>
+      {#if bannerUploadError}<div class="muted" style="margin-top:0.35rem; color:var(--danger);">{bannerUploadError}</div>{/if}
     </div>
   </div>
 

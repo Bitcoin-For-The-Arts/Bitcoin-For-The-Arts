@@ -262,128 +262,81 @@
 
     try {
       const ndk = await ensureNdk();
-      const sub = ndk.subscribe(
-        { kinds: [NOSTR_KINDS.note, NOSTR_KINDS.repost, NOSTR_KINDS.nip37_edit], '#e': [p.id], limit: 350 } as any,
-        { closeOnEose: true },
-      );
-      const subQuotes = ndk.subscribe({ kinds: [NOSTR_KINDS.note], '#q': [p.id], limit: 250 } as any, { closeOnEose: true });
-      const subLikes = ndk.subscribe({ kinds: [NOSTR_KINDS.reaction], '#e': [p.id], limit: 900 } as any, { closeOnEose: true });
-      // Zap receipts are not reliably indexable by '#e' (the 'e' tag lives inside the embedded zap-request JSON),
-      // so we query by recipient '#p' then filter client-side by parsed e-tags.
-      const subZaps = ndk.subscribe(
-        { kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [p.pubkey], since: Math.max(0, (p.createdAt || 0) - 60), limit: 900 } as any,
-        { closeOnEose: true },
-      );
+
+      // Use fetchEvents for reliability (avoids EOSE issues and "all zeros" UI).
+      const [evsE, evsQ, evsZ] = await Promise.all([
+        ndk.fetchEvents({ kinds: [NOSTR_KINDS.note, NOSTR_KINDS.repost, NOSTR_KINDS.nip37_edit, NOSTR_KINDS.reaction], '#e': [p.id], limit: 1200 } as any),
+        ndk.fetchEvents({ kinds: [NOSTR_KINDS.note], '#q': [p.id], limit: 600 } as any),
+        ndk.fetchEvents({ kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [p.pubkey], limit: 1600 } as any),
+      ]);
+
+      const eArr = Array.from(evsE || []);
+      const qArr = Array.from(evsQ || []);
+      const zArr = Array.from(evsZ || []);
 
       let commentsCount = 0;
       let repostsCount = 0;
       let quoteRepostsCount = 0;
-      let zapsCount = 0;
       let likesCount = 0;
+      let zapsCount = 0;
       let satsSum = 0;
       const emojis: string[] = [];
       let latestEdit: { at: number; content: string } | null = null;
 
-      sub.on('event', (ev) => {
+      for (const ev of eArr as any[]) {
         if (ev.kind === NOSTR_KINDS.note) {
-          if (ev.id === p.id) return;
+          if (ev.id === p.id) continue;
           const tags = (ev.tags as string[][]) || [];
           const isQuote = tags.some((t) => t[0] === 'q' && t[1] === p.id);
           if (!isQuote) commentsCount += 1;
-        }
-        if (ev.kind === NOSTR_KINDS.repost) repostsCount += 1;
-        if (ev.kind === NOSTR_KINDS.nip37_edit) {
-          if (ev.pubkey !== p.pubkey) return;
+        } else if (ev.kind === NOSTR_KINDS.repost) {
+          repostsCount += 1;
+        } else if (ev.kind === NOSTR_KINDS.reaction) {
+          if (!isLikeReactionContent(ev.content)) continue;
+          likesCount += 1;
+          if ($myPubkey && ev.pubkey === $myPubkey) {
+            if (!myLikesById.has(p.id)) {
+              myLikesById.set(p.id, { at: Date.now() });
+              myTick++;
+            }
+          }
+        } else if (ev.kind === NOSTR_KINDS.nip37_edit) {
+          if (ev.pubkey !== p.pubkey) continue;
           const at = ev.created_at || 0;
           if (!latestEdit || at > latestEdit.at) latestEdit = { at, content: ev.content || '' };
         }
-      });
+      }
 
-      subQuotes.on('event', (ev) => {
-        if (!ev?.id) return;
-        if (ev.id === p.id) return;
+      // Quotes (kind 1 with q tag)
+      for (const ev of qArr as any[]) {
+        if (!ev?.id) continue;
+        if (ev.id === p.id) continue;
         quoteRepostsCount += 1;
-      });
+      }
 
-      subLikes.on('event', (ev) => {
-        if (!ev?.id) return;
-        if (!isLikeReactionContent(ev.content)) return;
-        likesCount += 1;
-        if ($myPubkey && ev.pubkey === $myPubkey) {
-          if (!myLikesById.has(p.id)) {
-            myLikesById.set(p.id, { at: Date.now() });
-            myTick++;
-          }
-        }
-      });
-
-      subZaps.on('event', (ev) => {
+      // Zaps (query by recipient pubkey and filter client-side by embedded e tags)
+      for (const ev of zArr as any[]) {
         const parsed = parseZapReceipt(ev);
-        if (!parsed?.eTags?.includes(p.id)) return;
+        if (!parsed?.eTags?.includes(p.id)) continue;
         zapsCount += 1;
         satsSum += parsed.amountSats ?? 0;
         const c = (parsed.comment || '').trim();
         if (c && c.length <= 8 && !emojis.includes(c)) emojis.unshift(c);
         if (emojis.length > 6) emojis.length = 6;
-      });
-
-      let doneA = false;
-      let doneB = false;
-      let doneC = false;
-      let doneD = false;
-      let timeoutHit = false;
-      const timeout = setTimeout(() => {
-        timeoutHit = true;
-        doneA = true;
-        doneB = true;
-        doneC = true;
-        doneD = true;
-        try {
-          sub.stop();
-          subQuotes.stop();
-          subZaps.stop();
-          subLikes.stop();
-        } catch {
-          // ignore
-        }
-        finalize();
-      }, 2600);
-
-      function finalize() {
-        if (!doneA || !doneB || !doneC || !doneD) return;
-        clearTimeout(timeout);
-        const prev = statsById.get(p.id);
-        if (!prev) return;
-        statsById.set(p.id, {
-          comments: commentsCount,
-          reposts: repostsCount + quoteRepostsCount,
-          zaps: zapsCount,
-          likes: likesCount,
-          sats: satsSum,
-          zapEmojis: emojis.length ? emojis : undefined,
-          finalized: true,
-          editedContent: latestEdit?.content?.trim() ? latestEdit.content.trim() : undefined,
-          editedAt: latestEdit?.at,
-        });
-        tick++;
       }
 
-      sub.on('eose', () => {
-        doneA = true;
-        finalize();
+      statsById.set(p.id, {
+        comments: commentsCount,
+        reposts: repostsCount + quoteRepostsCount,
+        zaps: zapsCount,
+        likes: likesCount,
+        sats: satsSum,
+        zapEmojis: emojis.length ? emojis : undefined,
+        finalized: true,
+        editedContent: latestEdit?.content?.trim() ? latestEdit.content.trim() : undefined,
+        editedAt: latestEdit?.at,
       });
-      subQuotes.on('eose', () => {
-        doneB = true;
-        finalize();
-      });
-      subZaps.on('eose', () => {
-        doneC = true;
-        finalize();
-      });
-      subLikes.on('eose', () => {
-        doneD = true;
-        finalize();
-      });
+      tick++;
     } catch {
       // ignore stats failures
     }
