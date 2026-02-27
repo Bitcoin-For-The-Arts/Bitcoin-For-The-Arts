@@ -246,40 +246,95 @@
   let followersError: string | null = null;
   let followersList: string[] = [];
   let followersShowN = 80;
+  let followersPartial = false;
+  let stopFollowers: (() => void) | null = null;
+  let followersToken = 0;
+
+  function cancelFollowersLoad() {
+    followersToken++;
+    followersLoading = false;
+    try {
+      stopFollowers?.();
+    } catch {
+      // ignore
+    }
+    stopFollowers = null;
+  }
 
   async function loadFollowers() {
+    cancelFollowersLoad();
+    const token = ++followersToken;
     followersError = null;
     followersLoading = true;
-    followersList = [];
     followersShowN = 80;
+    followersPartial = false;
     try {
       if (!$pubkey) return;
       const ndk = await ensureNdk();
       const pk = $pubkey.trim().toLowerCase();
       const limit = 1200;
-      const res = await collectEventsWithDeadline(
-        ndk as any,
-        { kinds: [NOSTR_KINDS.contacts], '#p': [pk], limit } as any,
-        { timeoutMs: 18_000, maxEvents: limit },
-      );
-      const events = res.events;
-      const authors = new Set<string>();
-      for (const ev of Array.from(events || []) as any[]) {
+      const authors = new Set<string>(followersList || []);
+      let lastEmit = 0;
+      let finished = false;
+
+      const emit = () => {
+        if (token !== followersToken) return;
+        followersList = Array.from(authors);
+        for (const a of followersList.slice(0, 80)) void fetchProfileFor(a);
+      };
+
+      const finish = (opts?: { partial?: boolean }) => {
+        if (finished) return;
+        finished = true;
+        if (token !== followersToken) return;
+        followersPartial = Boolean(opts?.partial);
+        followersLoading = false;
+        try {
+          stopFollowers?.();
+        } catch {
+          // ignore
+        }
+        stopFollowers = null;
+        emit();
+      };
+
+      const timeoutMs = 18_000;
+      const t = setTimeout(() => finish({ partial: true }), timeoutMs);
+
+      const sub = ndk.subscribe({ kinds: [NOSTR_KINDS.contacts], '#p': [pk], limit } as any, { closeOnEose: true });
+      stopFollowers = () => {
+        clearTimeout(t);
+        sub.stop();
+      };
+
+      sub.on('event', (ev: any) => {
+        if (token !== followersToken) return;
         const a = typeof ev?.pubkey === 'string' ? ev.pubkey.trim().toLowerCase() : '';
-        if (!a || a === pk) continue;
-        authors.add(a);
-      }
-      followersList = Array.from(authors);
-      for (const a of followersList.slice(0, 80)) void fetchProfileFor(a);
+        if (!a || a === pk) return;
+        if (!authors.has(a)) authors.add(a);
+        if (authors.size >= limit) {
+          finish({ partial: true });
+          return;
+        }
+        const now = Date.now();
+        if (now - lastEmit > 450) {
+          lastEmit = now;
+          emit();
+        }
+      });
+      sub.on('eose', () => finish());
     } catch (e) {
       followersError = e instanceof Error ? e.message : String(e);
     } finally {
-      followersLoading = false;
+      if (token === followersToken) followersLoading = false;
     }
   }
 
   $: if (tab === 'followers' && $isAuthed && $pubkey) {
     if (!followersLoading && followersList.length === 0 && !followersError) void loadFollowers();
+  }
+  $: if (tab !== 'followers' && followersLoading) {
+    cancelFollowersLoad();
   }
 
   async function start() {
@@ -594,10 +649,20 @@
           <div class="muted" style="margin-top:0.35rem; line-height:1.45;">
             Best-effort follower list from your connected relays (authors of kind:3 that include your pubkey).
           </div>
+          {#if followersPartial}
+            <div class="muted" style="margin-top:0.35rem; line-height:1.35;">
+              Some relays are slow/unreachable — this list may be incomplete.
+            </div>
+          {/if}
         </div>
-        <button class="btn" disabled={followersLoading} on:click={() => void loadFollowers()}>
-          {followersLoading ? 'Loading…' : 'Refresh'}
-        </button>
+        <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+          {#if followersLoading}
+            <button class="btn" on:click={cancelFollowersLoad}>Cancel</button>
+          {/if}
+          <button class="btn" disabled={followersLoading} on:click={() => void loadFollowers()}>
+            {followersLoading ? 'Loading…' : 'Refresh'}
+          </button>
+        </div>
       </div>
       {#if followersError}
         <div class="muted" style="margin-top:0.65rem; color:var(--danger);">{followersError}</div>
