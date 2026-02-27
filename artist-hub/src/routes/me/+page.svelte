@@ -11,6 +11,7 @@
   import RichText from '$lib/components/RichText.svelte';
   import { npubFor } from '$lib/nostr/helpers';
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
+  import { collectEventsWithDeadline } from '$lib/nostr/collect';
   import NpubShareModal from '$lib/components/NpubShareModal.svelte';
   import ProfileCard from '$lib/components/ProfileCard.svelte';
   import { fetchProfileFor } from '$lib/stores/profiles';
@@ -56,19 +57,6 @@
     return tags.some((t) => t[0] === 'q');
   }
 
-  function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
-    return new Promise<T>((resolve, reject) => {
-      const t = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
-      p.then((v) => {
-        clearTimeout(t);
-        resolve(v);
-      }).catch((e) => {
-        clearTimeout(t);
-        reject(e);
-      });
-    });
-  }
-
   async function loadMetricsFor(pk: string) {
     metricsError = null;
     metricsLoading = true;
@@ -80,7 +68,12 @@
       if (!author) throw new Error('Missing pubkey');
 
       // Following (kind 3 contacts list)
-      const contacts = await withTimeout(ndk.fetchEvent({ kinds: [NOSTR_KINDS.contacts], authors: [author] } as any), 7000, 'Following query');
+      const contactsRes = await collectEventsWithDeadline(
+        ndk as any,
+        { kinds: [NOSTR_KINDS.contacts], authors: [author], limit: 1 } as any,
+        { timeoutMs: 9000, maxEvents: 30 },
+      );
+      const contacts = (contactsRes.events || []).sort((a: any, b: any) => (b.created_at || 0) - (a.created_at || 0))[0];
       const followingSet = new Set<string>();
       if (contacts?.tags) {
         for (const t of (contacts.tags as any as string[][]) || []) {
@@ -95,12 +88,12 @@
       // Use a backfill query instead of relying on EOSE/subscriptions (more reliable across relays).
       const followersLimit = 1200;
       const followerAuthors = new Set<string>();
-      const followerEvents = await withTimeout(
-        ndk.fetchEvents({ kinds: [NOSTR_KINDS.contacts], '#p': [author], limit: followersLimit } as any),
-        9000,
-        'Followers query',
+      const followerRes = await collectEventsWithDeadline(
+        ndk as any,
+        { kinds: [NOSTR_KINDS.contacts], '#p': [author], limit: followersLimit } as any,
+        { timeoutMs: 18_000, maxEvents: followersLimit },
       );
-      const followerArr = Array.from(followerEvents || []);
+      const followerArr = Array.from(followerRes.events || []);
       for (const ev of followerArr as any[]) {
         const p = typeof ev?.pubkey === 'string' ? ev.pubkey.trim().toLowerCase() : '';
         if (!p || p === author) continue;
@@ -113,12 +106,12 @@
       let posts = 0;
       let replies = 0;
       let quoteReposts = 0;
-      const noteEvents = await withTimeout(
-        ndk.fetchEvents({ kinds: [NOSTR_KINDS.note], authors: [author], limit: notesLimit } as any),
-        9000,
-        'Notes query',
+      const notesRes = await collectEventsWithDeadline(
+        ndk as any,
+        { kinds: [NOSTR_KINDS.note], authors: [author], limit: notesLimit } as any,
+        { timeoutMs: 18_000, maxEvents: notesLimit },
       );
-      const noteArr = Array.from(noteEvents || []);
+      const noteArr = Array.from(notesRes.events || []);
       let notesSeen = 0;
       for (const ev of noteArr as any[]) {
         notesSeen += 1;
@@ -135,12 +128,12 @@
 
       // Plain reposts (kind 6)
       const repostLimit = 1000;
-      const repostEvents = await withTimeout(
-        ndk.fetchEvents({ kinds: [NOSTR_KINDS.repost], authors: [author], limit: repostLimit } as any),
-        9000,
-        'Reposts query',
+      const repostRes = await collectEventsWithDeadline(
+        ndk as any,
+        { kinds: [NOSTR_KINDS.repost], authors: [author], limit: repostLimit } as any,
+        { timeoutMs: 18_000, maxEvents: repostLimit },
       );
-      const repostArr = Array.from(repostEvents || []);
+      const repostArr = Array.from(repostRes.events || []);
       const repostsSeen = repostArr.length;
       const plainReposts = repostArr.length;
 
@@ -148,12 +141,12 @@
       const zapsLimit = 1000;
       let zapCount = 0;
       let zapSats = 0;
-      const zapEvents = await withTimeout(
-        ndk.fetchEvents({ kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [author], limit: zapsLimit } as any),
-        9000,
-        'Zaps query',
+      const zapRes = await collectEventsWithDeadline(
+        ndk as any,
+        { kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [author], limit: zapsLimit } as any,
+        { timeoutMs: 18_000, maxEvents: zapsLimit },
       );
-      const zapArr = Array.from(zapEvents || []);
+      const zapArr = Array.from(zapRes.events || []);
       const zapsSeen = zapArr.length;
       for (const ev of zapArr as any[]) {
         const parsed = parseZapReceipt(ev);
@@ -165,11 +158,16 @@
 
       metrics = {
         following: { value: following, approx: false },
-        followers: { value: followerAuthors.size, approx: followersSeen >= followersLimit },
-        posts: { value: posts, approx: notesSeen >= notesLimit },
-        replies: { value: replies, approx: notesSeen >= notesLimit },
-        reposts: { value: plainReposts + quoteReposts, approx: repostsSeen >= repostLimit || notesSeen >= notesLimit, plain: plainReposts, quotes: quoteReposts },
-        zaps: { sats: zapSats, count: zapCount, approx: zapsSeen >= zapsLimit },
+        followers: { value: followerAuthors.size, approx: followersSeen >= followersLimit || followerRes.timedOut },
+        posts: { value: posts, approx: notesSeen >= notesLimit || notesRes.timedOut },
+        replies: { value: replies, approx: notesSeen >= notesLimit || notesRes.timedOut },
+        reposts: {
+          value: plainReposts + quoteReposts,
+          approx: repostsSeen >= repostLimit || notesSeen >= notesLimit || repostRes.timedOut || notesRes.timedOut,
+          plain: plainReposts,
+          quotes: quoteReposts,
+        },
+        zaps: { sats: zapSats, count: zapCount, approx: zapsSeen >= zapsLimit || zapRes.timedOut },
       };
     } catch (e) {
       metricsError = e instanceof Error ? e.message : String(e);
@@ -259,7 +257,12 @@
       const ndk = await ensureNdk();
       const pk = $pubkey.trim().toLowerCase();
       const limit = 1200;
-      const events = await withTimeout(ndk.fetchEvents({ kinds: [NOSTR_KINDS.contacts], '#p': [pk], limit } as any), 9000, 'Followers list query');
+      const res = await collectEventsWithDeadline(
+        ndk as any,
+        { kinds: [NOSTR_KINDS.contacts], '#p': [pk], limit } as any,
+        { timeoutMs: 18_000, maxEvents: limit },
+      );
+      const events = res.events;
       const authors = new Set<string>();
       for (const ev of Array.from(events || []) as any[]) {
         const a = typeof ev?.pubkey === 'string' ? ev.pubkey.trim().toLowerCase() : '';

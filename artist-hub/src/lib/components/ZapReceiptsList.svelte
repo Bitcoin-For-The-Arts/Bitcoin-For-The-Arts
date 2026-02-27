@@ -4,6 +4,7 @@
   import { ensureNdk } from '$lib/stores/ndk';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
+  import { collectEventsWithDeadline } from '$lib/nostr/collect';
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
   import { npubFor } from '$lib/nostr/helpers';
 
@@ -23,35 +24,25 @@
   let error: string | null = null;
   let rows: Row[] = [];
   let showN = 60;
-
-  function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
-    return new Promise<T>((resolve, reject) => {
-      const t = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
-      p.then((v) => {
-        clearTimeout(t);
-        resolve(v);
-      }).catch((e) => {
-        clearTimeout(t);
-        reject(e);
-      });
-    });
-  }
+  let partial = false;
 
   async function load() {
     error = null;
     rows = [];
     if (!recipientPubkey) return;
     loading = true;
+    partial = false;
     try {
       const ndk = await ensureNdk();
       const pk = recipientPubkey.trim().toLowerCase();
-      const events = await withTimeout(
-        ndk.fetchEvents({ kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [pk], limit: Math.max(50, Math.min(1200, limit)) } as any),
-        9000,
-        'Zap receipts query',
+      const res = await collectEventsWithDeadline(
+        ndk as any,
+        { kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [pk], limit: Math.max(50, Math.min(1200, limit)) } as any,
+        { timeoutMs: 18_000, maxEvents: Math.max(200, Math.min(2000, limit)) },
       );
+      partial = res.timedOut;
       const parsed: Row[] = [];
-      for (const ev of Array.from(events || []) as any[]) {
+      for (const ev of Array.from(res.events || []) as any[]) {
         const z = parseZapReceipt(ev);
         if (!z) continue;
         if ((z.recipientPubkey || '').trim().toLowerCase() !== pk) continue;
@@ -89,6 +80,11 @@
       <div class="muted" style="margin-top:0.35rem; line-height:1.5;">
         Showing {Math.min(showN, rows.length).toLocaleString()} of {rows.length.toLocaleString()} zap receipt(s) found on your connected relays.
       </div>
+      {#if partial}
+        <div class="muted" style="margin-top:0.35rem; line-height:1.4;">
+          Some relays are slow/unreachable — this list may be incomplete. Try Refresh.
+        </div>
+      {/if}
     </div>
     <button class="btn" disabled={loading} on:click={load}>{loading ? 'Loading…' : 'Refresh'}</button>
   </div>
