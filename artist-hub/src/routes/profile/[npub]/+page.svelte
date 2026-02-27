@@ -69,22 +69,15 @@
       const contacts = await ndk.fetchEvent({ kinds: [NOSTR_KINDS.contacts], authors: [pk] } as any);
       const following = contacts?.tags ? (contacts.tags as any as string[][]).filter((t) => t[0] === 'p').length : 0;
 
-      // Followers (best-effort: unique authors of kind 3 that include '#p' = pk)
-      const followersLimit = 1000;
+      // Followers (best-effort): unique authors of kind 3 that include '#p' = pk.
+      const followersLimit = 1200;
       const followerAuthors = new Set<string>();
-      let followersSeen = 0;
-      await new Promise<void>((resolve, reject) => {
-        const sub = ndk.subscribe(
-          { kinds: [NOSTR_KINDS.contacts], '#p': [pk], limit: followersLimit } as any,
-          { closeOnEose: true },
-        );
-        sub.on('event', (ev) => {
-          followersSeen += 1;
-          if (typeof ev?.pubkey === 'string') followerAuthors.add(ev.pubkey);
-        });
-        sub.on('eose', () => resolve());
-        sub.on('error', (e: any) => reject(e));
-      });
+      const followerEvents = await ndk.fetchEvents({ kinds: [NOSTR_KINDS.contacts], '#p': [pk], limit: followersLimit } as any);
+      const followerArr = Array.from(followerEvents || []);
+      for (const ev of followerArr as any[]) {
+        if (typeof ev?.pubkey === 'string') followerAuthors.add(ev.pubkey);
+      }
+      const followersSeen = followerArr.length;
 
       // Posts / replies / quote reposts (kind 1)
       const notesLimit = 1000;

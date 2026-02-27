@@ -67,19 +67,16 @@
       const contacts = await ndk.fetchEvent({ kinds: [NOSTR_KINDS.contacts], authors: [pk] } as any);
       const following = contacts?.tags ? (contacts.tags as any as string[][]).filter((t) => t[0] === 'p').length : 0;
 
-      // Followers: best-effort unique authors of kind 3 with '#p' = pk
-      const followersLimit = 1000;
+      // Followers (best-effort): unique authors of kind 3 that include '#p' = pk.
+      // Use a backfill query instead of relying on EOSE/subscriptions (more reliable across relays).
+      const followersLimit = 1200;
       const followerAuthors = new Set<string>();
-      let followersSeen = 0;
-      await new Promise<void>((resolve, reject) => {
-        const sub = ndk.subscribe({ kinds: [NOSTR_KINDS.contacts], '#p': [pk], limit: followersLimit } as any, { closeOnEose: true });
-        sub.on('event', (ev) => {
-          followersSeen += 1;
-          if (typeof ev?.pubkey === 'string') followerAuthors.add(ev.pubkey);
-        });
-        sub.on('eose', () => resolve());
-        sub.on('error', (e: any) => reject(e));
-      });
+      const followerEvents = await ndk.fetchEvents({ kinds: [NOSTR_KINDS.contacts], '#p': [pk], limit: followersLimit } as any);
+      const followerArr = Array.from(followerEvents || []);
+      for (const ev of followerArr as any[]) {
+        if (typeof ev?.pubkey === 'string') followerAuthors.add(ev.pubkey);
+      }
+      const followersSeen = followerArr.length;
 
       // Posts / replies / quote reposts (kind 1)
       const notesLimit = 1000;
@@ -339,6 +336,9 @@
       <div style="margin-top: 0.9rem;">
         <div class="muted" style="margin-bottom:0.35rem;">Overview</div>
         <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
+          <span class="pill muted" title="Followers (best-effort from kind:3 across your relays)">
+            Followers: {metricsLoading ? '…' : metrics?.followers ? `${metrics.followers.approx ? '≥' : ''}${metrics.followers.value.toLocaleString()}` : '—'}
+          </span>
           <span class="pill muted" title="Following (kind:3 contacts list)">Following: {$followingSet.size.toLocaleString()}</span>
           <span class="pill muted">Posts: {metricsLoading ? '…' : metrics?.posts ? `${metrics.posts.approx ? '≥' : ''}${metrics.posts.value.toLocaleString()}` : '—'}</span>
           <span class="pill muted">Replies: {metricsLoading ? '…' : metrics?.replies ? `${metrics.replies.approx ? '≥' : ''}${metrics.replies.value.toLocaleString()}` : '—'}</span>
