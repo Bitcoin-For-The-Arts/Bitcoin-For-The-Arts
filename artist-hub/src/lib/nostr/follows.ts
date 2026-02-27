@@ -67,6 +67,17 @@ export function updateContactsTagsForFollow(tags: string[][], targetPubkey: stri
   return dedupeKeepFirstP(next);
 }
 
+export function updateContactsTagsForBulkFollow(tags: string[][], targetPubkeys: string[]): string[][] {
+  const cur = (tags || []).filter((t) => Array.isArray(t)) as string[][];
+  const add = (targetPubkeys || [])
+    .map((x) => (x || '').trim())
+    .filter(Boolean)
+    .filter((pk) => /^[0-9a-f]{64}$/i.test(pk))
+    .slice(0, 5000);
+  const next = [...cur, ...add.map((pk) => ['p', pk] as string[])];
+  return dedupeKeepFirstP(next);
+}
+
 export async function publishMyContactsUpdate(opts: {
   myPubkey: string;
   targetPubkey: string;
@@ -93,5 +104,39 @@ export async function publishMyContactsUpdate(opts: {
   const signed = await signWithNip07(unsigned as any);
   await publishSignedEvent(signed as any);
   return { id: signed.id, following: followingFromContactsTags(nextTags) };
+}
+
+export async function publishMyContactsBulkFollow(opts: {
+  myPubkey: string;
+  addPubkeys: string[];
+}): Promise<{ id: string; following: Set<string>; added: number }> {
+  if (!browser) throw new Error('Follow requires a browser');
+  if (!opts.myPubkey) throw new Error('Missing my pubkey');
+  const add = (opts.addPubkeys || [])
+    .map((x) => (x || '').trim())
+    .filter(Boolean)
+    .filter((pk) => pk !== opts.myPubkey)
+    .slice(0, 5000);
+  if (!add.length) throw new Error('Nothing to follow.');
+
+  const prev = await fetchMyContactsEvent(opts.myPubkey);
+  const prevTags = prev?.tags || [];
+  const prevSet = followingFromContactsTags(prevTags);
+  const nextTags = updateContactsTagsForBulkFollow(prevTags, add);
+  const nextSet = followingFromContactsTags(nextTags);
+  const added = Math.max(0, nextSet.size - prevSet.size);
+  const content = prev?.content || '';
+
+  const unsigned = {
+    kind: NOSTR_KINDS.contacts,
+    created_at: Math.floor(Date.now() / 1000),
+    content,
+    tags: nextTags,
+    pubkey: opts.myPubkey,
+  };
+
+  const signed = await signWithNip07(unsigned as any);
+  await publishSignedEvent(signed as any);
+  return { id: signed.id, following: nextSet, added };
 }
 

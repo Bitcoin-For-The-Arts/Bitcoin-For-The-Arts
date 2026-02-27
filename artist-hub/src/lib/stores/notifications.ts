@@ -7,7 +7,7 @@ import { fetchProfileFor } from '$lib/stores/profiles';
 import { parseZapReceipt } from '$lib/nostr/zap-receipts';
 import { npubFor } from '$lib/nostr/helpers';
 
-export type NotificationType = 'like' | 'zap' | 'repost' | 'mention' | 'reply' | 'follow' | 'dm';
+export type NotificationType = 'like' | 'zap' | 'repost' | 'mention' | 'reply' | 'follow' | 'dm' | 'invite';
 
 export type NotificationItem = {
   id: string;
@@ -76,6 +76,10 @@ function noteHrefFor(type: NotificationType, authorPk: string): string {
   return `/pulse`;
 }
 
+function tagValue(tags: string[][], name: string): string | undefined {
+  return tags.find((t) => t[0] === name)?.[1];
+}
+
 function toNotification(ev: any, me: string): NotificationItem | null {
   if (!ev?.id || !ev?.created_at || !ev?.pubkey) return null;
   if (ev.pubkey === me) return null;
@@ -127,6 +131,21 @@ function toNotification(ev: any, me: string): NotificationItem | null {
   }
 
   if (ev.kind === NOSTR_KINDS.note) {
+    // Follow-pack invite (kind:1 with tags)
+    const isInvite = tags.some((t) => t[0] === 't' && t[1] === 'follow-pack-invite');
+    if (isInvite) {
+      const d = tagValue(tags, 'd') || '';
+      const href = d ? `/d/${d}?p=${ev.pubkey}` : '/pulse';
+      return {
+        id: ev.id,
+        type: 'invite',
+        createdAt,
+        authorPubkey: ev.pubkey,
+        summary: 'invited you to a follow pack',
+        href,
+        ev,
+      };
+    }
     const isReply = tags.some((t) => t[0] === 'e');
     return {
       id: ev.id,

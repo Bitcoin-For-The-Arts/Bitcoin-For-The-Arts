@@ -26,6 +26,7 @@
     if (t === 'mention') return '@';
     if (t === 'follow') return '➕';
     if (t === 'dm') return '✉️';
+    if (t === 'invite') return '📩';
     return '•';
   }
 

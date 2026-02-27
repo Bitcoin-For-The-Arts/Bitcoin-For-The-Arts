@@ -16,6 +16,9 @@ export const NOSTR_KINDS = {
   dm: 4,
   deletion: 5,
 
+  // Following.space-style follow packs (parameterized replaceable, with `d` tag)
+  follow_pack: 39089,
+
   nip15_stall: 30017,
   nip15_product: 30018,
 
