@@ -8,6 +8,7 @@
   import { NOSTR_KINDS } from '$lib/nostr/constants';
   import { isAuthed } from '$lib/stores/auth';
   import { followingError, followingLoading, followingSet, refreshFollowing } from '$lib/stores/follows';
+  import { browser } from '$app/environment';
 
   const quickTags = [
     'BitcoinArt',
@@ -30,6 +31,32 @@
   let tags: string[] = [];
   let authors: string[] = [];
   let mode: 'all' | 'following' = 'all';
+
+  const MODE_KEY = 'bfta:artist-hub:pulse:mode';
+
+  // Restore mode on refresh / revisit (client-side only).
+  if (browser) {
+    try {
+      const saved = (localStorage.getItem(MODE_KEY) || '').trim();
+      if (saved === 'following' || saved === 'all') mode = saved;
+    } catch {
+      // ignore
+    }
+  }
+
+  // Persist mode as it changes.
+  $: if (browser) {
+    try {
+      localStorage.setItem(MODE_KEY, mode);
+    } catch {
+      // ignore
+    }
+  }
+
+  // If user isn't connected, don't keep "Following" selected.
+  $: if (mode === 'following' && !$isAuthed) {
+    mode = 'all';
+  }
 
   $: if (mode === 'following') {
     tags = [];
