@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
   import { page } from '$app/stores';
+  import { base } from '$app/paths';
   import { nip19 } from 'nostr-tools';
   import { ensureNdk } from '$lib/stores/ndk';
   import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
@@ -10,7 +11,8 @@
   import { eventToListing } from '$lib/nostr/parse';
   import DMComposer from '$lib/components/DMComposer.svelte';
   import ZapComposer from '$lib/components/ZapComposer.svelte';
-  import ActivityFeed from '$lib/components/ActivityFeed.svelte';
+  import PulseFeed from '$lib/components/PulseFeed.svelte';
+  import RichText from '$lib/components/RichText.svelte';
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
   import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
   import { followingError, followingLoading, followingSet, toggleFollow } from '$lib/stores/follows';
@@ -24,6 +26,8 @@
   let dmOpen = false;
   let zapOpen = false;
   let shareOpen = false;
+
+  let tab: 'posts' | 'listings' = 'posts';
 
   type Metrics = {
     following: { value: number; approx: boolean } | null;
@@ -257,6 +261,10 @@
   $: hashtags = (prof as any)?.hashtags as string[] | undefined;
   $: portfolio = (prof as any)?.portfolio as string[] | undefined;
   $: nip05 = (prof as any)?.nip05 as string | undefined;
+  $: banner = ((prof as any)?.banner as string | undefined) || '';
+  $: website = (prof?.website || '').trim();
+  $: websiteIcon = (((prof as any)?.website_icon as string | undefined) || '').trim();
+  $: lud16 = ((prof as any)?.lud16 as string | undefined) || ((prof as any)?.lud06 as string | undefined) || '';
   $: canFollow = $isAuthed && $myPubkey && pubkey && $myPubkey !== pubkey;
   $: isFollowing = pubkey ? $followingSet.has(pubkey) : false;
 
@@ -271,69 +279,106 @@
     <div class="muted">{error}</div>
   </div>
 {:else}
-  <div class="grid cols-2">
-    <div class="card" style="padding: 1rem;">
-      <div style="display:flex; gap:0.9rem; align-items:center;">
-        {#if prof?.picture}
-          <img src={prof.picture} alt="" style="width:72px; height:72px; border-radius:22px; border:1px solid var(--border); object-fit:cover;" />
-        {/if}
-        <div style="min-width:0;">
-          <div style="font-size: 1.4rem; font-weight: 950; line-height:1.1;">{name}</div>
-          <div class="muted" style="margin-top: 0.25rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;">
-            {$page.params.npub}
+  <div class="card headCard">
+    <div class="banner" style={banner ? `background-image:url('${banner.replace(/'/g, '%27')}')` : ''}></div>
+    <div class="headInner">
+      <div class="topRow">
+        <div class="left">
+          {#if prof?.picture}
+            <img class="avatar" src={prof.picture} alt="" />
+          {:else}
+            <div class="avatar ph"></div>
+          {/if}
+          <div class="titles">
+            <div class="hName">{name}</div>
+            <div class="mono muted npub">{$page.params.npub}</div>
+            <div class="metaRow">
+              {#if nip05}
+                <span class="pill muted">NIP-05: {nip05}</span>
+              {/if}
+              {#if lud16}
+                <span class="pill muted" title="Lightning address">{lud16}</span>
+              {/if}
+            </div>
           </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" on:click={() => (dmOpen = true)}>Message</button>
+          <button class="btn primary" on:click={() => (zapOpen = true)}>Zap / Pay</button>
+          {#if canFollow}
+            <button class={`btn ${isFollowing ? '' : 'primary'}`} disabled={$followingLoading} on:click={onToggleFollow}>
+              {isFollowing ? 'Unfollow' : 'Follow'}
+            </button>
+          {/if}
+          {#if website}
+            {@const host = (() => { try { return new URL(website.startsWith('http') ? website : `https://${website}`).hostname; } catch { return ''; } })()}
+            {@const fav = host ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64` : ''}
+            <a class="btn websiteBtn" href={website.startsWith('http') ? website : `https://${website}`} target="_blank" rel="noreferrer">
+              {#if websiteIcon || fav}
+                <img class="wicon" src={websiteIcon || fav} alt="" />
+              {/if}
+              Website
+            </a>
+          {/if}
+          <button class="btn" on:click={() => (shareOpen = true)}>Copy npub</button>
         </div>
       </div>
 
+      {#if canFollow && $followingError}
+        <div class="muted" style="margin-top:0.65rem; color:var(--danger);">{$followingError}</div>
+      {/if}
+
       {#if about}
-        <div class="muted" style="margin-top: 0.9rem; line-height: 1.55;">{about}</div>
+        <div class="about"><RichText text={about} /></div>
       {/if}
 
       <div style="margin-top: 0.9rem;">
-        <div style="font-weight: 950;">Stats</div>
-        <div class="muted" style="margin-top:0.35rem; line-height:1.45;">
-          Best-effort counts from your connected relays (no central index).
+        <div class="muted" style="margin-bottom:0.35rem;">Overview</div>
+        <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
+          <span class="pill muted">Followers: {metricsLoading ? '…' : metrics?.followers ? `${metrics.followers.approx ? '≥' : ''}${metrics.followers.value.toLocaleString()}` : '—'}</span>
+          <span class="pill muted">Following: {metricsLoading ? '…' : metrics?.following ? `${metrics.following.approx ? '≥' : ''}${metrics.following.value.toLocaleString()}` : '—'}</span>
+          <span class="pill muted">Posts: {metricsLoading ? '…' : metrics?.posts ? `${metrics.posts.approx ? '≥' : ''}${metrics.posts.value.toLocaleString()}` : '—'}</span>
+          <span class="pill muted">Replies: {metricsLoading ? '…' : metrics?.replies ? `${metrics.replies.approx ? '≥' : ''}${metrics.replies.value.toLocaleString()}` : '—'}</span>
+          <span class="pill muted" title="Includes quote reposts">
+            🔁 Reposts: {metricsLoading ? '…' : metrics?.reposts ? `${metrics.reposts.approx ? '≥' : ''}${metrics.reposts.value.toLocaleString()}` : '—'}
+          </span>
+          <span class="pill" title="Total sats (zap receipts)">
+            ⚡ Zaps: {metricsLoading ? '…' : metrics?.zaps ? `${metrics.zaps.approx ? '≥' : ''}${metrics.zaps.sats.toLocaleString()} sats` : '—'}
+          </span>
         </div>
-        {#if metricsError}
-          <div class="muted" style="margin-top:0.5rem; color:var(--danger);">{metricsError}</div>
-        {:else if metricsLoading}
-          <div class="muted" style="margin-top:0.5rem;">Loading stats…</div>
-        {:else if metrics}
-          <div style="margin-top:0.55rem; display:flex; gap:0.35rem; flex-wrap:wrap;">
-            <span class="pill muted">
-              Followers: {metrics.followers ? `${metrics.followers.approx ? '≥' : ''}${metrics.followers.value.toLocaleString()}` : '—'}
-            </span>
-            <span class="pill muted">
-              Following: {metrics.following ? `${metrics.following.approx ? '≥' : ''}${metrics.following.value.toLocaleString()}` : '—'}
-            </span>
-            <span class="pill muted">
-              Posts: {metrics.posts ? `${metrics.posts.approx ? '≥' : ''}${metrics.posts.value.toLocaleString()}` : '—'}
-            </span>
-            <span class="pill muted">
-              Replies: {metrics.replies ? `${metrics.replies.approx ? '≥' : ''}${metrics.replies.value.toLocaleString()}` : '—'}
-            </span>
-            <span class="pill muted" title="Includes quote reposts">
-              Reposts: {metrics.reposts ? `${metrics.reposts.approx ? '≥' : ''}${metrics.reposts.value.toLocaleString()}` : '—'}
-            </span>
-            <span class="pill" title="Total sats (zap receipts)">
-              Zaps: {metrics.zaps ? `${metrics.zaps.approx ? '≥' : ''}${metrics.zaps.sats.toLocaleString()} sats` : '—'}
-            </span>
-          </div>
-          {#if metrics.reposts}
-            <div class="muted small" style="margin-top:0.35rem;">
-              Reposts breakdown: {metrics.reposts.plain.toLocaleString()} plain • {metrics.reposts.quotes.toLocaleString()} quote
-            </div>
-          {/if}
-          {#if metrics.zaps}
-            <div class="muted small" style="margin-top:0.15rem;">Zap receipts counted: {metrics.zaps.count.toLocaleString()}</div>
-          {/if}
-        {/if}
       </div>
 
-      {#if nip05}
+      {#if skills?.length}
         <div style="margin-top: 0.9rem;">
-          <div class="muted" style="margin-bottom:0.35rem;">NIP-05</div>
-          <span class="pill">{nip05}</span>
+          <div class="muted" style="margin-bottom:0.35rem;">Skills</div>
+          <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
+            {#each skills.slice(0, 18) as s}
+              <span class="pill">{s}</span>
+            {/each}
+          </div>
+        </div>
+      {/if}
+
+      {#if hashtags?.length}
+        <div style="margin-top: 0.9rem;">
+          <div class="muted" style="margin-bottom:0.35rem;">Hashtags</div>
+          <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
+            {#each hashtags.slice(0, 18) as t}
+              <span class="pill muted">#{t}</span>
+            {/each}
+          </div>
+        </div>
+      {/if}
+
+      {#if portfolio?.length}
+        <div style="margin-top: 0.9rem;">
+          <div class="muted" style="margin-bottom:0.35rem;">Portfolio</div>
+          <div style="display:grid; gap:0.35rem;">
+            {#each portfolio.slice(0, 8) as url}
+              <a href={url} target="_blank" rel="noreferrer" class="pill">{url}</a>
+            {/each}
+          </div>
         </div>
       {/if}
 
@@ -348,7 +393,11 @@
             {#each badges as b (b.address)}
               <span class="pill muted" title={b.description || b.address}>
                 {#if b.thumb}
-                  <img src={b.thumb} alt="" style="width:16px; height:16px; border-radius:6px; border:1px solid var(--border); object-fit:cover; margin-right:0.35rem; vertical-align:-3px;" />
+                  <img
+                    src={b.thumb}
+                    alt=""
+                    style="width:16px; height:16px; border-radius:6px; border:1px solid var(--border); object-fit:cover; margin-right:0.35rem; vertical-align:-3px;"
+                  />
                 {/if}
                 {b.name}
               </span>
@@ -359,83 +408,37 @@
         {/if}
       </div>
 
-      <div style="margin-top: 1rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
-        <button class="btn" on:click={() => (dmOpen = true)}>Message</button>
-        <button class="btn primary" on:click={() => (zapOpen = true)}>Zap / Pay</button>
-        <button class="btn" on:click={() => (shareOpen = true)}>Copy npub</button>
-        {#if canFollow}
-          <button class={`btn ${isFollowing ? '' : 'primary'}`} disabled={$followingLoading} on:click={onToggleFollow}>
-            {isFollowing ? 'Unfollow' : 'Follow'}
-          </button>
-        {/if}
-        {#if prof?.website}
-          <a class="btn" href={prof.website} target="_blank" rel="noreferrer">Website / Portfolio</a>
-        {/if}
-      </div>
-      {#if canFollow && $followingError}
-        <div class="muted" style="margin-top:0.5rem; color:var(--danger);">{$followingError}</div>
-      {/if}
-
-      {#if skills?.length}
-        <div style="margin-top: 0.9rem;">
-          <div class="muted" style="margin-bottom:0.35rem;">Skills</div>
-          <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
-            {#each skills.slice(0, 14) as s}
-              <span class="pill">{s}</span>
-            {/each}
-          </div>
-        </div>
-      {/if}
-
-      {#if hashtags?.length}
-        <div style="margin-top: 0.9rem;">
-          <div class="muted" style="margin-bottom:0.35rem;">Hashtags</div>
-          <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
-            {#each hashtags.slice(0, 14) as t}
-              <span class="pill muted">#{t}</span>
-            {/each}
-          </div>
-        </div>
-      {/if}
-
-      {#if portfolio?.length}
-        <div style="margin-top: 0.9rem;">
-          <div class="muted" style="margin-bottom:0.35rem;">Portfolio</div>
-          <div style="display:grid; gap:0.35rem;">
-            {#each portfolio.slice(0, 10) as url}
-              <a href={url} target="_blank" rel="noreferrer" class="pill">{url}</a>
-            {/each}
-          </div>
-        </div>
-      {/if}
-    </div>
-
-    <div>
-      <div class="card" style="padding: 1rem;">
-        <div style="font-size: 1.15rem; font-weight: 900;">Listings</div>
-        <div class="muted" style="margin-top: 0.35rem;">Services (NIP-15) and classifieds/collabs (NIP-99).</div>
-      </div>
-
-      <div class="grid cols-2" style="margin-top: 1rem;">
-        {#each listings as l (l.eventId)}
-          <ListingCard listing={l} />
-        {/each}
-        {#if listings.length === 0}
-          <div class="card" style="padding: 1rem; grid-column: 1 / -1;">
-            <div class="muted">No listings found on the connected relays yet.</div>
-          </div>
-        {/if}
-      </div>
-
-      <div style="margin-top: 1rem;">
-        <ActivityFeed
-          title="Recent activity (notes & zaps)"
-          tags={(hashtags && hashtags.length ? hashtags : ['BitcoinArt', 'NostrArt']).map((t) => t.replace(/^#/, ''))}
-          limit={20}
-        />
+      <div class="tabs">
+        <button class={`tab ${tab === 'posts' ? 'active' : ''}`} on:click={() => (tab = 'posts')}>
+          Posts {metricsLoading ? '…' : metrics?.posts ? `(${metrics.posts.value})` : ''}
+        </button>
+        <button class={`tab ${tab === 'listings' ? 'active' : ''}`} on:click={() => (tab = 'listings')}>
+          Listings {listings.length ? `(${listings.length})` : ''}
+        </button>
       </div>
     </div>
   </div>
+
+  {#if tab === 'posts'}
+    <div style="margin-top: 1rem;">
+      <PulseFeed tags={[]} authors={[pubkey]} limit={50} showComposer={false} />
+    </div>
+  {:else if tab === 'listings'}
+    <div class="card" style="padding: 1rem; margin-top: 1rem;">
+      <div style="font-size: 1.15rem; font-weight: 900;">Listings</div>
+      <div class="muted" style="margin-top: 0.35rem;">Services (NIP-15) and classifieds/collabs (NIP-99).</div>
+    </div>
+    <div class="grid cols-2" style="margin-top: 1rem;">
+      {#each listings as l (l.eventId)}
+        <ListingCard listing={l} />
+      {/each}
+      {#if listings.length === 0}
+        <div class="card" style="padding: 1rem; grid-column: 1 / -1;">
+          <div class="muted">No listings found on the connected relays yet.</div>
+        </div>
+      {/if}
+    </div>
+  {/if}
 
   <DMComposer open={dmOpen} toPubkey={pubkey} toLabel={name} onClose={() => (dmOpen = false)} />
   <ZapComposer
@@ -446,4 +449,127 @@
   />
   <NpubShareModal open={shareOpen} npub={$page.params.npub} label={name} onClose={() => (shareOpen = false)} />
 {/if}
+
+<style>
+  .headCard {
+    overflow: hidden;
+  }
+  .banner {
+    height: 140px;
+    background:
+      radial-gradient(900px 240px at 15% 30%, rgba(139, 92, 246, 0.35), transparent 60%),
+      radial-gradient(700px 240px at 85% 35%, rgba(246, 196, 83, 0.26), transparent 60%),
+      rgba(0, 0, 0, 0.18);
+    background-size: cover;
+    background-position: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .headInner {
+    padding: 1rem;
+  }
+  .topRow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .left {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    min-width: 0;
+  }
+  .avatar {
+    width: 86px;
+    height: 86px;
+    margin-top: -42px;
+    border-radius: 26px;
+    border: 1px solid var(--border);
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.22);
+    flex: 0 0 auto;
+  }
+  .avatar.ph {
+    display: block;
+  }
+  .titles {
+    min-width: 0;
+  }
+  .hName {
+    font-size: 1.45rem;
+    font-weight: 950;
+    line-height: 1.1;
+  }
+  .mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  }
+  .npub {
+    margin-top: 0.25rem;
+    font-size: 0.88rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 78ch;
+  }
+  .metaRow {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .websiteBtn {
+    gap: 0.45rem;
+  }
+  .wicon {
+    width: 16px;
+    height: 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    object-fit: cover;
+  }
+  .about {
+    margin-top: 0.9rem;
+    color: var(--muted);
+    line-height: 1.55;
+    max-width: 78ch;
+  }
+  .tabs {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+  }
+  .tab {
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 0.35rem 0.65rem;
+    cursor: pointer;
+    font-weight: 800;
+  }
+  .tab.active {
+    border-color: rgba(139, 92, 246, 0.35);
+    background: rgba(139, 92, 246, 0.16);
+  }
+  @media (max-width: 600px) {
+    .banner {
+      height: 120px;
+    }
+    .avatar {
+      width: 74px;
+      height: 74px;
+      margin-top: -36px;
+      border-radius: 22px;
+    }
+  }
+</style>
 
