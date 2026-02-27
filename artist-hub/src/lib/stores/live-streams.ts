@@ -29,28 +29,62 @@ export async function startLiveStreams(opts?: { source?: 'zapstream' | 'all'; li
 
   inflight = (async () => {
     try {
-    const ndk = await ensureNdk();
-    const since = Math.floor(Date.now() / 1000) - 60 * 60 * 24;
+      const ndk = await ensureNdk();
+      const since = Math.floor(Date.now() / 1000) - 60 * 60 * 24 * 7;
 
-    const sub = ndk.subscribe({ kinds: [30311], since, limit: 600 } as any, { closeOnEose: false });
+      function accept(ev: any): LiveEvent30311 | null {
+        const parsed = parseLiveEvent30311(ev as any);
+        if (!parsed) return null;
+        if (source === 'zapstream' && !isZapStreamLiveEvent((ev.tags as any) as string[][])) return null;
+        if (String(parsed.status).toLowerCase() !== 'live') return null;
+        return parsed;
+      }
 
-    sub.on('event', (ev) => {
-      const parsed = parseLiveEvent30311(ev as any);
-      if (!parsed) return;
-      if (source === 'zapstream' && !isZapStreamLiveEvent((ev.tags as any) as string[][])) return;
-      if (String(parsed.status).toLowerCase() !== 'live') return;
+      // Backfill first (avoids infinite skeleton if EOSE never fires).
+      try {
+        const evs = await ndk.fetchEvents({ kinds: [30311], since, limit: 800 } as any);
+        const out: LiveEvent30311[] = [];
+        for (const ev of Array.from(evs || [])) {
+          const parsed = accept(ev as any);
+          if (!parsed) continue;
+          out.push(parsed);
+          void fetchProfileFor(parsed.hostPubkey);
+        }
+        liveStreams.set(
+          out
+            .sort((a, b) => b.currentParticipants - a.currentParticipants || b.createdAt - a.createdAt)
+            .slice(0, limit),
+        );
+      } catch {
+        // ignore backfill failures
+      } finally {
+        liveStreamsLoading.set(false);
+      }
 
-      void fetchProfileFor(parsed.hostPubkey);
+      // Live subscription for updates.
+      const sub = ndk.subscribe({ kinds: [30311], since, limit: 600 } as any, { closeOnEose: false });
+      const fallbackTimer = setTimeout(() => liveStreamsLoading.set(false), 1800);
 
-      liveStreams.update((prev) =>
-        [parsed, ...prev.filter((x) => x.eventId !== parsed.eventId)]
-          .sort((a, b) => b.currentParticipants - a.currentParticipants || b.createdAt - a.createdAt)
-          .slice(0, limit),
-      );
-    });
+      sub.on('event', (ev) => {
+        const parsed = accept(ev as any);
+        if (!parsed) return;
+        void fetchProfileFor(parsed.hostPubkey);
+        liveStreams.update((prev) =>
+          [parsed, ...prev.filter((x) => x.eventId !== parsed.eventId)]
+            .sort((a, b) => b.currentParticipants - a.currentParticipants || b.createdAt - a.createdAt)
+            .slice(0, limit),
+        );
+      });
 
-    sub.on('eose', () => liveStreamsLoading.set(false));
-    stop = () => sub.stop();
+      sub.on('eose', () => {
+        clearTimeout(fallbackTimer);
+        liveStreamsLoading.set(false);
+      });
+
+      stop = () => {
+        clearTimeout(fallbackTimer);
+        sub.stop();
+      };
     } catch (e) {
       liveStreamsError.set(e instanceof Error ? e.message : String(e));
       liveStreamsLoading.set(false);
