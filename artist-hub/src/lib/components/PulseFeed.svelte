@@ -20,6 +20,8 @@
   export let authors: string[] = [];
   export let limit = 40;
   export let showComposer = true;
+  export let includeReplies = false;
+  export let onlyReplies = false;
 
   type Post = {
     id: string;
@@ -197,7 +199,9 @@
 
   function eventToPost(ev: any): Post | null {
     if (!ev?.id || !ev?.pubkey || !ev?.created_at) return null;
-    if (isReplyLike(ev)) return null; // keep Pulse as a top-level timeline
+    const replyLike = isReplyLike(ev);
+    if (onlyReplies && !replyLike) return null;
+    if (!includeReplies && replyLike) return null; // keep Pulse as a top-level timeline by default
     const content = (ev.content || '').trim();
     if (!content) return null;
     return {

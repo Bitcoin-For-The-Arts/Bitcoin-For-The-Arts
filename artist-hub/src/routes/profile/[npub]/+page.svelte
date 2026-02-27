@@ -17,6 +17,7 @@
   import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
   import { followingError, followingLoading, followingSet, toggleFollow } from '$lib/stores/follows';
   import NpubShareModal from '$lib/components/NpubShareModal.svelte';
+  import ZapReceiptsList from '$lib/components/ZapReceiptsList.svelte';
 
   let pubkey = '';
   let error: string | null = null;
@@ -27,7 +28,7 @@
   let zapOpen = false;
   let shareOpen = false;
 
-  let tab: 'posts' | 'listings' = 'posts';
+  let tab: 'posts' | 'replies' | 'zaps' | 'listings' | 'followers' = 'posts';
 
   type Metrics = {
     following: { value: number; approx: boolean } | null;
@@ -61,6 +62,19 @@
     return tags.some((t) => t[0] === 'q');
   }
 
+  function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      const t = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+      p.then((v) => {
+        clearTimeout(t);
+        resolve(v);
+      }).catch((e) => {
+        clearTimeout(t);
+        reject(e);
+      });
+    });
+  }
+
   async function loadMetricsFor(pk: string) {
     metricsError = null;
     metricsLoading = true;
@@ -72,7 +86,7 @@
       if (!author) throw new Error('Missing pubkey');
 
       // Following (NIP-02 contacts list, kind 3)
-      const contacts = await ndk.fetchEvent({ kinds: [NOSTR_KINDS.contacts], authors: [author] } as any);
+      const contacts = await withTimeout(ndk.fetchEvent({ kinds: [NOSTR_KINDS.contacts], authors: [author] } as any), 7000, 'Following query');
       const followingSet = new Set<string>();
       if (contacts?.tags) {
         for (const t of (contacts.tags as any as string[][]) || []) {
@@ -86,7 +100,11 @@
       // Followers (best-effort): unique authors of kind 3 that include '#p' = pk.
       const followersLimit = 1200;
       const followerAuthors = new Set<string>();
-      const followerEvents = await ndk.fetchEvents({ kinds: [NOSTR_KINDS.contacts], '#p': [author], limit: followersLimit } as any);
+      const followerEvents = await withTimeout(
+        ndk.fetchEvents({ kinds: [NOSTR_KINDS.contacts], '#p': [author], limit: followersLimit } as any),
+        9000,
+        'Followers query',
+      );
       const followerArr = Array.from(followerEvents || []);
       for (const ev of followerArr as any[]) {
         const p = typeof ev?.pubkey === 'string' ? ev.pubkey.trim().toLowerCase() : '';
@@ -100,7 +118,11 @@
       let posts = 0;
       let replies = 0;
       let quoteReposts = 0;
-      const noteEvents = await ndk.fetchEvents({ kinds: [NOSTR_KINDS.note], authors: [author], limit: notesLimit } as any);
+      const noteEvents = await withTimeout(
+        ndk.fetchEvents({ kinds: [NOSTR_KINDS.note], authors: [author], limit: notesLimit } as any),
+        9000,
+        'Notes query',
+      );
       const noteArr = Array.from(noteEvents || []);
       let notesSeen = 0;
       for (const ev of noteArr as any[]) {
@@ -118,7 +140,11 @@
 
       // Plain reposts (kind 6)
       const repostLimit = 1000;
-      const repostEvents = await ndk.fetchEvents({ kinds: [NOSTR_KINDS.repost], authors: [author], limit: repostLimit } as any);
+      const repostEvents = await withTimeout(
+        ndk.fetchEvents({ kinds: [NOSTR_KINDS.repost], authors: [author], limit: repostLimit } as any),
+        9000,
+        'Reposts query',
+      );
       const repostArr = Array.from(repostEvents || []);
       const repostsSeen = repostArr.length;
       const plainReposts = repostArr.length;
@@ -127,7 +153,11 @@
       const zapsLimit = 1000;
       let zapCount = 0;
       let zapSats = 0;
-      const zapEvents = await ndk.fetchEvents({ kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [author], limit: zapsLimit } as any);
+      const zapEvents = await withTimeout(
+        ndk.fetchEvents({ kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [author], limit: zapsLimit } as any),
+        9000,
+        'Zaps query',
+      );
       const zapArr = Array.from(zapEvents || []);
       const zapsSeen = zapArr.length;
       for (const ev of zapArr as any[]) {
@@ -262,6 +292,42 @@
   $: lud16 = ((prof as any)?.lud16 as string | undefined) || ((prof as any)?.lud06 as string | undefined) || '';
   $: canFollow = $isAuthed && $myPubkey && pubkey && $myPubkey !== pubkey;
   $: isFollowing = pubkey ? $followingSet.has(pubkey) : false;
+
+  // Followers list (best-effort)
+  let followersLoading = false;
+  let followersError: string | null = null;
+  let followersList: string[] = [];
+  let followersShowN = 80;
+
+  async function loadFollowers() {
+    followersError = null;
+    followersLoading = true;
+    followersList = [];
+    followersShowN = 80;
+    try {
+      if (!pubkey) return;
+      const ndk = await ensureNdk();
+      const pk = pubkey.trim().toLowerCase();
+      const limit = 1200;
+      const events = await withTimeout(ndk.fetchEvents({ kinds: [NOSTR_KINDS.contacts], '#p': [pk], limit } as any), 9000, 'Followers list query');
+      const authors = new Set<string>();
+      for (const ev of Array.from(events || []) as any[]) {
+        const a = typeof ev?.pubkey === 'string' ? ev.pubkey.trim().toLowerCase() : '';
+        if (!a || a === pk) continue;
+        authors.add(a);
+      }
+      followersList = Array.from(authors);
+      for (const a of followersList.slice(0, 80)) void fetchProfileFor(a);
+    } catch (e) {
+      followersError = e instanceof Error ? e.message : String(e);
+    } finally {
+      followersLoading = false;
+    }
+  }
+
+  $: if (tab === 'followers' && pubkey) {
+    if (!followersLoading && followersList.length === 0 && !followersError) void loadFollowers();
+  }
 
   async function onToggleFollow() {
     if (!pubkey) return;
@@ -407,6 +473,15 @@
         <button class={`tab ${tab === 'posts' ? 'active' : ''}`} on:click={() => (tab = 'posts')}>
           Posts {metricsLoading ? '…' : metrics?.posts ? `(${metrics.posts.value})` : ''}
         </button>
+        <button class={`tab ${tab === 'replies' ? 'active' : ''}`} on:click={() => (tab = 'replies')}>
+          Replies {metricsLoading ? '…' : metrics?.replies ? `(${metrics.replies.value})` : ''}
+        </button>
+        <button class={`tab ${tab === 'zaps' ? 'active' : ''}`} on:click={() => (tab = 'zaps')}>
+          Zaps {metricsLoading ? '…' : metrics?.zaps ? `(${metrics.zaps.count})` : ''}
+        </button>
+        <button class={`tab ${tab === 'followers' ? 'active' : ''}`} on:click={() => (tab = 'followers')}>
+          Followers {metricsLoading ? '…' : metrics?.followers ? `(${metrics.followers.value})` : ''}
+        </button>
         <button class={`tab ${tab === 'listings' ? 'active' : ''}`} on:click={() => (tab = 'listings')}>
           Listings {listings.length ? `(${listings.length})` : ''}
         </button>
@@ -417,6 +492,55 @@
   {#if tab === 'posts'}
     <div style="margin-top: 1rem;">
       <PulseFeed tags={[]} authors={[pubkey]} limit={50} showComposer={false} />
+    </div>
+  {:else if tab === 'replies'}
+    <div style="margin-top: 1rem;">
+      <PulseFeed tags={[]} authors={[pubkey]} limit={60} showComposer={false} onlyReplies={true} includeReplies={true} />
+    </div>
+  {:else if tab === 'zaps'}
+    <div style="margin-top: 1rem;">
+      <ZapReceiptsList recipientPubkey={pubkey} />
+    </div>
+  {:else if tab === 'followers'}
+    <div class="card" style="padding: 1rem; margin-top: 1rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+        <div>
+          <div style="font-size: 1.15rem; font-weight: 900;">Followers</div>
+          <div class="muted" style="margin-top:0.35rem; line-height:1.45;">
+            Best-effort follower list from connected relays (authors of kind:3 that include this pubkey).
+          </div>
+        </div>
+        <button class="btn" disabled={followersLoading} on:click={() => void loadFollowers()}>
+          {followersLoading ? 'Loading…' : 'Refresh'}
+        </button>
+      </div>
+      {#if followersError}
+        <div class="muted" style="margin-top:0.65rem; color:var(--danger);">{followersError}</div>
+      {/if}
+    </div>
+
+    <div class="grid cols-2" style="margin-top: 1rem;">
+      {#each followersList.slice(0, followersShowN) as pk (pk)}
+        <ProfileCard pubkey={pk} />
+      {/each}
+      {#if followersLoading && followersList.length === 0}
+        <div class="card" style="padding: 1rem; grid-column: 1 / -1;">
+          <div class="muted">Loading followers…</div>
+        </div>
+      {/if}
+      {#if !followersLoading && followersList.length === 0 && !followersError}
+        <div class="card" style="padding: 1rem; grid-column: 1 / -1;">
+          <div class="muted">No followers found yet (depends on relays).</div>
+        </div>
+      {/if}
+      {#if followersList.length > followersShowN}
+        <div class="card" style="padding: 1rem; grid-column: 1 / -1;">
+          <div class="muted">Showing {followersShowN} of {followersList.length}.</div>
+          <button class="btn" style="margin-top:0.6rem;" on:click={() => (followersShowN = Math.min(followersList.length, followersShowN + 120))}>
+            Load more
+          </button>
+        </div>
+      {/if}
     </div>
   {:else if tab === 'listings'}
     <div class="card" style="padding: 1rem; margin-top: 1rem;">
