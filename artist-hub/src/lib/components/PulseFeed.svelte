@@ -271,11 +271,15 @@
       const reposts = Math.max(0, Math.floor(s.reposts || 0));
       const comments = Math.max(0, Math.floor(s.comments || 0));
       const score = sats + zaps * 250 + likes * 40 + reposts * 80 + comments * 60;
-      if (score <= 0) continue;
-      out.push({ id: p.id, pubkey: p.pubkey, createdAt: p.createdAt, content: p.content, score, sats, zaps, likes, reposts, comments });
+      if (score > 0) out.push({ id: p.id, pubkey: p.pubkey, createdAt: p.createdAt, content: p.content, score, sats, zaps, likes, reposts, comments });
     }
     out.sort((a, b) => b.score - a.score);
-    return out.slice(0, 8);
+    if (out.length) return out.slice(0, 8);
+
+    // Fallback: if we don't have any stats yet, show recent posts so the rail isn't empty.
+    return posts
+      .slice(0, 8)
+      .map((p) => ({ id: p.id, pubkey: p.pubkey, createdAt: p.createdAt, content: p.content, score: 0, sats: 0, zaps: 0, likes: 0, reposts: 0, comments: 0 }));
   }
 
   function emitTrendingSoon() {

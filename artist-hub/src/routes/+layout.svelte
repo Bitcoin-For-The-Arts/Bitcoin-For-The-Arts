@@ -5,6 +5,8 @@
   import ProfileHoverTooltip from '$lib/components/ProfileHoverTooltip.svelte';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
+  import { page } from '$app/stores';
+  import { base } from '$app/paths';
   import { get } from 'svelte/store';
   import { ensureNdk } from '$lib/stores/ndk';
   import { startFollowingSync } from '$lib/stores/follows';
@@ -34,7 +36,7 @@
 
 <AppHeader />
 
-<main class="container" style="padding: 1.2rem 0 2.5rem;">
+<main class={`container ${$page.url.pathname === `${base}/pulse` || $page.url.pathname.startsWith(`${base}/pulse/`) ? 'wide' : ''}`} style="padding: 1.2rem 0 2.5rem;">
   <slot />
 </main>
 

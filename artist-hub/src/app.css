@@ -60,6 +60,9 @@ pre {
   width: min(1100px, calc(100% - 2rem));
   margin: 0 auto;
 }
+.container.wide {
+  width: min(1600px, calc(100% - 2rem));
+}
 
 .card {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.04));

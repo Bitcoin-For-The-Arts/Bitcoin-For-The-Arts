@@ -78,7 +78,7 @@
 
     <div>
       <div class="muted" style="margin-bottom:0.35rem;">npub</div>
-      <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+      <div class="npubRow">
         <input
           class="input mono"
           value={(npub || '').trim()}
@@ -87,8 +87,9 @@
         />
         <button class="btn primary" on:click={copy} disabled={!npub.trim()}>{copied ? 'Copied' : 'Copy'}</button>
       </div>
-      <div class="muted" style="margin-top:0.45rem;">
-        QR encodes <span class="pill muted mono">{value()}</span>
+      <div class="muted" style="margin-top:0.45rem; line-height:1.45;">
+        QR encodes
+        <span class="encoded mono">{value()}</span>
       </div>
     </div>
 
@@ -110,6 +111,40 @@
   }
   .mono {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  }
+  .npubRow {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+  .npubRow :global(input) {
+    flex: 1 1 260px;
+    min-width: 0;
+  }
+  .encoded {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 0.35rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .encoded::-webkit-scrollbar {
+    height: 10px;
+  }
+
+  @media (max-width: 560px) {
+    .npubRow {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .npubRow :global(button) {
+      width: 100%;
+    }
   }
 </style>
 
