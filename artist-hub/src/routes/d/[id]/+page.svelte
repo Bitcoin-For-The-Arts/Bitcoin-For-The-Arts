@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { base } from '$app/paths';
   import { page } from '$app/stores';
   import { nip19 } from 'nostr-tools';
   import { ensureNdk } from '$lib/stores/ndk';
@@ -345,6 +346,9 @@
         {/if}
       </div>
       <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+        <a class="btn" href={`${base}/packs`}>Exit pack</a>
+        <a class="btn" href={`${base}/packs`}>Open different pack</a>
+        <a class="btn" href={`${base}/packs/create`}>Create pack</a>
         <button class="btn primary" disabled={!$isAuthed || $followingLoading || followingAll} on:click={followAll}>
           {followingAll ? 'Following…' : 'Follow all'}
         </button>
