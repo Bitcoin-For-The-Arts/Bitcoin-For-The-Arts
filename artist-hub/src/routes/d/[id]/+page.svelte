@@ -43,6 +43,12 @@
     return null;
   }
 
+  function stripNostrPrefix(x: string): string {
+    const v = (x || '').trim();
+    if (!v) return '';
+    return v.startsWith('nostr:') ? v.slice('nostr:'.length) : v;
+  }
+
   async function load() {
     loading = true;
     error = null;
@@ -54,18 +60,38 @@
     acceptError = null;
     showN = 80;
     try {
-      const id = $page.params.id;
+      const rawId = stripNostrPrefix($page.params.id);
       const p = parseAuthorParam($page.url.searchParams.get('p'));
-      if (!id) throw new Error('Missing follow pack id.');
+      if (!rawId) throw new Error('Missing follow pack id.');
 
       const ndk = await ensureNdk();
-      const filter: any = { kinds: [NOSTR_KINDS.follow_pack], '#d': [id], limit: 50 };
-      if (p) filter.authors = [p];
 
-      const events = await ndk.fetchEvents(filter as any);
-      const arr = Array.from(events || []).sort((a: any, b: any) => (b.created_at || 0) - (a.created_at || 0));
-      const parsed = arr.map((e: any) => parseFollowPackEvent(e)).filter(Boolean) as FollowPack[];
-      const chosen = parsed[0] || null;
+      // Support nip19 IDs in the route segment (nevent/note/nostr:nevent…)
+      let chosen: FollowPack | null = null;
+      try {
+        const decoded = nip19.decode(rawId);
+        if (decoded.type === 'nevent' || decoded.type === 'note') {
+          const eventId = decoded.type === 'note' ? (decoded.data as string) : String((decoded.data as any)?.id || '');
+          if (eventId) {
+            const ev = await ndk.fetchEvent(eventId as any);
+            const fp = ev ? parseFollowPackEvent(ev as any) : null;
+            if (fp) chosen = fp;
+          }
+        }
+      } catch {
+        // ignore; treat as d-tag id
+      }
+
+      // Default: treat route param as `d` identifier.
+      if (!chosen) {
+        const filter: any = { kinds: [NOSTR_KINDS.follow_pack], '#d': [rawId], limit: 50 };
+        if (p) filter.authors = [p];
+        const events = await ndk.fetchEvents(filter as any);
+        const arr = Array.from(events || []).sort((a: any, b: any) => (b.created_at || 0) - (a.created_at || 0));
+        const parsed = arr.map((e: any) => parseFollowPackEvent(e)).filter(Boolean) as FollowPack[];
+        chosen = parsed[0] || null;
+      }
+
       if (!chosen) throw new Error('Follow pack not found on your connected relays.');
       pack = chosen;
       void fetchProfileFor(pack.pubkey);
