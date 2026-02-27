@@ -9,7 +9,7 @@
   import { isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
   import { followMany, followingError, followingLoading, followingSet } from '$lib/stores/follows';
   import ProfileCard from '$lib/components/ProfileCard.svelte';
-  import { publishFollowPackAccept, publishFollowPackInvite } from '$lib/nostr/publish';
+  import { publishFollowPack, publishFollowPackAccept, publishFollowPackInvite } from '$lib/nostr/publish';
 
   let pack: FollowPack | null = null;
   let loading = true;
@@ -26,6 +26,13 @@
   let acceptError: string | null = null;
   let invited = false;
   let accepted = false;
+
+  // Pack author tools
+  let pendingAccepts: string[] = [];
+  let pendingLoading = false;
+  let pendingError: string | null = null;
+  let addBusy = false;
+  let addError: string | null = null;
 
   function stripNostrPrefix(x: string): string {
     const v = (x || '').trim();
@@ -55,6 +62,70 @@
   function addr(): string {
     if (!pack) return '';
     return `${NOSTR_KINDS.follow_pack}:${pack.pubkey}:${pack.d}`;
+  }
+
+  async function loadPendingAccepts() {
+    pendingAccepts = [];
+    pendingError = null;
+    if (!$isAuthed || !$myPubkey || !pack) return;
+    if ($myPubkey !== pack.pubkey) return;
+    pendingLoading = true;
+    try {
+      const ndk = await ensureNdk();
+      const address = addr();
+      const accEvents = await ndk.fetchEvents(
+        { kinds: [NOSTR_KINDS.note], '#p': [pack.pubkey], '#t': ['follow-pack-accept'], limit: 250 } as any,
+      );
+      const out = new Set<string>();
+      for (const ev of Array.from(accEvents || []) as any[]) {
+        const pk = typeof ev?.pubkey === 'string' ? ev.pubkey.trim().toLowerCase() : '';
+        if (!pk || pk === pack.pubkey) continue;
+        if (hasTag(ev, 'a', address) || hasTag(ev, 'd', pack.d)) out.add(pk);
+      }
+      pendingAccepts = Array.from(out).slice(0, 250);
+      for (const pk of pendingAccepts.slice(0, 60)) void fetchProfileFor(pk);
+    } catch (e) {
+      pendingError = e instanceof Error ? e.message : String(e);
+    } finally {
+      pendingLoading = false;
+    }
+  }
+
+  async function addAcceptedToPack() {
+    addError = null;
+    success = null;
+    if (!$isAuthed || !$myPubkey) {
+      addError = 'Connect your signer to update the pack.';
+      return;
+    }
+    if (!pack) return;
+    if ($myPubkey !== pack.pubkey) {
+      addError = 'Only the pack author can update the pack.';
+      return;
+    }
+    const existing = new Set(pack.entries.map((e) => (e.pubkey || '').trim().toLowerCase()).filter(Boolean));
+    const toAdd = (pendingAccepts || []).map((x) => (x || '').trim().toLowerCase()).filter(Boolean).filter((pk) => !existing.has(pk));
+    if (!toAdd.length) {
+      success = 'No new accepted members to add.';
+      return;
+    }
+    addBusy = true;
+    try {
+      await publishFollowPack({
+        d: pack.d,
+        title: pack.title,
+        description: pack.description,
+        image: pack.image,
+        entries: [...pack.entries, ...toAdd.map((pk) => ({ pubkey: pk }))],
+      });
+      success = `Updated pack: added ${toAdd.length.toLocaleString()} member${toAdd.length === 1 ? '' : 's'}.`;
+      await load();
+      void loadPendingAccepts();
+    } catch (e) {
+      addError = e instanceof Error ? e.message : String(e);
+    } finally {
+      addBusy = false;
+    }
   }
 
   async function loadInviteState() {
@@ -139,6 +210,7 @@
       void fetchProfileFor(pack.pubkey);
       for (const e of pack.entries.slice(0, 60)) void fetchProfileFor(e.pubkey);
       if ($isAuthed && $myPubkey) void loadInviteState();
+      if ($isAuthed && $myPubkey && $myPubkey === pack.pubkey) void loadPendingAccepts();
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
     } finally {
@@ -319,6 +391,29 @@
         <div class="muted" style="margin-top:0.65rem;">Connect your signer to check invites / accept.</div>
       {/if}
     </div>
+
+    {#if $isAuthed && $myPubkey === pack.pubkey}
+      <div class="card" style="margin-top: 0.9rem; padding: 0.9rem; background: rgba(0,0,0,0.18);">
+        <div style="font-weight: 950;">Pack owner tools</div>
+        <div class="muted" style="margin-top:0.35rem; line-height:1.5;">
+          Add accepted invitees to the pack (updates the kind:39089 event with the same `d` tag).
+        </div>
+        <div style="margin-top:0.65rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+          <button class="btn primary" disabled={pendingLoading || addBusy} on:click={addAcceptedToPack}>
+            {addBusy ? 'Updating…' : `Add accepted (${pendingAccepts.length})`}
+          </button>
+          <button class="btn" disabled={pendingLoading} on:click={loadPendingAccepts}>
+            {pendingLoading ? 'Loading…' : 'Refresh accepted'}
+          </button>
+        </div>
+        {#if pendingError}
+          <div class="muted" style="margin-top:0.5rem; color: var(--danger);">{pendingError}</div>
+        {/if}
+        {#if addError}
+          <div class="muted" style="margin-top:0.5rem; color: var(--danger);">{addError}</div>
+        {/if}
+      </div>
+    {/if}
 
     {#if success}
       <div class="muted" style="margin-top:0.85rem; color: rgba(74,222,128,0.95);">{success}</div>
