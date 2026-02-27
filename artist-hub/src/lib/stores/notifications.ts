@@ -5,6 +5,7 @@ import { NOSTR_KINDS } from '$lib/nostr/constants';
 import { pubkey as myPubkey } from '$lib/stores/auth';
 import { fetchProfileFor } from '$lib/stores/profiles';
 import { parseZapReceipt } from '$lib/nostr/zap-receipts';
+import { npubFor } from '$lib/nostr/helpers';
 
 export type NotificationType = 'like' | 'zap' | 'repost' | 'mention' | 'reply' | 'follow' | 'dm';
 
@@ -69,7 +70,7 @@ function isLikeReactionContent(content: unknown): boolean {
 }
 
 function noteHrefFor(type: NotificationType, authorPk: string): string {
-  if (type === 'follow') return `/profile/${authorPk}`;
+  if (type === 'follow') return `/profile/${npubFor(authorPk)}`;
   if (type === 'dm') return `/messages`;
   // Most activity is best surfaced via Pulse for now.
   return `/pulse`;

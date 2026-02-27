@@ -42,6 +42,8 @@
     tabindex="-1"
     on:mouseenter={() => pinHoverProfile(pk)}
     on:mouseleave={() => forceClearHoverProfile(pk)}
+    on:wheel|stopPropagation
+    on:touchmove|stopPropagation
   >
     <div class="row">
       {#if prof?.picture}
@@ -101,6 +103,9 @@
     border-radius: 16px;
     padding: 0.85rem 0.95rem;
     backdrop-filter: blur(10px);
+    max-height: 70vh;
+    overflow: auto;
+    overscroll-behavior: contain;
   }
   .row {
     display: flex;

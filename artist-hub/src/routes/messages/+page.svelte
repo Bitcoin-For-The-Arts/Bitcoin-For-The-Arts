@@ -286,17 +286,27 @@
       </div>
       <div style="margin-top: 0.75rem; display:grid; gap:0.5rem;">
         {#each threads as t (t.with)}
+          {@const tp = $profileByPubkey[t.with]}
+          {@const tname = (tp?.display_name || tp?.name || t.with.slice(0, 12) + '…').trim()}
           <button
             class={`card thread ${selected === t.with ? 'active' : ''}`}
             on:click={() => (selected = t.with)}
             style="padding: 0.75rem 0.85rem; text-align:left;"
-            use:profileHover={t.with}
           >
-            <div style="font-weight: 850;">
-              {$profileByPubkey[t.with]?.display_name || $profileByPubkey[t.with]?.name || t.with.slice(0, 12) + '…'}
-            </div>
-            <div class="muted" style="margin-top:0.25rem; line-height:1.35;">
-              {t.lastText}
+            <div style="display:flex; gap:0.6rem; align-items:center; min-width:0;">
+              {#if tp?.picture}
+                <img src={tp.picture} alt="" class="tAvatar" use:profileHover={t.with} />
+              {:else}
+                <div class="tAvatar ph" use:profileHover={t.with}></div>
+              {/if}
+              <div style="min-width:0;">
+                <div style="font-weight: 850; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" use:profileHover={t.with}>
+                  {tname}
+                </div>
+                <div class="muted" style="margin-top:0.25rem; line-height:1.35;">
+                  {t.lastText}
+                </div>
+              </div>
             </div>
           </button>
         {/each}
@@ -326,8 +336,15 @@
         {/if}
       </div>
       {#if selected}
-        <div class="muted" style="margin-top:0.35rem;">
-          With: <span class="pill" use:profileHover={selected}>{selectedName}</span>
+        <div style="margin-top:0.55rem; display:flex; gap:0.6rem; align-items:center;">
+          {#if selectedProfile?.picture}
+            <img class="tAvatar" src={selectedProfile.picture} alt="" use:profileHover={selected} />
+          {:else}
+            <div class="tAvatar ph" use:profileHover={selected}></div>
+          {/if}
+          <div class="muted">
+            With: <span class="pill" use:profileHover={selected}>{selectedName}</span>
+          </div>
         </div>
       {/if}
 
@@ -365,6 +382,19 @@
   .thread.active {
     border-color: rgba(246, 196, 83, 0.35);
     background: rgba(246, 196, 83, 0.08);
+  }
+  .tAvatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.22);
+    flex: 0 0 auto;
+  }
+  .tAvatar.ph {
+    display: block;
+    background: rgba(255, 255, 255, 0.06);
   }
 </style>
 

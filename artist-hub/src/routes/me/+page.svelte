@@ -336,6 +336,18 @@
         <div class="about"><RichText text={about} /></div>
       {/if}
 
+      <div style="margin-top: 0.9rem;">
+        <div class="muted" style="margin-bottom:0.35rem;">Overview</div>
+        <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
+          <span class="pill muted" title="Following (kind:3 contacts list)">Following: {$followingSet.size.toLocaleString()}</span>
+          <span class="pill muted">Posts: {metricsLoading ? '…' : metrics?.posts ? `${metrics.posts.approx ? '≥' : ''}${metrics.posts.value.toLocaleString()}` : '—'}</span>
+          <span class="pill muted">Replies: {metricsLoading ? '…' : metrics?.replies ? `${metrics.replies.approx ? '≥' : ''}${metrics.replies.value.toLocaleString()}` : '—'}</span>
+          <span class="pill muted" title="Includes quote reposts">
+            🔁 Reposts: {metricsLoading ? '…' : metrics?.reposts ? `${metrics.reposts.approx ? '≥' : ''}${metrics.reposts.value.toLocaleString()}` : '—'}
+          </span>
+        </div>
+      </div>
+
       {#if skills?.length}
         <div style="margin-top: 0.9rem;">
           <div class="muted" style="margin-bottom:0.35rem;">Skills</div>
@@ -425,9 +437,13 @@
       </div>
 
       <div class="tabs">
-        <button class={`tab ${tab === 'posts' ? 'active' : ''}`} on:click={() => (tab = 'posts')}>Posts</button>
-        <button class={`tab ${tab === 'listings' ? 'active' : ''}`} on:click={() => (tab = 'listings')}>Listings</button>
-        <button class={`tab ${tab === 'following' ? 'active' : ''}`} on:click={() => (tab = 'following')}>Following</button>
+        <button class={`tab ${tab === 'posts' ? 'active' : ''}`} on:click={() => (tab = 'posts')}>
+          Posts {metricsLoading ? '…' : metrics?.posts ? `(${metrics.posts.value})` : ''}
+        </button>
+        <button class={`tab ${tab === 'listings' ? 'active' : ''}`} on:click={() => (tab = 'listings')}>Listings {mine.length ? `(${mine.length})` : ''}</button>
+        <button class={`tab ${tab === 'following' ? 'active' : ''}`} on:click={() => (tab = 'following')}>
+          Following {$followingSet.size ? `(${$followingSet.size})` : ''}
+        </button>
         <button class={`tab ${tab === 'edit' ? 'active' : ''}`} on:click={() => (tab = 'edit')}>Edit</button>
       </div>
     </div>

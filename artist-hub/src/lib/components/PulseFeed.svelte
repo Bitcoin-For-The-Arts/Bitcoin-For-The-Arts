@@ -241,6 +241,9 @@
     if (!p?.id) return;
     if (statsById.has(p.id)) return;
     if (statsQueue.has(p.id)) return;
+    // Create a placeholder immediately so badges render with "…" instead of disappearing.
+    statsById.set(p.id, { comments: 0, reposts: 0, zaps: 0, likes: 0, sats: 0, finalized: false });
+    tick++;
     statsQueue.add(p.id);
     void loadStatsFor(p).finally(() => statsQueue.delete(p.id));
   }
@@ -801,6 +804,11 @@
 </script>
 
 <div class="grid" style="gap: 1rem;">
+  {#if toast}
+    <div class="card" style="padding: 0.85rem 1rem; border-color: rgba(139,92,246,0.22);">
+      <div class="muted">{toast}</div>
+    </div>
+  {/if}
   {#if showComposer}
     <div class="card" style="padding: 1rem;">
       <div style="font-weight: 950;">Post</div>
@@ -820,7 +828,6 @@
             {publishBusy ? 'Publishing…' : 'Publish'}
           </button>
           {#if publishError}<span class="muted" style="color:var(--danger);">{publishError}</span>{/if}
-          {#if toast}<span class="muted">{toast}</span>{/if}
         </div>
       </div>
     </div>
@@ -836,8 +843,8 @@
     {#each posts as p (p.id)}
       {@const prof = $profileByPubkey[p.pubkey]}
       {@const name = prof?.display_name || prof?.name || npubFor(p.pubkey).slice(0, 12) + '…'}
-      {@const st = getStats(p.id)}
       {@const _ensure = (ensureStatsFor(p), 0)}
+      {@const st = getStats(p.id)}
       {@const mz = getMyZap(p.id)}
       {@const mr = getMyRepost(p.id)}
       {@const ml = getMyLike(p.id)}
@@ -1389,8 +1396,8 @@
     background: rgba(246, 196, 83, 0.18);
   }
   .iconBtn.sent {
-    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.25);
-    border-color: rgba(74, 222, 128, 0.25);
+    box-shadow: 0 0 0 2px rgba(246, 196, 83, 0.22);
+    border-color: rgba(246, 196, 83, 0.28);
   }
   .iconBtn.liked {
     color: rgba(251, 146, 60, 0.98);

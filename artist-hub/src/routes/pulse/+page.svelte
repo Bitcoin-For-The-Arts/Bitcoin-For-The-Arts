@@ -4,6 +4,7 @@
   import ZapStreamScroller from '$lib/components/ZapStreamScroller.svelte';
   import { nip19 } from 'nostr-tools';
   import { profileByPubkey } from '$lib/stores/profiles';
+  import { fetchProfileFor } from '$lib/stores/profiles';
   import { ensureNdk } from '$lib/stores/ndk';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
   import { isAuthed } from '$lib/stores/auth';
@@ -63,6 +64,14 @@
     const list = Array.from($followingSet || []).filter(Boolean);
     authors = list.slice(0, 120);
   }
+
+  $: followingPreview = (() => {
+    if (mode !== 'following') return [];
+    const list = Array.from($followingSet || []).filter(Boolean);
+    const out = list.slice(0, 18);
+    for (const pk of out) void fetchProfileFor(pk);
+    return out;
+  })();
 
   let tagInput = '';
   let search = '';
@@ -258,6 +267,25 @@
       {#if mode === 'following' && $followingError}
         <div class="muted" style="margin-top:0.55rem; color: var(--danger);">{$followingError}</div>
       {/if}
+      {#if mode === 'following' && followingPreview.length}
+        <div style="margin-top: 0.65rem; display:flex; gap:0.35rem; flex-wrap:wrap;">
+          {#each followingPreview as pk (pk)}
+            {@const p = $profileByPubkey[pk]}
+            {@const name = (p?.display_name || p?.name || pk.slice(0, 10) + '…').trim()}
+            <span class="pill muted" title={name} style="display:inline-flex; gap:0.35rem; align-items:center;">
+              {#if p?.picture}
+                <img src={p.picture} alt="" style="width:16px; height:16px; border-radius:6px; border:1px solid var(--border); object-fit:cover;" />
+              {:else}
+                <span style="width:16px; height:16px; border-radius:6px; border:1px solid var(--border); background: rgba(255,255,255,0.06); display:inline-block;"></span>
+              {/if}
+              {name.length > 16 ? `${name.slice(0, 16)}…` : name}
+            </span>
+          {/each}
+          {#if $followingSet.size > followingPreview.length}
+            <span class="muted" style="font-size:0.85rem;">+{$followingSet.size - followingPreview.length} more</span>
+          {/if}
+        </div>
+      {/if}
 
       <div class="muted" style="margin-bottom: 0.35rem;">Search</div>
       <div style="display:flex; gap:0.5rem; align-items:center;">
@@ -291,7 +319,7 @@
         <div class="muted" style="margin-top:0.6rem; color: var(--danger);">{searchError}</div>
       {/if}
 
-      {#if authors.length}
+      {#if authors.length && mode !== 'following'}
         <div style="margin-top: 0.55rem; display:flex; gap:0.35rem; flex-wrap:wrap;">
           {#each authors as a}
             <button class="pill muted" on:click={() => (authors = authors.filter((x) => x !== a))} title="Remove author filter">
