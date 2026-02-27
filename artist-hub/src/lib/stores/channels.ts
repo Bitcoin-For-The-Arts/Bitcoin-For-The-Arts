@@ -122,10 +122,38 @@ export async function startChannelMessages(channelId: string): Promise<void> {
   if (subMessages.has(channelId)) return;
   const ndk = await ensureNdk();
 
-  const sub = ndk.subscribe(
-    { kinds: [42], '#e': [channelId], limit: 200 },
-    { closeOnEose: false },
-  );
+  // Backfill recent history first so users can see previous messages immediately.
+  try {
+    const evs = await ndk.fetchEvents({ kinds: [42], '#e': [channelId], limit: 250 } as any);
+    const buf: Nip28Message[] = [];
+    for (const ev of Array.from(evs || [])) {
+      const tags = ((ev as any).tags as any as string[][]) || [];
+      const replyTo = tags.find((t) => t[0] === 'e' && t[1] !== channelId)?.[1];
+      buf.push({
+        id: (ev as any).id,
+        channelId,
+        pubkey: (ev as any).pubkey,
+        createdAt: (ev as any).created_at || Math.floor(Date.now() / 1000),
+        content: (ev as any).content || '',
+        replyTo,
+      });
+    }
+    const next = buf
+      .filter((m) => m.id && m.pubkey)
+      .sort((a, b) => a.createdAt - b.createdAt)
+      .slice(-400);
+    channelMessages.update((m) => ({ ...m, [channelId]: next }));
+
+    const uniq = new Set(next.map((x) => x.pubkey));
+    const now = Math.floor(Date.now() / 1000);
+    const uniq10m = new Set(next.filter((x) => now - x.createdAt < 600).map((x) => x.pubkey));
+    channelParticipants.update((p) => ({ ...p, [channelId]: { count: uniq.size, last10m: uniq10m.size } }));
+  } catch {
+    // ignore
+  }
+
+  // Live subscription for new messages going forward.
+  const sub = ndk.subscribe({ kinds: [42], '#e': [channelId], limit: 200 }, { closeOnEose: false });
   subMessages.set(channelId, sub);
 
   sub.on('event', (ev) => {

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
-  import { isAuthed, pubkey, profile } from '$lib/stores/auth';
+  import { isAuthed, pubkey, profile, refreshMyProfile } from '$lib/stores/auth';
   import ProfileEditor from '$lib/components/ProfileEditor.svelte';
   import { ensureNdk } from '$lib/stores/ndk';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
@@ -12,6 +12,9 @@
   import { npubFor } from '$lib/nostr/helpers';
   import { parseZapReceipt } from '$lib/nostr/zap-receipts';
   import NpubShareModal from '$lib/components/NpubShareModal.svelte';
+  import ProfileCard from '$lib/components/ProfileCard.svelte';
+  import { fetchProfileFor } from '$lib/stores/profiles';
+  import { followingError, followingLoading, followingSet, refreshFollowing } from '$lib/stores/follows';
 
   let mine: Listing[] = [];
   let stop: (() => void) | null = null;
@@ -34,7 +37,7 @@
   let badgesLoading = false;
   let badgesError: string | null = null;
 
-  let tab: 'posts' | 'listings' | 'edit' = 'posts';
+  let tab: 'posts' | 'listings' | 'following' | 'edit' = 'posts';
   let shareOpen = false;
   let statsPk = '';
 
@@ -209,6 +212,12 @@
     shareOpen = true;
   }
 
+  $: followingList = Array.from($followingSet || []).filter(Boolean).slice(0, 800);
+  $: if (tab === 'following') {
+    // Seed profile cache so names/avatars render quickly.
+    for (const pk of followingList.slice(0, 80)) void fetchProfileFor(pk);
+  }
+
   async function start() {
     if (!$pubkey) return;
     const ndk = await ensureNdk();
@@ -231,7 +240,10 @@
   }
 
   onMount(() => {
-    if ($pubkey) void start();
+    if ($pubkey) {
+      void start();
+      if (!$profile) void refreshMyProfile();
+    }
   });
 
   $: if ($pubkey) {
@@ -324,6 +336,18 @@
         <div class="about"><RichText text={about} /></div>
       {/if}
 
+      <div style="margin-top: 0.9rem;">
+        <div class="muted" style="margin-bottom:0.35rem;">Overview</div>
+        <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
+          <span class="pill muted" title="Following (kind:3 contacts list)">Following: {$followingSet.size.toLocaleString()}</span>
+          <span class="pill muted">Posts: {metricsLoading ? '…' : metrics?.posts ? `${metrics.posts.approx ? '≥' : ''}${metrics.posts.value.toLocaleString()}` : '—'}</span>
+          <span class="pill muted">Replies: {metricsLoading ? '…' : metrics?.replies ? `${metrics.replies.approx ? '≥' : ''}${metrics.replies.value.toLocaleString()}` : '—'}</span>
+          <span class="pill muted" title="Includes quote reposts">
+            🔁 Reposts: {metricsLoading ? '…' : metrics?.reposts ? `${metrics.reposts.approx ? '≥' : ''}${metrics.reposts.value.toLocaleString()}` : '—'}
+          </span>
+        </div>
+      </div>
+
       {#if skills?.length}
         <div style="margin-top: 0.9rem;">
           <div class="muted" style="margin-bottom:0.35rem;">Skills</div>
@@ -413,8 +437,13 @@
       </div>
 
       <div class="tabs">
-        <button class={`tab ${tab === 'posts' ? 'active' : ''}`} on:click={() => (tab = 'posts')}>Posts</button>
-        <button class={`tab ${tab === 'listings' ? 'active' : ''}`} on:click={() => (tab = 'listings')}>Listings</button>
+        <button class={`tab ${tab === 'posts' ? 'active' : ''}`} on:click={() => (tab = 'posts')}>
+          Posts {metricsLoading ? '…' : metrics?.posts ? `(${metrics.posts.value})` : ''}
+        </button>
+        <button class={`tab ${tab === 'listings' ? 'active' : ''}`} on:click={() => (tab = 'listings')}>Listings {mine.length ? `(${mine.length})` : ''}</button>
+        <button class={`tab ${tab === 'following' ? 'active' : ''}`} on:click={() => (tab = 'following')}>
+          Following {$followingSet.size ? `(${$followingSet.size})` : ''}
+        </button>
         <button class={`tab ${tab === 'edit' ? 'active' : ''}`} on:click={() => (tab = 'edit')}>Edit</button>
       </div>
     </div>
@@ -436,6 +465,34 @@
       {#if mine.length === 0}
         <div class="card" style="padding: 1rem; grid-column: 1 / -1;">
           <div class="muted">No listings found yet. Create one from the “Create” tab.</div>
+        </div>
+      {/if}
+    </div>
+  {:else if tab === 'following'}
+    <div class="card" style="padding: 1rem; margin-top: 1rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+        <div>
+          <div style="font-size: 1.15rem; font-weight: 900;">Following</div>
+          <div class="muted" style="margin-top:0.35rem;">
+            Profiles from your Nostr contacts list (kind:3) — no central server.
+          </div>
+        </div>
+        <button class="btn" disabled={$followingLoading} on:click={() => void refreshFollowing()}>
+          {$followingLoading ? 'Refreshing…' : 'Refresh'}
+        </button>
+      </div>
+      {#if $followingError}
+        <div class="muted" style="margin-top:0.65rem; color:var(--danger);">{$followingError}</div>
+      {/if}
+    </div>
+
+    <div class="grid cols-2" style="margin-top: 1rem;">
+      {#each followingList as pk (pk)}
+        <ProfileCard pubkey={pk} />
+      {/each}
+      {#if followingList.length === 0}
+        <div class="card" style="padding: 1rem; grid-column: 1 / -1;">
+          <div class="muted">You’re not following anyone yet (or your relays haven’t returned your contacts list).</div>
         </div>
       {/if}
     </div>

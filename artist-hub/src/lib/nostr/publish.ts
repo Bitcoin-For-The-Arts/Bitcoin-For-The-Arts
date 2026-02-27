@@ -303,3 +303,58 @@ export async function publishCuratedSet(opts: {
   return signed.id;
 }
 
+export async function publishFollowPackInvite(opts: {
+  packAuthorPubkey: string;
+  packD: string;
+  inviteePubkey: string;
+  message?: string;
+}): Promise<string> {
+  const pubkey = requirePubkey();
+  if (!opts?.packAuthorPubkey || !opts?.packD) throw new Error('Missing follow pack.');
+  if (!opts?.inviteePubkey) throw new Error('Missing invitee pubkey.');
+  if (pubkey !== opts.packAuthorPubkey) throw new Error('Only the pack author can send invites.');
+
+  const address = `${NOSTR_KINDS.follow_pack}:${opts.packAuthorPubkey}:${opts.packD}`;
+  const tags: string[][] = [
+    ['t', 'follow-pack-invite'],
+    ['p', opts.inviteePubkey],
+    ['a', address],
+    ['d', opts.packD],
+  ];
+
+  const unsigned = {
+    kind: NOSTR_KINDS.note,
+    created_at: Math.floor(Date.now() / 1000),
+    content: (opts.message || 'You are invited to join this follow pack.').trim(),
+    tags,
+    pubkey,
+  };
+  const signed = await signWithNip07(unsigned as any);
+  await publishSignedEvent(signed as any);
+  return signed.id;
+}
+
+export async function publishFollowPackAccept(opts: { packAuthorPubkey: string; packD: string; message?: string }): Promise<string> {
+  const pubkey = requirePubkey();
+  if (!opts?.packAuthorPubkey || !opts?.packD) throw new Error('Missing follow pack.');
+
+  const address = `${NOSTR_KINDS.follow_pack}:${opts.packAuthorPubkey}:${opts.packD}`;
+  const tags: string[][] = [
+    ['t', 'follow-pack-accept'],
+    ['p', opts.packAuthorPubkey],
+    ['a', address],
+    ['d', opts.packD],
+  ];
+
+  const unsigned = {
+    kind: NOSTR_KINDS.note,
+    created_at: Math.floor(Date.now() / 1000),
+    content: (opts.message || 'I accept the invite to join this follow pack.').trim(),
+    tags,
+    pubkey,
+  };
+  const signed = await signWithNip07(unsigned as any);
+  await publishSignedEvent(signed as any);
+  return signed.id;
+}
+

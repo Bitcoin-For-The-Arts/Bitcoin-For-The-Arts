@@ -1,11 +1,17 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
+  import { base } from '$app/paths';
   import PulseFeed from '$lib/components/PulseFeed.svelte';
   import ZapStreamScroller from '$lib/components/ZapStreamScroller.svelte';
   import { nip19 } from 'nostr-tools';
   import { profileByPubkey } from '$lib/stores/profiles';
+  import { fetchProfileFor } from '$lib/stores/profiles';
+  import { npubFor } from '$lib/nostr/helpers';
   import { ensureNdk } from '$lib/stores/ndk';
   import { NOSTR_KINDS } from '$lib/nostr/constants';
+  import { isAuthed } from '$lib/stores/auth';
+  import { followingError, followingLoading, followingSet, refreshFollowing } from '$lib/stores/follows';
+  import { browser } from '$app/environment';
 
   const quickTags = [
     'BitcoinArt',
@@ -27,6 +33,47 @@
 
   let tags: string[] = [];
   let authors: string[] = [];
+  let mode: 'all' | 'following' = 'all';
+
+  const MODE_KEY = 'bfta:artist-hub:pulse:mode';
+
+  // Restore mode on refresh / revisit (client-side only).
+  if (browser) {
+    try {
+      const saved = (localStorage.getItem(MODE_KEY) || '').trim();
+      if (saved === 'following' || saved === 'all') mode = saved;
+    } catch {
+      // ignore
+    }
+  }
+
+  // Persist mode as it changes.
+  $: if (browser) {
+    try {
+      localStorage.setItem(MODE_KEY, mode);
+    } catch {
+      // ignore
+    }
+  }
+
+  // If user isn't connected, don't keep "Following" selected.
+  $: if (mode === 'following' && !$isAuthed) {
+    mode = 'all';
+  }
+
+  $: if (mode === 'following') {
+    tags = [];
+    const list = Array.from($followingSet || []).filter(Boolean);
+    authors = list.slice(0, 120);
+  }
+
+  $: followingPreview = (() => {
+    if (mode !== 'following') return [];
+    const list = Array.from($followingSet || []).filter(Boolean);
+    const out = list.slice(0, 18);
+    for (const pk of out) void fetchProfileFor(pk);
+    return out;
+  })();
 
   let tagInput = '';
   let search = '';
@@ -37,6 +84,7 @@
   let searchTimer: ReturnType<typeof setTimeout> | null = null;
 
   function addTag() {
+    mode = 'all';
     const t = tagInput.trim().replace(/^#/, '');
     if (!t) return;
     const has = tags.some((x) => x.toLowerCase() === t.toLowerCase());
@@ -45,6 +93,7 @@
   }
 
   function addTagFromSearch() {
+    mode = 'all';
     const t = search.trim().replace(/^#/, '');
     if (!t) return;
     const has = tags.some((x) => x.toLowerCase() === t.toLowerCase());
@@ -53,6 +102,7 @@
   }
 
   function addAuthor(pubkeyHex: string) {
+    mode = 'all';
     const pk = (pubkeyHex || '').trim();
     if (!pk) return;
     const has = authors.some((x) => x === pk);
@@ -81,6 +131,7 @@
   }
 
   function applySearch() {
+    mode = 'all';
     const q = search.trim();
     if (!q) return;
     if (q.startsWith('#')) {
@@ -91,6 +142,7 @@
   }
 
   function addQuick(t: string) {
+    mode = 'all';
     const clean = t.replace(/^#/, '').trim();
     if (!clean) return;
     const has = tags.some((x) => x.toLowerCase() === clean.toLowerCase());
@@ -192,6 +244,56 @@
     </div>
 
     <div style="margin-top: 0.9rem;">
+      <div class="muted" style="margin-bottom: 0.35rem;">Feed</div>
+      <div style="display:flex; gap:0.35rem; flex-wrap:wrap; align-items:center;">
+        <button class={`pill ${mode === 'all' ? '' : 'muted'}`} on:click={() => ((mode = 'all'), (tags = []), (authors = []))} title="Show all posts">
+          All
+        </button>
+        <button
+          class={`pill ${mode === 'following' ? '' : 'muted'}`}
+          disabled={!$isAuthed || $followingLoading}
+          on:click={() => {
+            mode = 'following';
+            void refreshFollowing();
+          }}
+          title={$isAuthed ? 'Show only people you follow' : 'Connect to use Following feed'}
+        >
+          Following
+        </button>
+        {#if mode === 'following'}
+          <span class="muted" style="font-size:0.85rem;">
+            {$followingLoading ? 'Loading…' : `${$followingSet.size.toLocaleString()} following`}
+          </span>
+        {/if}
+      </div>
+      {#if mode === 'following' && $followingError}
+        <div class="muted" style="margin-top:0.55rem; color: var(--danger);">{$followingError}</div>
+      {/if}
+      {#if mode === 'following' && followingPreview.length}
+        <div style="margin-top: 0.65rem; display:flex; gap:0.35rem; flex-wrap:wrap;">
+          {#each followingPreview as pk (pk)}
+            {@const p = $profileByPubkey[pk]}
+            {@const name = (p?.display_name || p?.name || pk.slice(0, 10) + '…').trim()}
+            <a
+              class="pill muted"
+              href={`${base}/profile/${npubFor(pk)}`}
+              title={name}
+              style="display:inline-flex; gap:0.35rem; align-items:center;"
+            >
+              {#if p?.picture}
+                <img src={p.picture} alt="" style="width:16px; height:16px; border-radius:6px; border:1px solid var(--border); object-fit:cover;" />
+              {:else}
+                <span style="width:16px; height:16px; border-radius:6px; border:1px solid var(--border); background: rgba(255,255,255,0.06); display:inline-block;"></span>
+              {/if}
+              {name.length > 16 ? `${name.slice(0, 16)}…` : name}
+            </a>
+          {/each}
+          {#if $followingSet.size > followingPreview.length}
+            <span class="muted" style="font-size:0.85rem;">+{$followingSet.size - followingPreview.length} more</span>
+          {/if}
+        </div>
+      {/if}
+
       <div class="muted" style="margin-bottom: 0.35rem;">Search</div>
       <div style="display:flex; gap:0.5rem; align-items:center;">
         <input
@@ -224,7 +326,7 @@
         <div class="muted" style="margin-top:0.6rem; color: var(--danger);">{searchError}</div>
       {/if}
 
-      {#if authors.length}
+      {#if authors.length && mode !== 'following'}
         <div style="margin-top: 0.55rem; display:flex; gap:0.35rem; flex-wrap:wrap;">
           {#each authors as a}
             <button class="pill muted" on:click={() => (authors = authors.filter((x) => x !== a))} title="Remove author filter">
@@ -247,7 +349,16 @@
       {/if}
 
       <div style="margin-top:0.55rem;">
-        <button class="pill" on:click={() => { tags = []; authors = []; }} title="Show all posts">All posts</button>
+        <button
+          class="pill"
+          on:click={() => {
+            mode = 'all';
+            tags = [];
+            authors = [];
+          }}
+          title="Show all posts"
+          >All posts</button
+        >
       </div>
     </div>
 

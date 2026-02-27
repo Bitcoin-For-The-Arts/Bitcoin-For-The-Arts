@@ -9,7 +9,8 @@
   import { profileHover } from '$lib/ui/profile-hover';
   import { getLocalSecretKey } from '$lib/stores/local-signer';
   import ContentBody from '$lib/components/ContentBody.svelte';
-  import { publishDeletion } from '$lib/nostr/publish';
+  import { publishDeletion, publishDm } from '$lib/nostr/publish';
+  import Modal from '$lib/components/Modal.svelte';
 
   type Msg = { id: string; from: string; to: string; at: number; text: string };
   type Thread = { with: string; lastAt: number; lastText: string };
@@ -30,6 +31,12 @@
   let cleared: Record<string, number> = {}; // withPubkey -> unix seconds
   let actionError: string | null = null;
   let actionBusy = false;
+
+  let editOpen = false;
+  let editMsg: Msg | null = null;
+  let editText = '';
+  let editBusy = false;
+  let editError: string | null = null;
 
   function deletedKey(me: string) {
     return `bfta:dm:deleted:${me}`;
@@ -213,6 +220,45 @@
     rebuildThreads(me);
   }
 
+  function openEditMsg(m: Msg) {
+    if (!$pubkey) return;
+    if (m.from !== $pubkey) return;
+    editMsg = m;
+    editText = m.text;
+    editError = null;
+    editOpen = true;
+  }
+
+  async function saveEdit() {
+    if (!$pubkey || !editMsg) return;
+    const me = $pubkey;
+    editError = null;
+    const body = editText.trim();
+    if (!body) return;
+    editBusy = true;
+    try {
+      // Best-effort "edit": delete old DM (kind 5) and send a corrected DM.
+      await publishDeletion({ eventIds: [editMsg.id], reason: 'edited' });
+      deleted.add(editMsg.id);
+      persistDeleted(me);
+      messages = messages.filter((x) => x.id !== editMsg.id);
+      rebuildThreads(me);
+
+      const id = await publishDm(editMsg.to, body);
+      const now = Math.floor(Date.now() / 1000);
+      const next: Msg = { id, from: me, to: editMsg.to, at: now, text: body };
+      messages = [...messages.filter((m) => m.id !== id), next].sort((a, b) => a.at - b.at).slice(-200);
+      rebuildThreads(me);
+      editOpen = false;
+      editMsg = null;
+      editText = '';
+    } catch (e) {
+      editError = e instanceof Error ? e.message : String(e);
+    } finally {
+      editBusy = false;
+    }
+  }
+
   function openNew() {
     error = null;
     try {
@@ -286,17 +332,27 @@
       </div>
       <div style="margin-top: 0.75rem; display:grid; gap:0.5rem;">
         {#each threads as t (t.with)}
+          {@const tp = $profileByPubkey[t.with]}
+          {@const tname = (tp?.display_name || tp?.name || t.with.slice(0, 12) + '…').trim()}
           <button
             class={`card thread ${selected === t.with ? 'active' : ''}`}
             on:click={() => (selected = t.with)}
             style="padding: 0.75rem 0.85rem; text-align:left;"
-            use:profileHover={t.with}
           >
-            <div style="font-weight: 850;">
-              {$profileByPubkey[t.with]?.display_name || $profileByPubkey[t.with]?.name || t.with.slice(0, 12) + '…'}
-            </div>
-            <div class="muted" style="margin-top:0.25rem; line-height:1.35;">
-              {t.lastText}
+            <div style="display:flex; gap:0.6rem; align-items:center; min-width:0;">
+              {#if tp?.picture}
+                <img src={tp.picture} alt="" class="tAvatar" use:profileHover={t.with} />
+              {:else}
+                <div class="tAvatar ph" use:profileHover={t.with}></div>
+              {/if}
+              <div style="min-width:0;">
+                <div style="font-weight: 850; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" use:profileHover={t.with}>
+                  {tname}
+                </div>
+                <div class="muted" style="margin-top:0.25rem; line-height:1.35;">
+                  {t.lastText}
+                </div>
+              </div>
             </div>
           </button>
         {/each}
@@ -326,8 +382,15 @@
         {/if}
       </div>
       {#if selected}
-        <div class="muted" style="margin-top:0.35rem;">
-          With: <span class="pill" use:profileHover={selected}>{selectedName}</span>
+        <div style="margin-top:0.55rem; display:flex; gap:0.6rem; align-items:center;">
+          {#if selectedProfile?.picture}
+            <img class="tAvatar" src={selectedProfile.picture} alt="" use:profileHover={selected} />
+          {:else}
+            <div class="tAvatar ph" use:profileHover={selected}></div>
+          {/if}
+          <div class="muted">
+            With: <span class="pill" use:profileHover={selected}>{selectedName}</span>
+          </div>
         </div>
       {/if}
 
@@ -338,9 +401,16 @@
               <div class="muted" style="font-size: 0.86rem;">
                 {m.from === $pubkey ? 'You' : 'Them'} • {new Date(m.at * 1000).toLocaleString()}
               </div>
-              <button class="pill muted" disabled={actionBusy} on:click={() => removeMessage(m)} title={m.from === $pubkey ? 'Delete (publish NIP-09)' : 'Remove from your inbox'}>
-                🗑
-              </button>
+              <div style="display:flex; gap:0.35rem; align-items:center;">
+                {#if m.from === $pubkey}
+                  <button class="pill muted" disabled={actionBusy} on:click={() => openEditMsg(m)} title="Edit (delete + resend)">
+                    ✎
+                  </button>
+                {/if}
+                <button class="pill muted" disabled={actionBusy} on:click={() => removeMessage(m)} title={m.from === $pubkey ? 'Delete (publish NIP-09)' : 'Remove from your inbox'}>
+                  🗑
+                </button>
+              </div>
             </div>
             <div style="margin-top:0.35rem; line-height: 1.5;"><ContentBody text={m.text} maxUrls={2} compactLinks={true} /></div>
           </div>
@@ -359,12 +429,39 @@
   </div>
 
   <DMComposer open={composerOpen} toPubkey={composerTo} toLabel={composerLabel} onClose={() => (composerOpen = false)} />
+
+  <Modal open={editOpen} title="Edit message" onClose={() => ((editOpen = false), (editMsg = null))}>
+    <div class="muted" style="margin-bottom:0.65rem;">
+      This will publish a deletion for the old DM and send a new corrected DM.
+    </div>
+    <textarea class="textarea" bind:value={editText} placeholder="Edit your message…"></textarea>
+    <div style="margin-top:0.75rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+      <button class="btn primary" disabled={editBusy || !editText.trim()} on:click={saveEdit}>
+        {editBusy ? 'Saving…' : 'Save edit'}
+      </button>
+      <button class="btn" on:click={() => ((editOpen = false), (editMsg = null))}>Cancel</button>
+      {#if editError}<span class="muted" style="color:var(--danger);">{editError}</span>{/if}
+    </div>
+  </Modal>
 {/if}
 
 <style>
   .thread.active {
     border-color: rgba(246, 196, 83, 0.35);
     background: rgba(246, 196, 83, 0.08);
+  }
+  .tAvatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.22);
+    flex: 0 0 auto;
+  }
+  .tAvatar.ph {
+    display: block;
+    background: rgba(255, 255, 255, 0.06);
   }
 </style>
 

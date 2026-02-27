@@ -5,6 +5,7 @@
   import { connectNostr, disconnectNostr, isAuthed, npub, authError, hasNip07 } from '$lib/stores/auth';
   import { ndkError, ndkStatus, reconnectNdk } from '$lib/stores/ndk';
   import { openOnboarding } from '$lib/stores/onboarding';
+  import { unreadCount } from '$lib/stores/notifications';
 
   let mobileMenuOpen = false;
 
@@ -69,6 +70,29 @@
 
     <div class="auth">
       {#if $isAuthed}
+        <a class="bell" href={`${base}/notifications`} aria-label="Notifications" title="Notifications">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M13.73 21a2 2 0 01-3.46 0"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            ></path>
+          </svg>
+          {#if $unreadCount > 0}
+            <span class="badge" aria-label={`${$unreadCount} unread notifications`}>
+              {$unreadCount > 99 ? '99+' : $unreadCount}
+            </span>
+          {/if}
+        </a>
         <span class="pill muted mono" title={$npub ?? ''}>
           {($npub ?? '').slice(0, 10)}…{($npub ?? '').slice(-8)}
         </span>
@@ -213,6 +237,42 @@
     align-items: center;
     justify-content: flex-end;
     flex-shrink: 0;
+  }
+  .bell {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text);
+    text-decoration: none;
+  }
+  .bell:hover {
+    background: rgba(255, 255, 255, 0.09);
+    text-decoration: none;
+  }
+  .bell svg {
+    width: 20px;
+    height: 20px;
+    opacity: 0.95;
+  }
+  .badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(0, 0, 0, 0.82);
+    color: var(--text);
+    font-size: 0.75rem;
+    font-weight: 900;
+    line-height: 18px;
   }
   .mono {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;

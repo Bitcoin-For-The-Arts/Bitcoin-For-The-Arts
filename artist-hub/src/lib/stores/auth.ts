@@ -42,6 +42,8 @@ export const hasNip07 = derived([], () => (browser ? Boolean(window.nostr?.getPu
 
 export const isAuthed = derived(pubkey, ($pubkey) => Boolean($pubkey));
 
+const STORAGE_NIP07_PUBKEY = 'bfta:nip07-pubkey';
+
 async function fetchMyProfile(pk: string): Promise<void> {
   try {
     const ndk = await ensureNdk();
@@ -53,6 +55,12 @@ async function fetchMyProfile(pk: string): Promise<void> {
   }
 }
 
+export async function refreshMyProfile(): Promise<void> {
+  const pk = get(pubkey);
+  if (!pk) return;
+  await fetchMyProfile(pk);
+}
+
 if (browser) {
   initLocalSignerFromStorage();
   const pk = getLocalPubkeyHex();
@@ -60,6 +68,34 @@ if (browser) {
     pubkey.set(pk);
     authMode.set('local');
     void fetchMyProfile(pk);
+  } else {
+    // Best-effort: restore previous NIP-07 pubkey so the UI doesn't "disconnect" on refresh.
+    // We still may need to re-authorize signing when the user performs an action.
+    try {
+      const saved = (localStorage.getItem(STORAGE_NIP07_PUBKEY) || '').trim();
+      if (saved && /^[0-9a-f]{64}$/i.test(saved) && window.nostr?.getPublicKey) {
+        pubkey.set(saved.toLowerCase());
+        authMode.set('nip07');
+        void fetchMyProfile(saved.toLowerCase());
+        // Verify with extension in background (may prompt depending on wallet settings).
+        void window.nostr
+          .getPublicKey()
+          .then((realPk) => {
+            if (typeof realPk === 'string' && /^[0-9a-f]{64}$/i.test(realPk)) {
+              const norm = realPk.toLowerCase();
+              pubkey.set(norm);
+              authMode.set('nip07');
+              localStorage.setItem(STORAGE_NIP07_PUBKEY, norm);
+              void fetchMyProfile(norm);
+            }
+          })
+          .catch(() => {
+            // ignore
+          });
+      }
+    } catch {
+      // ignore
+    }
   }
 }
 
@@ -77,6 +113,11 @@ export async function connectNostr(): Promise<void> {
     const pk = await window.nostr.getPublicKey();
     pubkey.set(pk);
     authMode.set('nip07');
+    try {
+      localStorage.setItem(STORAGE_NIP07_PUBKEY, pk);
+    } catch {
+      // ignore
+    }
 
     // Fetch current metadata (kind:0) from relays (non-fatal)
     await fetchMyProfile(pk);
@@ -117,6 +158,13 @@ export function disconnectNostr(): void {
   authError.set(null);
   authMode.set('none');
   clearLocalSigner();
+  if (browser) {
+    try {
+      localStorage.removeItem(STORAGE_NIP07_PUBKEY);
+    } catch {
+      // ignore
+    }
+  }
 }
 
 export async function publishProfile(next: ArtistProfile): Promise<string | null> {

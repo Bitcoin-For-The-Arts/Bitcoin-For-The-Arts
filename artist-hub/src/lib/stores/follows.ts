@@ -1,7 +1,7 @@
 import { browser } from '$app/environment';
 import { get, writable } from 'svelte/store';
 import { pubkey as myPubkey } from '$lib/stores/auth';
-import { fetchMyContactsEvent, followingFromContactsTags, publishMyContactsUpdate } from '$lib/nostr/follows';
+import { fetchMyContactsEvent, followingFromContactsTags, publishMyContactsBulkFollow, publishMyContactsUpdate } from '$lib/nostr/follows';
 
 export const followingSet = writable<Set<string>>(new Set());
 export const followingLoading = writable<boolean>(false);
@@ -59,6 +59,29 @@ export async function setFollow(targetPubkey: string, follow: boolean): Promise<
 export async function toggleFollow(targetPubkey: string): Promise<void> {
   const cur = get(followingSet);
   await setFollow(targetPubkey, !cur.has(targetPubkey));
+}
+
+export async function followMany(pubkeys: string[]): Promise<{ added: number } | null> {
+  followingError.set(null);
+  const pk = get(myPubkey);
+  if (!pk) {
+    followingError.set('Connect your npub to follow.');
+    return null;
+  }
+  const add = (pubkeys || []).filter(Boolean);
+  if (!add.length) return { added: 0 };
+
+  followingLoading.set(true);
+  try {
+    const res = await publishMyContactsBulkFollow({ myPubkey: pk, addPubkeys: add });
+    followingSet.set(new Set(res.following));
+    return { added: res.added };
+  } catch (e) {
+    followingError.set(e instanceof Error ? e.message : String(e));
+    return null;
+  } finally {
+    followingLoading.set(false);
+  }
 }
 
 export function startFollowingSync(): () => void {
