@@ -7,8 +7,10 @@
   import { ndkError, ndkStatus, reconnectNdk } from '$lib/stores/ndk';
   import { openOnboarding } from '$lib/stores/onboarding';
   import { unreadCount } from '$lib/stores/notifications';
+  import GlobalSearch from '$lib/components/GlobalSearch.svelte';
 
   let mobileMenuOpen = false;
+  let searchOpen = false;
   const mainSiteUrl = ((((publicEnv as any).PUBLIC_MAIN_SITE_URL as string | undefined) || 'https://bitcoinforthearts.org') + '').trim();
 
   const nav = [
@@ -34,6 +36,10 @@
 
   function toggleMobile() {
     mobileMenuOpen = !mobileMenuOpen;
+  }
+
+  function toggleSearch() {
+    searchOpen = !searchOpen;
   }
 
   function handleConnect() {
@@ -111,11 +117,28 @@
       {:else}
         <button class="btn primary" on:click={handleConnect}>{$hasNip07 ? 'Connect' : 'Get started'}</button>
       {/if}
+      <button class="btn search-toggle" on:click={toggleSearch} aria-label="Search" title="Search">
+        🔎
+      </button>
       <button class="btn mobile-toggle" on:click={toggleMobile} aria-label="Toggle menu">
         {mobileMenuOpen ? '✕' : '☰'}
       </button>
     </div>
   </div>
+
+  {#if searchOpen}
+    <div class="container search-pop">
+      <div class="card" style="padding: 0.85rem;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap: 0.75rem; flex-wrap:wrap;">
+          <div style="font-weight: 900;">Search</div>
+          <button class="pill muted" style="cursor:pointer;" on:click={() => (searchOpen = false)}>Close</button>
+        </div>
+        <div style="margin-top: 0.65rem;">
+          <GlobalSearch placeholder="Search people (name or npub)…" />
+        </div>
+      </div>
+    </div>
+  {/if}
 
   {#if mobileMenuOpen}
     <nav class="mobile-nav container">
@@ -256,6 +279,10 @@
     align-items: center;
     justify-content: flex-end;
     flex-shrink: 0;
+    min-width: 0;
+  }
+  .search-pop {
+    padding-bottom: 0.75rem;
   }
   .bell {
     position: relative;
@@ -329,6 +356,12 @@
     }
     .mono {
       display: none;
+    }
+  }
+  @media (max-width: 420px) {
+    .search-toggle {
+      padding-left: 0.7rem;
+      padding-right: 0.7rem;
     }
   }
 </style>
