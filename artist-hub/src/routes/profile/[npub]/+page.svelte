@@ -19,6 +19,7 @@
   import { followingError, followingLoading, followingSet, toggleFollow } from '$lib/stores/follows';
   import NpubShareModal from '$lib/components/NpubShareModal.svelte';
   import ZapReceiptsList from '$lib/components/ZapReceiptsList.svelte';
+  import ProfileCard from '$lib/components/ProfileCard.svelte';
 
   let pubkey = '';
   let error: string | null = null;
@@ -63,22 +64,25 @@
     return tags.some((t) => t[0] === 'q');
   }
 
+  let metricsCancelled = false;
+
   async function loadMetricsFor(pk: string) {
     metricsError = null;
     metricsLoading = true;
     metrics = null;
+    metricsCancelled = false;
 
     try {
       const ndk = await ensureNdk();
       const author = (pk || '').trim().toLowerCase();
       if (!author) throw new Error('Missing pubkey');
 
-      // Following (NIP-02 contacts list, kind 3)
       const contactsRes = await collectEventsWithDeadline(
         ndk as any,
         { kinds: [NOSTR_KINDS.contacts], authors: [author], limit: 1 } as any,
-        { timeoutMs: 9000, maxEvents: 30 },
+        { timeoutMs: 6000, maxEvents: 10 },
       );
+      if (metricsCancelled) return;
       const contacts = (contactsRes.events || []).sort((a: any, b: any) => (b.created_at || 0) - (a.created_at || 0))[0];
       const followingSet = new Set<string>();
       if (contacts?.tags) {
@@ -90,14 +94,14 @@
       }
       const following = followingSet.size;
 
-      // Followers (best-effort): unique authors of kind 3 that include '#p' = pk.
-      const followersLimit = 1200;
+      const followersLimit = 500;
       const followerAuthors = new Set<string>();
       const followerRes = await collectEventsWithDeadline(
         ndk as any,
         { kinds: [NOSTR_KINDS.contacts], '#p': [author], limit: followersLimit } as any,
-        { timeoutMs: 18_000, maxEvents: followersLimit },
+        { timeoutMs: 10_000, maxEvents: followersLimit },
       );
+      if (metricsCancelled) return;
       const followerArr = Array.from(followerRes.events || []);
       for (const ev of followerArr as any[]) {
         const p = typeof ev?.pubkey === 'string' ? ev.pubkey.trim().toLowerCase() : '';
@@ -106,51 +110,47 @@
       }
       const followersSeen = followerArr.length;
 
-      // Posts / replies / quote reposts (kind 1)
-      const notesLimit = 1000;
+      const notesLimit = 300;
+      const repostLimit = 200;
+      const zapsLimit = 300;
+
+      const [notesRes, repostRes, zapRes] = await Promise.all([
+        collectEventsWithDeadline(
+          ndk as any,
+          { kinds: [NOSTR_KINDS.note], authors: [author], limit: notesLimit } as any,
+          { timeoutMs: 10_000, maxEvents: notesLimit },
+        ),
+        collectEventsWithDeadline(
+          ndk as any,
+          { kinds: [NOSTR_KINDS.repost], authors: [author], limit: repostLimit } as any,
+          { timeoutMs: 10_000, maxEvents: repostLimit },
+        ),
+        collectEventsWithDeadline(
+          ndk as any,
+          { kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [author], limit: zapsLimit } as any,
+          { timeoutMs: 10_000, maxEvents: zapsLimit },
+        ),
+      ]);
+      if (metricsCancelled) return;
+
       let posts = 0;
       let replies = 0;
       let quoteReposts = 0;
-      const notesRes = await collectEventsWithDeadline(
-        ndk as any,
-        { kinds: [NOSTR_KINDS.note], authors: [author], limit: notesLimit } as any,
-        { timeoutMs: 18_000, maxEvents: notesLimit },
-      );
       const noteArr = Array.from(notesRes.events || []);
       let notesSeen = 0;
       for (const ev of noteArr as any[]) {
         notesSeen += 1;
-        if (isQuote(ev)) {
-          quoteReposts += 1;
-          continue;
-        }
-        if (isReply(ev)) {
-          replies += 1;
-          continue;
-        }
+        if (isQuote(ev)) { quoteReposts += 1; continue; }
+        if (isReply(ev)) { replies += 1; continue; }
         posts += 1;
       }
 
-      // Plain reposts (kind 6)
-      const repostLimit = 1000;
-      const repostRes = await collectEventsWithDeadline(
-        ndk as any,
-        { kinds: [NOSTR_KINDS.repost], authors: [author], limit: repostLimit } as any,
-        { timeoutMs: 18_000, maxEvents: repostLimit },
-      );
       const repostArr = Array.from(repostRes.events || []);
       const repostsSeen = repostArr.length;
       const plainReposts = repostArr.length;
 
-      // Zap receipts (kind 9735) to this pubkey (best-effort totals)
-      const zapsLimit = 1000;
       let zapCount = 0;
       let zapSats = 0;
-      const zapRes = await collectEventsWithDeadline(
-        ndk as any,
-        { kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [author], limit: zapsLimit } as any,
-        { timeoutMs: 18_000, maxEvents: zapsLimit },
-      );
       const zapArr = Array.from(zapRes.events || []);
       const zapsSeen = zapArr.length;
       for (const ev of zapArr as any[]) {
@@ -175,9 +175,9 @@
         zaps: { sats: zapSats, count: zapCount, approx: zapsSeen >= zapsLimit || zapRes.timedOut },
       };
     } catch (e) {
-      metricsError = e instanceof Error ? e.message : String(e);
+      if (!metricsCancelled) metricsError = e instanceof Error ? e.message : String(e);
     } finally {
-      metricsLoading = false;
+      if (!metricsCancelled) metricsLoading = false;
     }
   }
 
@@ -200,33 +200,47 @@
 
     try {
       const ndk = await ensureNdk();
-      const limit = 200;
+      const limit = 100;
       const addresses = new Set<string>();
 
       await new Promise<void>((resolve, reject) => {
+        let done = false;
         const sub = ndk.subscribe({ kinds: [NOSTR_KINDS.nip58_badge_award], '#p': [pk], limit } as any, { closeOnEose: true });
+        const timeout = setTimeout(() => {
+          if (!done) { done = true; try { sub.stop(); } catch {} resolve(); }
+        }, 8000);
         sub.on('event', (ev) => {
           const tags = (ev.tags as string[][]) || [];
           for (const t of tags) {
             if (t[0] === 'a' && typeof t[1] === 'string') addresses.add(t[1]);
           }
         });
-        sub.on('eose', () => resolve());
-        sub.on('error', (e: any) => reject(e));
+        sub.on('eose', () => { if (!done) { done = true; clearTimeout(timeout); resolve(); } });
       });
 
+      const toFetch = Array.from(addresses).slice(0, 15).map(parseAddress).filter(
+        (p): p is NonNullable<typeof p> => !!p && p.kind === NOSTR_KINDS.nip58_badge_definition
+      );
+
+      const BADGE_BATCH = 5;
       const out: Badge[] = [];
-      for (const a of Array.from(addresses).slice(0, 30)) {
-        const parsed = parseAddress(a);
-        if (!parsed) continue;
-        if (parsed.kind !== NOSTR_KINDS.nip58_badge_definition) continue;
-        const def = await ndk.fetchEvent({ kinds: [parsed.kind], authors: [parsed.pubkey], '#d': [parsed.d] } as any);
-        const tags = (def?.tags as any as string[][]) || [];
-        const name = tagValue(tags, 'name') || 'Badge';
-        const description = tagValue(tags, 'description');
-        const image = tagValue(tags, 'image');
-        const thumb = tagValue(tags, 'thumb') || image;
-        out.push({ address: a, name, description, image, thumb });
+      for (let i = 0; i < toFetch.length; i += BADGE_BATCH) {
+        const batch = toFetch.slice(i, i + BADGE_BATCH);
+        const results = await Promise.allSettled(
+          batch.map((parsed) =>
+            ndk.fetchEvent({ kinds: [parsed.kind], authors: [parsed.pubkey], '#d': [parsed.d] } as any)
+          )
+        );
+        for (let j = 0; j < results.length; j++) {
+          const r = results[j];
+          if (r.status !== 'fulfilled' || !r.value) continue;
+          const tags = (r.value?.tags as any as string[][]) || [];
+          const name = tagValue(tags, 'name') || 'Badge';
+          const description = tagValue(tags, 'description');
+          const image = tagValue(tags, 'image');
+          const thumb = tagValue(tags, 'thumb') || image;
+          out.push({ address: `${batch[j].kind}:${batch[j].pubkey}:${batch[j].d}`, name, description, image, thumb });
+        }
       }
 
       badges = out;
@@ -256,6 +270,9 @@
     stop = () => sub.stop();
   }
 
+  let metricsTimer: ReturnType<typeof setTimeout> | null = null;
+  let badgesTimer: ReturnType<typeof setTimeout> | null = null;
+
   onMount(() => {
     error = null;
     listings = [];
@@ -266,15 +283,18 @@
       pubkey = decoded.data as string;
       void fetchProfileFor(pubkey);
       void start();
-      void loadMetricsFor(pubkey);
-      void loadBadgesFor(pubkey);
+      metricsTimer = setTimeout(() => void loadMetricsFor(pubkey), 150);
+      badgesTimer = setTimeout(() => void loadBadgesFor(pubkey), 600);
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
     }
   });
 
   onDestroy(() => {
+    metricsCancelled = true;
     if (stop) stop();
+    if (metricsTimer) clearTimeout(metricsTimer);
+    if (badgesTimer) clearTimeout(badgesTimer);
   });
 
   $: prof = pubkey ? $profileByPubkey[pubkey] : undefined;
@@ -327,10 +347,13 @@
       let lastEmit = 0;
       let finished = false;
 
+      let profilesFetched = 0;
       const emit = () => {
         if (token !== followersToken) return;
         followersList = Array.from(authors);
-        for (const a of followersList.slice(0, 80)) void fetchProfileFor(a);
+        const toFetch = followersList.slice(profilesFetched, profilesFetched + 20);
+        profilesFetched += toFetch.length;
+        for (const a of toFetch) void fetchProfileFor(a);
       };
 
       const finish = (opts?: { partial?: boolean }) => {
