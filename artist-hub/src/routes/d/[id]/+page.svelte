@@ -103,9 +103,9 @@
       if (!chosen) throw new Error('Follow pack not found on your connected relays.');
       pack = chosen;
       void fetchProfileFor(pack.pubkey);
-      for (const e of pack.entries.slice(0, 60)) void fetchProfileFor(e.pubkey);
-      if ($canSign && $myPubkey) void loadInviteState();
-      if ($canSign && $myPubkey && $myPubkey === pack.pubkey) void loadPendingAccepts();
+      for (const e of pack.entries.slice(0, 20)) void fetchProfileFor(e.pubkey);
+      if ($canSign && $myPubkey) setTimeout(() => void loadInviteState(), 200);
+      if ($canSign && $myPubkey && $myPubkey === pack.pubkey) setTimeout(() => void loadPendingAccepts(), 400);
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
     } finally {
@@ -142,7 +142,7 @@
         if (hasTag(ev, 'a', address) || hasTag(ev, 'd', pack.d)) out.add(pk);
       }
       pendingAccepts = Array.from(out).slice(0, 250);
-      for (const pk of pendingAccepts.slice(0, 60)) void fetchProfileFor(pk);
+      for (const pk of pendingAccepts.slice(0, 20)) void fetchProfileFor(pk);
     } catch (e) {
       pendingError = e instanceof Error ? e.message : String(e);
     } finally {
