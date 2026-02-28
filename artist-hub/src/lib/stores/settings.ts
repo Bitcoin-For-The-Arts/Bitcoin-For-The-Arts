@@ -57,48 +57,40 @@ function loadRelays(): string[] {
   const envRelays = normalizeRelayUrls(fromEnv);
   const fallback = normalizeRelayUrls(DEFAULT_RELAYS);
 
+  if (browser) {
+    console.log('[BFTA] Relay config:', {
+      envVar: envRaw || '(not set)',
+      envParsed: envRelays,
+      defaults: fallback,
+    });
+  }
+
   if (envRelays.length) {
     if (browser) {
       try {
-        const prevSource = localStorage.getItem(RELAYS_SOURCE_KEY) || '';
-        if (prevSource !== envRaw) {
-          localStorage.setItem(RELAYS_KEY, JSON.stringify(envRelays));
-          localStorage.setItem(RELAYS_SOURCE_KEY, envRaw);
-        }
-      } catch {
-        // ignore
-      }
+        localStorage.removeItem(RELAYS_KEY);
+        localStorage.removeItem(RELAYS_SOURCE_KEY);
+      } catch { /* ignore */ }
+      console.log('[BFTA] Using env relays:', envRelays);
     }
     return envRelays;
   }
 
-  if (!browser) return fallback;
-  try {
-    const raw = localStorage.getItem(RELAYS_KEY);
-    if (!raw) return fallback;
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.every((r) => typeof r === 'string')) {
-      const next = normalizeRelayUrls(parsed);
-      return next.length ? next : fallback;
-    }
-    return fallback;
-  } catch {
-    return fallback;
+  if (browser) {
+    try {
+      localStorage.removeItem(RELAYS_KEY);
+      localStorage.removeItem(RELAYS_SOURCE_KEY);
+    } catch { /* ignore */ }
+    console.log('[BFTA] Using default relays:', fallback);
   }
+
+  return fallback;
 }
 
 export const relayUrls = writable<string[]>(loadRelays());
 
-if (browser) {
-  relayUrls.subscribe((urls) => {
-    try {
-      const normalized = normalizeRelayUrls(urls);
-      localStorage.setItem(RELAYS_KEY, JSON.stringify(normalized));
-    } catch {
-      // ignore
-    }
-  });
-}
+// Relay URLs are sourced from env var or defaults only.
+// No localStorage persistence to avoid stale cache issues.
 
 export const bftaAdminNpub = writable<string>(
   ((publicEnv as any).PUBLIC_BFTA_ADMIN_NPUB as string | undefined) || ''
