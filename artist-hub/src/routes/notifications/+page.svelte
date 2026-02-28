@@ -47,6 +47,7 @@
       <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
         <button class="btn" on:click={markAllRead}>Mark all read</button>
         <a class="btn" href={`${base}/pulse`}>Open Pulse</a>
+        <button class="btn" on:click={() => history.back()} title="Go back">✕ Close</button>
       </div>
     </div>
     <div class="muted" style="margin-top:0.35rem; line-height:1.45;">
