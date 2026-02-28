@@ -16,8 +16,8 @@ export async function collectEventsWithDeadline(
   filter: any,
   opts?: { timeoutMs?: number; maxEvents?: number },
 ): Promise<CollectResult> {
-  const timeoutMs = Math.max(1200, Math.min(30_000, opts?.timeoutMs ?? 12_000));
-  const maxEvents = Math.max(50, Math.min(5000, opts?.maxEvents ?? (filter?.limit ? Number(filter.limit) : 500)));
+  const timeoutMs = Math.max(1200, Math.min(20_000, opts?.timeoutMs ?? 10_000));
+  const maxEvents = Math.max(50, Math.min(2000, opts?.maxEvents ?? (filter?.limit ? Number(filter.limit) : 500)));
 
   const events: any[] = [];
   let timedOut = false;
@@ -27,7 +27,7 @@ export async function collectEventsWithDeadline(
   return await new Promise<CollectResult>((resolve) => {
     let sub: any = null;
     let done = false;
-    let t: any = null;
+    let t: ReturnType<typeof setTimeout> | null = null;
     const finish = () => {
       if (done) return;
       done = true;
@@ -48,6 +48,7 @@ export async function collectEventsWithDeadline(
     try {
       sub = ndk.subscribe(filter, { closeOnEose: true });
       sub.on('event', (ev: any) => {
+        if (done) return;
         events.push(ev);
         if (events.length >= maxEvents) {
           finish();
