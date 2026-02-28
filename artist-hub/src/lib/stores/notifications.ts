@@ -57,10 +57,26 @@ let stop: (() => void) | null = null;
 let activePk: string | null = null;
 const byId = new Map<string, NotificationItem>();
 
+let upsertTimer: ReturnType<typeof setTimeout> | null = null;
+let upsertDirty = false;
+
+function flushUpsert() {
+  upsertDirty = false;
+  if (byId.size > 300) {
+    const sorted = Array.from(byId.entries()).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+    for (const [key] of sorted.slice(300)) byId.delete(key);
+  }
+  const out = Array.from(byId.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0, 300);
+  notifications.set(out);
+}
+
 function upsert(n: NotificationItem) {
   byId.set(n.id, n);
-  const out = Array.from(byId.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0, 500);
-  notifications.set(out);
+  if (!upsertDirty) {
+    upsertDirty = true;
+    if (upsertTimer) clearTimeout(upsertTimer);
+    upsertTimer = setTimeout(flushUpsert, 200);
+  }
 }
 
 function isLikeReactionContent(content: unknown): boolean {
@@ -196,8 +212,10 @@ async function startFor(pk: string) {
 
   const ndk = await ensureNdk();
 
-  // Subscribe to activity that should show up as notifications.
   const subs: any[] = [];
+  let profileFetchCount = 0;
+  const MAX_PROFILE_FETCHES = 30;
+
   const make = (filter: any) => {
     const sub = ndk.subscribe(filter, { closeOnEose: false });
     sub.on('event', (ev: any) => {
@@ -205,28 +223,27 @@ async function startFor(pk: string) {
       const n = toNotification(ev, me);
       if (!n) return;
       upsert(n);
-      void fetchProfileFor(n.authorPubkey);
+      if (profileFetchCount < MAX_PROFILE_FETCHES) {
+        profileFetchCount++;
+        void fetchProfileFor(n.authorPubkey);
+      }
     });
     subs.push(sub);
   };
 
-  // Likes on your notes / events (your pubkey is tagged as 'p').
-  make({ kinds: [NOSTR_KINDS.reaction], '#p': [me], limit: 200 });
+  make({
+    kinds: [
+      NOSTR_KINDS.reaction,
+      NOSTR_KINDS.nip57_zap_receipt,
+      NOSTR_KINDS.repost,
+      NOSTR_KINDS.note,
+      NOSTR_KINDS.dm,
+    ],
+    '#p': [me],
+    limit: 150,
+  });
 
-  // Zaps to you (receipts tag recipient in 'p').
-  make({ kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [me], limit: 400 });
-
-  // Reposts of your notes (authors tag original pubkey in 'p').
-  make({ kinds: [NOSTR_KINDS.repost], '#p': [me], limit: 250 });
-
-  // Mentions / replies to you (our own publishComment includes a 'p' tag for root pubkey).
-  make({ kinds: [NOSTR_KINDS.note], '#p': [me], limit: 400 });
-
-  // New DMs to you.
-  make({ kinds: [NOSTR_KINDS.dm], '#p': [me], limit: 200 });
-
-  // Follows (contacts lists that include you).
-  make({ kinds: [NOSTR_KINDS.contacts], '#p': [me], limit: 250 });
+  make({ kinds: [NOSTR_KINDS.contacts], '#p': [me], limit: 100 });
 
   stop = () => subs.forEach((s) => s.stop());
 }

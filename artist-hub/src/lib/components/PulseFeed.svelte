@@ -302,15 +302,35 @@
   }
 
   const statsQueue = new Set<string>();
+  const statsPending: Post[] = [];
+  let statsActive = 0;
+  const STATS_CONCURRENCY = 3;
+
+  function drainStatsQueue() {
+    while (statsActive < STATS_CONCURRENCY && statsPending.length > 0) {
+      const next = statsPending.shift()!;
+      if (statsById.get(next.id)?.finalized) {
+        statsQueue.delete(next.id);
+        continue;
+      }
+      statsActive++;
+      void loadStatsFor(next).finally(() => {
+        statsActive--;
+        statsQueue.delete(next.id);
+        drainStatsQueue();
+      });
+    }
+  }
+
   function ensureStatsFor(p: Post) {
     if (!p?.id) return;
     if (statsById.has(p.id)) return;
     if (statsQueue.has(p.id)) return;
-    // Create a placeholder immediately so badges render with "…" instead of disappearing.
     statsById.set(p.id, { comments: 0, reposts: 0, zaps: 0, likes: 0, sats: 0, finalized: false });
     tick++;
     statsQueue.add(p.id);
-    void loadStatsFor(p).finally(() => statsQueue.delete(p.id));
+    statsPending.push(p);
+    drainStatsQueue();
   }
 
   async function refreshStatsFor(p: Post): Promise<void> {
@@ -328,11 +348,10 @@
     try {
       const ndk = await ensureNdk();
 
-      // Use fetchEvents for reliability (avoids EOSE issues and "all zeros" UI).
       const [evsE, evsQ, evsZ] = await Promise.all([
-        ndk.fetchEvents({ kinds: [NOSTR_KINDS.note, NOSTR_KINDS.repost, NOSTR_KINDS.nip37_edit, NOSTR_KINDS.reaction], '#e': [p.id], limit: 1200 } as any),
-        ndk.fetchEvents({ kinds: [NOSTR_KINDS.note], '#q': [p.id], limit: 600 } as any),
-        ndk.fetchEvents({ kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [p.pubkey], limit: 1600 } as any),
+        ndk.fetchEvents({ kinds: [NOSTR_KINDS.note, NOSTR_KINDS.repost, NOSTR_KINDS.nip37_edit, NOSTR_KINDS.reaction], '#e': [p.id], limit: 300 } as any),
+        ndk.fetchEvents({ kinds: [NOSTR_KINDS.note], '#q': [p.id], limit: 100 } as any),
+        ndk.fetchEvents({ kinds: [NOSTR_KINDS.nip57_zap_receipt], '#e': [p.id], limit: 200 } as any),
       ]);
 
       const eArr = Array.from(evsE || []);
@@ -456,8 +475,7 @@
         if (!post) return;
         upsertPost(post);
         void fetchProfileFor(post.pubkey);
-        // Stats are expensive; prefetch for a bounded window.
-        if (posts.length <= Math.max(60, limit)) void loadStatsFor(post);
+        if (posts.length <= Math.max(40, limit)) ensureStatsFor(post);
       });
       sub.on('eose', () => (loading = false));
       stop = () => sub.stop();
@@ -497,10 +515,9 @@
 
       await new Promise<void>((resolve) => sub.on('eose', () => resolve()));
 
-      // Prefetch stats for the newest slice (so `/me` and initial load show counts immediately).
       if (opts?.initial) {
-        const n = Math.max(20, Math.min(50, Math.max(30, limit)));
-        for (const p of posts.slice(0, n)) void loadStatsFor(p);
+        const n = Math.min(20, posts.length);
+        for (const p of posts.slice(0, n)) ensureStatsFor(p);
       }
 
       if (minTs <= 0 || minTs >= until) {

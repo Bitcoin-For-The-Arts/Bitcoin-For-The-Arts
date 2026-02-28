@@ -12,6 +12,7 @@
   "dependencies": {
     "@nostr-dev-kit/ndk": "^3.0.3",
     "@scure/base": "^2.0.0",
+    "@sentry/sveltekit": "^10.40.0",
     "@sveltejs/adapter-static": "^3.0.8",
     "@sveltejs/kit": "^2.22.0",
     "nanoid": "^5.1.6",

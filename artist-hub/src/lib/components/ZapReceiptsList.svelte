@@ -37,8 +37,8 @@
       const pk = recipientPubkey.trim().toLowerCase();
       const res = await collectEventsWithDeadline(
         ndk as any,
-        { kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [pk], limit: Math.max(50, Math.min(1200, limit)) } as any,
-        { timeoutMs: 18_000, maxEvents: Math.max(200, Math.min(2000, limit)) },
+        { kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [pk], limit: Math.max(50, Math.min(500, limit)) } as any,
+        { timeoutMs: 12_000, maxEvents: Math.max(200, Math.min(600, limit)) },
       );
       partial = res.timedOut;
       const parsed: Row[] = [];
@@ -58,10 +58,13 @@
           comment: z.comment,
           targetEventId,
         });
-        void fetchProfileFor(sender);
       }
       parsed.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-      rows = parsed.slice(0, 900);
+      rows = parsed.slice(0, 500);
+      const seen = new Set<string>();
+      for (const r of rows.slice(0, 30)) {
+        if (!seen.has(r.senderPubkey)) { seen.add(r.senderPubkey); void fetchProfileFor(r.senderPubkey); }
+      }
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
     } finally {
@@ -69,8 +72,9 @@
     }
   }
 
-  $: if (recipientPubkey) void load();
-  onMount(() => void load());
+  let initialized = false;
+  $: if (recipientPubkey && initialized) void load();
+  onMount(() => { initialized = true; void load(); });
 </script>
 
 <div class="card" style="padding: 1rem;">

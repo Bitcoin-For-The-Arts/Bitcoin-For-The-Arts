@@ -24,7 +24,7 @@
   <div class="inner">
     <div class="left">
       {#if prof?.picture}
-        <img class="avatar" src={prof.picture} alt="" loading="lazy" />
+        <img class="avatar" src={prof.picture} alt="" loading="lazy" on:error={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
       {:else}
         <div class="avatar placeholder"></div>
       {/if}
