@@ -1,9 +1,58 @@
+import { browser } from '$app/environment';
 import type { NDKUserProfile } from '@nostr-dev-kit/ndk';
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import { ensureNdk } from '$lib/stores/ndk';
 import type { ArtistProfile } from '$lib/stores/auth';
 
 export const profileByPubkey = writable<Record<string, ArtistProfile>>({});
+
+const CACHE_KEY = 'bfta:profile-cache';
+const CACHE_TTL_MS = 1000 * 60 * 30; // 30 minutes
+
+type CacheEntry = { prof: ArtistProfile; at: number };
+
+function loadCachedProfiles(): Record<string, CacheEntry> {
+  if (!browser) return {};
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    if (typeof parsed !== 'object' || !parsed) return {};
+    return parsed as Record<string, CacheEntry>;
+  } catch {
+    return {};
+  }
+}
+
+function saveCachedProfile(pk: string, prof: ArtistProfile) {
+  if (!browser) return;
+  try {
+    const cache = loadCachedProfiles();
+    cache[pk] = { prof, at: Date.now() };
+    const keys = Object.keys(cache);
+    if (keys.length > 200) {
+      const sorted = keys.sort((a, b) => (cache[a].at || 0) - (cache[b].at || 0));
+      for (const k of sorted.slice(0, keys.length - 150)) delete cache[k];
+    }
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+  } catch {
+    // ignore quota errors
+  }
+}
+
+if (browser) {
+  const cache = loadCachedProfiles();
+  const now = Date.now();
+  const initial: Record<string, ArtistProfile> = {};
+  for (const [pk, entry] of Object.entries(cache)) {
+    if (now - (entry.at || 0) < CACHE_TTL_MS && entry.prof) {
+      initial[pk] = entry.prof;
+    }
+  }
+  if (Object.keys(initial).length > 0) {
+    profileByPubkey.set(initial);
+  }
+}
 
 const inflight = new Map<string, Promise<ArtistProfile | null>>();
 const attempted = new Set<string>();
@@ -21,6 +70,7 @@ function doFetch(pk: string): Promise<ArtistProfile | null> {
     const prof = (user.profile as unknown as NDKUserProfile | null) ?? null;
     if (prof) {
       profileByPubkey.update((m) => ({ ...m, [pk]: prof as unknown as ArtistProfile }));
+      saveCachedProfile(pk, prof as unknown as ArtistProfile);
       return prof as unknown as ArtistProfile;
     }
     return null;
@@ -51,6 +101,12 @@ export async function fetchProfileFor(pubkey: string): Promise<ArtistProfile | n
   if (!pubkey) return null;
   if (inflight.has(pubkey)) return inflight.get(pubkey)!;
   if (attempted.has(pubkey)) return null;
+
+  const current = get(profileByPubkey);
+  if (current[pubkey]) {
+    attempted.add(pubkey);
+    return current[pubkey];
+  }
 
   return new Promise<ArtistProfile | null>((resolve) => {
     profileQueue.push({ pubkey, resolve });
