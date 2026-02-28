@@ -71,7 +71,7 @@ async function probeRelays(urls: string[]): Promise<{ ok: string[]; report: Rela
       (async () => {
         while (idx < list.length) {
           const cur = list[idx++];
-          const r = await probeRelay(cur, 2800);
+          const r = await probeRelay(cur, 4500);
           out.push(r);
         }
       })(),
@@ -106,7 +106,7 @@ export async function ensureNdk(): Promise<NDK> {
     // Work around NDK connect behaving like all-or-nothing with explicitRelayUrls:
     // probe relays first, then connect using only reachable ones.
     const { ok, report } = await probeRelays(urls);
-    const chosen = ok.slice(0, 8);
+    const chosen = ok.length ? ok.slice(0, 8) : urls.slice(0, 6);
     if (!chosen.length) {
       const summary = report.map((r) => `${r.ok ? 'OK' : 'FAIL'} ${r.url} (${r.ms}ms${r.error ? ` ${r.error}` : ''})`).join(' | ');
       ndkStatus.set('error');
