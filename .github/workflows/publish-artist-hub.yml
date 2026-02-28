@@ -53,5 +53,5 @@ jobs:
           # actions/checkout may set an auth header for github.com; ensure we don't use it.
           git config --unset-all http.https://github.com/.extraheader || true
           git remote add target "https://x-access-token:${PUSH_TOKEN}@github.com/${TARGET_REPO}.git"
-          git push -u target hub-split:"${TARGET_BRANCH}"
+          git push --force target hub-split:"${TARGET_BRANCH}"
 
