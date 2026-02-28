@@ -52,7 +52,7 @@
 </script>
 
 <header class="header">
-  <div class="container inner">
+  <div class="container row1">
     <div class="brand">
       <div class="logo" aria-label="Bitcoin for the Arts — Artist Hub">
         <a class="logo-img-link" href={mainSiteUrl} aria-label="Back to Bitcoin for the Arts main website">
@@ -72,14 +72,6 @@
         </button>
       {/if}
     </div>
-
-    <nav class="nav">
-      {#each nav as item}
-        <a class={`navlink ${isActive($page.url.pathname, item.href) ? 'active' : ''}`} href={`${base}${item.href}`}
-          >{item.label}</a
-        >
-      {/each}
-    </nav>
 
     <div class="auth">
       {#if $isAuthed}
@@ -113,7 +105,7 @@
             </span>
           {/if}
         </a>
-        <span class="pill muted mono" title={$npub ?? ''}>
+        <span class="pill muted mono npub-pill" title={$npub ?? ''}>
           {($npub ?? '').slice(0, 10)}…{($npub ?? '').slice(-8)}
         </span>
         {#if !$canSign}
@@ -132,6 +124,14 @@
       </button>
     </div>
   </div>
+
+  <nav class="container row2">
+    {#each nav as item}
+      <a class={`navlink ${isActive($page.url.pathname, item.href) ? 'active' : ''}`} href={`${base}${item.href}`}
+        >{item.label}</a
+      >
+    {/each}
+  </nav>
 
   {#if searchOpen}
     <div class="container search-pop">
@@ -182,15 +182,27 @@
     top: 0;
     z-index: 50;
     backdrop-filter: blur(14px);
-    background: rgba(11, 11, 15, 0.82);
+    background: rgba(11, 11, 15, 0.95);
     border-bottom: 1px solid var(--border);
   }
-  .inner {
+  .row1 {
     display: flex;
-    gap: 1rem;
+    gap: 0.75rem;
     align-items: center;
     justify-content: space-between;
-    padding: 0.7rem 0;
+    padding: 0.6rem 0 0.45rem;
+  }
+  .row2 {
+    display: none;
+    gap: 0.25rem;
+    align-items: center;
+    padding: 0 0 0.55rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .row2::-webkit-scrollbar {
+    display: none;
   }
   .brand {
     display: flex;
@@ -251,24 +263,18 @@
     background: #4ade80;
     box-shadow: 0 0 6px rgba(74, 222, 128, 0.5);
   }
-  .nav {
-    display: none;
-    gap: 0.25rem;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-  }
   .navlink {
-    padding: 0.5rem 0.65rem;
+    padding: 0.4rem 0.6rem;
     border-radius: 10px;
     border: 1px solid transparent;
     color: var(--muted);
     font-weight: 650;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     transition:
       background 0.15s,
       color 0.15s;
     white-space: nowrap;
+    flex-shrink: 0;
   }
   .navlink:hover {
     text-decoration: none;
@@ -285,31 +291,35 @@
     gap: 0.5rem;
     align-items: center;
     justify-content: flex-end;
-    flex-shrink: 1;
-    flex-wrap: wrap;
+    flex-shrink: 0;
     min-width: 0;
+  }
+  .npub-pill {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .search-pop {
     padding-bottom: 0.75rem;
   }
   .bell {
     position: relative;
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
     display: grid;
     place-items: center;
-    border-radius: 14px;
+    border-radius: 12px;
     border: 1px solid var(--border);
     background: rgba(255, 255, 255, 0.06);
     color: var(--text);
     text-decoration: none;
   }
   .me {
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
     display: grid;
     place-items: center;
-    border-radius: 14px;
+    border-radius: 12px;
     border: 1px solid var(--border);
     background: rgba(255, 255, 255, 0.06);
     text-decoration: none;
@@ -336,28 +346,28 @@
     text-decoration: none;
   }
   .bell svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     opacity: 0.95;
   }
   .badge {
     position: absolute;
-    top: -6px;
-    right: -6px;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 5px;
+    top: -5px;
+    right: -5px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
     border-radius: 999px;
     border: 1px solid rgba(255, 255, 255, 0.14);
     background: rgba(0, 0, 0, 0.82);
     color: var(--text);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 900;
-    line-height: 18px;
+    line-height: 16px;
   }
   .mono {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-    font-size: 0.84rem;
+    font-size: 0.82rem;
   }
   .mobile-toggle {
     display: flex;
@@ -371,7 +381,7 @@
     padding-bottom: 0.75rem;
   }
   @media (min-width: 960px) {
-    .nav {
+    .row2 {
       display: flex;
     }
     .mobile-toggle {
@@ -381,27 +391,8 @@
       display: none;
     }
   }
-  @media (max-width: 760px) {
-    .inner {
-      flex-wrap: wrap;
-    }
-    .brand {
-      flex: 1 1 auto;
-    }
-    .auth {
-      flex: 1 1 auto;
-      flex-wrap: wrap;
-    }
-  }
-  @media (max-width: 1200px) {
-    .mono {
-      max-width: 140px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
-  @media (max-width: 1060px) {
-    .mono {
+  @media (max-width: 960px) {
+    .npub-pill {
       display: none;
     }
   }
@@ -413,7 +404,7 @@
       width: 36px;
       height: 36px;
     }
-    .mono {
+    .npub-pill {
       display: none;
     }
   }
@@ -424,4 +415,3 @@
     }
   }
 </style>
-
