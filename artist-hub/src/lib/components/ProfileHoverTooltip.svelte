@@ -8,8 +8,12 @@
 
   let innerWidth = 1200;
   let innerHeight = 800;
+  let isTouchDevice = false;
+  if (typeof window !== 'undefined') {
+    isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  }
 
-  $: hp = $hoverProfile;
+  $: hp = isTouchDevice ? null : $hoverProfile;
   $: pk = hp?.pubkey || '';
   $: prof = pk ? $profileByPubkey[pk] : undefined;
   $: name = prof?.display_name || prof?.name || (pk ? npubFor(pk).slice(0, 12) + '…' : '');
