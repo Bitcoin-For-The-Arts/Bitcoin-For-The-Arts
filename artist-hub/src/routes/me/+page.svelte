@@ -277,63 +277,58 @@
     const token = ++followersToken;
     followersError = null;
     followersLoading = true;
-    followersShowN = 80;
+    followersShowN = 40;
     followersPartial = false;
     try {
       if (!$pubkey) return;
       const ndk = await ensureNdk();
       const pk = $pubkey.trim().toLowerCase();
-      const limit = 1200;
-      const authors = new Set<string>(followersList || []);
-      let lastEmit = 0;
+      const limit = 300;
+      const authors = new Set<string>();
       let finished = false;
+      let emitTimer: ReturnType<typeof setTimeout> | null = null;
 
-      let profilesFetched = 0;
       const emit = () => {
         if (token !== followersToken) return;
         followersList = Array.from(authors);
-        const toFetch = followersList.slice(profilesFetched, profilesFetched + 20);
-        profilesFetched += toFetch.length;
-        for (const a of toFetch) void fetchProfileFor(a);
       };
 
       const finish = (opts?: { partial?: boolean }) => {
         if (finished) return;
         finished = true;
+        if (emitTimer) clearTimeout(emitTimer);
         if (token !== followersToken) return;
         followersPartial = Boolean(opts?.partial);
         followersLoading = false;
-        try {
-          stopFollowers?.();
-        } catch {
-          // ignore
-        }
+        try { stopFollowers?.(); } catch { /* ignore */ }
         stopFollowers = null;
         emit();
+        for (const a of followersList.slice(0, 12)) void fetchProfileFor(a);
       };
 
-      const timeoutMs = 18_000;
-      const t = setTimeout(() => finish({ partial: true }), timeoutMs);
+      const t = setTimeout(() => finish({ partial: true }), 10_000);
 
       const sub = ndk.subscribe({ kinds: [NOSTR_KINDS.contacts], '#p': [pk], limit } as any, { closeOnEose: true });
       stopFollowers = () => {
         clearTimeout(t);
+        if (emitTimer) clearTimeout(emitTimer);
         sub.stop();
       };
 
       sub.on('event', (ev: any) => {
-        if (token !== followersToken) return;
+        if (token !== followersToken || finished) return;
         const a = typeof ev?.pubkey === 'string' ? ev.pubkey.trim().toLowerCase() : '';
         if (!a || a === pk) return;
-        if (!authors.has(a)) authors.add(a);
+        authors.add(a);
         if (authors.size >= limit) {
           finish({ partial: true });
           return;
         }
-        const now = Date.now();
-        if (now - lastEmit > 450) {
-          lastEmit = now;
-          emit();
+        if (!emitTimer) {
+          emitTimer = setTimeout(() => {
+            emitTimer = null;
+            emit();
+          }, 1200);
         }
       });
       sub.on('eose', () => finish());
@@ -701,7 +696,11 @@
       {#if followersList.length > followersShowN}
         <div class="card" style="padding: 1rem; grid-column: 1 / -1;">
           <div class="muted">Showing {followersShowN} of {followersList.length}.</div>
-          <button class="btn" style="margin-top:0.6rem;" on:click={() => (followersShowN = Math.min(followersList.length, followersShowN + 120))}>
+          <button class="btn" style="margin-top:0.6rem;" on:click={() => {
+            const next = Math.min(followersList.length, followersShowN + 40);
+            for (const pk of followersList.slice(followersShowN, next)) void fetchProfileFor(pk);
+            followersShowN = next;
+          }}>
             Load more
           </button>
         </div>
