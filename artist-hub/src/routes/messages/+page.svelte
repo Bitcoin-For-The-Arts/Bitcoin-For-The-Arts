@@ -409,8 +409,8 @@
     </div>
   {/if}
 
-  <div class="grid cols-2" style="margin-top: 1rem;">
-    <div class="card" style="padding: 1rem;">
+  <div class="msg-layout" style="margin-top: 1rem;">
+    <div class="card threads-col" class:mobile-hidden={selected !== null} style="padding: 1rem;">
       <div class="muted" style="margin-bottom: 0.35rem;">Start a new DM</div>
       <div style="display:flex; gap:0.5rem; align-items:center;">
         <input class="input" bind:value={newNpub} placeholder="Paste npub…" />
@@ -456,9 +456,12 @@
       </div>
     </div>
 
-    <div class="card" style="padding: 1rem;">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap: 1rem;">
-        <div style="font-weight: 900;">Conversation</div>
+    <div class="card convo-col" class:mobile-hidden={selected === null} style="padding: 1rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap: 0.75rem; flex-wrap:wrap;">
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <button class="btn back-btn" on:click={() => (selected = null)} title="Back to threads">← Back</button>
+          <div style="font-weight: 900;">Conversation</div>
+        </div>
         {#if selected}
           <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
             <button class="btn" disabled={decryptBusy} on:click={() => void decryptThread(selected!)}>
@@ -473,7 +476,7 @@
                 composerOpen = true;
               }}
             >
-              Send message
+              Send
             </button>
           </div>
         {/if}
@@ -546,6 +549,26 @@
 {/if}
 
 <style>
+  .msg-layout {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 768px) {
+    .msg-layout {
+      grid-template-columns: 1fr 1fr;
+    }
+    .back-btn {
+      display: none;
+    }
+    .mobile-hidden {
+      display: block !important;
+    }
+  }
+  @media (max-width: 767px) {
+    .mobile-hidden {
+      display: none !important;
+    }
+  }
   .thread.active {
     border-color: rgba(246, 196, 83, 0.35);
     background: rgba(246, 196, 83, 0.08);
