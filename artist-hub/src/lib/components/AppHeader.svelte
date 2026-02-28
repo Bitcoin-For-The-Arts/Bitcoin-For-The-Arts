@@ -285,7 +285,8 @@
     gap: 0.5rem;
     align-items: center;
     justify-content: flex-end;
-    flex-shrink: 0;
+    flex-shrink: 1;
+    flex-wrap: wrap;
     min-width: 0;
   }
   .search-pop {
@@ -390,6 +391,18 @@
     .auth {
       flex: 1 1 auto;
       flex-wrap: wrap;
+    }
+  }
+  @media (max-width: 1200px) {
+    .mono {
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  @media (max-width: 1060px) {
+    .mono {
+      display: none;
     }
   }
   @media (max-width: 600px) {

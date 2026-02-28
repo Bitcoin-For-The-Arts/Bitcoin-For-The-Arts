@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
   import { base } from '$app/paths';
   import { page } from '$app/stores';
   import { nip19 } from 'nostr-tools';
@@ -11,6 +12,8 @@
   import { followMany, followingError, followingLoading, followingSet } from '$lib/stores/follows';
   import ProfileCard from '$lib/components/ProfileCard.svelte';
   import { publishFollowPack, publishFollowPackAccept, publishFollowPackInvite } from '$lib/nostr/publish';
+
+  const LAST_PACK_KEY = 'bfta:last-pack-url';
 
   let pack: FollowPack | null = null;
   let loading = true;
@@ -208,8 +211,11 @@
 
       if (!chosen) throw new Error('Follow pack not found on your connected relays.');
       pack = chosen;
+      if (browser) {
+        try { sessionStorage.setItem(LAST_PACK_KEY, $page.url.search || `?d=${encodeURIComponent(pack.d)}&p=${encodeURIComponent(pack.pubkey)}`); } catch { /* ignore */ }
+      }
       void fetchProfileFor(pack.pubkey);
-      for (const e of pack.entries.slice(0, 60)) void fetchProfileFor(e.pubkey);
+      for (const e of pack.entries.slice(0, 20)) void fetchProfileFor(e.pubkey);
       if ($canSign && $myPubkey) void loadInviteState();
       if ($canSign && $myPubkey && $myPubkey === pack.pubkey) void loadPendingAccepts();
     } catch (e) {
