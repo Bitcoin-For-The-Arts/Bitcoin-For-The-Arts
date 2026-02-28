@@ -1,10 +1,9 @@
 export const DEFAULT_RELAYS = [
-  'wss://nostr.wine',
-  'wss://purplepag.es',
   'wss://relay.damus.io',
+  'wss://relay.primal.net',
   'wss://nos.lol',
+  'wss://purplepag.es',
   'wss://relay.snort.social',
-  'wss://offchain.pub',
 ];
 
 export const NOSTR_KINDS = {

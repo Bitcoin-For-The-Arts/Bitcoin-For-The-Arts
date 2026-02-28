@@ -9,85 +9,15 @@ export const ndk = writable<NDK | null>(null);
 export const ndkStatus = writable<NdkStatus>('idle');
 export const ndkError = writable<string | null>(null);
 
+let instance: NDK | null = null;
 let connectPromise: Promise<NDK> | null = null;
-
-type RelayProbe = { url: string; ok: boolean; ms: number; error?: string };
-
-async function probeRelay(url: string, timeoutMs: number): Promise<RelayProbe> {
-  const started = Date.now();
-  return await new Promise<RelayProbe>((resolve) => {
-    let done = false;
-    let ws: WebSocket | null = null;
-
-    const finish = (r: RelayProbe) => {
-      if (done) return;
-      done = true;
-      try {
-        ws?.close();
-      } catch {
-        // ignore
-      }
-      resolve(r);
-    };
-
-    const t = setTimeout(() => {
-      finish({ url, ok: false, ms: Date.now() - started, error: 'timeout' });
-    }, timeoutMs);
-
-    try {
-      ws = new WebSocket(url);
-      ws.onopen = () => {
-        clearTimeout(t);
-        finish({ url, ok: true, ms: Date.now() - started });
-      };
-      ws.onerror = () => {
-        clearTimeout(t);
-        finish({ url, ok: false, ms: Date.now() - started, error: 'error' });
-      };
-      ws.onclose = () => {
-        // Some relays close quickly on failure; only treat as fail if we never got onopen.
-        if (!done) {
-          clearTimeout(t);
-          finish({ url, ok: false, ms: Date.now() - started, error: 'closed' });
-        }
-      };
-    } catch (e) {
-      clearTimeout(t);
-      finish({ url, ok: false, ms: Date.now() - started, error: e instanceof Error ? e.message : String(e) });
-    }
-  });
-}
-
-async function probeRelays(urls: string[]): Promise<{ ok: string[]; report: RelayProbe[] }> {
-  const list = (urls || []).slice(0, 18);
-  const out: RelayProbe[] = [];
-
-  // small concurrency
-  const concurrency = 4;
-  let idx = 0;
-  const workers: Promise<void>[] = [];
-  for (let i = 0; i < concurrency; i++) {
-    workers.push(
-      (async () => {
-        while (idx < list.length) {
-          const cur = list[idx++];
-          const r = await probeRelay(cur, 4500);
-          out.push(r);
-        }
-      })(),
-    );
-  }
-  await Promise.all(workers);
-  const ok = out.filter((r) => r.ok).sort((a, b) => a.ms - b.ms).map((r) => r.url);
-  return { ok, report: out.sort((a, b) => (a.ok === b.ok ? a.ms - b.ms : a.ok ? -1 : 1)) };
-}
 
 export async function ensureNdk(): Promise<NDK> {
   if (!browser) throw new Error('Nostr client can only run in the browser');
 
-  const existing = get(ndk);
-  if (existing) {
-    return existing;
+  if (instance) {
+    const connected = instance.pool?.connectedRelays?.()?.length ?? 0;
+    if (connected > 0) return instance;
   }
 
   if (connectPromise) return connectPromise;
@@ -103,39 +33,56 @@ export async function ensureNdk(): Promise<NDK> {
       throw new Error('No valid relay URLs configured.');
     }
 
-    // Work around NDK connect behaving like all-or-nothing with explicitRelayUrls:
-    // probe relays first, then connect using only reachable ones.
-    const { ok, report } = await probeRelays(urls);
-    const chosen = ok.length ? ok.slice(0, 8) : urls.slice(0, 6);
-    if (!chosen.length) {
-      const summary = report.map((r) => `${r.ok ? 'OK' : 'FAIL'} ${r.url} (${r.ms}ms${r.error ? ` ${r.error}` : ''})`).join(' | ');
-      ndkStatus.set('error');
-      ndkError.set(`No relays reachable. ${summary}`);
-      throw new Error('No relays reachable.');
+    if (instance) {
+      try { instance.pool?.removeAll?.(); } catch { /* ignore */ }
     }
 
-    const client = new NDK({ explicitRelayUrls: chosen });
+    const client = new NDK({ explicitRelayUrls: urls });
 
     try {
-      await client.connect();
+      await client.connect(6000);
+    } catch (err) {
+      console.warn('[BFTA] NDK connect() rejected, checking partial connectivity:', err);
+    }
+
+    const connected = client.pool?.connectedRelays?.()?.length ?? 0;
+    if (connected > 0) {
+      instance = client;
       ndk.set(client);
       ndkStatus.set('connected');
-      return client;
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      ndkError.set(msg);
-      ndkStatus.set('error');
-      throw err;
-    } finally {
       connectPromise = null;
+      return client;
     }
+
+    console.warn('[BFTA] No relays connected after initial attempt, retrying with longer timeout...');
+    try {
+      await client.connect(12000);
+    } catch {
+      /* ignore */
+    }
+
+    const retryConnected = client.pool?.connectedRelays?.()?.length ?? 0;
+    if (retryConnected > 0) {
+      instance = client;
+      ndk.set(client);
+      ndkStatus.set('connected');
+      connectPromise = null;
+      return client;
+    }
+
+    const msg = `Could not connect to any relay. Tried: ${urls.join(', ')}`;
+    ndkError.set(msg);
+    ndkStatus.set('error');
+    connectPromise = null;
+    throw new Error(msg);
   })();
 
   return connectPromise;
 }
 
 export async function reconnectNdk(): Promise<NDK> {
+  instance = null;
   ndk.set(null);
+  connectPromise = null;
   return ensureNdk();
 }
-
