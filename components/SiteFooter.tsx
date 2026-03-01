@@ -134,6 +134,9 @@ export default function SiteFooter() {
             © {new Date().getFullYear()} Bitcoin for the Arts. All rights reserved.
           </div>
           <div className="flex gap-4">
+            <Link href="/sitemap-page" className="hover:underline text-white/90 sm:text-inherit">
+              Site map
+            </Link>
             <a
               href="mailto:hello@bitcoinforthearts.org"
               className="hover:underline text-white/90 sm:text-inherit"
