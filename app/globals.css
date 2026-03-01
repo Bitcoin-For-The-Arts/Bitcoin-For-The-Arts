@@ -105,3 +105,46 @@ body.mobile-vibrant .mobile-vibrant-sunset {
     display: none;
   }
 }
+
+/* Long-form article typography for /stories/* pages. */
+.prose-article {
+  font-family: var(--font-sans);
+  font-size: 1.075rem;
+  line-height: 1.8;
+  color: var(--foreground);
+}
+
+.prose-article > p {
+  margin-top: 1.5em;
+}
+
+.prose-article > p:first-child {
+  margin-top: 0;
+}
+
+.prose-article > p:first-child::first-letter {
+  font-family: var(--font-display);
+  font-size: 3.5em;
+  float: left;
+  line-height: 0.8;
+  margin-right: 0.08em;
+  margin-top: 0.05em;
+  color: var(--primary);
+}
+
+.prose-article blockquote {
+  margin: 2em 0;
+  border-left: 4px solid #d4af37;
+  padding: 1em 1.5em;
+  background: var(--surface);
+  border-radius: 0 0.75rem 0.75rem 0;
+}
+
+.prose-article blockquote p {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: var(--foreground);
+  margin: 0;
+}
