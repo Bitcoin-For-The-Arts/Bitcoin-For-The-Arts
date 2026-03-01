@@ -25,6 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/artists/research',
     '/events',
     '/stories',
+    '/stories/kenneth-burris',
     '/stories/share-your-story',
     '/donate',
     '/donate/monthly',
@@ -41,6 +42,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/privacy-policy',
     '/terms',
     '/billing',
+    '/sitemap-page',
+    '/governance',
+    '/artists/why-bitcoin',
+    '/education/webinar',
   ];
 
   return routes.map((url) => ({
