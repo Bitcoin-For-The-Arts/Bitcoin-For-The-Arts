@@ -41,7 +41,7 @@ const storiesData: StoryItem[] = [
       "Share Your Bitcoin Journey: Episode 1 – Andrea Arghinenti\u2019s Sovereign Renaissance",
     summary:
       "Dive into the inaugural episode of Bitcoin For The Arts\u2019 \u201CShare Your Bitcoin Journey\u201D series, featuring visionary artist Andrea Arghinenti. As a pioneering 3D/VFX creator and early Bitcoin adopter, Andrea shares how BTC transformed his creative path\u2014from escaping fiat gatekeepers to embracing financial sovereignty and low-time-preference artistry. Discover his \u201Caha\u201D moments, the challenges of integrating decentralized tools into visual storytelling, and why Bitcoin is fueling a cultural renaissance for independent creators.\n\nThis episode kicks off our open-licensed series, highlighting artists stacking culture on sound money. Watch now to get orange-pilled on the intersection of art and Bitcoin!",
-    thumbnail: "/BFTA-ART-Story_EP1.jpg",
+    thumbnail: "/Share-Your-Bitcoin-Journey.jpg",
     link: "https://youtube.com/watch?v=4oKXPZeXbYg",
   },
   {
@@ -238,13 +238,13 @@ export default function StoriesPage() {
               >
                 <div className="flex flex-col lg:flex-row">
                   {/* Thumbnail */}
-                  <div className="relative aspect-video w-full shrink-0 overflow-hidden lg:aspect-auto lg:w-[480px]">
+                  <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden sm:aspect-video lg:aspect-auto lg:w-[400px]">
                     <Image
                       src={ep.thumbnail}
                       alt={ep.title}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 1024px) 100vw, 480px"
+                      className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 1024px) 100vw, 400px"
                     />
                     {/* Play button overlay */}
                     <div className="absolute inset-0 flex items-center justify-center bg-black/10 transition-colors group-hover:bg-black/20">
