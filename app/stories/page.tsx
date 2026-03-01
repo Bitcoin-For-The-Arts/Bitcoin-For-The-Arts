@@ -41,7 +41,7 @@ const storiesData: StoryItem[] = [
       "Share Your Bitcoin Journey: Episode 1 – Andrea Arghinenti\u2019s Sovereign Renaissance",
     summary:
       "Dive into the inaugural episode of Bitcoin For The Arts\u2019 \u201CShare Your Bitcoin Journey\u201D series, featuring visionary artist Andrea Arghinenti. As a pioneering 3D/VFX creator and early Bitcoin adopter, Andrea shares how BTC transformed his creative path\u2014from escaping fiat gatekeepers to embracing financial sovereignty and low-time-preference artistry. Discover his \u201Caha\u201D moments, the challenges of integrating decentralized tools into visual storytelling, and why Bitcoin is fueling a cultural renaissance for independent creators.\n\nThis episode kicks off our open-licensed series, highlighting artists stacking culture on sound money. Watch now to get orange-pilled on the intersection of art and Bitcoin!",
-    thumbnail: "/BFTA-story-Ep1.jpg",
+    thumbnail: "/BFTA-ART-Story_EP1.jpg",
     link: "https://youtube.com/watch?v=4oKXPZeXbYg",
   },
   {
