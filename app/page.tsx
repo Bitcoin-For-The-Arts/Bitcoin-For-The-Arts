@@ -35,7 +35,6 @@ export default function Home() {
             >
               <source src={introMp4} type="video/mp4" />
               {introMov ? <source src={introMov} type="video/quicktime" /> : null}
-              <source src="/BFTA-home-page.MOV" type="video/quicktime" />
             </video>
             <div className="absolute inset-0 bg-black/40" />
 
