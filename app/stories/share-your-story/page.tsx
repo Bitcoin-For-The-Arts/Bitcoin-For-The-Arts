@@ -39,7 +39,7 @@ export default function ShareYourStoryPage() {
   return (
     <main className="min-h-screen bg-background">
       <FullBleedHero
-        imageSrc="/21-artist.png"
+        imageSrc="/21-artist.jpg"
         imageAlt="Artists featured in Bitcoin For The Arts community storytelling."
         label="Artist Stories • Open call"
         title="Share your Bitcoin journey and artistic evolution."

@@ -51,7 +51,7 @@ const foundations: Webinar[] = [
   {
     title: 'Bitcoin for Artists: Unlocking New Creative Freedom',
     href: gammaUrl,
-    image: '/1_Bitcoin-for-Artists-Unlocking-New-Creative-Freedom.png',
+    image: '/1_Bitcoin-for-Artists-Unlocking-New-Creative-Freedom.jpg',
     alt: 'Bitcoin for Artists: Unlocking New Creative Freedom — webinar cover',
     badge: 'Step 2',
     description:
@@ -61,7 +61,7 @@ const foundations: Webinar[] = [
   {
     title: 'Bitcoin in Practice for Artists',
     href: bitcoinInPracticeUrl,
-    image: '/1_Bitcoin-in-Practice-for-Artists.png',
+    image: '/1_Bitcoin-in-Practice-for-Artists.jpg',
     alt: 'Bitcoin in Practice for Artists — webinar cover',
     badge: 'Step 3',
     description:
@@ -71,7 +71,7 @@ const foundations: Webinar[] = [
   {
     title: 'Protecting Your Bitcoin: Security & Self-Custody Deep Dive',
     href: protectingBtcUrl,
-    image: '/1_Protecting-Your-Bitcoin-Security-and-Self-Custody-Deep-Dive.png',
+    image: '/1_Protecting-Your-Bitcoin-Security-and-Self-Custody-Deep-Dive.jpg',
     alt: 'Protecting Your Bitcoin: Security and Self-Custody Deep Dive — webinar cover',
     badge: 'Step 4',
     description:
@@ -85,7 +85,7 @@ const philosophy: Webinar[] = [
   {
     title: 'Sound Money, Better Art',
     href: soundMoneyUrl,
-    image: '/1_Sound-Money-Better-Art.png',
+    image: '/1_Sound-Money-Better-Art.jpg',
     alt: 'Sound Money, Better Art — webinar cover',
     badge: 'Deep Dive',
     description:
@@ -99,7 +99,7 @@ const creatorEconomy: Webinar[] = [
   {
     title: 'Bitcoin and the Creator Economy',
     href: creatorEconIntroUrl,
-    image: '/1_Bitcoin-and-the-Creator-Economy.png',
+    image: '/1_Bitcoin-and-the-Creator-Economy.jpg',
     alt: 'Bitcoin and the Creator Economy — webinar cover',
     badge: 'Part 1',
     description:
@@ -109,7 +109,7 @@ const creatorEconomy: Webinar[] = [
   {
     title: 'Bitcoin & the Creator Economy: Building Your Audience',
     href: creatorEconAudienceUrl,
-    image: '/1_Bitcoin-the-Creator-Economy-Building-Your-Audience.png',
+    image: '/1_Bitcoin-the-Creator-Economy-Building-Your-Audience.jpg',
     alt: 'Bitcoin & the Creator Economy: Building Your Audience — webinar cover',
     badge: 'Part 2',
     description:
@@ -119,7 +119,7 @@ const creatorEconomy: Webinar[] = [
   {
     title: 'Bitcoin & the Creator Economy: Tools, Platforms, and Payments',
     href: creatorEconToolsUrl,
-    image: '/1_Bitcoin-and-the-Creator-Economy-Tools-Platforms-and-Payments.png',
+    image: '/1_Bitcoin-and-the-Creator-Economy-Tools-Platforms-and-Payments.jpg',
     alt: 'Bitcoin & the Creator Economy: Tools, Platforms, and Payments — webinar cover',
     badge: 'Part 3',
     description:
