@@ -49,7 +49,7 @@ export default function KennethBurrisPage() {
             Towers
           </h1>
           <p className="mt-4 text-sm font-semibold uppercase tracking-wide text-white/60">
-            By Eliza Thornberry, Art Critic for The New York Times
+            Bitcoin For The Arts, Inc.
           </p>
         </div>
       </section>
