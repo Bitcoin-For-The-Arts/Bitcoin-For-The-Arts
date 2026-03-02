@@ -50,7 +50,7 @@ const storiesData: StoryItem[] = [
       "Kenneth Burris \u2013 Sovereign Strokes in the Shadow of Cooling Towers",
     teaser:
       "In an era where digital ephemera floods our screens and AI churns out infinite images, Kenneth Burris stands as a defiant sentinel of permanence. This New York-based oil painter, with over three decades of studio mastery, doesn\u2019t merely create art; he forges it as a bulwark against the fleeting. His Post-Globalist Landscape series, where industrial behemoths like cooling towers loom amid misty wildernesses, provokes a visceral question: What endures when empires of code crumble?",
-    byline: "By Eliza Thornberry, Art Critic for The New York Times",
+    byline: "Bitcoin For The Arts, Inc.",
     images: [
       {
         src: "/Alone_Oil on canvas_24x36inches.jpg",
