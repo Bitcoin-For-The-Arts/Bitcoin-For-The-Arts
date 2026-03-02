@@ -17,6 +17,7 @@ export const metadata: Metadata = {
 
 type Episode = {
   type: "episode";
+  episodeNumber: number;
   title: string;
   summary: string;
   thumbnail: string;
@@ -37,12 +38,23 @@ type StoryItem = Episode | Article;
 const storiesData: StoryItem[] = [
   {
     type: "episode",
+    episodeNumber: 1,
     title:
-      "Share Your Bitcoin Journey: Episode 1 – Andrea Arghinenti\u2019s Sovereign Renaissance",
+      "Share Your Bitcoin Journey: Episode 1 \u2013 Andrea Arghinenti\u2019s Sovereign Renaissance",
     summary:
       "Dive into the inaugural episode of Bitcoin For The Arts\u2019 \u201CShare Your Bitcoin Journey\u201D series, featuring visionary artist Andrea Arghinenti. As a pioneering 3D/VFX creator and early Bitcoin adopter, Andrea shares how BTC transformed his creative path\u2014from escaping fiat gatekeepers to embracing financial sovereignty and low-time-preference artistry. Discover his \u201Caha\u201D moments, the challenges of integrating decentralized tools into visual storytelling, and why Bitcoin is fueling a cultural renaissance for independent creators.\n\nThis episode kicks off our open-licensed series, highlighting artists stacking culture on sound money. Watch now to get orange-pilled on the intersection of art and Bitcoin!",
     thumbnail: "/Share-Your-Bitcoin-Journey.jpg",
     link: "https://youtube.com/watch?v=4oKXPZeXbYg",
+  },
+  {
+    type: "episode",
+    episodeNumber: 2,
+    title:
+      "Share Your Bitcoin Journey: Episode 2 \u2013 Ethan\u2019s Vegan Bitcoin Revolution",
+    summary:
+      "In this engaging episode, founder Deion Wilson interviews Ethan, the innovative writer and vegan advocate behind @bitcoinisvegan. Ethan shares his 2018 entry into Bitcoin while working at an AI company predicting crypto prices, evolving from casual investor to maximalist after the GameStop fiasco exposed fiat\u2019s rigged nature. He discusses his book \u201CThe Next Gold Rush\u201D\u2014the first turned into an NFT\u2014and his upcoming \u201CBitcoin is Vegan,\u201D arguing BTC\u2019s neutrality aligns with vegan ethics by avoiding subsidies for exploitative industries, promoting deflationary saving, and encouraging low-time-preference decisions.\n\nAs a 10-year vegan living on a Bitcoin standard, Ethan explores how sound money shifts spending habits, reduces harm, and empowers sovereignty. This open-licensed talk inspires creators to embrace Bitcoin for ethical, independent futures.",
+    thumbnail: "/BFTA-Artist-Story-EP2.jpg",
+    link: "https://youtu.be/rTeq2sjk_CE?si=MAKBMUhyJ9G3m5Qv",
   },
   {
     type: "article",
@@ -265,7 +277,7 @@ export default function StoriesPage() {
                   <div className="flex flex-1 flex-col justify-center p-6 lg:p-8">
                     <div className="inline-flex w-fit items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent">
                       <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                      Episode 1
+                      Episode {ep.episodeNumber}
                     </div>
                     <h3 className="mt-3 text-xl font-bold tracking-tight sm:text-2xl">
                       {ep.title}
