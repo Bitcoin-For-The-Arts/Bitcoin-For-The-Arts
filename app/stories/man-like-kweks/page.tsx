@@ -9,10 +9,17 @@ export const metadata: Metadata = {
     "Man Like Kweks, a Tanzanian musician and Bitcoin educator, fuses Afrobeat rhythms with Lightning-fast zaps, transforming sound waves into sovereign anthems.",
 };
 
-const linkTree = "https://linktr.ee/manlikekweks";
-const nostrNpub =
-  "npub1fnn2h0tgm2mwnl0kar5ez25wztum2w0q0rrrf326n0ljn999znwsqf4xnx";
-const nostrProfile = `https://njump.me/${nostrNpub}`;
+const links = {
+  linkTree: "https://linktr.ee/manlikekweks",
+  fountain: "https://fountain.fm/playlist/1NGecRlXD3ANsDOM7nqN",
+  tokyoCitadel: "https://geyser.fund/project/kweks2tokyo?heroId=manlikekweks",
+  epoch5: "https://wavlake.com/album/bff8b9a4-50ca-412f-a6fd-5488941cf79a",
+  wavlake: "https://wavlake.com/man-like-kweks",
+  spotify:
+    "https://open.spotify.com/artist/7cy1Db9G1ci1I8hbrlt6zM?si=juzAyqeXQ3m6p6n02zuCWQ",
+  nostr:
+    "https://njump.me/npub1fnn2h0tgm2mwnl0kar5ez25wztum2w0q0rrrf326n0ljn999znwsqf4xnx",
+};
 
 const extLink =
   "underline decoration-accent/40 underline-offset-2 transition-colors hover:text-accent hover:decoration-accent";
@@ -74,7 +81,7 @@ export default function ManLikeKweksPage() {
                 Bitcoin For The Arts, Inc.
               </p>
               <a
-                href={linkTree}
+                href={links.linkTree}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-semibold text-white/90 transition-colors hover:bg-white/20"
@@ -154,43 +161,53 @@ export default function ManLikeKweksPage() {
               />
             </div>
             <p className="mt-3 text-center text-sm italic text-muted font-[var(--font-display)]">
-              <a href={linkTree} target="_blank" rel="noopener noreferrer" className={extLink}>
+              <a href={links.tokyoCitadel} target="_blank" rel="noopener noreferrer" className={extLink}>
                 Tokyo Citadel Remix
               </a>{" "}
-              (with reelrichard) &mdash; stream via value-for-value on Fountain
-              or Wavlake
+              (with reelrichard) &mdash; stream via value-for-value on{" "}
+              <a href={links.fountain} target="_blank" rel="noopener noreferrer" className={extLink}>
+                Fountain
+              </a>{" "}
+              or{" "}
+              <a href={links.wavlake} target="_blank" rel="noopener noreferrer" className={extLink}>
+                Wavlake
+              </a>
             </p>
           </div>
 
           <p>
             At the core of Kweks&rsquo;s sovereignty lies his music, a fusion of
             Tanzanian vibes and global Bitcoin narratives. Tracks like{" "}
-            <a href={linkTree} target="_blank" rel="noopener noreferrer" className={extLink}>
+            <a href={links.tokyoCitadel} target="_blank" rel="noopener noreferrer" className={extLink}>
               &ldquo;Tokyo Citadel Remix&rdquo;
             </a>{" "}
             (with reelrichard) paint vivid
             soundscapes of citadels rising against economic empires, blending
             hip-hop flows with Bitcoin lore in a cyberpunk haze&mdash;listen and
             support via value-for-value on{" "}
-            <a href={linkTree} target="_blank" rel="noopener noreferrer" className={extLink}>
-              Fountain or Wavlake
+            <a href={links.fountain} target="_blank" rel="noopener noreferrer" className={extLink}>
+              Fountain
+            </a>{" "}
+            or{" "}
+            <a href={links.wavlake} target="_blank" rel="noopener noreferrer" className={extLink}>
+              Wavlake
             </a>
             . &ldquo;Rising Free,&rdquo; a collaborative anthem, soars with
             lyrics of liberation, mirroring his EP{" "}
-            <a href={linkTree} target="_blank" rel="noopener noreferrer" className={extLink}>
+            <a href={links.epoch5} target="_blank" rel="noopener noreferrer" className={extLink}>
               &ldquo;EPOCH 5&rdquo; on Wavlake
             </a>
             &mdash;where sats flow directly from fans, bypassing
             labels&rsquo; predatory cuts. Exhibiting at Bitcoin conferences,
             Kweks doesn&rsquo;t just perform; he builds ecosystems, from
             teaching barbers Lightning wallets to zapping street artists. His{" "}
-            <a href={nostrProfile} target="_blank" rel="noopener noreferrer" className={extLink}>
+            <a href={links.nostr} target="_blank" rel="noopener noreferrer" className={extLink}>
               Nostr presence
             </a>{" "}
             amplifies this: a censorship-resistant hub for his
             streams of consciousness, where music meets meme in value-for-value
             glory. Stream his{" "}
-            <a href={linkTree} target="_blank" rel="noopener noreferrer" className={extLink}>
+            <a href={links.spotify} target="_blank" rel="noopener noreferrer" className={extLink}>
               full catalog on Spotify
             </a>{" "}
             for a deeper dive into his faith-infused, sovereignty-driven sound.
@@ -215,7 +232,7 @@ export default function ManLikeKweksPage() {
             trailblazer, it enables borderless collaborations, from remixes with
             Joe Martin to sats-funded climbs. No more begging labels; his Blink
             wallet and{" "}
-            <a href={linkTree} target="_blank" rel="noopener noreferrer" className={extLink}>
+            <a href={links.wavlake} target="_blank" rel="noopener noreferrer" className={extLink}>
               Wavlake streams
             </a>{" "}
             ensure self-reliance, turning fans into
