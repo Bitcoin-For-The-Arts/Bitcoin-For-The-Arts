@@ -251,38 +251,20 @@ export default function ManLikeKweksPage() {
           </p>
         </div>
 
-        {/* Artist links */}
+        {/* Artist link */}
         <div className="mt-14 rounded-2xl border border-[#d4af37]/40 bg-surface/50 p-6 sm:p-8">
-          <div className="text-xs font-semibold uppercase tracking-widest text-[#d4af37]">
-            Listen &amp; Follow
-          </div>
-          <p className="mt-2 text-sm leading-relaxed text-muted">
-            Stream Man Like Kweks across platforms, zap sats directly, and
-            follow his journey on Nostr.
-          </p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            {[
-              { label: "Wavlake", href: links.wavlake },
-              { label: "Spotify", href: links.spotify },
-              { label: "Fountain", href: links.fountain },
-              { label: "EPOCH 5 (Album)", href: links.epoch5 },
-              { label: "Tokyo Citadel", href: links.tokyoCitadel },
-              { label: "Nostr", href: links.nostr },
-              { label: "All Links", href: links.linkTree },
-            ].map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-md border-2 border-[#d4af37] px-4 py-2 text-sm font-semibold text-[#d4af37] transition-colors hover:bg-[#d4af37]/10"
-              >
-                {item.label}
-                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-4.5-6H21m0 0v7.5m0-7.5l-11.25 11.25" />
-                </svg>
-              </a>
-            ))}
+          <div className="mt-1">
+            <a
+              href={links.linkTree}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-md border-2 border-[#d4af37] px-5 py-2.5 text-sm font-semibold text-[#d4af37] transition-colors hover:bg-[#d4af37]/10"
+            >
+              linktr.ee
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-4.5-6H21m0 0v7.5m0-7.5l-11.25 11.25" />
+              </svg>
+            </a>
           </div>
         </div>
 
