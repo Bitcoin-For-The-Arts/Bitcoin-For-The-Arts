@@ -51,6 +51,17 @@ export default function KennethBurrisPage() {
           <p className="mt-4 text-sm font-semibold uppercase tracking-wide text-white/60">
             Bitcoin For The Arts, Inc.
           </p>
+          <a
+            href="https://kennethburris.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-semibold text-white/90 transition-colors hover:bg-white/20"
+          >
+            View Studio &amp; Portfolio
+            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-4.5-6H21m0 0v7.5m0-7.5l-11.25 11.25" />
+            </svg>
+          </a>
         </div>
       </section>
 
