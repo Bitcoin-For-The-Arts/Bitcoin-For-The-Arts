@@ -26,6 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/events',
     '/stories',
     '/stories/kenneth-burris',
+    '/stories/man-like-kweks',
     '/stories/share-your-story',
     '/donate',
     '/donate/monthly',

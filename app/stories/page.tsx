@@ -29,6 +29,7 @@ type Article = {
   title: string;
   teaser: string;
   byline: string;
+  profileImage?: { src: string; alt: string };
   images: { src: string; alt: string; caption: string }[];
   link: string;
 };
@@ -83,6 +84,31 @@ const storiesData: StoryItem[] = [
       },
     ],
     link: "/stories/kenneth-burris",
+  },
+  {
+    type: "article",
+    title:
+      "Man Like Kweks \u2013 Rhythms of Rebellion from Kilimanjaro to the Timechain",
+    teaser:
+      "In the pulsating heart of Tanzania\u2019s Bitcoin frontier, where Mount Kilimanjaro\u2019s snow-capped peaks pierce the sky like a defiant HODL against fiat\u2019s fleeting storms, Man Like Kweks crafts sonic manifestos that echo across continents. This visionary musician, community educator, and Christian fuses Afrobeat rhythms with Lightning-fast zaps, transforming sound waves into sovereign anthems.",
+    byline: "Bitcoin For The Arts, Inc.",
+    profileImage: {
+      src: "/Man-Like-Kweks.webp",
+      alt: "Man Like Kweks \u2014 musician, educator, Bitcoin advocate from Tanzania",
+    },
+    images: [
+      {
+        src: "/Man-like-kweks-cartoon-profile.jpg",
+        alt: "Man Like Kweks \u2014 illustrated profile",
+        caption: "Man Like Kweks",
+      },
+      {
+        src: "/Man-Like-Album-Cover.jpg",
+        alt: "Tokyo Citadel Remix \u2014 Man Like Kweks & reelrichard",
+        caption: "Tokyo Citadel Remix (with reelrichard)",
+      },
+    ],
+    link: "/stories/man-like-kweks",
   },
 ];
 
@@ -330,49 +356,94 @@ export default function StoriesPage() {
                 key={article.link}
                 className="overflow-hidden rounded-2xl border border-border bg-surface/50 shadow-sm"
               >
-                {/* Paintings mini-gallery */}
-                <div className="grid grid-cols-1 gap-5 p-6 sm:grid-cols-3 sm:p-8">
-                  {article.images.map((img) => (
-                    <FramedImage
-                      key={img.src}
-                      src={img.src}
-                      alt={img.alt}
-                      caption={img.caption}
-                    />
-                  ))}
-                </div>
-
-                {/* Article teaser */}
-                <div className="border-t border-border px-6 py-6 sm:px-8">
+                {article.profileImage ? (
+                  /* Profile-style card (musicians, performers) */
                   <Link href={article.link} className="group block">
-                    <h3 className="text-xl font-bold tracking-tight transition-colors group-hover:text-accent sm:text-2xl">
-                      {article.title}
-                    </h3>
-                    <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-muted">
-                      {article.byline}
-                    </p>
-                    <p className="mt-4 text-base leading-relaxed text-muted line-clamp-3">
-                      {article.teaser}
-                    </p>
-                    <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-accent">
-                      Read full article
-                      <svg
-                        className="h-4 w-4 transition-transform group-hover:translate-x-1"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                        aria-hidden="true"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    <div className="flex flex-col sm:flex-row">
+                      <div className="relative mx-auto mt-6 h-36 w-36 shrink-0 overflow-hidden rounded-full border-4 border-[#d4af37] shadow-md sm:mx-0 sm:ml-8 sm:mt-0 sm:self-center">
+                        <Image
+                          src={article.profileImage.src}
+                          alt={article.profileImage.alt}
+                          fill
+                          className="object-cover"
+                          sizes="144px"
                         />
-                      </svg>
-                    </span>
+                      </div>
+                      <div className="flex-1 p-6 sm:p-8">
+                        <h3 className="text-xl font-bold tracking-tight transition-colors group-hover:text-accent sm:text-2xl">
+                          {article.title}
+                        </h3>
+                        <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-muted">
+                          {article.byline}
+                        </p>
+                        <p className="mt-4 text-base leading-relaxed text-muted line-clamp-3">
+                          {article.teaser}
+                        </p>
+                        <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-accent">
+                          Read full article
+                          <svg
+                            className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            aria-hidden="true"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M17 8l4 4m0 0l-4 4m4-4H3"
+                            />
+                          </svg>
+                        </span>
+                      </div>
+                    </div>
                   </Link>
-                </div>
+                ) : (
+                  /* Gallery-style card (visual artists, painters) */
+                  <>
+                    <div className="grid grid-cols-1 gap-5 p-6 sm:grid-cols-3 sm:p-8">
+                      {article.images.map((img) => (
+                        <FramedImage
+                          key={img.src}
+                          src={img.src}
+                          alt={img.alt}
+                          caption={img.caption}
+                        />
+                      ))}
+                    </div>
+                    <div className="border-t border-border px-6 py-6 sm:px-8">
+                      <Link href={article.link} className="group block">
+                        <h3 className="text-xl font-bold tracking-tight transition-colors group-hover:text-accent sm:text-2xl">
+                          {article.title}
+                        </h3>
+                        <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-muted">
+                          {article.byline}
+                        </p>
+                        <p className="mt-4 text-base leading-relaxed text-muted line-clamp-3">
+                          {article.teaser}
+                        </p>
+                        <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-accent">
+                          Read full article
+                          <svg
+                            className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            aria-hidden="true"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M17 8l4 4m0 0l-4 4m4-4H3"
+                            />
+                          </svg>
+                        </span>
+                      </Link>
+                    </div>
+                  </>
+                )}
               </div>
             ))}
           </div>
