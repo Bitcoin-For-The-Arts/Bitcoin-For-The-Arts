@@ -110,6 +110,32 @@ const storiesData: StoryItem[] = [
     ],
     link: "/stories/man-like-kweks",
   },
+  {
+    type: "article",
+    title:
+      "Beth Alta Fletcher \u2013 Frontier Visions in the Ledger of Freedom",
+    teaser:
+      "In the vast, untamed expanse of digital creation, where algorithms churn soulless facsimiles and AI threatens to commodify the human spark, Beth Alta Fletcher emerges as a defiant oracle from Alaska\u2019s wilds. This multifaceted artist\u2014athlete turned Rolfer, yogi turned Bitcoin visionary\u2014wields her MacBook Pro like a shaman\u2019s tool, conjuring hand-generated digital symphonies that defy convention and demand sovereignty.",
+    byline: "Bitcoin For The Arts, Inc.",
+    images: [
+      {
+        src: "/fletcher-along-the-watchtower.jpg",
+        alt: "Along The Watchtower by Beth Alta Fletcher \u2014 digital composition",
+        caption: "\u201CAlong The Watchtower\u201D",
+      },
+      {
+        src: "/fletcher-le-patriot.jpg",
+        alt: "Le Patriot by Beth Alta Fletcher \u2014 digital composition",
+        caption: "\u201CLe Patriot\u201D",
+      },
+      {
+        src: "/fletcher-lady-nakamoto.jpg",
+        alt: "Lady Nakamoto by Beth Alta Fletcher \u2014 digital composition",
+        caption: "\u201CLady Nakamoto\u201D",
+      },
+    ],
+    link: "/stories/beth-alta-fletcher",
+  },
 ];
 
 /* ------------------------------------------------------------------ */
