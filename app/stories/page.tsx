@@ -373,7 +373,7 @@ export default function StoriesPage() {
             Artist Gallery
           </div>
           <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Featured Artists &amp; Articles
+            Featured Artist &ndash; Read My Bitcoin Story
           </h2>
 
           <div className="mt-10 grid grid-cols-1 gap-10">
@@ -426,17 +426,16 @@ export default function StoriesPage() {
                     </div>
                   </Link>
                 ) : (
-                  /* Gallery-style card (visual artists, painters) */
+                  /* Gallery-style card (visual artists, painters) — single preview */
                   <>
-                    <div className="grid grid-cols-1 gap-5 p-6 sm:grid-cols-3 sm:p-8">
-                      {article.images.map((img) => (
+                    <div className="p-6 sm:p-8">
+                      <div className="mx-auto max-w-md">
                         <FramedImage
-                          key={img.src}
-                          src={img.src}
-                          alt={img.alt}
-                          caption={img.caption}
+                          src={article.images[0].src}
+                          alt={article.images[0].alt}
+                          caption={article.images[0].caption}
                         />
-                      ))}
+                      </div>
                     </div>
                     <div className="border-t border-border px-6 py-6 sm:px-8">
                       <Link href={article.link} className="group block">
