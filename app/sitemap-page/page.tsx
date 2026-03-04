@@ -62,6 +62,7 @@ const sections: SitemapSection[] = [
       { href: "/stories", label: "Artist Stories" },
       { href: "/stories/kenneth-burris", label: "Kenneth Burris" },
       { href: "/stories/man-like-kweks", label: "Man Like Kweks" },
+      { href: "/stories/beth-alta-fletcher", label: "Beth Alta Fletcher" },
       { href: "/stories/share-your-story", label: "Share Your Story" },
     ],
   },
