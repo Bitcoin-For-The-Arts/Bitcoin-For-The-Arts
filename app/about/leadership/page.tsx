@@ -98,10 +98,11 @@ export default function LeadershipPage() {
             </h2>
             <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {[
+                'Buttercup Roberts',
                 'Kyle Knight',
                 'Julie Costello',
-                'Buttercup',
-                'Camas',
+                'Camas Logue',
+                'Valerie Love',
               ].map((advisor) => (
                 <li
                   key={advisor}
