@@ -98,8 +98,10 @@ export default function LeadershipPage() {
             </h2>
             <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {[
-                'Coldie — Digital Artist & Bitcoin Pioneer',
-                'Cryptograffiti — Bitcoin Street Artist',
+                'Kyle Knight',
+                'Julie Costello',
+                'Buttercup',
+                'Camas',
               ].map((advisor) => (
                 <li
                   key={advisor}
