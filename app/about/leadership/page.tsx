@@ -55,7 +55,7 @@ export default function LeadershipPage() {
                     src={p.imageSrc}
                     alt={p.imageAlt}
                     fill
-                    className="object-cover object-top"
+                    className={`object-cover ${p.slug === 'dion-wilson' ? 'object-center' : 'object-top'}`}
                     sizes="(max-width: 768px) 100vw, 50vw"
                     priority={p.slug === 'dion-wilson'}
                   />
