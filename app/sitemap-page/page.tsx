@@ -25,6 +25,10 @@ const sections: SitemapSection[] = [
       { href: "/about/governance", label: "Governance" },
       { href: "/about/leadership", label: "Leadership" },
       { href: "/about/leadership/dion-wilson", label: "Dion Wilson" },
+      { href: "/about/leadership/avi-burra", label: "Avi Burra" },
+      { href: "/about/leadership/cheryl-mcginnis", label: "Cheryl McGinnis" },
+      { href: "/about/leadership/ahmed-klink", label: "Ahmed Klink" },
+      { href: "/about/leadership/kyle-shirkness", label: "Kyle Shirkness" },
     ],
   },
   {
