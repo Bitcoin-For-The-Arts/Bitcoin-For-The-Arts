@@ -136,6 +136,32 @@ const storiesData: StoryItem[] = [
     ],
     link: "/stories/beth-alta-fletcher",
   },
+  {
+    type: "article",
+    title:
+      "Hitomi Matsui \u2013 The Quiet Observer in a Digital Storm",
+    teaser:
+      "In the ceaseless churn of New York\u2019s art scene, where provocation often trumps subtlety, Hitomi Matsui emerges as a rare voice of contemplative restraint. Born in Osaka, Japan, she channels her nomadic explorations and Bitcoin awakening into illustrated vignettes starring Nekosan\u2014a white cat observing the invisible architectures of money, algorithms, and sovereignty.",
+    byline: "Bitcoin For The Arts, Inc.",
+    images: [
+      {
+        src: "/matsui-just-right-price.jpg",
+        alt: "Who Decided the Just Right Price \u2014 Nekosan on a NYC fire escape by Hitomi Matsui",
+        caption: "\u201CWho Decides the \u2018Just Right Price\u2019?\u201D",
+      },
+      {
+        src: "/matsui-just-right-ad.jpg",
+        alt: "Why is this Just Right Ad Showing Up \u2014 NYC triptych by Hitomi Matsui",
+        caption: "\u201CWhy Is the \u2018Just Right Ad\u2019 Showing Up?\u201D",
+      },
+      {
+        src: "/matsui-nekosan-detective.jpg",
+        alt: "Nekosan detective investigating targeted ads by Hitomi Matsui",
+        caption: "\u201CWhy Is the \u2018Just Right Ad\u2019 Showing Up?\u201D",
+      },
+    ],
+    link: "/stories/hitomi-matsui",
+  },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -428,15 +454,28 @@ export default function StoriesPage() {
                 ) : (
                   /* Gallery-style card (visual artists, painters) */
                   <>
-                    <div className="grid grid-cols-1 gap-5 p-6 sm:grid-cols-3 sm:p-8">
+                    <div className="snap-carousel flex snap-x snap-mandatory gap-4 overflow-x-auto p-6 sm:grid sm:grid-cols-3 sm:gap-5 sm:overflow-visible sm:p-8">
                       {article.images.map((img) => (
-                        <FramedImage
-                          key={img.src}
-                          src={img.src}
-                          alt={img.alt}
-                          caption={img.caption}
+                        <div key={img.src} className="w-[75vw] shrink-0 snap-center sm:w-auto">
+                          <FramedImage
+                            src={img.src}
+                            alt={img.alt}
+                            caption={img.caption}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-center gap-1.5 pb-3 sm:hidden">
+                      {article.images.map((_, i) => (
+                        <span
+                          key={i}
+                          className="h-1.5 w-1.5 rounded-full bg-accent/40"
+                          aria-hidden="true"
                         />
                       ))}
+                      <span className="ml-1 text-[10px] font-semibold uppercase tracking-wide text-muted">
+                        Swipe
+                      </span>
                     </div>
                     <div className="border-t border-border px-6 py-6 sm:px-8">
                       <Link href={article.link} className="group block">
