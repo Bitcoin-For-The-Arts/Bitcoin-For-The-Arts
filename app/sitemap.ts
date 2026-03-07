@@ -32,6 +32,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/stories/kenneth-burris',
     '/stories/man-like-kweks',
     '/stories/beth-alta-fletcher',
+    '/stories/hitomi-matsui',
     '/stories/share-your-story',
     '/donate',
     '/donate/monthly',

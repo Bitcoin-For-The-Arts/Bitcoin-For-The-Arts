@@ -136,6 +136,32 @@ const storiesData: StoryItem[] = [
     ],
     link: "/stories/beth-alta-fletcher",
   },
+  {
+    type: "article",
+    title:
+      "Hitomi Matsui \u2013 The Quiet Observer in a Digital Storm",
+    teaser:
+      "In the ceaseless churn of New York\u2019s art scene, where provocation often trumps subtlety, Hitomi Matsui emerges as a rare voice of contemplative restraint. Born in Osaka, Japan, she channels her nomadic explorations and Bitcoin awakening into illustrated vignettes starring Nekosan\u2014a white cat observing the invisible architectures of money, algorithms, and sovereignty.",
+    byline: "Bitcoin For The Arts, Inc.",
+    images: [
+      {
+        src: "/matsui-just-right-price.jpg",
+        alt: "Who Decided the Just Right Price \u2014 Nekosan on a NYC fire escape by Hitomi Matsui",
+        caption: "\u201CWho Decided the Just Right Price\u201D",
+      },
+      {
+        src: "/matsui-just-right-ad.jpg",
+        alt: "Why is this Just Right Ad Showing Up \u2014 NYC triptych by Hitomi Matsui",
+        caption: "\u201CWhy is this Just Right Ad Showing Up?\u201D",
+      },
+      {
+        src: "/matsui-nekosan-detective.jpg",
+        alt: "Nekosan detective investigating targeted ads by Hitomi Matsui",
+        caption: "\u201CIs this\u2026 Spying me, meow?!\u201D",
+      },
+    ],
+    link: "/stories/hitomi-matsui",
+  },
 ];
 
 /* ------------------------------------------------------------------ */
