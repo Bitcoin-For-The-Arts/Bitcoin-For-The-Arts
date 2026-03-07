@@ -147,7 +147,7 @@ const storiesData: StoryItem[] = [
       {
         src: "/matsui-just-right-price.jpg",
         alt: "Who Decided the Just Right Price \u2014 Nekosan on a NYC fire escape by Hitomi Matsui",
-        caption: "\u201CWho Decided the Just Right Price\u201D",
+        caption: "\u201CWho Decides the \u2018Just Right Price\u2019?\u201D",
       },
       {
         src: "/matsui-just-right-ad.jpg",
@@ -157,7 +157,7 @@ const storiesData: StoryItem[] = [
       {
         src: "/matsui-nekosan-detective.jpg",
         alt: "Nekosan detective investigating targeted ads by Hitomi Matsui",
-        caption: "\u201CIs this\u2026 Spying me, meow?!\u201D",
+        caption: "\u201CWhy Is the \u2018Just Right Ad\u2019 Showing Up?\u201D",
       },
     ],
     link: "/stories/hitomi-matsui",

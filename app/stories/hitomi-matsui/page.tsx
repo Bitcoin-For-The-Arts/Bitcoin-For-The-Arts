@@ -94,7 +94,7 @@ export default function HitomiMatsuiPage() {
             <FramedImage
               src="/matsui-just-right-price.jpg"
               alt="Who Decided the Just Right Price — Nekosan on a NYC fire escape by Hitomi Matsui"
-              caption="&ldquo;Who Decided the Just Right Price&rdquo;"
+              caption="&ldquo;Who Decides the &lsquo;Just Right Price&rsquo;?&rdquo;"
             />
           </div>
 
@@ -125,7 +125,7 @@ export default function HitomiMatsuiPage() {
             <FramedImage
               src="/matsui-nekosan-detective.jpg"
               alt="Nekosan detective investigating targeted ads by Hitomi Matsui"
-              caption="&ldquo;Is this&hellip; Spying me, meow?!&rdquo;"
+              caption="&ldquo;Why Is the &lsquo;Just Right Ad&rsquo; Showing Up?&rdquo;"
             />
           </div>
 
@@ -145,7 +145,7 @@ export default function HitomiMatsuiPage() {
             <FramedImage
               src="/matsui-nekosan-value-storage.jpg"
               alt="Nekosan pondering value storage — piggy bank, real estate, gold, and Bitcoin by Hitomi Matsui"
-              caption="Nekosan contemplates value storage: piggy banks, real estate, gold, and crypto"
+              caption="&ldquo;Protecting Assets from Inflation, Meow!&rdquo;"
             />
           </div>
 
