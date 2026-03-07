@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
+import ScrollToTop from "@/components/ScrollToTop";
 import SiteFooter from "@/components/SiteFooter";
 import SiteBackground from "@/components/SiteBackground";
 import { socialLinks } from "@/lib/socials";
@@ -83,6 +84,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
         <SiteBackground />
+        <ScrollToTop />
         <Navigation />
         <AutoDonatePopup />
         <div className="min-h-[calc(100svh-64px)]">{children}</div>
