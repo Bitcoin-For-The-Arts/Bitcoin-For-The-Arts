@@ -120,7 +120,7 @@ export default function HitomiMatsuiPage() {
             <FramedImage
               src="/matsui-just-right-ad.jpg"
               alt="Why is this Just Right Ad Showing Up — NYC triptych by Hitomi Matsui"
-              caption="&ldquo;Why is this Just Right Ad Showing Up?&rdquo;"
+              caption="&ldquo;Why Is the &lsquo;Just Right Ad&rsquo; Showing Up?&rdquo;"
             />
             <FramedImage
               src="/matsui-nekosan-detective.jpg"

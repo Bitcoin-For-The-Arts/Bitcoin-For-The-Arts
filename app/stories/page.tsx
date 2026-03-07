@@ -152,7 +152,7 @@ const storiesData: StoryItem[] = [
       {
         src: "/matsui-just-right-ad.jpg",
         alt: "Why is this Just Right Ad Showing Up \u2014 NYC triptych by Hitomi Matsui",
-        caption: "\u201CWhy is this Just Right Ad Showing Up?\u201D",
+        caption: "\u201CWhy Is the \u2018Just Right Ad\u2019 Showing Up?\u201D",
       },
       {
         src: "/matsui-nekosan-detective.jpg",
