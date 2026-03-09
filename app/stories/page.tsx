@@ -53,9 +53,19 @@ const storiesData: StoryItem[] = [
     title:
       "Share Your Bitcoin Journey: Episode 2 \u2013 Ethan\u2019s Vegan Bitcoin Revolution",
     summary:
-      "In this engaging episode, founder Deion Wilson interviews Ethan, the innovative writer and vegan advocate behind @bitcoinisvegan. Ethan shares his 2018 entry into Bitcoin while working at an AI company predicting crypto prices, evolving from casual investor to maximalist after the GameStop fiasco exposed fiat\u2019s rigged nature. He discusses his book \u201CThe Next Gold Rush\u201D\u2014the first turned into an NFT\u2014and his upcoming \u201CBitcoin is Vegan,\u201D arguing BTC\u2019s neutrality aligns with vegan ethics by avoiding subsidies for exploitative industries, promoting deflationary saving, and encouraging low-time-preference decisions.\n\nAs a 10-year vegan living on a Bitcoin standard, Ethan explores how sound money shifts spending habits, reduces harm, and empowers sovereignty. This open-licensed talk inspires creators to embrace Bitcoin for ethical, independent futures.",
+      "In this engaging episode, founder Dion Wilson interviews Ethan, the innovative writer and vegan advocate behind @bitcoinisvegan. Ethan shares his 2018 entry into Bitcoin while working at an AI company predicting crypto prices, evolving from casual investor to maximalist after the GameStop fiasco exposed fiat\u2019s rigged nature. He discusses his book \u201CThe Next Gold Rush\u201D\u2014the first turned into an NFT\u2014and his upcoming \u201CBitcoin is Vegan,\u201D arguing BTC\u2019s neutrality aligns with vegan ethics by avoiding subsidies for exploitative industries, promoting deflationary saving, and encouraging low-time-preference decisions.\n\nAs a 10-year vegan living on a Bitcoin standard, Ethan explores how sound money shifts spending habits, reduces harm, and empowers sovereignty. This open-licensed talk inspires creators to embrace Bitcoin for ethical, independent futures.",
     thumbnail: "/BFTA-Artist-Story-EP2.jpg",
     link: "https://youtu.be/rTeq2sjk_CE?si=MAKBMUhyJ9G3m5Qv",
+  },
+  {
+    type: "episode",
+    episodeNumber: 3,
+    title:
+      "Share Your Bitcoin Journey: Episode 3 \u2013 Mr. Meadow\u2019s Bitcoin Art Odyssey",
+    summary:
+      "In Episode 3, founder Dion Wilson interviews Mr. Meadow, an Indian filmmaker, Bitcoin artist, and visual storyteller pioneering at the intersection of BTC, art, and AI. Mr. Meadow shares his path from discovering Bitcoin in 2017 and experimenting with altcoins, to fully embracing BTC in 2020 as the only sound money worth building on\u2014after seeing fiat\u2019s corruption and the superiority of Bitcoin\u2019s fixed supply and decentralization.\n\nHe discusses how Bitcoin reshaped his creative mindset: moving from rushed, fiat-driven work to low-time-preference creation, using AI to simplify complex Bitcoin concepts into beautiful, tangible visuals. Highlights include his Bitcoin Cowboy mascot, designs for Bitcoin Racing and Cashew Spaces, collaborations with Maya in Suriname, and upcoming short films blending BTC lore with cinematic storytelling. This open-licensed episode celebrates Bitcoin as the ultimate canvas for independent creators.",
+    thumbnail: "/BFTA-SYBJ_EP3.jpg",
+    link: "https://youtu.be/BC-Lk4REV5I?si=6AmE28IzwDwS5Apm",
   },
   {
     type: "article",
