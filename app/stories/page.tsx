@@ -58,6 +58,16 @@ const storiesData: StoryItem[] = [
     link: "https://youtu.be/rTeq2sjk_CE?si=MAKBMUhyJ9G3m5Qv",
   },
   {
+    type: "episode",
+    episodeNumber: 3,
+    title:
+      "Share Your Bitcoin Journey: Episode 3 \u2013 Mr. Meadow\u2019s Bitcoin Art Odyssey",
+    summary:
+      "In Episode 3, founder Deion Wilson interviews Mr. Meadow, an Indian filmmaker, Bitcoin artist, and visual storyteller pioneering at the intersection of BTC, art, and AI. Mr. Meadow shares his path from discovering Bitcoin in 2017 and experimenting with altcoins, to fully embracing BTC in 2020 as the only sound money worth building on\u2014after seeing fiat\u2019s corruption and the superiority of Bitcoin\u2019s fixed supply and decentralization.\n\nHe discusses how Bitcoin reshaped his creative mindset: moving from rushed, fiat-driven work to low-time-preference creation, using AI to simplify complex Bitcoin concepts into beautiful, tangible visuals. Highlights include his Bitcoin Cowboy mascot, designs for Bitcoin Racing and Cashew Spaces, collaborations with Maya in Suriname, and upcoming short films blending BTC lore with cinematic storytelling. This open-licensed episode celebrates Bitcoin as the ultimate canvas for independent creators.",
+    thumbnail: "/BFTA-SYBJ_EP3.jpg",
+    link: "https://youtu.be/BC-Lk4REV5I?si=6AmE28IzwDwS5Apm",
+  },
+  {
     type: "article",
     title:
       "Kenneth Burris \u2013 Sovereign Strokes in the Shadow of Cooling Towers",
