@@ -172,6 +172,32 @@ const storiesData: StoryItem[] = [
     ],
     link: "/stories/hitomi-matsui",
   },
+  {
+    type: "article",
+    title:
+      "Aksana Zasinets (5Ksana) \u2013 Stitching Sovereignty Through the Needle\u2019s Eye",
+    teaser:
+      "In an era where digital currencies challenge the very fabric of economic and cultural systems, Aksana Zasinets\u2014known by her stage name 5Ksana\u2014redefines sovereignty through hand-embroidered masterpieces that blend 22 years of traditional tailoring with the revolutionary ethos of Bitcoin. Her intricate beadwork and thread paintings aren\u2019t merely decorative; they\u2019re manifestos of independence.",
+    byline: "Bitcoin For The Arts, Inc.",
+    images: [
+      {
+        src: "/zasinets-bullcoin.jpg",
+        alt: "Bullcoin by Aksana Zasinets \u2014 hand-embroidered beaded bull with Bitcoin coins",
+        caption: "\u201CBullcoin\u201D",
+      },
+      {
+        src: "/zasinets-girl-bitcoin-eye.jpg",
+        alt: "The Girl with the Bitcoin Eye by Aksana Zasinets \u2014 embroidered diptych portraits",
+        caption: "\u201CThe Girl with the Bitcoin Eye\u201D",
+      },
+      {
+        src: "/zasinets-world-of-bitcoin.jpg",
+        alt: "World of Bitcoin by Aksana Zasinets \u2014 embroidered cosmic eye with Bitcoin symbol",
+        caption: "\u201CWorld of Bitcoin\u201D",
+      },
+    ],
+    link: "/stories/aksana-zasinets",
+  },
 ];
 
 /* ------------------------------------------------------------------ */
