@@ -33,6 +33,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/stories/man-like-kweks',
     '/stories/beth-alta-fletcher',
     '/stories/hitomi-matsui',
+    '/stories/aksana-zasinets',
     '/stories/share-your-story',
     '/donate',
     '/donate/monthly',
