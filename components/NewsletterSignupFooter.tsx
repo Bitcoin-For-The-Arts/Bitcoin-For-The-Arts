@@ -23,13 +23,14 @@ function getErrorMessage(err: unknown) {
 export default function NewsletterSignupFooter() {
   const [email, setEmail] = useState('');
   const [hp, setHp] = useState(''); // honeypot
+  const [agreed, setAgreed] = useState(false);
   const [status, setStatus] = useState<Status>('idle');
   const [message, setMessage] = useState<string>('');
 
   const canSubmit = useMemo(() => {
     if (status === 'submitting' || status === 'success') return false;
-    return isEmail(email);
-  }, [email, status]);
+    return isEmail(email) && agreed;
+  }, [email, agreed, status]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -126,6 +127,36 @@ export default function NewsletterSignupFooter() {
             </button>
           </div>
 
+          <label className="mt-3 flex items-start gap-2 text-xs leading-relaxed text-white/70 sm:text-muted">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="mt-0.5 shrink-0 accent-accent"
+            />
+            <span>
+              I agree to receive email updates from Bitcoin for the Arts and
+              acknowledge the{' '}
+              <a
+                href="/privacy-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold underline underline-offset-2"
+              >
+                Privacy Policy
+              </a>{' '}
+              and{' '}
+              <a
+                href="/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold underline underline-offset-2"
+              >
+                Terms of Use
+              </a>.
+            </span>
+          </label>
+
           {message ? (
             <div
               className={[
@@ -142,7 +173,7 @@ export default function NewsletterSignupFooter() {
       </div>
 
       <div className="mt-4 text-xs text-white/70 sm:text-muted">
-        By signing up, you agree to receive email updates from Bitcoin for the Arts. You can unsubscribe anytime.
+        You can unsubscribe anytime.
       </div>
     </section>
   );

@@ -25,7 +25,7 @@ export default function PrivacyPolicyPage() {
             <p>
               <strong>Effective date:</strong> January 29, 2026
               <br />
-              <strong>Last updated:</strong> February 12, 2026
+              <strong>Last updated:</strong> March 18, 2026
             </p>
 
             <h2>Summary</h2>
@@ -33,7 +33,7 @@ export default function PrivacyPolicyPage() {
               <li>
                 We collect information you provide through our forms (for example:
                 grant applications, volunteer signups, workshop interest, feedback,
-                and governance nominations).
+                governance nominations, and newsletter signups).
               </li>
               <li>
                 We use privacy-friendly analytics (Vercel Analytics / Speed Insights)
@@ -70,6 +70,14 @@ export default function PrivacyPolicyPage() {
               </li>
             </ul>
 
+            <h3>Newsletter signups</h3>
+            <p>
+              When you sign up for our newsletter, we collect your email address. We also record
+              your IP address and browser user-agent string for rate-limiting and abuse prevention.
+              This information is stored in our database alongside a timestamp. You can unsubscribe
+              at any time using the link in any newsletter email or by contacting us.
+            </p>
+
             <h3>Information collected automatically</h3>
             <p>
               When you visit the site, we (and our service providers) may collect
@@ -87,7 +95,11 @@ export default function PrivacyPolicyPage() {
 
             <h4>Cookie preferences</h4>
             <p>
-              You can control cookie and storage behavior at any time through your browser settings. Common options include:
+              When you first visit our site, a cookie banner allows you to accept all cookies
+              or limit your browser to essential cookies only. If you choose "Essential only,"
+              non-essential cookies (such as analytics) will not be loaded. You can also
+              control cookie and storage behavior at any time through your browser settings.
+              Common options include:
             </p>
             <ul>
               <li>
@@ -153,8 +165,9 @@ export default function PrivacyPolicyPage() {
                 workshop interest, volunteer signups, governance nominations, and feedback.
               </li>
               <li>
-                <strong>Communicate with you:</strong> respond to messages and send
-                confirmations or updates (where configured).
+                <strong>Communicate with you:</strong> respond to messages, send
+                confirmations or updates (where configured), and deliver newsletters
+                you have opted into.
               </li>
               <li>
                 <strong>Operate and improve the site:</strong> diagnose errors,
@@ -327,6 +340,10 @@ export default function PrivacyPolicyPage() {
               <li>
                 <strong>Contact submissions and program inquiries:</strong> retained until no longer needed for the purpose
                 of the communication, or until you request deletion (subject to legal exceptions).
+              </li>
+              <li>
+                <strong>Newsletter signup records:</strong> retained until you unsubscribe or request deletion.
+                IP address and user-agent data collected at signup are retained for up to 1 year.
               </li>
               <li>
                 <strong>Operational/security logs (where maintained):</strong> generally retained for up to 1 year.
