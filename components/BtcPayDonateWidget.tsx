@@ -124,11 +124,7 @@ export default function BtcPayDonateWidget() {
                       ].join(' ')}
                     >
                       <span className="text-lg">${v}</span>
-                      {isFeatured ? (
-                        <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
-                          Popular
-                        </span>
-                      ) : null}
+                      {null}
                     </button>
                   );
                 })}
@@ -249,26 +245,6 @@ export default function BtcPayDonateWidget() {
           </div>
         </div>
 
-        {/* $21 callout */}
-        <div className="mt-8 rounded-xl border border-accent/30 bg-accent/5 p-4 sm:p-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <div className="text-sm font-semibold tracking-tight">
-                Why $21? Because 21 million is all there will ever be.
-              </div>
-              <p className="mt-1 text-xs leading-relaxed text-muted">
-                A $21 monthly gift provides stable, predictable funding for artist
-                grants — and it&apos;s the most Bitcoiner number there is.
-              </p>
-            </div>
-            <a
-              href="/donate/monthly"
-              className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg border-2 border-accent bg-accent/10 px-5 py-2 text-sm font-bold text-accent transition-colors hover:bg-accent hover:text-white"
-            >
-              Give $21/month
-            </a>
-          </div>
-        </div>
       </div>
     </div>
   );
