@@ -48,7 +48,8 @@ export default function DonatePage({
         description="Give in Bitcoin, fiat, stocks, or planned gifts — and help build a long-term reserve for creators."
       />
 
-      <div className="mx-auto max-w-6xl px-8 py-14 sm:px-6">
+      <div className="mx-auto max-w-6xl px-6 py-14">
+        {/* Intro */}
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
             Support artists with Bitcoin
@@ -70,28 +71,42 @@ export default function DonatePage({
               </>
             ) : null}
           </div>
+        </div>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+        {/* Sovereign Circle banner */}
+        <div className="mt-10 rounded-2xl border-2 border-primary/30 bg-[linear-gradient(135deg,rgba(126,87,194,0.08),rgba(247,147,26,0.06))] p-6 sm:p-8">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="max-w-xl">
+              <div className="text-xs font-semibold uppercase tracking-wide text-primary">
+                Monthly giving
+              </div>
+              <h3 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
+                Join the Sovereign Circle
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">
+                Become a monthly or annual member to provide stable, predictable funding for artist grants.
+                Members unlock community access, art drops, grant votes, and tenure milestones.
+              </p>
+            </div>
             <Link
-              href="/grants"
-              className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+              href="/donate/monthly"
+              className="inline-flex min-h-14 shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-8 py-3 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 hover:brightness-110"
             >
-              Learn about grants
-            </Link>
-            <Link
-              href="/about/governance"
-              className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
-            >
-              Governance & reporting
+              Explore membership
             </Link>
           </div>
         </div>
 
+        {/* BTC donation — primary, featured */}
+        <section id="bitcoin" className="mt-10 scroll-mt-28">
+          <BtcPayDonateWidget />
+        </section>
+
+        {/* Card / Stripe donation */}
         <div id="card" className="mt-10 rounded-2xl border border-border bg-background p-6">
-          <h2 className="text-xl font-semibold tracking-tight">Donate</h2>
+          <h2 className="text-xl font-semibold tracking-tight">Donate with Card</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted">
-            Give securely with a one-time gift or join the Sovereign Circle as a
-            monthly or annual member to fuel artist grants and programming.
+            Give securely with a one-time card payment via Stripe Checkout.
           </p>
 
           <StripeCustomDonateForm />
@@ -141,7 +156,7 @@ export default function DonatePage({
           ) : null}
           {hasStripeOneTime && !hasStripeCoverFees ? (
             <p className="mt-3 text-xs leading-relaxed text-muted">
-              Want to offer a “cover fees” option? Add a second Stripe Payment Link and set{' '}
+              Want to offer a &ldquo;cover fees&rdquo; option? Add a second Stripe Payment Link and set{' '}
               <span className="font-semibold text-foreground">
                 NEXT_PUBLIC_STRIPE_DONATION_LINK_COVER_FEES
               </span>
@@ -150,13 +165,11 @@ export default function DonatePage({
           ) : null}
         </div>
 
+        {/* Ways to Give */}
         <WaysToGive />
 
-        <section id="bitcoin" className="mt-10 scroll-mt-28">
-          <BtcPayDonateWidget />
-        </section>
-
-        <div className="mt-8 rounded-2xl border border-border bg-surface p-6">
+        {/* Where the money goes */}
+        <div className="mt-10 rounded-2xl border border-border bg-surface p-6">
           <h2 className="text-lg font-semibold tracking-tight">
             Where The Money Goes
           </h2>
@@ -191,8 +204,23 @@ export default function DonatePage({
             </div>
           </div>
         </div>
+
+        {/* Quick nav links */}
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <Link
+            href="/grants"
+            className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+          >
+            Learn about grants
+          </Link>
+          <Link
+            href="/about/governance"
+            className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+          >
+            Governance &amp; reporting
+          </Link>
+        </div>
       </div>
     </main>
   );
 }
-
