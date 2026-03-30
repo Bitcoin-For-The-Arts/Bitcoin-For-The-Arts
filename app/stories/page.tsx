@@ -175,6 +175,20 @@ const storiesData: StoryItem[] = [
   {
     type: "article",
     title:
+      "Matt Finlay \u2013 Dissident Beats from the World\u2019s Longest Lockdown",
+    teaser:
+      "In the shadow of Melbourne\u2019s brutal 2020\u20132021 lockdowns \u2014 the longest and most severe in the world \u2014 Matt Finlay picked up his instruments and refused to stay silent. A musician, independent artist, and fierce defender of free expression, Finlay is now a featured voice in Bitcoin For The Arts. His work stands as a sonic manifesto for artistic sovereignty in an age when platforms censor, governments control, and fiat systems punish dissent.",
+    byline: "Bitcoin For The Arts, Inc.",
+    profileImage: {
+      src: "/Matt-Finlay-BFTA-Artist.png",
+      alt: "Matt Finlay \u2014 musician, dissident artist, Bitcoin advocate from Melbourne",
+    },
+    images: [],
+    link: "/stories/matt-finlay",
+  },
+  {
+    type: "article",
+    title:
       "Aksana Zasinets (5Ksana) \u2013 Stitching Sovereignty Through the Needle\u2019s Eye",
     teaser:
       "In an era where digital currencies challenge the very fabric of economic and cultural systems, Aksana Zasinets\u2014known by her stage name 5Ksana\u2014redefines sovereignty through hand-embroidered masterpieces that blend 22 years of traditional tailoring with the revolutionary ethos of Bitcoin. Her intricate beadwork and thread paintings aren\u2019t merely decorative; they\u2019re manifestos of independence.",
