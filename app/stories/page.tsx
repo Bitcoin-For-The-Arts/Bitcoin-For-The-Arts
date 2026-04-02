@@ -198,6 +198,32 @@ const storiesData: StoryItem[] = [
     ],
     link: "/stories/aksana-zasinets",
   },
+  {
+    type: "article",
+    title:
+      "Zap Animations \u2013 Reviving the Spark in Bitcoin\u2019s Eternal Frame",
+    teaser:
+      "In the flickering glow of artistic resurrection, A13MW emerges as a cyberpunk alchemist, breathing life into forgotten frames of artistic sovereignty. This visionary animator and Bitcoin artist\u2014a former UX Designer and eternal student of Living Systems\u2014wields her tools like a digital wand, conjuring hand-drawn symphonies that dance across devices around the world.",
+    byline: "Bitcoin For The Arts, Inc.",
+    images: [
+      {
+        src: "/a13mw-crying-baby-dancing-bee.jpg",
+        alt: "Crying Baby, Dancing Bee \u2014 animated short poster by A13MW",
+        caption: "\u201CCrying Baby, Dancing Bee\u201D",
+      },
+      {
+        src: "/a13mw-gone-with-the-wind.jpg",
+        alt: "Gone with the Wind \u2014 digital animation art by A13MW",
+        caption: "\u201CGone with the Wind\u201D",
+      },
+      {
+        src: "/a13mw-towards-the-light.jpg",
+        alt: "Towards the Light \u2014 digital animation art by A13MW",
+        caption: "\u201CTowards the Light\u201D",
+      },
+    ],
+    link: "/stories/a13mw-zap-animations",
+  },
 ];
 
 /* ------------------------------------------------------------------ */
