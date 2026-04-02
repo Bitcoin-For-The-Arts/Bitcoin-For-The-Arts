@@ -34,6 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/stories/beth-alta-fletcher',
     '/stories/hitomi-matsui',
     '/stories/aksana-zasinets',
+    '/stories/a13mw-zap-animations',
     '/stories/matt-finlay',
     '/stories/share-your-story',
     '/donate',
