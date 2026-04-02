@@ -70,7 +70,7 @@ export default function AutoDonatePopup() {
     const shouldWaitForScroll = pathname === '/' && homeHasIntro;
 
     const startTimer = () => {
-      const t = window.setTimeout(() => setOpen(true), 5000);
+      const t = window.setTimeout(() => setOpen(true), 30_000);
       return () => window.clearTimeout(t);
     };
 

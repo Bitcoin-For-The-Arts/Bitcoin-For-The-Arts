@@ -246,7 +246,7 @@ export default function WaysToGive() {
       </div>
 
       {/* Desktop: true tab panel (prevents “side opening” artifacts) */}
-      <div className="mt-6 hidden md:grid md:grid-cols-12 md:gap-4">
+      <div className="mt-6 hidden md:grid md:grid-cols-12 md:items-start md:gap-4">
         <div className="md:col-span-5">
           <div className="space-y-2">
             {ways.map((w, idx) => {
@@ -275,7 +275,7 @@ export default function WaysToGive() {
           </div>
         </div>
 
-        <div className="md:col-span-7 rounded-2xl border border-accent/40 bg-surface/80 p-6">
+        <div className="md:col-span-7 sticky top-24 self-start rounded-2xl border border-accent/40 bg-surface/80 p-6">
           <div className="flex items-center gap-2">
             <HeartBadge />
             <div className="text-lg font-semibold tracking-tight">
