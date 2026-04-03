@@ -143,6 +143,7 @@ export default function A13mwZapAnimationsPage() {
               src="/a13mw-towards-the-light.jpg"
               alt="Towards the Light — digital animation art by A13MW"
               caption="&ldquo;Towards the Light&rdquo;"
+              objectPosition="bottom"
             />
           </div>
 

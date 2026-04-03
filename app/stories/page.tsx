@@ -30,7 +30,7 @@ type Article = {
   teaser: string;
   byline: string;
   profileImage?: { src: string; alt: string };
-  images: { src: string; alt: string; caption: string }[];
+  images: { src: string; alt: string; caption: string; objectPosition?: string }[];
   link: string;
 };
 
@@ -234,6 +234,7 @@ const storiesData: StoryItem[] = [
         src: "/a13mw-towards-the-light.jpg",
         alt: "Towards the Light \u2014 digital animation art by A13MW",
         caption: "\u201CTowards the Light\u201D",
+        objectPosition: "bottom",
       },
     ],
     link: "/stories/a13mw-zap-animations",
@@ -537,6 +538,7 @@ export default function StoriesPage() {
                             src={img.src}
                             alt={img.alt}
                             caption={img.caption}
+                            objectPosition={img.objectPosition}
                           />
                         </div>
                       ))}
