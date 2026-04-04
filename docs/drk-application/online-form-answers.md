@@ -57,7 +57,7 @@ Incorporated Q4 2025; launched grant application system (processing begins Q3 20
 
 ### How do you plan to scale?
 
-Three phases: (1) Foundation (2025–2026): launch first grant cycles at $500–$2,000, build community, establish governance. (2) Growth (2027–2028): scale grants from $500 to $1,000, launch residency and education pilots ($20K–$50K/year each), expand board to 7–9 members. (3) Sustainability (2029+): scale grants to $25K, reach 1 BTC reserve target, open-source the model for replication.
+Three phases: (1) Foundation (2025–2026): launch first grant cycles at $500–$2,000, build community, establish governance. (2) Growth (2027–2028): scale grants from $500 to $10,000, launch residency and education pilots ($20K–$50K/year each), expand board to 7–9 members. (3) Sustainability (2029+): scale grants to $25K, reach 1 BTC reserve target, open-source the model for replication.
 
 ### Revenue model / financial sustainability
 

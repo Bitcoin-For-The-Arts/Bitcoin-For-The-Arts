@@ -111,7 +111,7 @@ BFTA's scaling strategy follows three phases:
 Build core infrastructure, launch grant program, publish artist stories, establish governance. Current phase.
 
 **Phase 2 — Growth (2027–2028):**
-- Scale grant awards from $500 to $1,000 per project as reserves grow.
+- Scale grant awards from $500 to $10,000 per project as reserves grow.
 - Launch the Sovereign Artist Residency pilot (budget: ~$20,000–$50,000/year).
 - Launch the Bitcoin Education Initiative for artists (~$15,000–$30,000/year).
 - Expand the board to 7–9 members with domain expertise in arts, Bitcoin, legal, and finance.
