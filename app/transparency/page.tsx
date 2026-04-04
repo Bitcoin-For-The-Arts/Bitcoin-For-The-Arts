@@ -124,6 +124,35 @@ export default function TransparencyPage() {
             ))}
           </div>
 
+          <div className="mt-12 rounded-2xl border border-border bg-surface/60 p-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+              <a
+                href="https://app.candid.org/profile/16531141/bitcoin-for-the-arts-inc-41-2642260/?pkId=c5d73d72-2176-49f8-a0d2-9a25be9fb115"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Bitcoin for the Arts on Candid"
+                className="shrink-0"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  alt="Candid transparency seal"
+                  src="https://widgets.guidestar.org/prod/v1/pdp/transparency-seal/16531141/svg"
+                  width={80}
+                  height={80}
+                />
+              </a>
+              <div>
+                <div className="text-sm font-semibold tracking-tight">
+                  Verified on Candid (GuideStar)
+                </div>
+                <p className="mt-1 text-sm text-muted">
+                  Bitcoin For The Arts, Inc. is registered with Candid, the
+                  leading source of nonprofit data and transparency reporting.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="mt-10 rounded-2xl border border-border bg-background p-5 text-sm text-muted">
             Looking for our governance overview? Visit{' '}
             <Link href="/about/governance" className="underline underline-offset-4">

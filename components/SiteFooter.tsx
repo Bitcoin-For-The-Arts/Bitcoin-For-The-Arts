@@ -129,9 +129,25 @@ export default function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-white/15 pt-6 text-xs text-white/80 sm:border-border sm:text-muted sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            © {new Date().getFullYear()} Bitcoin for the Arts. All rights reserved.
+        <div className="mt-10 flex flex-col gap-4 border-t border-white/15 pt-6 text-xs text-white/80 sm:border-border sm:text-muted sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <span>© {new Date().getFullYear()} Bitcoin for the Arts. All rights reserved.</span>
+            <a
+              href="https://app.candid.org/profile/16531141/bitcoin-for-the-arts-inc-41-2642260/?pkId=c5d73d72-2176-49f8-a0d2-9a25be9fb115"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View Bitcoin for the Arts on Candid"
+              className="shrink-0"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                alt="Candid transparency seal"
+                src="https://widgets.guidestar.org/prod/v1/pdp/transparency-seal/16531141/svg"
+                width={56}
+                height={56}
+                className="opacity-80 transition-opacity hover:opacity-100"
+              />
+            </a>
           </div>
           <div className="flex gap-4">
             <Link href="/sitemap-page" className="hover:underline text-white/90 sm:text-inherit">
