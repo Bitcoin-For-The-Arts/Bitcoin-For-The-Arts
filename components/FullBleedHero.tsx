@@ -11,6 +11,7 @@ type Props = {
   overlayClassName?: string; // e.g. "bg-black/35"
   children?: React.ReactNode; // optional actions/extra content
   showScrollHint?: boolean;
+  priority?: boolean;
 };
 
 export default function FullBleedHero({
@@ -24,6 +25,7 @@ export default function FullBleedHero({
   overlayClassName = 'bg-black/35',
   children,
   showScrollHint = true,
+  priority = false,
 }: Props) {
   return (
     <section className="relative w-full overflow-hidden">
@@ -32,7 +34,7 @@ export default function FullBleedHero({
           src={imageSrc}
           alt={imageAlt}
           fill
-          priority={false}
+          priority={priority}
           className="object-cover object-center"
           sizes="100vw"
         />
