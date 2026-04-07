@@ -180,7 +180,7 @@ const storiesData: StoryItem[] = [
       "In the shadow of Melbourne\u2019s brutal 2020\u20132021 lockdowns \u2014 the longest and most severe in the world \u2014 Matt Finlay picked up his instruments and refused to stay silent. A musician, independent artist, and fierce defender of free expression, Finlay is now a featured voice in Bitcoin For The Arts. His work stands as a sonic manifesto for artistic sovereignty in an age when platforms censor, governments control, and fiat systems punish dissent.",
     byline: "Bitcoin For The Arts, Inc.",
     profileImage: {
-      src: "/Matt-Finlay-BFTA-Artist.png",
+      src: "/Matt-Finlay-BFTA-Artist.jpg",
       alt: "Matt Finlay \u2014 musician, dissident artist, Bitcoin advocate from Melbourne",
     },
     images: [],

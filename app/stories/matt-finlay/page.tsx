@@ -63,7 +63,7 @@ export default function MattFinlayPage() {
           <div className="mt-8 flex flex-col items-center gap-6 sm:flex-row sm:items-start">
             <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-full border-4 border-[#d4af37] shadow-lg sm:h-40 sm:w-40">
               <Image
-                src="/Matt-Finlay-BFTA-Artist.png"
+                src="/Matt-Finlay-BFTA-Artist.jpg"
                 alt="Matt Finlay"
                 fill
                 className="object-cover"

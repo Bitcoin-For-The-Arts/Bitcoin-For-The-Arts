@@ -31,7 +31,8 @@ export default function Home() {
               muted
               loop
               playsInline
-              preload="metadata"
+              preload="none"
+              poster="/BFTA-home-page-poster.jpg"
             >
               <source src={introMp4} type="video/mp4" />
               {introMov ? <source src={introMov} type="video/quicktime" /> : null}

@@ -46,6 +46,7 @@ export default function DonatePage({
         label="Donate"
         title="Fund artists. Strengthen sovereign creativity."
         description="Give in Bitcoin, fiat, stocks, or planned gifts — and help build a long-term reserve for creators."
+        priority
       />
 
       <div className="mx-auto max-w-6xl px-6 py-14">
