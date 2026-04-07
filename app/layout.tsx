@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Roboto, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -8,6 +9,20 @@ import { socialLinks } from "@/lib/socials";
 import AutoDonatePopup from "@/components/AutoDonatePopup";
 import CookieBanner from "@/components/CookieBanner";
 import ConsentAnalytics from "@/components/ConsentAnalytics";
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+  variable: "--font-roboto",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  display: "swap",
+  variable: "--font-playfair",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bitcoinforthearts.org"),
@@ -72,7 +87,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en">
+    <html lang="en" className={`${roboto.variable} ${playfair.variable}`}>
       <body
         className={[
           'antialiased bg-background text-foreground relative',
