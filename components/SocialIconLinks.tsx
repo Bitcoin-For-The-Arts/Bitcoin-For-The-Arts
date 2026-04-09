@@ -84,6 +84,15 @@ function Icon({
           />
         </svg>
       );
+    case 'substack':
+      return (
+        <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M22.54 6.42a2.78 2.78 0 0 1-1.13 2.34A2.77 2.77 0 0 1 22.54 6.42ZM3.46 6.42H20.54V8.76H3.46ZM3.46 1.84H20.54V4.18H3.46ZM3.46 11.08H20.54V22.16L12 16.92L3.46 22.16Z"
+          />
+        </svg>
+      );
     default:
       return null;
   }
