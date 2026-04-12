@@ -70,6 +70,7 @@ const sections: SitemapSection[] = [
       { href: "/stories/hitomi-matsui", label: "Hitomi Matsui" },
       { href: "/stories/aksana-zasinets", label: "Aksana Zasinets (5Ksana)" },
       { href: "/stories/matt-finlay", label: "Matt Finlay" },
+      { href: "/stories/benjamin-ella", label: "Benjamin Ella" },
       { href: "/stories/share-your-story", label: "Share Your Story" },
     ],
   },

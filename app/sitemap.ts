@@ -35,6 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/stories/hitomi-matsui',
     '/stories/aksana-zasinets',
     '/stories/matt-finlay',
+    '/stories/benjamin-ella',
     '/stories/share-your-story',
     '/donate',
     '/donate/monthly',
