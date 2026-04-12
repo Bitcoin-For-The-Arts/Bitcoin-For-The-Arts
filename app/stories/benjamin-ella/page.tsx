@@ -57,7 +57,7 @@ export default function BenjaminEllaPage() {
           <div className="mt-8 flex flex-col items-center gap-6 sm:flex-row sm:items-start">
             <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-full border-4 border-[#d4af37] shadow-lg sm:h-40 sm:w-40">
               <Image
-                src="/Benjamin-Ella-BFTA-Artist.jpg"
+                src="/Benjamin-Ella-BFTA-Profile.jpg"
                 alt="Benjamin Ella"
                 fill
                 className="object-cover"

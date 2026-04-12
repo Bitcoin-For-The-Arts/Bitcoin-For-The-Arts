@@ -113,7 +113,7 @@ const storiesData: StoryItem[] = [
       "After 17 seasons as a Soloist of The Royal Ballet \u2014 with roles created for him by Wayne McGregor, Crystal Pite, and Hofesh Shechter \u2014 Benjamin Ella retired in December 2025 and discovered that the same sound money principles he\u2019d been learning through Bitcoin aligned with everything he believed about art, faith, and freedom. Two professional dancers from opposite sides of the world sit down for a conversation about the broken economics of arts funding and why Bitcoin is the path forward.",
     byline: "Bitcoin For The Arts, Inc.",
     profileImage: {
-      src: "/Benjamin-Ella-BFTA-Artist.jpg",
+      src: "/Benjamin-Ella-BFTA-Profile.jpg",
       alt: "Benjamin Ella \u2014 former Royal Ballet Soloist, dancer, choreographer, and Bitcoin advocate",
     },
     images: [],
