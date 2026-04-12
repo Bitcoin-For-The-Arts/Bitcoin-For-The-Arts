@@ -36,6 +36,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/stories/aksana-zasinets',
     '/stories/a13mw-zap-animations',
     '/stories/matt-finlay',
+    '/stories/benjamin-ella',
     '/stories/share-your-story',
     '/donate',
     '/donate/monthly',

@@ -68,6 +68,16 @@ const storiesData: StoryItem[] = [
     link: "https://youtu.be/BC-Lk4REV5I?si=6AmE28IzwDwS5Apm",
   },
   {
+    type: "episode",
+    episodeNumber: 4,
+    title:
+      "Share Your Bitcoin Journey: Episode 4 \u2013 Benjamin Ella\u2019s Sovereign Leap from The Royal Ballet to Bitcoin",
+    summary:
+      "In this powerful episode, founder Dion Wilson sits down with Benjamin Ella \u2014 a Soloist of The Royal Ballet for 17 seasons \u2014 for a conversation that could only happen between two professional dancers who found Bitcoin. Benjamin shares his journey from Melbourne tennis courts to London\u2019s Royal Opera House, where choreographers like Wayne McGregor, Crystal Pite, and Hofesh Shechter created roles for him.\n\nAfter retiring in December 2025, he discovered Bitcoin during COVID while serving as a union deputy negotiating dancer contracts. The deeper he went, the more the veil was lifted. Bitcoin then led him to faith: \u201CProverbs 11:1 \u2014 The Lord detests dishonest weights and scales. That\u2019s what money printing is.\u201D Two dancers from opposite sides of the world, one shared conviction: Bitcoin is the path forward for the arts.",
+    thumbnail: "/Benjamin-Ella-BFTA-Artist.jpg",
+    link: "https://youtu.be/8FadoHhvxwY",
+  },
+  {
     type: "article",
     title:
       "Kenneth Burris \u2013 Sovereign Strokes in the Shadow of Cooling Towers",
@@ -94,6 +104,20 @@ const storiesData: StoryItem[] = [
       },
     ],
     link: "/stories/kenneth-burris",
+  },
+  {
+    type: "article",
+    title:
+      "Benjamin Ella \u2013 A Royal Ballet Soloist\u2019s Sovereign Leap to Bitcoin",
+    teaser:
+      "After 17 seasons as a Soloist of The Royal Ballet \u2014 with roles created for him by Wayne McGregor, Crystal Pite, and Hofesh Shechter \u2014 Benjamin Ella retired in December 2025 and discovered that the same sound money principles he\u2019d been learning through Bitcoin aligned with everything he believed about art, faith, and freedom. Two professional dancers from opposite sides of the world sit down for a conversation about the broken economics of arts funding and why Bitcoin is the path forward.",
+    byline: "Bitcoin For The Arts, Inc.",
+    profileImage: {
+      src: "/Benjamin-Ella-BFTA-Profile.jpg",
+      alt: "Benjamin Ella \u2014 former Royal Ballet Soloist, dancer, choreographer, and Bitcoin advocate",
+    },
+    images: [],
+    link: "/stories/benjamin-ella",
   },
   {
     type: "article",
