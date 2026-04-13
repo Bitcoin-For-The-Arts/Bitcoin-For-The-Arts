@@ -3,12 +3,12 @@ BEEHIIV NEWSLETTER — This Week's Issue
 
 === SUBJECT LINE ===
 
-The arts are under attack. Here's our plan to fight back.
+The Zap-a-Thon: 21 Artists. 7 Days. We need your help.
 
 
 === PREVIEW TEXT ===
 
-NEA funding in freefall. A Royal Ballet dancer finds Bitcoin. And how you can help build the sovereign renaissance.
+A 7-day global artist showcase powered by Bitcoin. Plus: a Royal Ballet dancer finds Bitcoin, and the NEA funding crisis deepens.
 
 
 === NEWSLETTER BODY ===
@@ -56,6 +56,52 @@ But we can't do this alone. Here's how you can help right now:
 5. Share your story — We feature artists who are building sovereign creative careers. If that's you, or someone you know, reach out at bitcoinforthearts.org/stories/share-your-story
 
 We are building the NEA of the Bitcoin era. Not from the top down, but from the artists up. Help us get there.
+
+
+---
+
+
+Announcing: The Zap-a-Thon — A 7-Day Global Artist Showcase
+
+We are planning something big. And we need your help to make it happen.
+
+Bitcoin For The Arts is building a 7-day virtual artist showcase called the Zap-a-Thon — a week-long celebration of sovereign creativity, broadcast live to the world and powered entirely by Bitcoin.
+
+Here's the vision:
+
+21 artists. 7 days. 3 artists per day from different disciplines — music, visual art, film, writing, performance, dance. Each day features a 3-hour live stream hosted by a rotating cast of Bitcoin podcasters and influencers. Every artist gets a 45–50 minute segment: a live interview, a showcase of their work (live performance, pre-recorded video, visual art reveal, reading), and real-time zaps and donations flowing directly to them and to BFTA's mission.
+
+That's 21 hours of sovereign art, broadcast across YouTube, X, Nostr (Fountain, Zap.Stream, TuneStr), Instagram, and TikTok. Every segment gets clipped and repurposed — creating weeks of content that spreads the message far beyond the live audience.
+
+The week culminates in a high-profile in-person fundraising night at a venue in New York City. Think cocktail hour, a silent auction of artwork donated by the 21 featured artists, live performances by 3 selected artists from the week, and a room full of people who believe that art and sound money belong together.
+
+Donors will be able to direct their sats to exactly where they want them:
+
+- "Fund an Artist Grant" — fuel the next round of micro-grants
+- "Support Bitcoin Education for Artists" — fund workshops and literacy programs
+- "Grow the HODL Vault" — build the long-term Bitcoin endowment
+- "Sponsor This Specific Artist" — zap directly to a featured creator during their segment
+- "Sponsor The Live Bitcoin Arts Night" — put your name on the flagship event
+
+This is not something we can do alone. This requires a global network of artists, creators, podcasters, streamers, and believers in this mission. We are looking for:
+
+Artists who want to perform, showcase, or be featured during the 7-day stream. Musicians, painters, filmmakers, dancers, writers, poets, digital artists — every discipline, every country. If your art speaks to sovereignty, freedom, or the human spirit, we want you.
+
+Podcasters and hosts willing to MC daily segments. If you have a show, an audience, and a microphone, help us bring this to life. We need 7 hosts for 7 days.
+
+Live broadcast and streaming volunteers who can help with production, multi-platform streaming, audio/video, overlays, and technical coordination. If you've run a live stream, a Nostr broadcast, or a multi-camera production, we need your skills.
+
+Venue connections in New York City for the final in-person fundraising night. We're looking for an elegant space that fits the mission — somewhere like PubKey or a gallery that understands what we're building.
+
+Sponsors and donors who want to put their name on something meaningful. Corporate sponsors, Bitcoin companies, individual donors — every level of support helps.
+
+Anyone who believes in this mission and wants to spread the word. Forward this newsletter. Share it on Nostr. Post it on X. Tell an artist. Tell a podcaster. Tell someone who needs to hear that the sovereign renaissance is real and it's happening.
+
+This is how we build a global community. Not through institutions. Through artists supporting artists, powered by sound money, connected by censorship-resistant tools, and united by the belief that creativity deserves to be free.
+
+If you want to be part of the Zap-a-Thon — as an artist, host, volunteer, sponsor, or supporter — reply to this email or reach out at hello@bitcoinforthearts.org. We are building the team now.
+
+More details coming soon. Stay tuned.
 
 
 ---
