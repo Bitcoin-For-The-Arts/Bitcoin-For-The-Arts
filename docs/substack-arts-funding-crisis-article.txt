@@ -38,7 +38,7 @@ The NEA is still standing. For now. But the message to arts organizations is unm
 
 At the state level, total legislative appropriations for state arts agencies are projected to decrease 7.7% in FY2026 — from $704.3 million to $650.2 million, according to the National Assembly of State Arts Agencies. Twenty-one states are projecting decreases. California alone is looking at a 40.8% drop. Missouri: 59.7%. Minnesota: 22%.
 
-And these numbers land on top of decades of erosion. Arts Council England funding for The Royal Ballet — one of the most prestigious cultural institutions in the world — has dropped from over 50% of the company's revenue to just 19%. Benjamin Ella, a former Royal Ballet Soloist we recently interviewed for our Share Your Bitcoin Journey series, told us the building needs complete refurbishment. The boilers are falling apart. The infrastructure is crumbling beneath some of the finest art being produced on the planet.
+And these numbers land on top of decades of erosion. Even the most prestigious cultural institutions in the world are not immune. Public arts funding for major ballet companies, opera houses, and performing arts centers across Europe has been declining for years — organizations that once relied on government support for the majority of their revenue are now scrambling to fill widening gaps with ticket sales and private donors.
 
 This is not a blip. This is a structural failure.
 
@@ -118,7 +118,7 @@ Share this article. Forward it to an artist, a teacher, a gallery owner, a nonpr
 
 Apply for a grant. If you are an artist, apply at bitcoinforthearts.org/grants/apply. If you know an artist, send them the link.
 
-Join the Zap-a-Thon. We are planning a 7-day virtual artist showcase — 21 artists, 7 days, live streams across YouTube, X, Nostr, and more — culminating in an in-person fundraising night in New York City. We need artists, podcast hosts, streaming volunteers, and supporters. Reach out at hello@bitcoinforthearts.org.
+Join the Zap-a-Thon. We are planning a multi-day virtual artist showcase — live streams across YouTube, X, Nostr, and more — culminating in an in-person fundraising night at a flagship venue. We need artists, podcast hosts, streaming volunteers, and supporters. Reach out at hello@bitcoinforthearts.org.
 
 
 ---
