@@ -24,6 +24,11 @@ const minutes: DocLink[] = [
     subtitle: 'Official minutes from the Q1 2026 board meeting.',
     href: '/BFTA-Minutes-Q1-2026.pdf',
   },
+  {
+    title: 'Board Meeting Minutes — Q2 2026',
+    subtitle: 'Official minutes from the Q2 2026 board meeting.',
+    href: '/BFTA-Minutes-Q2-2026.pdf',
+  },
 ];
 
 const proposals: DocLink[] = [
