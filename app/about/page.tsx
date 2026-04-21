@@ -4,17 +4,13 @@ import Link from 'next/link';
 import watermarklogo from '../asset/FreedomLab Logo.jpeg';
 
 // BFTA 2026 brand assets:
-//   /BFTA-bug-square-cream-orange-1.png        — small BFTA "bug" used in the
+//   /BFTA-bug-square-cream-orange-1.png       — small BFTA "bug" used in the
 //     about hero card (cream field matches the page background).
-//   /BFTA-main-lockup-transparent-light.png    — full main lockup with the
-//     cream rectangle knocked out. Drops cleanly onto the cream light-mode
-//     background with no visible card edge.
-//   /BFTA-main-lockup-transparent-dark.png     — same lockup but knocked out
-//     of black + recolored cream; drops cleanly onto the ember dark-mode
-//     background.
+//   /BFTA-main-lockup-transparent-light.png   — full main lockup with the
+//     cream rectangle knocked out so it drops cleanly onto the cream page
+//     with no visible card edge.
 const ABOUT_BUG_SRC = '/BFTA-bug-square-cream-orange-1.png';
-const MAIN_LOCKUP_LIGHT_SRC = '/BFTA-main-lockup-transparent-light.png';
-const MAIN_LOCKUP_DARK_SRC = '/BFTA-main-lockup-transparent-dark.png';
+const MAIN_LOCKUP_SRC = '/BFTA-main-lockup-transparent-light.png';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -56,26 +52,16 @@ export default function AboutPage() {
       </div>
 
       <div className="relative mx-auto max-w-6xl px-6 py-14">
-        {/* Main lockup — brand centerpiece at the top of the about page.
-            Native <picture> swaps to the dark-mode (cream-on-transparent)
-            variant when the OS reports prefers-color-scheme:dark so the
-            lockup blends into the ember background. Light mode is the
-            default <img> source — unchanged behavior. */}
+        {/* Main lockup — brand centerpiece at the top of the about page. */}
         <div className="mb-10 flex justify-center">
-          <picture>
-            <source
-              srcSet={MAIN_LOCKUP_DARK_SRC}
-              media="(prefers-color-scheme: dark)"
-            />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={MAIN_LOCKUP_LIGHT_SRC}
-              alt="Bitcoin for the Arts"
-              width={1024}
-              height={1024}
-              className="h-auto w-full max-w-md sm:max-w-lg"
-            />
-          </picture>
+          <Image
+            src={MAIN_LOCKUP_SRC}
+            alt="Bitcoin for the Arts"
+            width={1024}
+            height={1024}
+            priority
+            className="h-auto w-full max-w-md sm:max-w-lg"
+          />
         </div>
 
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start">
@@ -169,7 +155,7 @@ export default function AboutPage() {
                 </p>
               </div>
 
-              <section className="rounded-2xl border border-black/15 dark:border-white/15 bg-brand-surface text-brand-surface-fg p-6 shadow-sm">
+              <section className="rounded-2xl border border-black/15 bg-brand-surface text-brand-surface-fg p-6 shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="text-xs font-bold uppercase tracking-wide">
                     Mission
@@ -181,7 +167,7 @@ export default function AboutPage() {
 
                 <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-12 md:items-start">
                   <div className="md:col-span-4">
-                    <div className="rounded-xl border border-black/15 dark:border-white/15 bg-black/5 dark:bg-white/5 p-5">
+                    <div className="rounded-xl border border-black/15 bg-black/5 p-5">
                       <div className="text-xs font-semibold uppercase tracking-wide opacity-80">
                         Our edge
                       </div>
@@ -206,7 +192,7 @@ export default function AboutPage() {
                     </div>
                   </div>
                   <div className="md:col-span-8">
-                    <blockquote className="relative overflow-hidden rounded-xl border border-black/15 dark:border-white/15 bg-black/5 dark:bg-white/5 p-6">
+                    <blockquote className="relative overflow-hidden rounded-xl border border-black/15 bg-black/5 p-6">
                       <div
                         className="pointer-events-none absolute -top-6 -left-3 text-[72px] font-semibold text-accent/60"
                         aria-hidden="true"

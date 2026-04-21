@@ -106,7 +106,7 @@ export default function Navigation() {
 
         <button
           type="button"
-          className="inline-flex items-center justify-center rounded-md border border-black/25 dark:border-white/25 px-3 py-2 text-sm font-medium sm:hidden hover:bg-black/5 dark:hover:bg-white/10"
+          className="inline-flex items-center justify-center rounded-md border border-black/25 px-3 py-2 text-sm font-medium sm:hidden hover:bg-black/5"
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={isOpen}
           onClick={() => {
@@ -173,8 +173,8 @@ export default function Navigation() {
                     isCta
                       ? 'bg-accent text-accent-fg hover:opacity-90'
                       : isActive
-                        ? 'bg-black/10 dark:bg-white/15'
-                        : 'hover:bg-black/5 dark:hover:bg-white/10',
+                        ? 'bg-black/10'
+                        : 'hover:bg-black/5',
                   ].join(' ')}
                 >
                   {item.label}
@@ -207,8 +207,8 @@ export default function Navigation() {
                     isCta
                       ? 'bg-accent text-accent-fg hover:opacity-90'
                       : isActive
-                        ? 'bg-black/10 dark:bg-white/15'
-                        : 'hover:bg-black/5 dark:hover:bg-white/10',
+                        ? 'bg-black/10'
+                        : 'hover:bg-black/5',
                   ].join(' ')}
                 >
                   {item.label}
@@ -253,7 +253,7 @@ export default function Navigation() {
       </nav>
 
       {isOpen ? (
-        <div className="border-t border-black/10 dark:border-white/15 bg-brand-surface text-brand-surface-fg sm:hidden">
+        <div className="border-t border-black/10 bg-brand-surface text-brand-surface-fg sm:hidden">
           <div className="mx-auto flex max-w-6xl flex-col gap-1 px-6 py-3">
             {navItems.map((item) => {
               const isActive =
@@ -278,8 +278,8 @@ export default function Navigation() {
                         isCta
                           ? 'bg-accent text-accent-fg hover:opacity-90'
                           : isActive
-                            ? 'bg-black/10 dark:bg-white/15'
-                            : 'hover:bg-black/5 dark:hover:bg-white/10',
+                            ? 'bg-black/10'
+                            : 'hover:bg-black/5',
                       ].join(' ')}
                     >
                       {item.label}
@@ -288,7 +288,7 @@ export default function Navigation() {
                     {hasChildren ? (
                       <button
                         type="button"
-                        className="rounded-md border border-black/15 dark:border-white/20 px-3 py-3 text-sm font-medium hover:bg-black/5 dark:hover:bg-white/10"
+                        className="rounded-md border border-black/15 px-3 py-3 text-sm font-medium hover:bg-black/5"
                         aria-label={isExpanded ? `Collapse ${item.label}` : `Expand ${item.label}`}
                         aria-expanded={isExpanded}
                         onClick={(e) => {
@@ -305,7 +305,7 @@ export default function Navigation() {
                   </div>
 
                   {hasChildren && isExpanded ? (
-                    <div className="mt-1 ml-3 flex flex-col gap-1 border-l border-black/15 dark:border-white/15 pl-3">
+                    <div className="mt-1 ml-3 flex flex-col gap-1 border-l border-black/15 pl-3">
                       {item.children!.map((child) => {
                         const isChildActive =
                           pathname === child.href || pathname.startsWith(`${child.href}/`);
@@ -320,8 +320,8 @@ export default function Navigation() {
                             className={[
                               'rounded-md px-3 py-2 text-sm font-medium transition-colors',
                               isChildActive
-                                ? 'bg-black/10 dark:bg-white/15'
-                                : 'hover:bg-black/5 dark:hover:bg-white/10',
+                                ? 'bg-black/10'
+                                : 'hover:bg-black/5',
                             ].join(' ')}
                           >
                             {child.label}

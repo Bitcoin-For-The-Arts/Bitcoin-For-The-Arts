@@ -12,7 +12,7 @@ export default function SiteFooter() {
   const hasSocials = socialLinks.length > 0;
 
   return (
-    <footer className="border-t border-black/15 dark:border-white/15 bg-brand-surface text-brand-surface-fg">
+    <footer className="border-t border-black/15 bg-brand-surface text-brand-surface-fg">
       <div className="mx-auto max-w-6xl px-6 py-10">
         <NewsletterSignupFooter />
 
@@ -24,7 +24,7 @@ export default function SiteFooter() {
                 alt=""
                 width={28}
                 height={28}
-                className="rounded-md border border-black/15 dark:border-white/20"
+                className="rounded-md border border-black/15"
               />
               <div className="text-sm font-semibold uppercase tracking-wide">
                 Bitcoin for the Arts
@@ -129,7 +129,7 @@ export default function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-black/15 dark:border-white/15 pt-6 text-xs opacity-80 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-4 border-t border-black/15 pt-6 text-xs opacity-80 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
             <span>© {new Date().getFullYear()} Bitcoin for the Arts. All rights reserved.</span>
             <a

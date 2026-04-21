@@ -39,27 +39,24 @@
   --border: rgba(0, 0, 0, 0.16);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Warm "ember" dark mode: more orange undertone than ink so the brand
-       reads brighter at night. Lime becomes the dominant accent because it
-       sings on dark surfaces; orange becomes the secondary highlight. */
-    --background: #2a1a0e; /* warm ember (was #1A1410, brightened with orange) */
-    --foreground: #fffaf0; /* cream text */
-    --muted: rgba(255, 250, 240, 0.78);
-    --surface: rgba(255, 250, 240, 0.07);
+/* ---------------------------------------------------------------
+   Dark mode is intentionally disabled for the 2026 launch — the
+   brand ships in light mode only. The palette below is preserved
+   as a comment so we can revive it later by re-wrapping it in
+   @media (prefers-color-scheme: dark) { :root { … } }.
 
-    --primary: #2a1a0e; /* nav/footer match the page */
-    --accent: #b3ff48; /* lime is the dominant accent on dark */
-    --accent-fg: #000000; /* CTA text on the accent surface (black on lime) */
-    --success: #ff4f14; /* orange becomes the secondary highlight */
-
-    --brand-surface: #2a1a0e; /* in dark mode, brand surface = page bg */
-    --brand-surface-fg: #fffaf0;
-
-    --border: rgba(255, 250, 240, 0.18);
-  }
-}
+       --background: #2a1a0e;          // warm ember
+       --foreground: #fffaf0;          // cream text
+       --muted:      rgba(255,250,240,0.78);
+       --surface:    rgba(255,250,240,0.07);
+       --primary:    #2a1a0e;          // nav/footer match the page
+       --accent:     #b3ff48;          // lime is the dominant accent
+       --accent-fg:  #000000;          // black on lime
+       --success:    #ff4f14;          // orange = secondary highlight
+       --brand-surface:    #2a1a0e;
+       --brand-surface-fg: #fffaf0;
+       --border:     rgba(255,250,240,0.18);
+   --------------------------------------------------------------- */
 
 @theme inline {
   --color-background: var(--background);
