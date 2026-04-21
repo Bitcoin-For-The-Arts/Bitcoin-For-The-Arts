@@ -106,7 +106,7 @@ export default function SocialIconLinks({ variant }: { variant: Variant }) {
 
   const buttonClass =
     variant === 'footer'
-      ? 'inline-flex h-11 w-11 items-center justify-center rounded-md border border-black/20 bg-background/40 hover:bg-background/70'
+      ? 'inline-flex h-11 w-11 items-center justify-center rounded-md border border-black/15 bg-background hover:bg-background/80 shadow-sm'
       : 'inline-flex min-h-12 min-w-12 items-center justify-center rounded-md border border-border bg-background hover:bg-surface';
 
   return (

@@ -72,7 +72,7 @@ export default function NewsletterSignupFooter() {
   return (
     <section
       aria-label="Newsletter signup"
-      className="mb-10 rounded-2xl border border-black/15 bg-white/40 p-5 text-foreground"
+      className="mb-10 rounded-2xl border border-black/15 bg-background p-5 text-foreground shadow-sm"
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="max-w-xl">
@@ -110,7 +110,7 @@ export default function NewsletterSignupFooter() {
                   setMessage('');
                 }}
                 placeholder="Email address"
-                className="min-h-11 w-full rounded-md border border-black/20 bg-background px-3 py-2 text-sm text-foreground placeholder:text-foreground/55 focus:outline-none focus:ring-2 focus:ring-black/25"
+                className="min-h-11 w-full rounded-md border border-black/25 bg-white px-3 py-2 text-sm text-foreground placeholder:text-foreground/55 focus:outline-none focus:ring-2 focus:ring-black/25"
               />
             </label>
 

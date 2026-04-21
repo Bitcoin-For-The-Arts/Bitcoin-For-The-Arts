@@ -4,10 +4,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useMemo, useState } from 'react';
-// BFTA 2026 brand bug. The nav bar in light mode is the lime brand surface,
-// so we use the matching green-field bug (orange BFT + black "A" on lime)
-// so the logo blends seamlessly into the bar.
-const NAV_LOGO_SRC = '/BFTA-bug-square-green-1.png';
+// BFTA 2026 brand bug. The nav bar is the lime brand surface, but we render
+// the cream-field bug as a small "branded sticker" — same pattern as the
+// newsletter card and the social icon tiles in the footer, so the chrome
+// reads as a system of cream cards floating on lime.
+const NAV_LOGO_SRC = '/BFTA-bug-square-cream-orange-1.png';
 
 type NavItem = {
   label: string;

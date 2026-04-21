@@ -4,9 +4,11 @@ import { socialLinks } from '@/lib/socials';
 import SocialIconLinks from '@/components/SocialIconLinks';
 import NewsletterSignupFooter from '@/components/NewsletterSignupFooter';
 
-// BFTA 2026 brand bug. Footer in light mode is the lime brand surface, so we
-// use the matching green-field bug for a continuous read with the field.
-const FOOTER_LOGO_SRC = '/BFTA-bug-square-green-1.png';
+// BFTA 2026 brand bug. Footer is the lime brand surface, but we render the
+// cream-field bug as a small "branded sticker" — same pattern as the
+// newsletter card and the social icon tiles, so the chrome reads as a
+// system of cream cards floating on lime.
+const FOOTER_LOGO_SRC = '/BFTA-bug-square-cream-orange-1.png';
 
 export default function SiteFooter() {
   const hasSocials = socialLinks.length > 0;
