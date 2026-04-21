@@ -4,12 +4,17 @@ import Link from 'next/link';
 import watermarklogo from '../asset/FreedomLab Logo.jpeg';
 
 // BFTA 2026 brand assets:
-//   /BFTA-bug-square-cream-orange-1.png  — round/square BFTA "bug" used in
-//     the about hero card (cream field matches the page background).
-//   /BFTA-main-lockup-cream-orange-2.png — full main lockup, used as the
-//     centerpiece at the top of the page above the hero card.
+//   /BFTA-bug-square-cream-orange-1.png        — small BFTA "bug" used in the
+//     about hero card (cream field matches the page background).
+//   /BFTA-main-lockup-transparent-light.png    — full main lockup with the
+//     cream rectangle knocked out. Drops cleanly onto the cream light-mode
+//     background with no visible card edge.
+//   /BFTA-main-lockup-transparent-dark.png     — same lockup but knocked out
+//     of black + recolored cream; drops cleanly onto the ember dark-mode
+//     background.
 const ABOUT_BUG_SRC = '/BFTA-bug-square-cream-orange-1.png';
-const MAIN_LOCKUP_SRC = '/BFTA-main-lockup-cream-orange-2.png';
+const MAIN_LOCKUP_LIGHT_SRC = '/BFTA-main-lockup-transparent-light.png';
+const MAIN_LOCKUP_DARK_SRC = '/BFTA-main-lockup-transparent-dark.png';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -51,16 +56,26 @@ export default function AboutPage() {
       </div>
 
       <div className="relative mx-auto max-w-6xl px-6 py-14">
-        {/* Main lockup — brand centerpiece at the top of the about page. */}
+        {/* Main lockup — brand centerpiece at the top of the about page.
+            Native <picture> swaps to the dark-mode (cream-on-transparent)
+            variant when the OS reports prefers-color-scheme:dark so the
+            lockup blends into the ember background. Light mode is the
+            default <img> source — unchanged behavior. */}
         <div className="mb-10 flex justify-center">
-          <Image
-            src={MAIN_LOCKUP_SRC}
-            alt="Bitcoin for the Arts"
-            width={1024}
-            height={1024}
-            priority
-            className="h-auto w-full max-w-md sm:max-w-lg"
-          />
+          <picture>
+            <source
+              srcSet={MAIN_LOCKUP_DARK_SRC}
+              media="(prefers-color-scheme: dark)"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={MAIN_LOCKUP_LIGHT_SRC}
+              alt="Bitcoin for the Arts"
+              width={1024}
+              height={1024}
+              className="h-auto w-full max-w-md sm:max-w-lg"
+            />
+          </picture>
         </div>
 
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start">
@@ -72,7 +87,7 @@ export default function AboutPage() {
                   alt="Bitcoin for the Arts Logo"
                   width={96}
                   height={96}
-                  className="rounded-full border border-border bg-background"
+                  className="rounded-md border border-border bg-background"
                   priority
                 />
                 <div className="min-w-0">
