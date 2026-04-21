@@ -119,7 +119,7 @@ export default function NewsletterSignupFooter() {
               disabled={!canSubmit}
               className={[
                 'inline-flex min-h-11 items-center justify-center rounded-md px-5 py-2 text-sm font-semibold transition-colors',
-                'bg-accent text-black hover:opacity-90',
+                'bg-accent text-accent-fg hover:opacity-90',
                 !canSubmit ? 'opacity-60 cursor-not-allowed' : '',
               ].join(' ')}
             >

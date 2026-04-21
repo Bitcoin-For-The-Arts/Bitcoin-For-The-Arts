@@ -171,7 +171,7 @@ export default function Navigation() {
                   className={[
                     'whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium tracking-wide transition-colors uppercase',
                     isCta
-                      ? 'bg-accent text-black hover:opacity-90'
+                      ? 'bg-accent text-accent-fg hover:opacity-90'
                       : isActive
                         ? 'bg-black/10 dark:bg-white/15'
                         : 'hover:bg-black/5 dark:hover:bg-white/10',
@@ -205,7 +205,7 @@ export default function Navigation() {
                   className={[
                     'whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium tracking-wide transition-colors uppercase inline-flex items-center gap-1',
                     isCta
-                      ? 'bg-accent text-black hover:opacity-90'
+                      ? 'bg-accent text-accent-fg hover:opacity-90'
                       : isActive
                         ? 'bg-black/10 dark:bg-white/15'
                         : 'hover:bg-black/5 dark:hover:bg-white/10',
@@ -276,7 +276,7 @@ export default function Navigation() {
                       className={[
                         'flex-1 rounded-md px-3 py-3 text-sm font-medium tracking-wide transition-colors',
                         isCta
-                          ? 'bg-accent text-black hover:opacity-90'
+                          ? 'bg-accent text-accent-fg hover:opacity-90'
                           : isActive
                             ? 'bg-black/10 dark:bg-white/15'
                             : 'hover:bg-black/5 dark:hover:bg-white/10',

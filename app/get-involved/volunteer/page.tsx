@@ -268,7 +268,7 @@ export default function VolunteerPage() {
                 <div className="mt-3 flex flex-col gap-3">
                   <Link
                     href="/donate"
-                    className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-black transition-colors hover:opacity-90"
+                    className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                   >
                     Donate
                   </Link>

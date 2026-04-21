@@ -27,6 +27,7 @@
   /* Brand colors */
   --primary: #000000; /* brand black — secondary CTAs, dots, primary buttons */
   --accent: #ff4f14; /* BFTA signal orange — primary CTAs */
+  --accent-fg: #ffffff; /* CTA text on the accent surface (white on orange) */
   --success: #b3ff48; /* BFTA lime — accents, success states */
 
   /* Branded surface = the "lime field" used for the nav, footer, and the
@@ -50,6 +51,7 @@
 
     --primary: #2a1a0e; /* nav/footer match the page */
     --accent: #b3ff48; /* lime is the dominant accent on dark */
+    --accent-fg: #000000; /* CTA text on the accent surface (black on lime) */
     --success: #ff4f14; /* orange becomes the secondary highlight */
 
     --brand-surface: #2a1a0e; /* in dark mode, brand surface = page bg */
@@ -67,6 +69,7 @@
 
   --color-primary: var(--primary);
   --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
   --color-success: var(--success);
   --color-brand-surface: var(--brand-surface);
   --color-brand-surface-fg: var(--brand-surface-fg);

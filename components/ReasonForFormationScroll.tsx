@@ -82,7 +82,7 @@ export default function ReasonForFormationScroll() {
           </p>
           <Link
             href="/about/leadership/dion-wilson"
-            className="mt-4 inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition-colors hover:opacity-90"
+            className="mt-4 inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
           >
             View founder bio
           </Link>

@@ -755,7 +755,7 @@ export default function GrantApplicationForm() {
             <button
               type="button"
               onClick={() => setSubmitState({ status: 'idle' })}
-              className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition-colors hover:opacity-90"
+              className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
             >
               Submit another application
             </button>
@@ -1796,7 +1796,7 @@ export default function GrantApplicationForm() {
             type="submit"
             disabled={isSubmitting}
             className={[
-              'inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition-colors',
+              'inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors',
               isSubmitting ? 'opacity-70 cursor-wait' : 'hover:opacity-90',
             ].join(' ')}
           >

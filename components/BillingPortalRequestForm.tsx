@@ -131,7 +131,7 @@ export default function BillingPortalRequestForm() {
         type="submit"
         disabled={state.status === 'submitting'}
         className={[
-          'inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition-colors hover:opacity-90',
+          'inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90',
           state.status === 'submitting' ? 'opacity-70 cursor-wait' : '',
         ].join(' ')}
       >
