@@ -1,7 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { socialLinks } from '@/lib/socials';
-import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-Gold.png';
+// BFTA 2026 brand bug — same mark as the nav so it reads as a system. The
+// black tile blends into the mobile footer (also black) and reads as a small
+// branded sticker on the cream desktop footer.
+const FOOTER_LOGO_SRC = '/BFTA-bug-square-black-orange.png';
 import SocialIconLinks from '@/components/SocialIconLinks';
 import NewsletterSignupFooter from '@/components/NewsletterSignupFooter';
 
@@ -17,11 +20,11 @@ export default function SiteFooter() {
           <div className="max-w-md">
             <div className="flex items-center gap-3">
               <Image
-                src={logoImage}
+                src={FOOTER_LOGO_SRC}
                 alt=""
                 width={28}
                 height={28}
-                className="rounded-full border border-white/20 sm:border-border"
+                className="rounded-md border border-white/20 sm:border-border"
               />
               <div className="text-sm font-semibold uppercase tracking-wide">
                 Bitcoin for the Arts

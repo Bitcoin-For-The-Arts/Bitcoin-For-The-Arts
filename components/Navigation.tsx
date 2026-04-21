@@ -4,7 +4,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-Gold.png';
+// BFTA 2026 brand bug — orange BFT + cream "A" script on black, designed to
+// sit flush with the (now black) nav bar.
+const NAV_LOGO_SRC = '/BFTA-bug-square-black-orange.png';
 
 type NavItem = {
   label: string;
@@ -89,13 +91,13 @@ export default function Navigation() {
           }}
         >
           <Image
-          src={logoImage}
-          alt=""
-          width={36}
-          height={36}
-          priority
-          className="rounded-full border border-white/20"
-        />
+            src={NAV_LOGO_SRC}
+            alt=""
+            width={36}
+            height={36}
+            priority
+            className="rounded-md border border-white/15"
+          />
           <span className="text-base sm:text-lg uppercase whitespace-nowrap leading-none">
             Bitcoin for the Arts
           </span>

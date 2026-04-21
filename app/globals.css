@@ -10,33 +10,43 @@
 }
 
 :root {
+  /* BFTA 2026 brand palette
+     ----------------------------------------------------------
+     #FFFAF0  Cream   — primary canvas / "voice" of the brand
+     #000000  Black   — typography + structural surfaces (nav, footer)
+     #FF4F14  Orange  — calls to action, the "Arts" script
+     #B3FF48  Lime    — accents, highlights, active/success states
+     ---------------------------------------------------------- */
+
   /* Neutrals */
-  --background: #ffffff; /* neutral white */
-  --foreground: #333333; /* dark gray text */
-  --muted: rgba(51, 51, 51, 0.72);
-  --surface: #f8f9fa; /* light gray surface */
+  --background: #fffaf0; /* brand cream */
+  --foreground: #000000; /* brand black */
+  --muted: rgba(0, 0, 0, 0.68);
+  --surface: #ffffff; /* cards/panels lift off the cream */
 
-  /* Brand colors (Grok palette) */
-  --primary: #7e57c2; /* creativity / renaissance purple */
-  --accent: #f7931a; /* Bitcoin orange */
-  --success: #26a69a; /* teal growth / endowment */
+  /* Brand colors */
+  --primary: #000000; /* brand black — nav/footer/structure */
+  --accent: #ff4f14; /* BFTA signal orange — CTAs */
+  --success: #b3ff48; /* BFTA lime — accents, success states */
 
-  --border: rgba(51, 51, 51, 0.16);
+  --border: rgba(0, 0, 0, 0.16);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Optional dark mode */
-    --background: #4a148c; /* deep purple background */
-    --foreground: #ffffff;
-    --muted: rgba(255, 255, 255, 0.78);
-    --surface: rgba(255, 255, 255, 0.08);
+    /* Ink dark mode: warm dark brown-black so cream/orange/lime
+       still feel like the same brand at night. Lime takes the
+       spotlight here because it sings on dark surfaces. */
+    --background: #1a1410; /* warm "ink" dark */
+    --foreground: #fffaf0; /* cream text */
+    --muted: rgba(255, 250, 240, 0.78);
+    --surface: rgba(255, 250, 240, 0.06);
 
-    --primary: #7e57c2;
-    --accent: #f7931a;
-    --success: #26a69a;
+    --primary: #1a1410; /* nav/footer match the page */
+    --accent: #b3ff48; /* lime is the dominant accent on dark */
+    --success: #ff4f14; /* orange becomes the secondary highlight */
 
-    --border: rgba(255, 255, 255, 0.18);
+    --border: rgba(255, 250, 240, 0.18);
   }
 }
 
@@ -78,9 +88,9 @@ h3 {
 body.mobile-vibrant .mobile-pop-card {
   background: linear-gradient(
     135deg,
-    rgba(126, 87, 194, 0.16),
-    rgba(247, 147, 26, 0.14),
-    rgba(255, 255, 255, 0)
+    rgba(255, 79, 20, 0.14),
+    rgba(179, 255, 72, 0.16),
+    rgba(255, 250, 240, 0)
   );
 }
 
@@ -129,7 +139,7 @@ body.mobile-vibrant .mobile-vibrant-sunset {
 
 .prose-article blockquote {
   margin: 2em 0;
-  border-left: 4px solid #d4af37;
+  border-left: 4px solid var(--accent);
   padding: 1em 1.5em;
   background: var(--surface);
   border-radius: 0 0.75rem 0.75rem 0;
