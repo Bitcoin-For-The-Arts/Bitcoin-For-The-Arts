@@ -1,6 +1,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import logoImage from './asset/BITCOIN-ARTS-LOGO-gold.jpg';
+
+// BFTA 2026 brand assets:
+//   /BFTA-bug-square-cream-orange-1.png  — round/square BFTA "bug" used in the
+//     hero (cream field matches the page background).
+//   /BFTA-main-lockup-cream-orange-2.png — the full "BITCOIN FOR THE ARTS"
+//     main lockup, used as the centerpiece under the intro video.
+const HOME_BUG_SRC = '/BFTA-bug-square-cream-orange-1.png';
+const MAIN_LOCKUP_SRC = '/BFTA-main-lockup-cream-orange-2.png';
 
 export default function Home() {
   // Easy toggle for the fullscreen intro video.
@@ -54,7 +61,7 @@ export default function Home() {
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
                   <a
                     href="#main"
-                    className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                    className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition-colors hover:opacity-90"
                   >
                     Enter
                   </a>
@@ -73,12 +80,25 @@ export default function Home() {
         </>
       ) : null}
 
+      {/* Main lockup — sits directly below the intro video as the brand
+          "centerpiece" before the rest of the home content. */}
+      <section className="mx-auto max-w-3xl px-6 pt-12 sm:pt-16">
+        <Image
+          src={MAIN_LOCKUP_SRC}
+          alt="Bitcoin for the Arts"
+          width={1024}
+          height={1024}
+          priority
+          className="mx-auto h-auto w-full max-w-md sm:max-w-lg"
+        />
+      </section>
+
       <section className="mx-auto max-w-6xl px-6 pb-16 pt-14 sm:pb-20 sm:pt-18">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center">
           <div className="lg:col-span-7">
             <div className="mb-6">
               <Image
-                src={logoImage}
+                src={HOME_BUG_SRC}
                 alt="Bitcoin for the Arts logo"
                 width={96}
                 height={96}
@@ -107,7 +127,7 @@ export default function Home() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
                 href="/donate"
-                className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition-colors hover:opacity-90"
               >
                 Donate Bitcoin
               </Link>

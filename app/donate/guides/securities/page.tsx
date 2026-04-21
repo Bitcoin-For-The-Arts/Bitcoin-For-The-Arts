@@ -41,7 +41,7 @@ export default function DonateSecuritiesGuidePage() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="mailto:donate@bitcoinforthearts.org?subject=Donate%20securities%20(stocks%2Fbonds%2Ffunds)"
-                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition-colors hover:opacity-90"
                 >
                   Donate securities (email us)
                 </a>
@@ -242,7 +242,7 @@ export default function DonateSecuritiesGuidePage() {
               <div className="md:col-span-4 md:text-right">
                 <a
                   href="mailto:donate@bitcoinforthearts.org?subject=Donate%20securities%20(stocks%2Fbonds%2Ffunds)"
-                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition-colors hover:opacity-90"
                 >
                   Donate securities
                 </a>

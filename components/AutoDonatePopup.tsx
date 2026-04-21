@@ -205,7 +205,7 @@ export default function AutoDonatePopup() {
                 <Link
                   key={a}
                   href={`/donate?amount=${a}#bitcoin`}
-                  className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-4 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-4 py-3 text-sm font-semibold text-black transition-colors hover:opacity-90"
                   onClick={dismiss}
                 >
                   {a}

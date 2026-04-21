@@ -529,7 +529,7 @@ export default function MembershipPage() {
                           tier={level.name}
                           cadence="monthly"
                           paymentMethod="traditional"
-                          className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                          className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-black transition-colors hover:opacity-90"
                         >
                           Traditional payment — {level.monthly} / mo
                         </TrackedMembershipLink>
@@ -541,7 +541,7 @@ export default function MembershipPage() {
                             paymentMethod="bitcoin"
                             className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-background px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/5"
                           >
-                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">₿</span>
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-black" aria-hidden="true">₿</span>
                             Subscribe with Bitcoin — {level.monthly} / mo
                           </TrackedMembershipLink>
                         ) : (
@@ -589,7 +589,7 @@ export default function MembershipPage() {
                             paymentMethod="bitcoin"
                             className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-background px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/5"
                           >
-                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">₿</span>
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-black" aria-hidden="true">₿</span>
                             Subscribe with Bitcoin — {level.btcAnnual} / yr
                           </TrackedMembershipLink>
                         ) : (
@@ -721,7 +721,7 @@ export default function MembershipPage() {
                                 paymentMethod="bitcoin"
                                 className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25"
                               >
-                                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">₿</span>
+                                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-black" aria-hidden="true">₿</span>
                                 Subscribe with Bitcoin — {guardian.monthly} / mo
                               </TrackedMembershipLink>
                             ) : (
@@ -770,7 +770,7 @@ export default function MembershipPage() {
                                 paymentMethod="bitcoin"
                                 className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/25 bg-white/15 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/25"
                               >
-                                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">₿</span>
+                                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-black" aria-hidden="true">₿</span>
                                 Subscribe with Bitcoin — {guardian.btcAnnual} / yr
                               </TrackedMembershipLink>
                             ) : (

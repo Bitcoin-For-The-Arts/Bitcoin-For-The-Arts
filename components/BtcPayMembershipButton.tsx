@@ -84,7 +84,7 @@ export default function BtcPayMembershipButton({
           'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-background px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/5 disabled:opacity-60'
         }
       >
-        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-white" aria-hidden="true">
+        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold leading-none text-black" aria-hidden="true">
           ₿
         </span>
         {isLoading ? 'Starting checkout…' : (label ?? 'Pay with Bitcoin')}

@@ -356,7 +356,7 @@ export default function SovereignArtistResidencyProposalPage() {
             <div className="mt-5 flex flex-col gap-3 sm:flex-row">
               <a
                 href="mailto:programs@bitcoinforthearts.org?subject=Sovereign%20Artist%20Residency%20Proposal"
-                className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-black transition-colors hover:opacity-90"
               >
                 Contact programs team
               </a>

@@ -45,7 +45,7 @@ export default function IraQcdGuidePage() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="mailto:donate@bitcoinforthearts.org?subject=IRA%20QCD%20gift"
-                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition-colors hover:opacity-90"
                 >
                   Start a QCD (email us)
                 </a>
@@ -233,7 +233,7 @@ export default function IraQcdGuidePage() {
               <div className="md:col-span-4 md:text-right">
                 <a
                   href="mailto:donate@bitcoinforthearts.org?subject=IRA%20QCD%20gift"
-                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition-colors hover:opacity-90"
                 >
                   Start a QCD
                 </a>

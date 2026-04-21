@@ -53,7 +53,7 @@ function DocCard(props: { title: string; description: string; href: string }) {
           href={props.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
+          className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-black transition-colors hover:opacity-90"
         >
           View / Download PDF
         </a>

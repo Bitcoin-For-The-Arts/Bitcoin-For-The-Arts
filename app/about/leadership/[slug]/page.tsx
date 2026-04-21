@@ -88,7 +88,7 @@ export default function LeadershipProfilePage({
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                   <Link
                     href="/donate"
-                    className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                    className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition-colors hover:opacity-90"
                   >
                     Support the mission
                   </Link>

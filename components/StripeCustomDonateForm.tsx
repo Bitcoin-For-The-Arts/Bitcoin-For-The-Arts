@@ -100,7 +100,7 @@ export default function StripeCustomDonateForm() {
           type="submit"
           disabled={state.status === 'submitting'}
           className={[
-            'inline-flex min-h-11 w-full items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90',
+            'inline-flex min-h-11 w-full items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-black transition-colors hover:opacity-90',
             state.status === 'submitting' ? 'opacity-70 cursor-wait' : '',
           ].join(' ')}
         >

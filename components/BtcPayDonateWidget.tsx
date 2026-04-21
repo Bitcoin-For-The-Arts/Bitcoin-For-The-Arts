@@ -113,7 +113,7 @@ export default function BtcPayDonateWidget() {
                           ? 'border-accent bg-accent/10 text-accent hover:bg-accent/20'
                           : '',
                         isFeatured && isSelected
-                          ? 'border-accent bg-accent text-white shadow-lg shadow-accent/25'
+                          ? 'border-accent bg-accent text-black shadow-lg shadow-accent/25'
                           : '',
                         !isFeatured && isSelected
                           ? 'border-accent bg-accent/10 text-foreground'

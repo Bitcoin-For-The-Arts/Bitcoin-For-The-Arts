@@ -1,18 +1,18 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { socialLinks } from '@/lib/socials';
-// BFTA 2026 brand bug — same mark as the nav so it reads as a system. The
-// black tile blends into the mobile footer (also black) and reads as a small
-// branded sticker on the cream desktop footer.
-const FOOTER_LOGO_SRC = '/BFTA-bug-square-black-orange.png';
 import SocialIconLinks from '@/components/SocialIconLinks';
 import NewsletterSignupFooter from '@/components/NewsletterSignupFooter';
+
+// BFTA 2026 brand bug. Footer in light mode is the lime brand surface, so we
+// use the matching green-field bug for a continuous read with the field.
+const FOOTER_LOGO_SRC = '/BFTA-bug-square-green-1.png';
 
 export default function SiteFooter() {
   const hasSocials = socialLinks.length > 0;
 
   return (
-    <footer className="border-t border-white/15 bg-primary text-white sm:border-border sm:bg-background sm:text-foreground">
+    <footer className="border-t border-black/15 dark:border-white/15 bg-brand-surface text-brand-surface-fg">
       <div className="mx-auto max-w-6xl px-6 py-10">
         <NewsletterSignupFooter />
 
@@ -24,13 +24,13 @@ export default function SiteFooter() {
                 alt=""
                 width={28}
                 height={28}
-                className="rounded-md border border-white/20 sm:border-border"
+                className="rounded-md border border-black/15 dark:border-white/20"
               />
               <div className="text-sm font-semibold uppercase tracking-wide">
                 Bitcoin for the Arts
               </div>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-white/80 sm:text-muted">
+            <p className="mt-3 text-sm leading-relaxed opacity-80">
               A nonprofit supporting artists with Bitcoin micro-grants, workshops,
               residencies, and productions — with radical transparency.
             </p>
@@ -38,22 +38,22 @@ export default function SiteFooter() {
 
           <div className={`grid grid-cols-2 gap-8 ${hasSocials ? 'sm:grid-cols-4' : 'sm:grid-cols-3'}`}>
             <div>
-              <div className="text-xs font-semibold uppercase tracking-wide text-white/80 sm:text-muted">
+              <div className="text-xs font-semibold uppercase tracking-wide opacity-80">
                 Organization
               </div>
               <ul className="mt-3 space-y-2 text-sm">
                 <li>
-                  <Link href="/about" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/about" className="hover:underline">
                     About
                   </Link>
                 </li>
                 <li>
-                  <Link href="/grants" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/grants" className="hover:underline">
                     Grants
                   </Link>
                 </li>
                 <li>
-                  <Link href="/programming" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/programming" className="hover:underline">
                     Programming
                   </Link>
                 </li>
@@ -61,30 +61,27 @@ export default function SiteFooter() {
             </div>
 
             <div>
-              <div className="text-xs font-semibold uppercase tracking-wide text-white/80 sm:text-muted">
+              <div className="text-xs font-semibold uppercase tracking-wide opacity-80">
                 Community
               </div>
               <ul className="mt-3 space-y-2 text-sm">
                 <li>
-                  <Link href="/events" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/events" className="hover:underline">
                     Events
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    href="/get-involved/feedback"
-                    className="hover:underline text-white/90 sm:text-foreground"
-                  >
+                  <Link href="/get-involved/feedback" className="hover:underline">
                     Feedback
                   </Link>
                 </li>
                 <li>
-                  <Link href="/stories" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/stories" className="hover:underline">
                     Stories
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/contact" className="hover:underline">
                     Contact
                   </Link>
                 </li>
@@ -92,27 +89,27 @@ export default function SiteFooter() {
             </div>
 
             <div>
-              <div className="text-xs font-semibold uppercase tracking-wide text-white/80 sm:text-muted">
+              <div className="text-xs font-semibold uppercase tracking-wide opacity-80">
                 Legal
               </div>
               <ul className="mt-3 space-y-2 text-sm">
                 <li>
-                  <Link href="/transparency" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/transparency" className="hover:underline">
                     Transparency
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy-policy" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/privacy-policy" className="hover:underline">
                     Privacy policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/terms" className="hover:underline">
                     Terms of use
                   </Link>
                 </li>
                 <li>
-                  <Link href="/donate" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/donate" className="hover:underline">
                     Donate
                   </Link>
                 </li>
@@ -121,7 +118,7 @@ export default function SiteFooter() {
 
             {hasSocials ? (
               <div>
-                <div className="text-xs font-semibold uppercase tracking-wide text-white/80 sm:text-muted">
+                <div className="text-xs font-semibold uppercase tracking-wide opacity-80">
                   Follow
                 </div>
                 <div className="mt-3">
@@ -132,7 +129,7 @@ export default function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-white/15 pt-6 text-xs text-white/80 sm:border-border sm:text-muted sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-4 border-t border-black/15 dark:border-white/15 pt-6 text-xs opacity-80 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
             <span>© {new Date().getFullYear()} Bitcoin for the Arts. All rights reserved.</span>
             <a
@@ -153,13 +150,10 @@ export default function SiteFooter() {
             </a>
           </div>
           <div className="flex gap-4">
-            <Link href="/sitemap-page" className="hover:underline text-white/90 sm:text-inherit">
+            <Link href="/sitemap-page" className="hover:underline">
               Site map
             </Link>
-            <a
-              href="mailto:hello@bitcoinforthearts.org"
-              className="hover:underline text-white/90 sm:text-inherit"
-            >
+            <a href="mailto:hello@bitcoinforthearts.org" className="hover:underline">
               hello@bitcoinforthearts.org
             </a>
           </div>
@@ -168,4 +162,3 @@ export default function SiteFooter() {
     </footer>
   );
 }
-

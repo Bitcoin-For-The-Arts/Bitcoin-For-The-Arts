@@ -108,7 +108,7 @@ export default function HomeWebinarPromo() {
                 href={config.signupUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-black transition-colors hover:opacity-90"
               >
                 Sign up
               </a>

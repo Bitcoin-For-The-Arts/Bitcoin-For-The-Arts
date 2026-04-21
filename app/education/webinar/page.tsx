@@ -186,7 +186,7 @@ function WebinarCard({
         <div
           className={`${
             isFeatured ? 'mt-5' : 'mt-4'
-          } inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-6 py-2 text-sm font-semibold text-white transition-colors group-hover:opacity-90`}
+          } inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-6 py-2 text-sm font-semibold text-black transition-colors group-hover:opacity-90`}
         >
           {webinar.cta} &rarr;
         </div>
@@ -232,7 +232,7 @@ export default function EducationWebinarPage() {
         ═══════════════════════════════════════════════════════════ */}
         <section className="mt-14">
           <div className="flex items-center gap-3">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent text-sm font-bold text-white">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent text-sm font-bold text-black">
               1
             </span>
             <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">

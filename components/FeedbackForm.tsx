@@ -184,7 +184,7 @@ export default function FeedbackForm() {
                     className={[
                       'flex cursor-pointer items-center justify-center rounded-xl border border-border bg-surface px-3 py-2 text-sm font-semibold text-foreground transition-colors',
                       'hover:opacity-90',
-                      'peer-checked:border-accent peer-checked:bg-accent peer-checked:text-white',
+                      'peer-checked:border-accent peer-checked:bg-accent peer-checked:text-black',
                       'peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent',
                     ].join(' ')}
                   >
@@ -242,7 +242,7 @@ export default function FeedbackForm() {
                     className={[
                       'flex cursor-pointer items-center justify-center rounded-xl border border-border bg-surface px-3 py-2 text-sm font-semibold text-foreground transition-colors',
                       'hover:opacity-90',
-                      'peer-checked:border-accent peer-checked:bg-accent peer-checked:text-white',
+                      'peer-checked:border-accent peer-checked:bg-accent peer-checked:text-black',
                       'peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent',
                     ].join(' ')}
                   >
@@ -292,7 +292,7 @@ export default function FeedbackForm() {
         type="submit"
         disabled={state.status === 'submitting'}
         className={[
-          'inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90',
+          'inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition-colors hover:opacity-90',
           state.status === 'submitting' ? 'opacity-70 cursor-wait' : '',
         ].join(' ')}
       >
