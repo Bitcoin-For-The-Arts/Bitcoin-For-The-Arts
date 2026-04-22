@@ -18,8 +18,7 @@ export default function ArtZapWeekendPage() {
   const heroImage = '/21-artist.jpg';
   const sponsorEmail = 'sponsor@bitcoinforthearts.org';
   const ein = '41-2642260';
-  const onePagerUrl =
-    'https://github.com/DionWilson/bitcoinforthearts/raw/main/docs/art-zap-weekend/pdf-build/Bitcoin-For-The-Arts-Art-Zap-Weekend-One-Pager.pdf';
+  const onePagerUrl = '/Art-Zap-Weekend-Sponsor-One-Pager.pdf';
 
   const tiers = [
     {
@@ -47,8 +46,8 @@ export default function ArtZapWeekendPage() {
       benefits: [
         'Rotating on-screen logo throughout the broadcast',
         'Logo on the live donation/zap overlay',
-        '2-minute branded segment, day of sponsor\u2019s choosing',
-        '4 host mentions during sponsor\u2019s chosen day',
+        '2-minute branded segment, day of sponsor’s choosing',
+        '4 host mentions during sponsor’s chosen day',
         'Logo on signage at the Monday finale',
         '3 reserved seats at the finale',
         '3 dedicated co-promotion social posts',
@@ -75,32 +74,32 @@ export default function ArtZapWeekendPage() {
     {
       label: 'A/V production',
       detail:
-        'On-site sound + lighting at the Pubkey DC finale (~$2,000\u2013$4,000 value).',
+        'On-site sound + lighting at the Pubkey DC finale (~$2,000–$4,000 value).',
     },
     {
       label: 'Photography & videography',
       detail:
-        'On-site coverage of the finale + edited recap reel (~$2,000\u2013$4,000 value).',
+        'On-site coverage of the finale + edited recap reel (~$2,000–$4,000 value).',
     },
     {
       label: 'Hardware wallets for artists',
       detail:
-        'A great fit for any hardware vendor who wants to put their device in the hands of working artists who will talk about it (~$1,000\u2013$3,000 value).',
+        'A great fit for any hardware vendor who wants to put their device in the hands of working artists who will talk about it (~$1,000–$3,000 value).',
     },
     {
       label: 'Catering & beverage',
       detail:
-        'Bar tab, beer/wine, or light food at the finale (~$2,000\u2013$5,000 value).',
+        'Bar tab, beer/wine, or light food at the finale (~$2,000–$5,000 value).',
     },
     {
       label: 'Print & signage',
       detail:
-        'Step-and-repeat, posters, printed sponsor signage at the finale (~$500\u2013$1,500 value).',
+        'Step-and-repeat, posters, printed sponsor signage at the finale (~$500–$1,500 value).',
     },
     {
       label: 'Travel & hospitality',
       detail:
-        'Hotel rooms or travel for performing artists at the finale (~$1,500\u2013$5,000 value).',
+        'Hotel rooms or travel for performing artists at the finale (~$1,500–$5,000 value).',
     },
     {
       label: 'Silent auction items',
@@ -116,7 +115,7 @@ export default function ArtZapWeekendPage() {
         imageAlt="21 featured artists for Art + Zap Weekend."
         label="Art + Zap Weekend"
         title="A Bitcoin-funded fundraiser for the arts."
-        description="21 featured artists. 2 days of live broadcast. A Monday-night in-person finale at Pubkey DC with a Broadway-caliber headliner. September 2026 \u2014 date locking imminent."
+        description="21 featured artists. 2 days of live broadcast. A Monday-night in-person finale at Pubkey DC with a Broadway-caliber headliner. September 2026 — date locking imminent."
         priority
       />
 
@@ -147,7 +146,7 @@ export default function ArtZapWeekendPage() {
           {[
             { label: 'When', value: 'Sept 2026', sub: 'Date locking imminent' },
             { label: 'Featured artists', value: '21', sub: 'Mission supporters' },
-            { label: 'Live broadcast', value: '2 days', sub: 'Sat + Sun, 1\u20135 pm ET' },
+            { label: 'Live broadcast', value: '2 days', sub: 'Sat + Sun, 1–5 pm ET' },
             { label: 'Finale venue', value: 'Pubkey DC', sub: 'Monday evening' },
           ].map((item) => (
             <div
@@ -333,7 +332,7 @@ export default function ArtZapWeekendPage() {
               },
               {
                 title: 'Permanent on-brand content',
-                body: 'Logos visible on every clip on YouTube and Nostr in perpetuity \u2014 long after the event.',
+                body: 'Logos visible on every clip on YouTube and Nostr in perpetuity — long after the event.',
               },
               {
                 title: 'High-signal audience',
