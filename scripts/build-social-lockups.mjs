@@ -81,21 +81,65 @@ const FRACTIONS = {
 
 const SIZES = [2160, 1080];
 
-// Profile variants: a curated subset for avatar use. Generates both the
-// main lockup AND the inline (wide) lockup on the same square canvas so
-// you can A/B which reads better as your green profile picture.
+// Profile variants: square images where the lockup is scaled down to ~55%
+// of the canvas so the type stays comfortably inside the circular avatar
+// crop every platform applies. Use these as profile pictures on
+// IG / X / FB / LinkedIn.
+//
+// "main" = the full BITCOIN / FOR / THE / Arts wrap.
+// "inline" = the BFTA inline lockup (much more legible at avatar size).
 const profileVariants = [
-  {
-    label: 'green-main',
-    input: 'BFTA-main-lockup-green.png',
-    background: LIME,
-  },
-  {
-    label: 'green-inline',
-    input: 'BFTA-bug-inline-green-1.png',
-    background: LIME,
-  },
+  // Lime field
+  { label: 'green-main', input: 'BFTA-main-lockup-green.png', background: LIME },
+  { label: 'green-inline', input: 'BFTA-bug-inline-green-1.png', background: LIME },
+  // Solid orange field (no inline-on-orange exists in the brand kit yet, so
+  // only the main lockup ships at this color).
+  { label: 'orange-main', input: 'BFTA-main-lockup-orange.png', background: ORANGE },
+  // Black field
+  { label: 'black-orange-main', input: 'BFTA-main-lockup-black-orange.png', background: BLACK },
+  { label: 'black-orange-inline', input: 'BFTA-bug-inline-black-orange.png', background: BLACK },
 ];
+
+// Circle-safe variants: same as profile mode (lockup at ~55% of canvas)
+// but the square corners are masked out to full transparency so the file
+// itself is already a circle. Drop these into any platform that lets you
+// upload a transparent PNG and the avatar will look identical to the
+// circular crop preview — no rectangle bleed-through behind the brand
+// color, no surprises.
+//
+// We render circle-safe versions for every main lockup color so you can
+// pick whichever color matches the campaign or post.
+const circleSafeMainVariants = [
+  { label: 'cream-orange', input: 'BFTA-main-lockup-cream-orange-2.png', background: CREAM },
+  { label: 'cream-black', input: 'BFTA-main-lockup-cream-black.png', background: CREAM },
+  { label: 'black-cream', input: 'BFTA-main-lockup-black-cream.png', background: BLACK },
+  { label: 'black-orange', input: 'BFTA-main-lockup-black-orange.png', background: BLACK },
+  { label: 'orange', input: 'BFTA-main-lockup-orange.png', background: ORANGE },
+  { label: 'green', input: 'BFTA-main-lockup-green.png', background: LIME },
+];
+
+// Banner variants: wide cover photos with the inline lockup centered and a
+// lot of horizontal breathing room. Sized for native platform specs so
+// you can drop them in without cropping.
+//
+// LinkedIn personal:  1584 x 396  (4:1)
+// X (Twitter) header: 1500 x 500  (3:1)
+// Facebook cover:     1640 x 624  (~21:8 — Facebook's recommended export)
+const bannerSizes = [
+  { name: 'linkedin', width: 1584, height: 396 },
+  { name: 'x',        width: 1500, height: 500 },
+  { name: 'facebook', width: 1640, height: 624 },
+];
+
+const bannerVariants = [
+  { label: 'green', input: 'BFTA-bug-inline-green-1.png', background: LIME },
+  { label: 'black-orange', input: 'BFTA-bug-inline-black-orange.png', background: BLACK },
+];
+
+// How wide the inline lockup should be inside a banner, as a fraction of
+// the banner *height* (not width). 1.7x the banner height tends to leave
+// breathing room on left+right while keeping the type readable on mobile.
+const BANNER_LOCKUP_HEIGHT_FRACTION = 0.55;
 
 async function buildOne({ input, label, background, mode }, size) {
   const inputPath = path.join(publicDir, input);
@@ -134,6 +178,92 @@ async function buildOne({ input, label, background, mode }, size) {
   console.log(`[social] wrote ${path.relative(projectRoot, outputPath)} (${size}x${size})`);
 }
 
+// Build a circular avatar PNG: identical composition to a 'profile' file
+// (lockup centered at ~55% of canvas, brand color background) but with the
+// square corners masked out to full transparency. Result is a self-circle
+// PNG — drop directly into a platform that accepts transparent avatars.
+async function buildCircleSafe({ input, label, background }, size) {
+  const inputPath = path.join(publicDir, input);
+  const filename = `BFTA-social-circle-${label}-${size}.png`;
+  const outputPath = path.join(outDir, filename);
+
+  const lockupSize = Math.round(size * FRACTIONS.profile);
+
+  // Build the square base (brand color + centered lockup).
+  const resized = await sharp(inputPath)
+    .resize({
+      width: lockupSize,
+      height: lockupSize,
+      fit: 'inside',
+      kernel: 'lanczos3',
+    })
+    .png()
+    .toBuffer();
+
+  const square = await sharp({
+    create: {
+      width: size,
+      height: size,
+      channels: 4,
+      background: { r: background.r, g: background.g, b: background.b, alpha: 1 },
+    },
+  })
+    .composite([{ input: resized, gravity: 'center' }])
+    .png()
+    .toBuffer();
+
+  // SVG circle mask the size of the canvas — opaque circle, transparent
+  // corners. Composited with `dest-in` keeps only the pixels of `square`
+  // that fall inside the circle.
+  const circleMask = Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+       <circle cx="${size / 2}" cy="${size / 2}" r="${size / 2}" fill="#fff"/>
+     </svg>`,
+  );
+
+  await sharp(square)
+    .composite([{ input: circleMask, blend: 'dest-in' }])
+    .png({ compressionLevel: 9 })
+    .toFile(outputPath);
+
+  console.log(`[social] wrote ${path.relative(projectRoot, outputPath)} (${size}x${size}, circle)`);
+}
+
+async function buildBanner({ input, label, background }, banner) {
+  const inputPath = path.join(publicDir, input);
+  const { name, width, height } = banner;
+  const filename = `BFTA-social-banner-${name}-${label}.png`;
+  const outputPath = path.join(outDir, filename);
+
+  const lockupHeight = Math.round(height * BANNER_LOCKUP_HEIGHT_FRACTION);
+
+  const resized = await sharp(inputPath)
+    .resize({
+      // For wide inline lockups, constrain by *height* so they read
+      // correctly inside a short, wide banner.
+      height: lockupHeight,
+      width: width, // hard ceiling so we never spill past the canvas
+      fit: 'inside',
+      kernel: 'lanczos3',
+    })
+    .png()
+    .toBuffer();
+
+  await sharp({
+    create: {
+      width,
+      height,
+      channels: 4,
+      background: { r: background.r, g: background.g, b: background.b, alpha: 1 },
+    },
+  })
+    .composite([{ input: resized, gravity: 'center' }])
+    .png({ compressionLevel: 9 })
+    .toFile(outputPath);
+
+  console.log(`[social] wrote ${path.relative(projectRoot, outputPath)} (${width}x${height})`);
+}
+
 async function main() {
   await mkdir(outDir, { recursive: true });
 
@@ -145,11 +275,25 @@ async function main() {
   }
 
   // Profile-avatar variants (extra padding so circle crops don't clip
-  // the type). Currently green main + green inline; add more to this
-  // list as needed.
+  // the type).
   for (const variant of profileVariants) {
     for (const size of SIZES) {
       await buildOne({ ...variant, mode: 'profile' }, size);
+    }
+  }
+
+  // Pre-cropped circular avatars — same composition as 'profile' but the
+  // square corners are knocked out, so the PNG itself is already a circle.
+  for (const variant of circleSafeMainVariants) {
+    for (const size of SIZES) {
+      await buildCircleSafe(variant, size);
+    }
+  }
+
+  // Cover banners for LinkedIn / X / Facebook.
+  for (const variant of bannerVariants) {
+    for (const banner of bannerSizes) {
+      await buildBanner(variant, banner);
     }
   }
 }
