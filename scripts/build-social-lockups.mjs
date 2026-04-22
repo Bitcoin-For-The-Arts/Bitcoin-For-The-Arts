@@ -68,21 +68,47 @@ const variants = [
   },
 ];
 
-// How wide the lockup should be inside the square canvas, as a fraction of
-// the canvas width. 0.70 leaves a clean ~15% margin on each side, which
-// reads well as both an avatar (circle crops won't clip type) and as a
-// 1:1 feed post (safe inside platform caption gradients).
-const LOCKUP_FRACTION = 0.7;
+// "post" lockups fill ~70% of the canvas — strong presence as a 1:1 feed
+// post, still safe inside platform caption-gradient overlays.
+//
+// "profile" lockups fill ~55% of the canvas — small enough that the type
+// stays comfortably inside the *circular* crop every platform applies to
+// profile avatars (IG, X, FB, LinkedIn).
+const FRACTIONS = {
+  post: 0.7,
+  profile: 0.55,
+};
 
 const SIZES = [2160, 1080];
 
-async function buildOne({ input, label, background }, size) {
-  const inputPath = path.join(publicDir, input);
-  const outputPath = path.join(outDir, `BFTA-social-${label}-${size}.png`);
+// Profile variants: a curated subset for avatar use. Generates both the
+// main lockup AND the inline (wide) lockup on the same square canvas so
+// you can A/B which reads better as your green profile picture.
+const profileVariants = [
+  {
+    label: 'green-main',
+    input: 'BFTA-main-lockup-green.png',
+    background: LIME,
+  },
+  {
+    label: 'green-inline',
+    input: 'BFTA-bug-inline-green-1.png',
+    background: LIME,
+  },
+];
 
-  const targetLockupSize = Math.round(size * LOCKUP_FRACTION);
+async function buildOne({ input, label, background, mode }, size) {
+  const inputPath = path.join(publicDir, input);
+  const fraction = FRACTIONS[mode];
+  const filename = `BFTA-social-${mode}-${label}-${size}.png`;
+  const outputPath = path.join(outDir, filename);
+
+  const targetLockupSize = Math.round(size * fraction);
 
   // Resize the source lockup so its longer edge equals targetLockupSize.
+  // For wide ("inline") lockups this naturally produces a much shorter
+  // height, which is the desired effect — extra vertical breathing room
+  // around the type.
   const resized = await sharp(inputPath)
     .resize({
       width: targetLockupSize,
@@ -93,7 +119,6 @@ async function buildOne({ input, label, background }, size) {
     .png()
     .toBuffer();
 
-  // Composite onto a solid square canvas of the brand color.
   await sharp({
     create: {
       width: size,
@@ -106,16 +131,25 @@ async function buildOne({ input, label, background }, size) {
     .png({ compressionLevel: 9 })
     .toFile(outputPath);
 
-  console.log(
-    `[social] wrote ${path.relative(projectRoot, outputPath)} (${size}x${size})`,
-  );
+  console.log(`[social] wrote ${path.relative(projectRoot, outputPath)} (${size}x${size})`);
 }
 
 async function main() {
   await mkdir(outDir, { recursive: true });
+
+  // 1:1 feed-post variants for every brand color.
   for (const variant of variants) {
     for (const size of SIZES) {
-      await buildOne(variant, size);
+      await buildOne({ ...variant, mode: 'post' }, size);
+    }
+  }
+
+  // Profile-avatar variants (extra padding so circle crops don't clip
+  // the type). Currently green main + green inline; add more to this
+  // list as needed.
+  for (const variant of profileVariants) {
+    for (const size of SIZES) {
+      await buildOne({ ...variant, mode: 'profile' }, size);
     }
   }
 }
