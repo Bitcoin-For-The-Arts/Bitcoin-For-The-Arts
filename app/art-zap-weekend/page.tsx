@@ -389,7 +389,7 @@ export default function ArtZapWeekendPage() {
         <div className="mt-10 rounded-2xl border border-border bg-background p-6 text-sm leading-relaxed text-muted">
           <strong className="text-foreground">Bitcoin For The Arts, Inc.</strong> is a 501(c)(3)
           tax-exempt nonprofit corporation, EIN <strong className="text-foreground">{ein}</strong>,
-          headquartered at 27 West 60th Street, New York, NY 10023. Donations and sponsorships are
+          headquartered at 27 West 60th Street, PO Box 20069, New York, NY 10023. Donations and sponsorships are
           tax-deductible to the extent permitted by law. Receipts are provided automatically. This
           page is informational and does not constitute tax advice.
         </div>
