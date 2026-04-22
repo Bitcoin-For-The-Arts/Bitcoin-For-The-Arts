@@ -18,7 +18,7 @@ export default function ArtZapWeekendPage() {
   const heroImage = '/21-artist.jpg';
   const sponsorEmail = 'sponsor@bitcoinforthearts.org';
   const ein = '41-2642260';
-  const onePagerUrl = '/Art-Zap-Weekend-Sponsor-One-Pager.pdf';
+  const onePagerUrl = '/Bitcoin-For-The-Arts-Art-Zap-Weekend-One-Pager.pdf';
 
   const tiers = [
     {
