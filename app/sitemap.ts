@@ -38,6 +38,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/stories/matt-finlay',
     '/stories/benjamin-ella',
     '/stories/share-your-story',
+    '/art-zap-weekend',
     '/donate',
     '/donate/monthly',
     '/donate/guides/life-insurance',
