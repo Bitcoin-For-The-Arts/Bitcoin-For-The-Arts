@@ -35,10 +35,21 @@ const LIME = { r: 179, g: 255, b: 72 };   // #B3FF48
 
 // Each entry pairs a source lockup with the background color the social
 // canvas should fill with around it.
+//
+// NOTE: cream-orange-2 has a BLACK 'BITCOIN/FOR/THE' with an ORANGE 'Arts'
+// script. cream-orange-1 has the inverse: ORANGE 'BITCOIN/FOR/THE' with a
+// BLACK 'Arts' script. We expose them as 'cream-orange' (v2, the main one
+// used in the website chrome) and 'cream-orange-alt' (v1) so file names
+// stay descriptive.
 const variants = [
   {
     label: 'cream-orange',
     input: 'BFTA-main-lockup-cream-orange-2.png',
+    background: CREAM,
+  },
+  {
+    label: 'cream-orange-alt',
+    input: 'BFTA-main-lockup-cream-orange-1.png',
     background: CREAM,
   },
   {
@@ -95,9 +106,16 @@ const profileVariants = [
   // Solid orange field (no inline-on-orange exists in the brand kit yet, so
   // only the main lockup ships at this color).
   { label: 'orange-main', input: 'BFTA-main-lockup-orange.png', background: ORANGE },
-  // Black field
+  // Black field — orange BFT version
   { label: 'black-orange-main', input: 'BFTA-main-lockup-black-orange.png', background: BLACK },
   { label: 'black-orange-inline', input: 'BFTA-bug-inline-black-orange.png', background: BLACK },
+  // Black field — cream BFTA version
+  { label: 'black-cream-main', input: 'BFTA-main-lockup-black-cream.png', background: BLACK },
+  { label: 'black-cream-inline', input: 'BFTA-bug-inline-black-cream (1).png', background: BLACK },
+  // Cream field — alt main + inline (new additions; pairs with the cream
+  // chrome used in the website footer/cards).
+  { label: 'cream-orange-alt-main', input: 'BFTA-main-lockup-cream-orange-1.png', background: CREAM },
+  { label: 'cream-orange-inline', input: 'BFTA-bug-inline-cream-orange-1.png', background: CREAM },
 ];
 
 // Circle-safe variants: same as profile mode (lockup at ~55% of canvas)
@@ -111,6 +129,7 @@ const profileVariants = [
 // pick whichever color matches the campaign or post.
 const circleSafeMainVariants = [
   { label: 'cream-orange', input: 'BFTA-main-lockup-cream-orange-2.png', background: CREAM },
+  { label: 'cream-orange-alt', input: 'BFTA-main-lockup-cream-orange-1.png', background: CREAM },
   { label: 'cream-black', input: 'BFTA-main-lockup-cream-black.png', background: CREAM },
   { label: 'black-cream', input: 'BFTA-main-lockup-black-cream.png', background: BLACK },
   { label: 'black-orange', input: 'BFTA-main-lockup-black-orange.png', background: BLACK },
@@ -134,6 +153,8 @@ const bannerSizes = [
 const bannerVariants = [
   { label: 'green', input: 'BFTA-bug-inline-green-1.png', background: LIME },
   { label: 'black-orange', input: 'BFTA-bug-inline-black-orange.png', background: BLACK },
+  { label: 'black-cream', input: 'BFTA-bug-inline-black-cream (1).png', background: BLACK },
+  { label: 'cream-orange', input: 'BFTA-bug-inline-cream-orange-1.png', background: CREAM },
 ];
 
 // How wide the inline lockup should be inside a banner, as a fraction of
