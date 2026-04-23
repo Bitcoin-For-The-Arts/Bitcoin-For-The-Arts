@@ -4,7 +4,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import logoImage from '@/app/asset/BITCOIN-ARTS-LOGO-Gold.png';
+// BFTA 2026 brand bug — same cream-orange-2 mark used in nav, footer, and
+// the home/about hero columns, so the popup reads as part of the same
+// brand system instead of dropping the old gold badge in.
+const POPUP_LOGO_SRC = '/BFTA-bug-square-cream-orange-2.png';
 
 const STORAGE_KEY = 'bfta_donate_popup_dismissed_session';
 const HOME_SCROLL_KEY = 'bfta_donate_popup_home_scrolled_session';
@@ -148,7 +151,8 @@ export default function AutoDonatePopup() {
         className="absolute inset-0 flex items-end justify-center p-4 sm:items-center"
       >
         <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-border bg-background shadow-2xl">
-          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_30%_20%,rgba(126,87,194,0.18),transparent_55%),radial-gradient(circle_at_80%_0%,rgba(247,147,26,0.14),transparent_50%)]" />
+          {/* Subtle brand wash — orange + lime, matching SiteBackground. */}
+          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_30%_20%,rgba(255,79,20,0.16),transparent_55%),radial-gradient(circle_at_80%_0%,rgba(179,255,72,0.18),transparent_50%)]" />
 
           <div className="relative h-36 w-full">
             <Image
@@ -167,11 +171,11 @@ export default function AutoDonatePopup() {
               <div>
                 <div className="flex items-center gap-3">
                   <Image
-                    src={logoImage}
+                    src={POPUP_LOGO_SRC}
                     alt="Bitcoin For The Arts logo"
                     width={36}
                     height={36}
-                    className="rounded-full border border-white/15"
+                    className="rounded-md border border-border"
                   />
                   <div className="inline-flex items-center rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted">
                     Bitcoin For The Arts
