@@ -137,6 +137,20 @@ const circleSafeMainVariants = [
   { label: 'green', input: 'BFTA-main-lockup-green.png', background: LIME },
 ];
 
+// Square BFTA "bug" lockups (the 'BTA / FA' stacked square mark used as the
+// header/footer logo) sized down for social. The bugs are full-bleed in
+// the source files, so the same scale-down + canvas-fill trick gives them
+// breathing room for use as profile pics or 1:1 posts. Each variant
+// generates a profile (square with margin) and a circle-safe (pre-cropped
+// circular PNG) output.
+const squareBugVariants = [
+  { label: 'cream-orange', input: 'BFTA-bug-square-cream-orange-1.png', background: CREAM },
+  { label: 'black-cream', input: 'BFTA-bug-square-black-cream.png', background: BLACK },
+  { label: 'black-orange', input: 'BFTA-bug-square-black-orange.png', background: BLACK },
+  { label: 'orange', input: 'BFTA-bug-square-orange.png', background: ORANGE },
+  { label: 'green', input: 'BFTA-bug-square-green-1.png', background: LIME },
+];
+
 // Banner variants: wide cover photos with the inline lockup centered and a
 // lot of horizontal breathing room. Sized for native platform specs so
 // you can drop them in without cropping.
@@ -162,10 +176,11 @@ const bannerVariants = [
 // breathing room on left+right while keeping the type readable on mobile.
 const BANNER_LOCKUP_HEIGHT_FRACTION = 0.55;
 
-async function buildOne({ input, label, background, mode }, size) {
+async function buildOne({ input, label, background, mode, family = '' }, size) {
   const inputPath = path.join(publicDir, input);
   const fraction = FRACTIONS[mode];
-  const filename = `BFTA-social-${mode}-${label}-${size}.png`;
+  const familySegment = family ? `${family}-` : '';
+  const filename = `BFTA-social-${mode}-${familySegment}${label}-${size}.png`;
   const outputPath = path.join(outDir, filename);
 
   const targetLockupSize = Math.round(size * fraction);
@@ -203,9 +218,10 @@ async function buildOne({ input, label, background, mode }, size) {
 // (lockup centered at ~55% of canvas, brand color background) but with the
 // square corners masked out to full transparency. Result is a self-circle
 // PNG — drop directly into a platform that accepts transparent avatars.
-async function buildCircleSafe({ input, label, background }, size) {
+async function buildCircleSafe({ input, label, background, family = '' }, size) {
   const inputPath = path.join(publicDir, input);
-  const filename = `BFTA-social-circle-${label}-${size}.png`;
+  const familySegment = family ? `${family}-` : '';
+  const filename = `BFTA-social-circle-${familySegment}${label}-${size}.png`;
   const outputPath = path.join(outDir, filename);
 
   const lockupSize = Math.round(size * FRACTIONS.profile);
@@ -308,6 +324,17 @@ async function main() {
   for (const variant of circleSafeMainVariants) {
     for (const size of SIZES) {
       await buildCircleSafe(variant, size);
+    }
+  }
+
+  // Square BFTA bug → social: profile (square w/ margin) and circle-safe
+  // (transparent corners) for every brand color of the bug. Family prefix
+  // 'bug' keeps these in their own filename namespace so they don't
+  // collide with the main-lockup outputs above.
+  for (const variant of squareBugVariants) {
+    for (const size of SIZES) {
+      await buildOne({ ...variant, mode: 'profile', family: 'bug' }, size);
+      await buildCircleSafe({ ...variant, family: 'bug' }, size);
     }
   }
 
