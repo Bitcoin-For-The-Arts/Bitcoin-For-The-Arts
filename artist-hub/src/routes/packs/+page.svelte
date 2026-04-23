@@ -145,7 +145,7 @@
 </div>
 
 {#if lastPackUrl}
-  <div class="card" style="margin-top: 1rem; padding: 1rem; border-color: rgba(139,92,246,0.25);">
+  <div class="card" style="margin-top: 1rem; padding: 1rem; border-color: rgba(255, 79, 20,0.25);">
     <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
       <div>
         <div style="font-weight: 900;">Resume last pack</div>
@@ -162,7 +162,7 @@
 {#if rawPackD.trim()}
   {@const d = rawPackD.trim()}
   {@const p = normalizeAuthorParam(rawPackAuthor)}
-  <div class="card" style="margin-top: 1rem; padding: 1rem; border-color: rgba(246,196,83,0.35);">
+  <div class="card" style="margin-top: 1rem; padding: 1rem; border-color: rgba(179, 255, 72,0.35);">
     <div style="font-weight: 900;">Bitcoin for the Arts follow pack</div>
     <div class="muted" style="margin-top:0.35rem; line-height:1.5;">
       Quick access to the official BFTA pack.
@@ -275,7 +275,7 @@
 <style>
   .row:hover {
     text-decoration: none;
-    border-color: rgba(139, 92, 246, 0.22);
+    border-color: rgba(255, 79, 20, 0.22);
     background: rgba(255, 255, 255, 0.02);
   }
 </style>

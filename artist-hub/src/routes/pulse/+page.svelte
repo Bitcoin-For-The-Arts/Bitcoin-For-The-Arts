@@ -301,7 +301,7 @@
   .trend:hover {
     text-decoration: none;
     background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(246, 196, 83, 0.28);
+    border-color: rgba(179, 255, 72, 0.28);
   }
   .row1 {
     display: flex;

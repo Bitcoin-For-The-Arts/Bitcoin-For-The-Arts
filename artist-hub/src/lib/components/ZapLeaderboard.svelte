@@ -168,7 +168,7 @@
   }
   .fill {
     height: 100%;
-    background: linear-gradient(90deg, rgba(246, 196, 83, 0.55), rgba(139, 92, 246, 0.45));
+    background: linear-gradient(90deg, rgba(179, 255, 72, 0.55), rgba(255, 79, 20, 0.45));
   }
   .row {
     display: grid;

@@ -145,8 +145,8 @@
     border-radius: 999px;
     font-size: 0.82rem;
     font-weight: 650;
-    border: 1px solid rgba(246, 196, 83, 0.2);
-    background: rgba(246, 196, 83, 0.06);
+    border: 1px solid rgba(179, 255, 72, 0.2);
+    background: rgba(179, 255, 72, 0.06);
     color: var(--accent);
   }
   .hero-actions {
@@ -164,7 +164,7 @@
     max-width: 480px;
     padding: 1rem 1.2rem;
     text-align: left;
-    border-color: rgba(246, 196, 83, 0.3);
+    border-color: rgba(179, 255, 72, 0.3);
   }
   .info-grid {
     display: grid;
@@ -180,7 +180,7 @@
   }
   .info-card:hover {
     transform: translateY(-2px);
-    border-color: rgba(246, 196, 83, 0.25);
+    border-color: rgba(179, 255, 72, 0.25);
   }
   .info-icon {
     font-size: 1.6rem;

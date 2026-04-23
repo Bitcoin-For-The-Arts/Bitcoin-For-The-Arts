@@ -84,7 +84,7 @@
 </div>
 
 {#if isAdmin}
-  <div class="card" style="margin-top: 1rem; padding: 1rem; border-color: rgba(246,196,83,0.35);">
+  <div class="card" style="margin-top: 1rem; padding: 1rem; border-color: rgba(179, 255, 72,0.35);">
     <div style="font-weight: 900;">Admin curation</div>
     <div class="muted" style="margin-top:0.35rem; line-height:1.5;">
       Publish the featured list as a NIP-51 curated set (`d={BFTA_DEFAULT_FEATURED_SET_D}`) from the configured admin npub.

@@ -120,13 +120,13 @@
   }
   .item:hover {
     text-decoration: none;
-    border-color: rgba(246, 196, 83, 0.35);
+    border-color: rgba(179, 255, 72, 0.35);
     transform: translateY(-1px);
   }
 
   .thumb {
     height: 146px;
-    background: linear-gradient(180deg, rgba(246, 196, 83, 0.1), rgba(0, 0, 0, 0.3));
+    background: linear-gradient(180deg, rgba(179, 255, 72, 0.1), rgba(0, 0, 0, 0.3));
     background-size: cover;
     background-position: center;
     position: relative;

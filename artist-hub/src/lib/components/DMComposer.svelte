@@ -68,7 +68,7 @@
   {/if}
 
   {#if ok}
-    <div class="card" style="margin-top: 0.75rem; padding: 0.8rem; border-color: rgba(246,196,83,0.35);">
+    <div class="card" style="margin-top: 0.75rem; padding: 0.8rem; border-color: rgba(179, 255, 72,0.35);">
       <div class="muted">{ok}</div>
     </div>
   {/if}

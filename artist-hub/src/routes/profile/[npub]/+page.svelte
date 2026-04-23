@@ -666,8 +666,8 @@
   .banner {
     height: 140px;
     background:
-      radial-gradient(900px 240px at 15% 30%, rgba(139, 92, 246, 0.35), transparent 60%),
-      radial-gradient(700px 240px at 85% 35%, rgba(246, 196, 83, 0.26), transparent 60%),
+      radial-gradient(900px 240px at 15% 30%, rgba(255, 79, 20, 0.35), transparent 60%),
+      radial-gradient(700px 240px at 85% 35%, rgba(179, 255, 72, 0.26), transparent 60%),
       rgba(0, 0, 0, 0.18);
     background-size: cover;
     background-position: center;
@@ -766,8 +766,8 @@
     font-weight: 800;
   }
   .tab.active {
-    border-color: rgba(139, 92, 246, 0.35);
-    background: rgba(139, 92, 246, 0.16);
+    border-color: rgba(255, 79, 20, 0.35);
+    background: rgba(255, 79, 20, 0.16);
   }
   @media (max-width: 600px) {
     .banner {

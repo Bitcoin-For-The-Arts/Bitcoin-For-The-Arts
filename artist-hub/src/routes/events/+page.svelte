@@ -34,7 +34,7 @@
 </div>
 
 {#if !$canSign}
-  <div class="card" style="margin-top: 1rem; padding: 1rem; border-color: rgba(246,196,83,0.35);">
+  <div class="card" style="margin-top: 1rem; padding: 1rem; border-color: rgba(179, 255, 72,0.35);">
     <div class="muted">Connect your signer to publish events.</div>
   </div>
 {/if}

@@ -32,7 +32,7 @@
         type: 'svg',
         margin: 1,
         width: 260,
-        color: { dark: '#8b5cf6', light: '#00000000' },
+        color: { dark: '#ff4f14', light: '#00000000' },
       });
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
