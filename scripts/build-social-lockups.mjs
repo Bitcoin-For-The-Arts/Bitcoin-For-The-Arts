@@ -143,12 +143,24 @@ const circleSafeMainVariants = [
 // breathing room for use as profile pics or 1:1 posts. Each variant
 // generates a profile (square with margin) and a circle-safe (pre-cropped
 // circular PNG) output.
+// Two cream-orange and two green bug variants exist with inverted color
+// roles for the BTA wordmark vs the 'Arts' script. We expose them as the
+// numbered v1/v2 pair under the same color label so the file naming stays
+// honest.
+//
+//   cream-orange (v1): orange BTA + black 'Arts' on cream
+//   cream-orange (v2): black  BTA + orange 'Arts' on cream
+//   green        (v1): orange BTA + black 'Arts' on lime
+//   green        (v2): black  BTA + orange 'Arts' on lime
 const squareBugVariants = [
   { label: 'cream-orange', input: 'BFTA-bug-square-cream-orange-1.png', background: CREAM },
+  { label: 'cream-orange-alt', input: 'BFTA-bug-square-cream-orange-2 (1).png', background: CREAM },
+  { label: 'cream-black', input: 'BFTA-bug-square-cream-black.png', background: CREAM },
   { label: 'black-cream', input: 'BFTA-bug-square-black-cream.png', background: BLACK },
   { label: 'black-orange', input: 'BFTA-bug-square-black-orange.png', background: BLACK },
   { label: 'orange', input: 'BFTA-bug-square-orange.png', background: ORANGE },
   { label: 'green', input: 'BFTA-bug-square-green-1.png', background: LIME },
+  { label: 'green-alt', input: 'BFTA-bug-square-green-2.png', background: LIME },
 ];
 
 // Banner variants: wide cover photos with the inline lockup centered and a
