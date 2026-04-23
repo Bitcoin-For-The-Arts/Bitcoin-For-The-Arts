@@ -99,23 +99,16 @@ const SIZES = [2160, 1080];
 //
 // "main" = the full BITCOIN / FOR / THE / Arts wrap.
 // "inline" = the BFTA inline lockup (much more legible at avatar size).
+// Profile variants for the MAIN lockup only (full BITCOIN/FOR/THE/Arts
+// wrap). Inline-bug profiles are generated separately via the dedicated
+// inlineBugVariants set below so they all share consistent filename
+// namespacing (`-inline-` family prefix).
 const profileVariants = [
-  // Lime field
   { label: 'green-main', input: 'BFTA-main-lockup-green.png', background: LIME },
-  { label: 'green-inline', input: 'BFTA-bug-inline-green-1.png', background: LIME },
-  // Solid orange field (no inline-on-orange exists in the brand kit yet, so
-  // only the main lockup ships at this color).
   { label: 'orange-main', input: 'BFTA-main-lockup-orange.png', background: ORANGE },
-  // Black field — orange BFT version
   { label: 'black-orange-main', input: 'BFTA-main-lockup-black-orange.png', background: BLACK },
-  { label: 'black-orange-inline', input: 'BFTA-bug-inline-black-orange.png', background: BLACK },
-  // Black field — cream BFTA version
   { label: 'black-cream-main', input: 'BFTA-main-lockup-black-cream.png', background: BLACK },
-  { label: 'black-cream-inline', input: 'BFTA-bug-inline-black-cream (1).png', background: BLACK },
-  // Cream field — alt main + inline (new additions; pairs with the cream
-  // chrome used in the website footer/cards).
   { label: 'cream-orange-alt-main', input: 'BFTA-main-lockup-cream-orange-1.png', background: CREAM },
-  { label: 'cream-orange-inline', input: 'BFTA-bug-inline-cream-orange-1.png', background: CREAM },
 ];
 
 // Circle-safe variants: same as profile mode (lockup at ~55% of canvas)
@@ -143,6 +136,31 @@ const circleSafeMainVariants = [
 // breathing room for use as profile pics or 1:1 posts. Each variant
 // generates a profile (square with margin) and a circle-safe (pre-cropped
 // circular PNG) output.
+// Inline BFTA "bug" lockups (the wide, single-row 'BFTA + script A' mark).
+// These are the most legible avatar option at small sizes — recommended
+// as primary social profile pictures. Every brand-color file in the kit
+// gets routed through profile (square w/ margin) + circle-safe (pre-
+// cropped circular PNG) outputs. Family prefix 'inline' keeps these in
+// their own filename namespace.
+//
+// Two-numbered colorways are inverted Arts-script color roles, exposed
+// as '-alt' under the same color label for honest filenames:
+//
+//   cream-orange (v1): orange BFT + black 'A' script
+//   cream-orange (v2): black  BFT + orange 'A' script
+//   green        (v1): orange BFT + black 'A' script
+//   green        (v2): black  BFT + orange 'A' script
+const inlineBugVariants = [
+  { label: 'cream-orange', input: 'BFTA-bug-inline-cream-orange-1.png', background: CREAM },
+  { label: 'cream-orange-alt', input: 'BFTA-bug-inline-cream-orange-2.png', background: CREAM },
+  { label: 'cream-white', input: 'BFTA-bug-inline-cream-white.png', background: CREAM },
+  { label: 'black-cream', input: 'BFTA-bug-inline-black-cream (1).png', background: BLACK },
+  { label: 'black-orange', input: 'BFTA-bug-inline-black-orange.png', background: BLACK },
+  { label: 'orange', input: 'BFTA-bug-inline-orange (1).png', background: ORANGE },
+  { label: 'green', input: 'BFTA-bug-inline-green-1.png', background: LIME },
+  { label: 'green-alt', input: 'BFTA-bug-inline-green-2.png', background: LIME },
+];
+
 // Two cream-orange and two green bug variants exist with inverted color
 // roles for the BTA wordmark vs the 'Arts' script. We expose them as the
 // numbered v1/v2 pair under the same color label so the file naming stays
@@ -347,6 +365,17 @@ async function main() {
     for (const size of SIZES) {
       await buildOne({ ...variant, mode: 'profile', family: 'bug' }, size);
       await buildCircleSafe({ ...variant, family: 'bug' }, size);
+    }
+  }
+
+  // Inline BFTA lockups → social: same two outputs (profile + circle-safe)
+  // for every color in the brand kit. Family prefix 'inline'. These are
+  // the recommended primary social avatars because the wide BFTA wordmark
+  // stays readable down to 32x32 in feed/notification rows.
+  for (const variant of inlineBugVariants) {
+    for (const size of SIZES) {
+      await buildOne({ ...variant, mode: 'profile', family: 'inline' }, size);
+      await buildCircleSafe({ ...variant, family: 'inline' }, size);
     }
   }
 
