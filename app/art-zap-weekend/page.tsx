@@ -199,7 +199,7 @@ export default function ArtZapWeekendPage() {
                 key={tier.name}
                 className={
                   tier.featured
-                    ? 'rounded-2xl bg-[linear-gradient(135deg,#4a148c_0%,#7e57c2_45%,#f7931a_100%)] p-[2px] shadow-lg'
+                    ? 'rounded-2xl bg-[linear-gradient(135deg,#000000_0%,#FF4F14_55%,#B3FF48_100%)] p-[2px] shadow-lg'
                     : 'rounded-2xl border border-border bg-background p-[1px] shadow-sm'
                 }
               >
@@ -252,7 +252,7 @@ export default function ArtZapWeekendPage() {
                       )}&body=${encodeURIComponent(
                         `Hi BFTA team,\n\nI'd like to learn more about the ${tier.name} sponsorship for Art + Zap Weekend.\n\nMy company: \nMy role: \nBest contact: \n\n`,
                       )}`}
-                      className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                      className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                     >
                       Inquire about {tier.name}
                     </a>

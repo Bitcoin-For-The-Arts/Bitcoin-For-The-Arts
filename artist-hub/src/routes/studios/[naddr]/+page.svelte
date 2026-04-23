@@ -263,7 +263,7 @@
 
   <style>
     .item:hover {
-      border-color: rgba(246, 196, 83, 0.35);
+      border-color: rgba(179, 255, 72, 0.35);
     }
     .backdrop {
       position: fixed;

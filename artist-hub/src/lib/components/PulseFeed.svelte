@@ -841,7 +841,7 @@
 
 <div class="grid" style="gap: 1rem;">
   {#if toast}
-    <div class="card" style="padding: 0.85rem 1rem; border-color: rgba(139,92,246,0.22);">
+    <div class="card" style="padding: 0.85rem 1rem; border-color: rgba(255, 79, 20,0.22);">
       <div class="muted">{toast}</div>
     </div>
   {/if}
@@ -1114,7 +1114,7 @@
         {@const cmr = getMyRepost(c.id)}
         <div
           class="card"
-          style={`padding: 0.85rem 1rem; ${c.replyTo ? 'border-left: 3px solid rgba(246,196,83,0.35); margin-left: 0.75rem;' : ''}`}
+          style={`padding: 0.85rem 1rem; ${c.replyTo ? 'border-left: 3px solid rgba(179, 255, 72,0.35); margin-left: 0.75rem;' : ''}`}
         >
           <div class="muted" style="font-size: 0.88rem;" use:profileHover={c.pubkey}>
             {cName} • {new Date(c.createdAt * 1000).toLocaleString()}
@@ -1425,15 +1425,15 @@
     background: rgba(255, 255, 255, 0.09);
   }
   .iconBtn.primary {
-    border-color: rgba(246, 196, 83, 0.35);
-    background: rgba(246, 196, 83, 0.14);
+    border-color: rgba(179, 255, 72, 0.35);
+    background: rgba(179, 255, 72, 0.14);
   }
   .iconBtn.primary:hover {
-    background: rgba(246, 196, 83, 0.18);
+    background: rgba(179, 255, 72, 0.18);
   }
   .iconBtn.sent {
-    box-shadow: 0 0 0 2px rgba(246, 196, 83, 0.22);
-    border-color: rgba(246, 196, 83, 0.28);
+    box-shadow: 0 0 0 2px rgba(179, 255, 72, 0.22);
+    border-color: rgba(179, 255, 72, 0.28);
   }
   .iconBtn.liked {
     color: rgba(251, 146, 60, 0.98);

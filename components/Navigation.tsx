@@ -4,7 +4,17 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-Gold.png';
+// BFTA 2026 brand bug. The nav bar is the lime brand surface, but we render
+// the cream-field bug as a small "branded sticker" — same pattern as the
+// newsletter card and the social icon tiles in the footer, so the chrome
+// reads as a system of cream cards floating on lime.
+//
+// We use the v2 cream-orange bug specifically (black BTA + orange Arts)
+// because it matches the colorway of the main lockup used on the home and
+// about pages (black 'BITCOIN/FOR/THE' + orange 'Arts'). Same artist gives
+// the chrome a single, consistent voice instead of two competing
+// colorways across the site.
+const NAV_LOGO_SRC = '/BFTA-bug-square-cream-orange-2.png';
 
 type NavItem = {
   label: string;
@@ -77,7 +87,7 @@ export default function Navigation() {
   );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-primary text-white">
+    <header className="sticky top-0 z-50 border-b border-black/15 bg-brand-surface text-brand-surface-fg">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link
           href="/"
@@ -89,13 +99,13 @@ export default function Navigation() {
           }}
         >
           <Image
-          src={logoImage}
-          alt=""
-          width={36}
-          height={36}
-          priority
-          className="rounded-full border border-white/20"
-        />
+            src={NAV_LOGO_SRC}
+            alt=""
+            width={36}
+            height={36}
+            priority
+            className="rounded-md border border-black/10"
+          />
           <span className="text-base sm:text-lg uppercase whitespace-nowrap leading-none">
             Bitcoin for the Arts
           </span>
@@ -103,7 +113,7 @@ export default function Navigation() {
 
         <button
           type="button"
-          className="inline-flex items-center justify-center rounded-md border border-white/25 px-3 py-2 text-sm font-medium sm:hidden hover:bg-white/10"
+          className="inline-flex items-center justify-center rounded-md border border-black/25 px-3 py-2 text-sm font-medium sm:hidden hover:bg-black/5"
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={isOpen}
           onClick={() => {
@@ -168,10 +178,10 @@ export default function Navigation() {
                   className={[
                     'whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium tracking-wide transition-colors uppercase',
                     isCta
-                      ? 'bg-accent text-white hover:opacity-90'
+                      ? 'bg-accent text-accent-fg hover:opacity-90'
                       : isActive
-                        ? 'bg-white/15 text-white'
-                        : 'text-white/90 hover:bg-white/10 hover:text-white',
+                        ? 'bg-black/10'
+                        : 'hover:bg-black/5',
                   ].join(' ')}
                 >
                   {item.label}
@@ -202,10 +212,10 @@ export default function Navigation() {
                   className={[
                     'whitespace-nowrap rounded-md px-3 py-2 text-xs font-medium tracking-wide transition-colors uppercase inline-flex items-center gap-1',
                     isCta
-                      ? 'bg-accent text-white hover:opacity-90'
+                      ? 'bg-accent text-accent-fg hover:opacity-90'
                       : isActive
-                        ? 'bg-white/15 text-white'
-                        : 'text-white/90 hover:bg-white/10 hover:text-white',
+                        ? 'bg-black/10'
+                        : 'hover:bg-black/5',
                   ].join(' ')}
                 >
                   {item.label}
@@ -250,7 +260,7 @@ export default function Navigation() {
       </nav>
 
       {isOpen ? (
-        <div className="border-t border-white/15 bg-primary sm:hidden">
+        <div className="border-t border-black/10 bg-brand-surface text-brand-surface-fg sm:hidden">
           <div className="mx-auto flex max-w-6xl flex-col gap-1 px-6 py-3">
             {navItems.map((item) => {
               const isActive =
@@ -273,10 +283,10 @@ export default function Navigation() {
                       className={[
                         'flex-1 rounded-md px-3 py-3 text-sm font-medium tracking-wide transition-colors',
                         isCta
-                          ? 'bg-accent text-white hover:opacity-90'
+                          ? 'bg-accent text-accent-fg hover:opacity-90'
                           : isActive
-                            ? 'bg-white/15 text-white'
-                            : 'text-white/90 hover:bg-white/10 hover:text-white',
+                            ? 'bg-black/10'
+                            : 'hover:bg-black/5',
                       ].join(' ')}
                     >
                       {item.label}
@@ -285,7 +295,7 @@ export default function Navigation() {
                     {hasChildren ? (
                       <button
                         type="button"
-                        className="rounded-md border border-white/20 px-3 py-3 text-sm font-medium text-white/90 hover:bg-white/10"
+                        className="rounded-md border border-black/15 px-3 py-3 text-sm font-medium hover:bg-black/5"
                         aria-label={isExpanded ? `Collapse ${item.label}` : `Expand ${item.label}`}
                         aria-expanded={isExpanded}
                         onClick={(e) => {
@@ -302,7 +312,7 @@ export default function Navigation() {
                   </div>
 
                   {hasChildren && isExpanded ? (
-                    <div className="mt-1 ml-3 flex flex-col gap-1 border-l border-white/15 pl-3">
+                    <div className="mt-1 ml-3 flex flex-col gap-1 border-l border-black/15 pl-3">
                       {item.children!.map((child) => {
                         const isChildActive =
                           pathname === child.href || pathname.startsWith(`${child.href}/`);
@@ -317,8 +327,8 @@ export default function Navigation() {
                             className={[
                               'rounded-md px-3 py-2 text-sm font-medium transition-colors',
                               isChildActive
-                                ? 'bg-white/15 text-white'
-                                : 'text-white/85 hover:bg-white/10 hover:text-white',
+                                ? 'bg-black/10'
+                                : 'hover:bg-black/5',
                             ].join(' ')}
                           >
                             {child.label}

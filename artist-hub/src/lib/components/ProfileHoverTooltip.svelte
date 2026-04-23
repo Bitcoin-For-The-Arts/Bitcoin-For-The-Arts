@@ -182,8 +182,8 @@
     text-decoration: none;
   }
   .btn.primary {
-    border-color: rgba(246, 196, 83, 0.35);
-    background: rgba(246, 196, 83, 0.14);
+    border-color: rgba(179, 255, 72, 0.35);
+    background: rgba(179, 255, 72, 0.14);
   }
   .btn:disabled {
     opacity: 0.6;

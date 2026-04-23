@@ -43,7 +43,7 @@ export default function RoyaltiesIpGuidePage() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="mailto:donate@bitcoinforthearts.org?subject=Royalties%2FIP%20or%20asset%20gift"
-                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                 >
                   Discuss an asset gift (email us)
                 </a>
@@ -244,7 +244,7 @@ export default function RoyaltiesIpGuidePage() {
               <div className="md:col-span-4 md:text-right">
                 <a
                   href="mailto:donate@bitcoinforthearts.org?subject=Royalties%2FIP%20or%20asset%20gift"
-                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                 >
                   Email donate@
                 </a>

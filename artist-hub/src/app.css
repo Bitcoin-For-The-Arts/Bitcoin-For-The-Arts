@@ -1,12 +1,20 @@
 :root {
+  /* BFTA 2026 brand palette — dark variant for the Artist Hub.
+     The hub stays a dark UI (high contrast for nostr feeds + zap activity)
+     but inherits the brand colors so it reads as the same organization
+     as bitcoinforthearts.org.
+
+       --accent   = lime  (#B3FF48)  primary highlight, replaces the warm gold
+       --accent-2 = orange (#FF4F14)  secondary highlight, replaces purple
+   */
   --bg: #0b0b0f;
   --panel: rgba(255, 255, 255, 0.06);
   --panel-2: rgba(255, 255, 255, 0.09);
-  --text: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.68);
+  --text: rgba(255, 250, 240, 0.94); /* brand cream-tinted white */
+  --muted: rgba(255, 250, 240, 0.68);
   --border: rgba(255, 255, 255, 0.12);
-  --accent: #f6c453;
-  --accent-2: #8b5cf6;
+  --accent: #b3ff48;
+  --accent-2: #ff4f14;
   --danger: #fb7185;
   color-scheme: dark;
 }
@@ -33,10 +41,13 @@ body {
     Arial,
     'Apple Color Emoji',
     'Segoe UI Emoji';
+  /* Brand washes: lime + BFTA orange + a soft cream highlight, on the
+     dark base. Mirrors the SiteBackground gradients used on the main
+     bitcoinforthearts.org site. */
   background:
-    radial-gradient(1200px 700px at 20% 10%, rgba(139, 92, 246, 0.16), transparent 60%),
-    radial-gradient(900px 600px at 80% 20%, rgba(246, 196, 83, 0.14), transparent 55%),
-    radial-gradient(800px 500px at 50% 100%, rgba(56, 189, 248, 0.1), transparent 60%),
+    radial-gradient(1200px 700px at 20% 10%, rgba(179, 255, 72, 0.14), transparent 60%),
+    radial-gradient(900px 600px at 80% 20%, rgba(255, 79, 20, 0.16), transparent 55%),
+    radial-gradient(800px 500px at 50% 100%, rgba(255, 250, 240, 0.07), transparent 60%),
     var(--bg);
   color: var(--text);
 }
@@ -90,8 +101,11 @@ pre {
 }
 
 .btn.primary {
-  border-color: rgba(246, 196, 83, 0.35);
-  background: linear-gradient(180deg, rgba(246, 196, 83, 0.22), rgba(246, 196, 83, 0.12));
+  /* Lime tinted primary — keeps the same translucent overlay treatment
+     as before so existing hover / disabled states still read correctly. */
+  border-color: rgba(179, 255, 72, 0.4);
+  background: linear-gradient(180deg, rgba(179, 255, 72, 0.22), rgba(179, 255, 72, 0.12));
+  color: var(--text);
 }
 
 .btn.danger {

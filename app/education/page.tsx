@@ -55,7 +55,7 @@ export default function EducationPage() {
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/donate"
-              className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+              className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
             >
               Fund education
             </Link>
@@ -189,7 +189,7 @@ export default function EducationPage() {
                 <div className="mt-4">
                   <Link
                     href="/education/webinar"
-                    className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                    className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                   >
                     View webinars
                   </Link>

@@ -380,7 +380,7 @@ export default function ArtistStoryInvitationForm() {
         type="submit"
         disabled={!canSubmit}
         className={[
-          'inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90',
+          'inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90',
           status === 'submitting' ? 'cursor-wait opacity-60' : '',
         ].join(' ')}
       >

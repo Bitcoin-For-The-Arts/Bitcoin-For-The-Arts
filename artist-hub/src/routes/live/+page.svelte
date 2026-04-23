@@ -205,8 +205,8 @@
   }
 
   .ch.active {
-    border-color: rgba(246, 196, 83, 0.35);
-    background: rgba(246, 196, 83, 0.08);
+    border-color: rgba(179, 255, 72, 0.35);
+    background: rgba(179, 255, 72, 0.08);
   }
 </style>
 

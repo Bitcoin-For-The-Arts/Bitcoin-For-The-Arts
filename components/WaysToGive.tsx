@@ -235,7 +235,7 @@ export default function WaysToGive() {
                     {renderCta(
                       href,
                       w.ctaLabel,
-                      'inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90',
+                      'inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90',
                     )}
                   </div>
                 </div>
@@ -292,7 +292,7 @@ export default function WaysToGive() {
             {renderCta(
               resolveHref(ways[activeIndex]),
               ways[activeIndex]?.ctaLabel ?? 'Learn more',
-              'inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90',
+              'inline-flex min-h-12 w-full items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90',
             )}
           </div>
         </div>

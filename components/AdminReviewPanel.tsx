@@ -276,7 +276,7 @@ export default function AdminReviewPanel({
               onClick={save}
               disabled={state.status === 'saving'}
               className={[
-                'inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-white transition-colors',
+                'inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 py-2 text-sm font-semibold text-accent-fg transition-colors',
                 state.status === 'saving' ? 'opacity-70 cursor-wait' : 'hover:opacity-90',
               ].join(' ')}
             >

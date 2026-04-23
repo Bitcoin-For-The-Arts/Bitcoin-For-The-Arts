@@ -78,7 +78,7 @@ export default function LeadershipPage() {
                   <div className="mt-6">
                     <Link
                       href={`/about/leadership/${p.slug}`}
-                      className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                      className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                     >
                       View full bio
                     </Link>

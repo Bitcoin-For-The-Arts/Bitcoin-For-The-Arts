@@ -121,7 +121,7 @@ export default function DiyFundraisingGuidePage() {
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="#start"
-                  className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                 >
                   Get started
                 </a>
@@ -326,7 +326,7 @@ export default function DiyFundraisingGuidePage() {
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <a
               href="mailto:events@bitcoinforthearts.org?subject=DIY%20fundraiser%20registration&body=Name%3A%0AEvent%20name%3A%0ADate%2Ftime%3A%0ALocation%20(virtual%2Fin-person)%3A%0AGoal%20(optional)%3A%0AHow%20I%20plan%20to%20accept%20donations%20(on-chain%2FLightning%2Ffiat)%3A%0APromo%20link(s)%3A%0A"
-              className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+              className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
             >
               Register your fundraiser
             </a>

@@ -99,14 +99,14 @@ function Icon({
 }
 
 export default function SocialIconLinks({ variant }: { variant: Variant }) {
-  const baseClass =
-    variant === 'footer'
-      ? 'text-white/90 hover:text-white sm:text-foreground sm:hover:text-foreground'
-      : 'text-foreground hover:text-foreground';
+  // Footer + contact both render onto light surfaces in the 2026 brand
+  // (footer = lime brand-surface, contact = cream background), so the
+  // icons can share a single black-on-light style.
+  const baseClass = 'text-foreground hover:text-foreground';
 
   const buttonClass =
     variant === 'footer'
-      ? 'inline-flex h-11 w-11 items-center justify-center rounded-md border border-white/20 bg-white/10 hover:bg-white/15 sm:border-border sm:bg-background sm:hover:bg-surface'
+      ? 'inline-flex h-11 w-11 items-center justify-center rounded-md border border-black/15 bg-background hover:bg-background/80 shadow-sm'
       : 'inline-flex min-h-12 min-w-12 items-center justify-center rounded-md border border-border bg-background hover:bg-surface';
 
   return (

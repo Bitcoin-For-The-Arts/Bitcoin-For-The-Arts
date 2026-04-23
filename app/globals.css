@@ -10,35 +10,53 @@
 }
 
 :root {
+  /* BFTA 2026 brand palette
+     ----------------------------------------------------------
+     #FFFAF0  Cream   — primary canvas / "voice" of the brand
+     #000000  Black   — typography + secondary CTAs
+     #FF4F14  Orange  — primary CTA color, the "Arts" script
+     #B3FF48  Lime    — branded surfaces (nav, footer, mission), accents
+     ---------------------------------------------------------- */
+
   /* Neutrals */
-  --background: #ffffff; /* neutral white */
-  --foreground: #333333; /* dark gray text */
-  --muted: rgba(51, 51, 51, 0.72);
-  --surface: #f8f9fa; /* light gray surface */
+  --background: #fffaf0; /* brand cream */
+  --foreground: #000000; /* brand black */
+  --muted: rgba(0, 0, 0, 0.68);
+  --surface: #ffffff; /* cards/panels lift off the cream */
 
-  /* Brand colors (Grok palette) */
-  --primary: #7e57c2; /* creativity / renaissance purple */
-  --accent: #f7931a; /* Bitcoin orange */
-  --success: #26a69a; /* teal growth / endowment */
+  /* Brand colors */
+  --primary: #000000; /* brand black — secondary CTAs, dots, primary buttons */
+  --accent: #ff4f14; /* BFTA signal orange — primary CTAs */
+  --accent-fg: #ffffff; /* CTA text on the accent surface (white on orange) */
+  --success: #b3ff48; /* BFTA lime — accents, success states */
 
-  --border: rgba(51, 51, 51, 0.16);
+  /* Branded surface = the "lime field" used for the nav, footer, and the
+     About-page mission section in light mode. Decoupled from --primary so
+     CTAs can stay black while the chrome reads lime. */
+  --brand-surface: #b3ff48;
+  --brand-surface-fg: #000000;
+
+  --border: rgba(0, 0, 0, 0.16);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Optional dark mode */
-    --background: #4a148c; /* deep purple background */
-    --foreground: #ffffff;
-    --muted: rgba(255, 255, 255, 0.78);
-    --surface: rgba(255, 255, 255, 0.08);
+/* ---------------------------------------------------------------
+   Dark mode is intentionally disabled for the 2026 launch — the
+   brand ships in light mode only. The palette below is preserved
+   as a comment so we can revive it later by re-wrapping it in
+   @media (prefers-color-scheme: dark) { :root { … } }.
 
-    --primary: #7e57c2;
-    --accent: #f7931a;
-    --success: #26a69a;
-
-    --border: rgba(255, 255, 255, 0.18);
-  }
-}
+       --background: #2a1a0e;          // warm ember
+       --foreground: #fffaf0;          // cream text
+       --muted:      rgba(255,250,240,0.78);
+       --surface:    rgba(255,250,240,0.07);
+       --primary:    #2a1a0e;          // nav/footer match the page
+       --accent:     #b3ff48;          // lime is the dominant accent
+       --accent-fg:  #000000;          // black on lime
+       --success:    #ff4f14;          // orange = secondary highlight
+       --brand-surface:    #2a1a0e;
+       --brand-surface-fg: #fffaf0;
+       --border:     rgba(255,250,240,0.18);
+   --------------------------------------------------------------- */
 
 @theme inline {
   --color-background: var(--background);
@@ -48,7 +66,10 @@
 
   --color-primary: var(--primary);
   --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
   --color-success: var(--success);
+  --color-brand-surface: var(--brand-surface);
+  --color-brand-surface-fg: var(--brand-surface-fg);
 
   --color-border: var(--border);
   --font-sans: var(--font-roboto), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -78,9 +99,9 @@ h3 {
 body.mobile-vibrant .mobile-pop-card {
   background: linear-gradient(
     135deg,
-    rgba(126, 87, 194, 0.16),
-    rgba(247, 147, 26, 0.14),
-    rgba(255, 255, 255, 0)
+    rgba(255, 79, 20, 0.14),
+    rgba(179, 255, 72, 0.16),
+    rgba(255, 250, 240, 0)
   );
 }
 
@@ -129,7 +150,7 @@ body.mobile-vibrant .mobile-vibrant-sunset {
 
 .prose-article blockquote {
   margin: 2em 0;
-  border-left: 4px solid #d4af37;
+  border-left: 4px solid var(--accent);
   padding: 1em 1.5em;
   background: var(--surface);
   border-radius: 0 0.75rem 0.75rem 0;

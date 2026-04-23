@@ -72,14 +72,14 @@ export default function NewsletterSignupFooter() {
   return (
     <section
       aria-label="Newsletter signup"
-      className="mb-10 rounded-2xl border border-white/15 bg-white/5 p-5 sm:border-border sm:bg-surface/60"
+      className="mb-10 rounded-2xl border border-black/15 bg-background p-5 text-foreground shadow-sm"
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="max-w-xl">
-          <div className="text-xs font-semibold uppercase tracking-wide text-white/80 sm:text-muted">
+          <div className="text-xs font-semibold uppercase tracking-wide">
             Stay informed with news &amp; updates
           </div>
-          <div className="mt-2 text-sm leading-relaxed text-white/80 sm:text-muted">
+          <div className="mt-2 text-sm leading-relaxed">
             Get occasional updates on grants, programming, and events. First newsletter planned for April.
           </div>
         </div>
@@ -110,7 +110,7 @@ export default function NewsletterSignupFooter() {
                   setMessage('');
                 }}
                 placeholder="Email address"
-                className="min-h-11 w-full rounded-md border border-white/15 bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/25 sm:border-border sm:bg-background sm:text-foreground sm:placeholder:text-muted"
+                className="min-h-11 w-full rounded-md border border-black/25 bg-white px-3 py-2 text-sm text-foreground placeholder:text-foreground/55 focus:outline-none focus:ring-2 focus:ring-black/25"
               />
             </label>
 
@@ -119,7 +119,7 @@ export default function NewsletterSignupFooter() {
               disabled={!canSubmit}
               className={[
                 'inline-flex min-h-11 items-center justify-center rounded-md px-5 py-2 text-sm font-semibold transition-colors',
-                'bg-accent text-white hover:opacity-90',
+                'bg-accent text-accent-fg hover:opacity-90',
                 !canSubmit ? 'opacity-60 cursor-not-allowed' : '',
               ].join(' ')}
             >
@@ -127,7 +127,7 @@ export default function NewsletterSignupFooter() {
             </button>
           </div>
 
-          <label className="mt-3 flex items-start gap-2 text-xs leading-relaxed text-white/70 sm:text-muted">
+          <label className="mt-3 flex items-start gap-2 text-xs leading-relaxed">
             <input
               type="checkbox"
               checked={agreed}
@@ -163,7 +163,7 @@ export default function NewsletterSignupFooter() {
                 'mt-3 rounded-xl border p-3 text-sm',
                 status === 'error'
                   ? 'border-red-200 bg-red-50 text-red-800'
-                  : 'border-white/15 bg-white/5 text-white/80 sm:border-border sm:bg-surface/50 sm:text-muted',
+                  : 'border-black/15 bg-background/70',
               ].join(' ')}
             >
               {message}
@@ -172,9 +172,7 @@ export default function NewsletterSignupFooter() {
         </form>
       </div>
 
-      <div className="mt-4 text-xs text-white/70 sm:text-muted">
-        You can unsubscribe anytime.
-      </div>
+      <div className="mt-4 text-xs">You can unsubscribe anytime.</div>
     </section>
   );
 }

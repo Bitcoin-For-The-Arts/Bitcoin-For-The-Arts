@@ -282,8 +282,8 @@
     color: var(--text);
   }
   .navlink.active {
-    background: rgba(246, 196, 83, 0.1);
-    border-color: rgba(246, 196, 83, 0.25);
+    background: rgba(179, 255, 72, 0.1);
+    border-color: rgba(179, 255, 72, 0.25);
     color: var(--accent);
   }
   .auth {
@@ -338,7 +338,7 @@
   .mePh {
     width: 100%;
     height: 100%;
-    background: linear-gradient(180deg, rgba(246, 196, 83, 0.16), rgba(139, 92, 246, 0.12));
+    background: linear-gradient(180deg, rgba(179, 255, 72, 0.16), rgba(255, 79, 20, 0.12));
     display: block;
   }
   .bell:hover {

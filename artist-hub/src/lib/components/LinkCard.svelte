@@ -116,7 +116,7 @@
     place-items: center;
     font-weight: 950;
     color: var(--accent-2);
-    background: radial-gradient(200px 90px at 30% 30%, rgba(139, 92, 246, 0.22), rgba(0, 0, 0, 0.2));
+    background: radial-gradient(200px 90px at 30% 30%, rgba(255, 79, 20, 0.22), rgba(0, 0, 0, 0.2));
   }
   .meta {
     min-width: 0;

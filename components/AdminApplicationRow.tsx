@@ -107,7 +107,7 @@ export default function AdminApplicationRow({
           onClick={onSave}
           disabled={saving}
           className={[
-            'inline-flex min-h-10 items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white transition-colors',
+            'inline-flex min-h-10 items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors',
             saving ? 'opacity-70 cursor-wait' : 'hover:opacity-90',
           ].join(' ')}
         >

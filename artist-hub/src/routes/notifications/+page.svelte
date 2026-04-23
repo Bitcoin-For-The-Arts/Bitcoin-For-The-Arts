@@ -37,7 +37,7 @@
 </script>
 
 {#if !$isAuthed}
-  <div class="card" style="padding: 1rem; border-color: rgba(246,196,83,0.35);">
+  <div class="card" style="padding: 1rem; border-color: rgba(179, 255, 72,0.35);">
     <div class="muted">Connect your signer to see notifications.</div>
   </div>
 {:else}
@@ -92,7 +92,7 @@
 <style>
   .row:hover {
     text-decoration: none;
-    border-color: rgba(139, 92, 246, 0.22);
+    border-color: rgba(255, 79, 20, 0.22);
     background: rgba(255, 255, 255, 0.02);
   }
   .avatar {

@@ -15,7 +15,7 @@
   {#if $canSign}
     <ListingForm />
   {:else}
-    <div class="card" style="padding: 1rem; border-color: rgba(246,196,83,0.35);">
+    <div class="card" style="padding: 1rem; border-color: rgba(179, 255, 72,0.35);">
       <div class="muted">Connect your Nostr signer to publish listings.</div>
     </div>
   {/if}

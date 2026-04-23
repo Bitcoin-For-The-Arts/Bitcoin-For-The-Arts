@@ -268,7 +268,7 @@
         {/if}
       </div>
     {:else}
-      <div class="card" style="padding: 0.85rem 1rem; border-color: rgba(246,196,83,0.3);">
+      <div class="card" style="padding: 0.85rem 1rem; border-color: rgba(179, 255, 72,0.3);">
         <div class="muted">Connect your Nostr signer to post and reply.</div>
       </div>
     {/if}
@@ -509,8 +509,8 @@
   .post-time { font-size: 0.75rem; }
   .post-stats { display: flex; gap: 0.3rem; flex-shrink: 0; }
   .stat-zap {
-    background: rgba(246, 196, 83, 0.12);
-    border-color: rgba(246, 196, 83, 0.25);
+    background: rgba(179, 255, 72, 0.12);
+    border-color: rgba(179, 255, 72, 0.25);
     color: var(--accent);
     font-size: 0.78rem;
   }
