@@ -509,7 +509,7 @@ export async function POST(req: NextRequest) {
     }
 
     requireCheckbox(fields, 'missionAligned', 'Mission alignment');
-    requireCheckbox(fields, 'usProjectOnly', 'US-based activities');
+    requireCheckbox(fields, 'usProjectOnly', 'U.S. public-benefit confirmation');
     requireCheckbox(fields, 'agreeOversight', 'Oversight agreement');
     requireCheckbox(fields, 'agreeTerms', 'Terms agreement');
     requireCheckbox(fields, 'agreeLegal', 'Legal assurances');

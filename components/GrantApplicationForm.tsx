@@ -1270,9 +1270,11 @@ export default function GrantApplicationForm() {
         <label className="mt-4 flex items-start gap-3 rounded-2xl border border-border bg-surface p-4 text-sm">
           <input name="usProjectOnly" type="checkbox" required className="mt-1 h-4 w-4" />
           <span>
-            I confirm the activities funded by this BFTA grant will be performed in the{' '}
-            <span className="font-semibold text-foreground">United States</span>. The artist/applicant does not need
-            to be a U.S. resident. <span className="text-accent">*</span>
+            I confirm that the activity funded by this BFTA grant will produce a public benefit within the{' '}
+            <span className="font-semibold text-foreground">United States</span> — through the primary activities,
+            execution, deliverables, performances, exhibitions, releases, or intended impact of the funded project.
+            The artist/applicant does not need to be a U.S. resident or citizen, and the underlying work may have
+            been created anywhere in the world. <span className="text-accent">*</span>
           </span>
         </label>
 
