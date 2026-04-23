@@ -8,7 +8,13 @@ import { useMemo, useState } from 'react';
 // the cream-field bug as a small "branded sticker" — same pattern as the
 // newsletter card and the social icon tiles in the footer, so the chrome
 // reads as a system of cream cards floating on lime.
-const NAV_LOGO_SRC = '/BFTA-bug-square-cream-orange-1.png';
+//
+// We use the v2 cream-orange bug specifically (black BTA + orange Arts)
+// because it matches the colorway of the main lockup used on the home and
+// about pages (black 'BITCOIN/FOR/THE' + orange 'Arts'). Same artist gives
+// the chrome a single, consistent voice instead of two competing
+// colorways across the site.
+const NAV_LOGO_SRC = '/BFTA-bug-square-cream-orange-2.png';
 
 type NavItem = {
   label: string;

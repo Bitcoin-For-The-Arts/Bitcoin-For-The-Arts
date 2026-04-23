@@ -8,7 +8,11 @@ import NewsletterSignupFooter from '@/components/NewsletterSignupFooter';
 // cream-field bug as a small "branded sticker" — same pattern as the
 // newsletter card and the social icon tiles, so the chrome reads as a
 // system of cream cards floating on lime.
-const FOOTER_LOGO_SRC = '/BFTA-bug-square-cream-orange-1.png';
+//
+// v2 cream-orange (black BTA + orange Arts) matches the colorway of the
+// main lockup used on the home and about pages so the chrome speaks with
+// one voice across the site.
+const FOOTER_LOGO_SRC = '/BFTA-bug-square-cream-orange-2.png';
 
 export default function SiteFooter() {
   const hasSocials = socialLinks.length > 0;

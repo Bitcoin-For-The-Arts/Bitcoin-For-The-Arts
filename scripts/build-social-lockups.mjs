@@ -172,7 +172,7 @@ const inlineBugVariants = [
 //   green        (v2): black  BTA + orange 'Arts' on lime
 const squareBugVariants = [
   { label: 'cream-orange', input: 'BFTA-bug-square-cream-orange-1.png', background: CREAM },
-  { label: 'cream-orange-alt', input: 'BFTA-bug-square-cream-orange-2 (1).png', background: CREAM },
+  { label: 'cream-orange-alt', input: 'BFTA-bug-square-cream-orange-2.png', background: CREAM },
   { label: 'cream-black', input: 'BFTA-bug-square-cream-black.png', background: CREAM },
   { label: 'black-cream', input: 'BFTA-bug-square-black-cream.png', background: BLACK },
   { label: 'black-orange', input: 'BFTA-bug-square-black-orange.png', background: BLACK },
