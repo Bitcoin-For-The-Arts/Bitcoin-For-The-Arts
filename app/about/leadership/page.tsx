@@ -103,6 +103,7 @@ export default function LeadershipPage() {
                 'Julie Costello',
                 'Camas Logue',
                 'Valerie Love',
+                'Kenneth Burris',
               ].map((advisor) => (
                 <li
                   key={advisor}
