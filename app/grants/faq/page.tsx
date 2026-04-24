@@ -14,7 +14,7 @@ const faqs = [
   },
   {
     q: 'Who can apply for a grant?',
-    a: 'Applicants are open worldwide (individuals, collectives, and organizations). The key requirement is that the funded project must produce a public benefit within the United States — through its primary activities, execution, deliverables, performances, exhibitions, releases, or intended impact. The artist does not need to be a U.S. resident, and the underlying work may have been created anywhere in the world. We fund a wide range of disciplines, including visual arts, performing arts, music, writing/storytelling, film/media, and interdisciplinary projects.',
+    a: 'Applicants are open worldwide (individuals, collectives, and organizations). The key requirement is that the use of the grant produces a public benefit within the United States — for example, by presenting, performing, exhibiting, distributing, teaching, or otherwise delivering work to U.S. audiences or communities. The artist does not need to be a U.S. resident or citizen, and the underlying work may have been created anywhere. We fund a wide range of disciplines, including visual arts, performing arts, music, writing/storytelling, film/media, and interdisciplinary projects.',
   },
   {
     q: 'How much funding can I request?',
@@ -42,11 +42,11 @@ const faqs = [
   },
   {
     q: 'Can international artists apply?',
-    a: 'Yes. Applicants are open worldwide. The key requirement is that the funded project produces a public benefit within the United States — for example, a U.S. exhibition, performance, screening, distribution, residency, or workshop. The artist does not need to be a U.S. resident or citizen, and the underlying work may have been created anywhere in the world.',
+    a: 'Yes. Applicants are open worldwide. The key requirement is that the use of the grant produces a public benefit within the United States — for example, by presenting, performing, exhibiting, distributing, teaching, or otherwise delivering work to U.S. audiences or communities. The artist does not need to be a U.S. resident or citizen, and the underlying work may have been created anywhere.',
   },
   {
     q: 'What counts as “U.S. public benefit”?',
-    a: 'The funded project\'s primary activities, execution, deliverables, performances, exhibitions, releases, or intended impact must occur within the United States (the 50 states, District of Columbia, or U.S. jurisdictions). Examples include a U.S. screening of a film made abroad, a U.S. tour of an existing piece, a U.S. workshop taught by a non-U.S. artist, the U.S. release of a record produced overseas, or an installation premiered at a U.S. venue.',
+    a: 'The use of the grant must deliver work to U.S. audiences or communities — for example, a U.S. exhibition, performance, screening, residency, or workshop, or U.S. distribution or teaching of an existing piece. The U.S. includes the 50 states, District of Columbia, and U.S. jurisdictions. Concrete examples: a U.S. screening of a film made abroad, a U.S. tour of an existing piece, a U.S. workshop taught by a non-U.S. artist, the U.S. release of a record produced overseas, or an installation premiered at a U.S. venue.',
   },
   {
     q: 'What if I’m selected?',
