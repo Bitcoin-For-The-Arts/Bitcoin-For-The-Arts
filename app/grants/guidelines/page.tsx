@@ -118,10 +118,11 @@ export default function GrantGuidelinesPage() {
                       <span className="font-semibold text-foreground">Applicants:</span> open worldwide.
                     </li>
                     <li>
-                      <span className="font-semibold text-foreground">Projects:</span> funded projects must produce a{' '}
-                      <span className="font-semibold text-foreground">U.S. public benefit</span> — through their
-                      primary activities, execution, deliverables, performances, exhibitions, releases, or intended
-                      impact. The underlying work may have been created anywhere.
+                      <span className="font-semibold text-foreground">Projects:</span> the use of the grant must
+                      produce a <span className="font-semibold text-foreground">U.S. public benefit</span> — for
+                      example, by presenting, performing, exhibiting, distributing, teaching, or otherwise
+                      delivering work to U.S. audiences or communities. The underlying work may have been created
+                      anywhere.
                     </li>
                     <li>
                       <span className="font-semibold text-foreground">Paid in Bitcoin:</span> grants are disbursed in BTC.
@@ -272,11 +273,11 @@ export default function GrantGuidelinesPage() {
                     geographic restrictions. Artists from any country, of any residency or citizenship, may apply.
                   </p>
                   <p>
-                    <span className="font-semibold text-foreground">Projects:</span> the funded project must produce a
-                    public benefit within the United States. The primary activities, execution, deliverables,
-                    performances, exhibitions, releases, <span className="italic">or intended impact</span> must occur
-                    within the U.S. (including the 50 states, District of Columbia, or U.S. jurisdictions). The
-                    underlying creative work may have been made anywhere in the world.
+                    <span className="font-semibold text-foreground">Projects:</span> the use of the grant must produce
+                    a public benefit within the United States — for example, by presenting, performing, exhibiting,
+                    distributing, teaching, or otherwise delivering work to U.S. audiences or communities. The U.S.
+                    includes the 50 states, District of Columbia, and U.S. jurisdictions. The underlying creative
+                    work may have been made anywhere in the world.
                   </p>
                   <ul className="list-disc pl-5 space-y-1">
                     <li>A global artist creating artwork or installation that premieres at a U.S. venue.</li>
@@ -292,15 +293,16 @@ export default function GrantGuidelinesPage() {
                   </p>
                   <p>
                     <span className="font-semibold text-foreground">Proof:</span> applicants must describe in the
-                    application how the project produces a U.S. public benefit (e.g., location of key activities,
-                    audience, distribution, or intended impact). We may request additional details during review.
+                    application how the use of the grant delivers work to U.S. audiences or communities (e.g., venue,
+                    audience, distribution channel, or teaching context). We may request additional details during
+                    review.
                   </p>
                 </div>
               </Callout>
 
               <Callout title="Ineligible">
                 <ul className="list-disc pl-5 space-y-2">
-                  <li>Projects whose primary activities, deliverables, and intended impact all occur outside the U.S.</li>
+                  <li>Projects whose use of the grant does not deliver work to any U.S. audience or community.</li>
                   <li>
                     Projects promoting illegal activities, hate speech, or non-Bitcoin digital assets
                     (altcoins, tokens, etc.).
@@ -334,7 +336,7 @@ export default function GrantGuidelinesPage() {
                 </Callout>
                 <Callout title="Step 2 — Project Description">
                   Title, summary (200–500 words), Bitcoin alignment, timeline/milestones, and clear explanation of how
-                  the project produces a U.S. public benefit (required for eligibility).
+                  the use of the grant delivers work to U.S. audiences or communities (required for eligibility).
                 </Callout>
                 <Callout title="Step 3 — Funding & Budget">
                   Requested amount (BTC), detailed breakdown, and other funding sources.
@@ -362,7 +364,7 @@ export default function GrantGuidelinesPage() {
                 <Callout title="Do">
                   <ul className="list-disc pl-5 space-y-2">
                     <li>Align your project explicitly with Bitcoin principles (e.g., explain how it promotes decentralization).</li>
-                    <li>Clearly describe how the project produces a U.S. public benefit (e.g., location of key activities, audience, distribution, or intended impact).</li>
+                    <li>Clearly describe how the use of the grant delivers work to U.S. audiences or communities (e.g., U.S. venue, U.S. audience, U.S. distribution channel, or U.S. teaching context).</li>
                     <li>Provide clear, measurable milestones (e.g., “Complete artwork by Q4 2026 and release as open-source”).</li>
                     <li>Demonstrate low time preference (e.g., focus on long-term cultural impact over quick trends).</li>
                     <li>Use attachments to showcase prior work—high-quality samples boost scores.</li>
@@ -374,7 +376,7 @@ export default function GrantGuidelinesPage() {
                   <ul className="list-disc pl-5 space-y-2">
                     <li>Submit vague descriptions (e.g., avoid “I’ll make cool Bitcoin art”—be specific).</li>
                     <li>Request funds for non-project expenses (e.g., general living costs, unrelated hardware).</li>
-                    <li>Ignore the form’s required fields or fail to explain the project’s U.S. public benefit—incomplete applications are rejected.</li>
+                    <li>Ignore the form’s required fields or fail to explain how the grant delivers work to U.S. audiences or communities—incomplete applications are rejected.</li>
                     <li>Promote scams, rug pulls, or non-Bitcoin assets (e.g., no altcoin-focused projects).</li>
                     <li>Apply without a portfolio—evidence of past work is crucial.</li>
                     <li>Forget to reattach files when resuming drafts.</li>

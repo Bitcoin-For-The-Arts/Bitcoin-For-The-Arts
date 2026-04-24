@@ -1270,11 +1270,11 @@ export default function GrantApplicationForm() {
         <label className="mt-4 flex items-start gap-3 rounded-2xl border border-border bg-surface p-4 text-sm">
           <input name="usProjectOnly" type="checkbox" required className="mt-1 h-4 w-4" />
           <span>
-            I confirm that the activity funded by this BFTA grant will produce a public benefit within the{' '}
-            <span className="font-semibold text-foreground">United States</span> — through the primary activities,
-            execution, deliverables, performances, exhibitions, releases, or intended impact of the funded project.
-            The artist/applicant does not need to be a U.S. resident or citizen, and the underlying work may have
-            been created anywhere in the world. <span className="text-accent">*</span>
+            I confirm that the use of this BFTA grant will produce a public benefit within the{' '}
+            <span className="font-semibold text-foreground">United States</span> — for example, by presenting,
+            performing, exhibiting, distributing, teaching, or otherwise delivering work to U.S. audiences or
+            communities. The artist/applicant does not need to be a U.S. resident or citizen, and the underlying
+            work may have been created anywhere. <span className="text-accent">*</span>
           </span>
         </label>
 
@@ -1665,10 +1665,10 @@ export default function GrantApplicationForm() {
                     relevant laws and regulations, and funds will not be used for unlawful purposes.
                   </li>
                   <li>
-                    <span className="font-semibold text-foreground">U.S. public benefit:</span> You certify that the activity funded
-                    by this grant will produce a public benefit within the United States — through its primary activities,
-                    execution, deliverables, performances, exhibitions, releases, or intended impact, as required for
-                    eligibility.
+                    <span className="font-semibold text-foreground">U.S. public benefit:</span> You certify that the use of
+                    this grant will produce a public benefit within the United States — for example, by presenting,
+                    performing, exhibiting, distributing, teaching, or otherwise delivering work to U.S. audiences or
+                    communities, as required for eligibility.
                   </li>
                   <li>
                     <span className="font-semibold text-foreground">Nondiscrimination & accessibility:</span> You will not discriminate
