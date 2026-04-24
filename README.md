@@ -30,6 +30,21 @@
 
 ---
 
+### **Leadership**
+
+For full bios, headshots, and the live source of truth, see
+[bitcoinforthearts.org/about/leadership](https://bitcoinforthearts.org/about/leadership).
+
+**Board Advisors**
+- Buttercup Roberts
+- Kyle Knight
+- Julie Costello
+- Camas Logue
+- Valerie Love
+- Kenneth Burris
+
+---
+
 ### **Domain & DNS Configuration**
 
 The site runs on the custom domain **bitcoinforthearts.org**, registered at
