@@ -118,8 +118,10 @@ export default function GrantGuidelinesPage() {
                       <span className="font-semibold text-foreground">Applicants:</span> open worldwide.
                     </li>
                     <li>
-                      <span className="font-semibold text-foreground">Projects:</span> funded activities must be{' '}
-                      <span className="font-semibold text-foreground">US-based</span> (performed in the United States).
+                      <span className="font-semibold text-foreground">Projects:</span> funded projects must produce a{' '}
+                      <span className="font-semibold text-foreground">U.S. public benefit</span> — through their
+                      primary activities, execution, deliverables, performances, exhibitions, releases, or intended
+                      impact. The underlying work may have been created anywhere.
                     </li>
                     <li>
                       <span className="font-semibold text-foreground">Paid in Bitcoin:</span> grants are disbursed in BTC.
@@ -267,18 +269,21 @@ export default function GrantGuidelinesPage() {
                 <div className="space-y-3">
                   <p>
                     <span className="font-semibold text-foreground">Artists/Applicants:</span> open worldwide—no
-                    geographic restrictions. Artists from any country may apply.
+                    geographic restrictions. Artists from any country, of any residency or citizenship, may apply.
                   </p>
                   <p>
-                    <span className="font-semibold text-foreground">Projects:</span> all funded projects must be US-based.
-                    This means the primary activities, execution, deliverables, performances, exhibitions, releases, or
-                    impact must take place within the United States (including the 50 states, District of Columbia, or
-                    U.S. jurisdictions).
+                    <span className="font-semibold text-foreground">Projects:</span> the funded project must produce a
+                    public benefit within the United States. The primary activities, execution, deliverables,
+                    performances, exhibitions, releases, <span className="italic">or intended impact</span> must occur
+                    within the U.S. (including the 50 states, District of Columbia, or U.S. jurisdictions). The
+                    underlying creative work may have been made anywhere in the world.
                   </p>
                   <ul className="list-disc pl-5 space-y-1">
-                    <li>A global artist creating artwork/installation that premieres in NYC.</li>
-                    <li>A digital project hosted on US servers with US-focused community engagement.</li>
-                    <li>A performance tour in US cities.</li>
+                    <li>A global artist creating artwork or installation that premieres at a U.S. venue.</li>
+                    <li>A U.S. screening, tour, exhibition, or release of an existing work made abroad.</li>
+                    <li>A U.S. workshop, residency, or commission led by a non-U.S. artist.</li>
+                    <li>A digital project hosted on U.S. servers with U.S.-focused community engagement.</li>
+                    <li>A performance tour in U.S. cities.</li>
                   </ul>
                   <p>
                     <span className="font-semibold text-foreground">Rationale:</span> this ensures compliance with U.S.
@@ -287,15 +292,15 @@ export default function GrantGuidelinesPage() {
                   </p>
                   <p>
                     <span className="font-semibold text-foreground">Proof:</span> applicants must describe in the
-                    application how the project is US-based (e.g., location of key activities, audience, or outputs). We
-                    may request additional details during review.
+                    application how the project produces a U.S. public benefit (e.g., location of key activities,
+                    audience, distribution, or intended impact). We may request additional details during review.
                   </p>
                 </div>
               </Callout>
 
               <Callout title="Ineligible">
                 <ul className="list-disc pl-5 space-y-2">
-                  <li>Projects primarily taking place outside the US (even if applicant is US-based).</li>
+                  <li>Projects whose primary activities, deliverables, and intended impact all occur outside the U.S.</li>
                   <li>
                     Projects promoting illegal activities, hate speech, or non-Bitcoin digital assets
                     (altcoins, tokens, etc.).
@@ -328,8 +333,8 @@ export default function GrantGuidelinesPage() {
                   one), short bio, portfolio links.
                 </Callout>
                 <Callout title="Step 2 — Project Description">
-                  Title, summary (200–500 words), Bitcoin alignment, timeline/milestones, and clear explanation of how the
-                  project is US-based (required for eligibility).
+                  Title, summary (200–500 words), Bitcoin alignment, timeline/milestones, and clear explanation of how
+                  the project produces a U.S. public benefit (required for eligibility).
                 </Callout>
                 <Callout title="Step 3 — Funding & Budget">
                   Requested amount (BTC), detailed breakdown, and other funding sources.
@@ -357,7 +362,7 @@ export default function GrantGuidelinesPage() {
                 <Callout title="Do">
                   <ul className="list-disc pl-5 space-y-2">
                     <li>Align your project explicitly with Bitcoin principles (e.g., explain how it promotes decentralization).</li>
-                    <li>Clearly describe how the project is US-based (e.g., location of key activities, audience, or outputs).</li>
+                    <li>Clearly describe how the project produces a U.S. public benefit (e.g., location of key activities, audience, distribution, or intended impact).</li>
                     <li>Provide clear, measurable milestones (e.g., “Complete artwork by Q4 2026 and release as open-source”).</li>
                     <li>Demonstrate low time preference (e.g., focus on long-term cultural impact over quick trends).</li>
                     <li>Use attachments to showcase prior work—high-quality samples boost scores.</li>
@@ -369,7 +374,7 @@ export default function GrantGuidelinesPage() {
                   <ul className="list-disc pl-5 space-y-2">
                     <li>Submit vague descriptions (e.g., avoid “I’ll make cool Bitcoin art”—be specific).</li>
                     <li>Request funds for non-project expenses (e.g., general living costs, unrelated hardware).</li>
-                    <li>Ignore the form’s required fields or fail to explain US-based project elements—incomplete applications are rejected.</li>
+                    <li>Ignore the form’s required fields or fail to explain the project’s U.S. public benefit—incomplete applications are rejected.</li>
                     <li>Promote scams, rug pulls, or non-Bitcoin assets (e.g., no altcoin-focused projects).</li>
                     <li>Apply without a portfolio—evidence of past work is crucial.</li>
                     <li>Forget to reattach files when resuming drafts.</li>
@@ -500,7 +505,7 @@ export default function GrantGuidelinesPage() {
             <Section id="legal" title="8. Legal Assurances">
               <p>By applying, you certify:</p>
               <ul className="list-disc pl-5 space-y-2">
-                <li>Compliance with applicable laws (e.g., AML, IP rights, and U.S. federal/state laws relevant to US-based projects).</li>
+                <li>Compliance with applicable laws (e.g., AML, IP rights, and U.S. federal/state laws relevant to U.S.-benefit projects).</li>
                 <li>No discrimination in project execution.</li>
                 <li>Funds used solely for the described project.</li>
                 <li>Responsibility for BTC tax implications.</li>

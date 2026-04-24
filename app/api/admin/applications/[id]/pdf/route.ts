@@ -121,7 +121,7 @@ export async function GET(
     field('Email', (doc as any).applicant?.email ?? '');
     field('Phone', (doc as any).applicant?.phone ?? '');
     field(
-      'US-based activities (eligibility)',
+      'U.S. public-benefit confirmation (eligibility)',
       (doc as any).eligibility?.usProjectOnly === true
         ? 'Yes'
         : (doc as any).eligibility?.usProjectOnly === false

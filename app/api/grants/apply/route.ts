@@ -509,7 +509,7 @@ export async function POST(req: NextRequest) {
     }
 
     requireCheckbox(fields, 'missionAligned', 'Mission alignment');
-    requireCheckbox(fields, 'usProjectOnly', 'US-based activities');
+    requireCheckbox(fields, 'usProjectOnly', 'U.S. public-benefit confirmation');
     requireCheckbox(fields, 'agreeOversight', 'Oversight agreement');
     requireCheckbox(fields, 'agreeTerms', 'Terms agreement');
     requireCheckbox(fields, 'agreeLegal', 'Legal assurances');
@@ -662,7 +662,7 @@ export async function POST(req: NextRequest) {
       `Admin view: ${adminLink}`,
       `Name/DBA: ${legalName}`,
       `Applicant type: ${applicantType}`,
-      `US-based activities: yes`,
+      `U.S. public-benefit confirmation: yes`,
       isOrg ? `EIN: ${normalizeEin(fields.ein ?? '') ?? ''}` : null,
       `Email: ${email}`,
       `Disciplines: ${disciplines.join(', ')}`,
@@ -689,7 +689,7 @@ export async function POST(req: NextRequest) {
         )}" target="_blank" rel="noopener noreferrer">${escapeHtml(adminLink)}</a></p>
         <p style="margin: 0 0 6px;"><strong>Name/DBA:</strong> ${escapeHtml(legalName)}</p>
         <p style="margin: 0 0 6px;"><strong>Applicant type:</strong> ${escapeHtml(applicantType)}</p>
-        <p style="margin: 0 0 6px;"><strong>US-based activities:</strong> yes</p>
+        <p style="margin: 0 0 6px;"><strong>U.S. public-benefit confirmation:</strong> yes</p>
         <p style="margin: 0 0 6px;"><strong>Email:</strong> ${escapeHtml(email)}</p>
         <p style="margin: 0 0 6px;"><strong>Disciplines:</strong> ${escapeHtml(disciplines.join(', '))}</p>
         <p style="margin: 0 0 6px;"><strong>Project title:</strong> ${escapeHtml(projectTitle)}</p>

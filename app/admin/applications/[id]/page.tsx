@@ -304,7 +304,7 @@ export default async function AdminApplicationDetailsPage({
             {textBlock('Mailing address', doc.applicant?.mailingAddress ?? '')}
             {linksBlock('Links', doc.applicant?.links ?? '')}
             {textBlock(
-              'US-based activities (eligibility)',
+              'U.S. public-benefit confirmation (eligibility)',
               doc.eligibility?.usProjectOnly === true
                 ? 'Yes'
                 : doc.eligibility?.usProjectOnly === false
