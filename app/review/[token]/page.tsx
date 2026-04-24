@@ -141,7 +141,7 @@ export default async function ReviewPage({
               {textBlock('Email', doc.applicant?.email ?? '')}
               {textBlock('Links', doc.applicant?.links ?? '')}
               {textBlock(
-                'US-based activities (eligibility)',
+                'U.S. public-benefit confirmation (eligibility)',
                 doc.eligibility?.usProjectOnly === true
                   ? 'Yes'
                   : doc.eligibility?.usProjectOnly === false

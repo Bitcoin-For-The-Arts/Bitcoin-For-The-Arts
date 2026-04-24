@@ -28,8 +28,8 @@ export default function GrantsPage() {
       items: [
         'Independent artists, small collectives, and organizations',
         'Any discipline: visual arts, theater, dance, music, writing, storytelling, film',
-        'Working on a specific, US-based project with clear next steps',
-        'Applicants worldwide — funded projects must take place in the US',
+        'Working on a specific project with clear next steps and a U.S. public benefit',
+        'Applicants worldwide — funded projects must benefit U.S. audiences or communities (existing work made anywhere is eligible)',
       ],
       imageSrc: '/artfest.jpg',
       imageAlt: 'An art festival scene, representing community arts.',
