@@ -13,8 +13,8 @@ edits in the same PR as this doc are two narrowly-scoped fixes the original
 brief explicitly authorized:
 
 1. Add **Kenneth Burris** to the Advisory Board table in `GOVERNANCE.md`
-   (he was already on the website's leadership page, see PR #215 in the
-   personal repo).
+   with his email `kennethmoonlanding@hotmail.com` (he was already on
+   the website's leadership page, see PR #215 in the personal repo).
 2. Replace two broken links to a non-existent
    `bitcoinforthearts-treasury` repo with the live `/transparency` page on
    the website. The treasury repo returns 404 — confirmed via the GitHub

@@ -31,7 +31,7 @@ The Advisory Board provides strategic counsel, industry expertise, and community
 | Julie Costello | julie@phantompowermusic.io |
 | Camas Logue | camas@camaslogue.com |
 | Valerie Love | aloha@djvalerieblove.com |
-| Kenneth Burris | _on file with the Secretary_ |
+| Kenneth Burris | kennethmoonlanding@hotmail.com |
 
 ### Leadership
 
