@@ -60,9 +60,9 @@ Every dollar (or sat) follows a clear, public allocation model:
 
 We believe in radical financial transparency. All funds are designed to be publicly verifiable on-chain.
 
-- **Live Treasury:** [github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury](https://github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury)
+- **Live Treasury & Transparency:** [bitcoinforthearts.org/transparency](https://bitcoinforthearts.org/transparency)
 - **HODL Vault:** Secure 3-of-5 multisig
-- **Quarterly Reports:** Published in the treasury repo
+- **Quarterly Reports:** Published on the [Transparency page](https://bitcoinforthearts.org/transparency)
 - **Grant Tracking:** 0 → 750 artists by 2028
 
 ---

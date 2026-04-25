@@ -31,6 +31,7 @@ The Advisory Board provides strategic counsel, industry expertise, and community
 | Julie Costello | julie@phantompowermusic.io |
 | Camas Logue | camas@camaslogue.com |
 | Valerie Love | aloha@djvalerieblove.com |
+| Kenneth Burris | _on file with the Secretary_ |
 
 ### Leadership
 
@@ -52,7 +53,7 @@ Bitcoin For The Arts follows the **55/30/10/5 Rule** for all incoming donations:
 - All finances are designed to be publicly verifiable
 - Treasury reports are published quarterly
 - The HODL Vault uses a 3-of-5 multisig for maximum security
-- See the [Live Treasury](https://github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury) for on-chain verification
+- See the [Transparency page](https://bitcoinforthearts.org/transparency) for on-chain verification
 
 ## Open-Source Project Governance
 
