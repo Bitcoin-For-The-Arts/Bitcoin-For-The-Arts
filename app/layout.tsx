@@ -52,10 +52,15 @@ export const metadata: Metadata = {
       "Supporting artists with Bitcoin micro-grants, workshops, residencies, and productions — with radical transparency.",
     images: [
       {
-        url: "/resources/logos/bitcoin-for-the-arts-logo-gold.png",
-        width: 512,
-        height: 512,
-        alt: "Bitcoin for the Arts logo",
+        // Square share preview that already lives in the social pack —
+        // black "BITCOIN FOR THE / ARTS" + orange Arts script on cream,
+        // with breathing room around the type so platform crops don't
+        // clip the corners. See public/brand-kit/README.md for the full
+        // social asset directory.
+        url: "/social/BFTA-social-post-cream-orange-2160.png",
+        width: 2160,
+        height: 2160,
+        alt: "Bitcoin for the Arts",
       },
     ],
   },
@@ -64,7 +69,7 @@ export const metadata: Metadata = {
     title: "Bitcoin for the Arts",
     description:
       "Supporting artists with Bitcoin micro-grants, workshops, residencies, and productions — with radical transparency.",
-    images: ["/resources/logos/bitcoin-for-the-arts-logo-gold.png"],
+    images: ["/social/BFTA-social-post-cream-orange-2160.png"],
   },
 };
 
@@ -82,7 +87,7 @@ export default function RootLayout({
     "@type": "Organization",
     name: "Bitcoin For The Arts, Inc.",
     url: "https://bitcoinforthearts.org",
-    logo: "https://bitcoinforthearts.org/resources/logos/bitcoin-for-the-arts-logo-gold.png",
+    logo: "https://bitcoinforthearts.org/brand-kit/square-bugs/square-cream-orange-alt.png",
     ...(socialLinks.length ? { sameAs: socialLinks.map((s) => s.href) } : {}),
   };
 

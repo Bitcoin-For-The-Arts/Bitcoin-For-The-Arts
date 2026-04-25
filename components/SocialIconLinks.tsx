@@ -54,8 +54,8 @@ function Icon({
           className={`inline-block ${className}`}
           aria-hidden="true"
           style={{
-            WebkitMaskImage: "url('/nostr.PNG')",
-            maskImage: "url('/nostr.PNG')",
+            WebkitMaskImage: "url('/brand-kit/social-icons/nostr.png')",
+            maskImage: "url('/brand-kit/social-icons/nostr.png')",
             WebkitMaskRepeat: 'no-repeat',
             maskRepeat: 'no-repeat',
             WebkitMaskPosition: 'center',

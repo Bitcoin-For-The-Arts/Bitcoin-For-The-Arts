@@ -1,7 +1,7 @@
 // Regenerate the site favicon + app-icon set from the BFTA bug.
 //
 // Source:
-//   public/BFTA-bug-square-cream-orange-2.png
+//   public/brand-kit/square-bugs/square-cream-orange-alt.png
 //   (black BTA + orange 'Arts' on cream — same colorway as the main
 //   lockup used on the home and about pages, so the tab icon, app icon,
 //   and the chrome bug all match.)
@@ -29,7 +29,12 @@ const projectRoot = path.resolve(__dirname, '..');
 const publicDir = path.join(projectRoot, 'public');
 const appDir = path.join(projectRoot, 'app');
 
-const SOURCE = path.join(publicDir, 'BFTA-bug-square-cream-orange-2.png');
+const SOURCE = path.join(
+  publicDir,
+  'brand-kit',
+  'square-bugs',
+  'square-cream-orange-alt.png',
+);
 const CREAM = { r: 255, g: 250, b: 240, alpha: 1 }; // #FFFAF0
 
 // Each target: { out: absolute path, size: pixel dim }.

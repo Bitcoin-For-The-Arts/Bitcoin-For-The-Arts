@@ -1,4 +1,4 @@
-![Bitcoin For The Arts](BITCOIN-ARTS-LOGO-Gold%20(3))
+![Bitcoin For The Arts](public/brand-kit/main-lockups/main-cream-orange.png)
 
 # Bitcoin-For-The-Arts
 

@@ -9,12 +9,13 @@ import { useMemo, useState } from 'react';
 // newsletter card and the social icon tiles in the footer, so the chrome
 // reads as a system of cream cards floating on lime.
 //
-// We use the v2 cream-orange bug specifically (black BTA + orange Arts)
-// because it matches the colorway of the main lockup used on the home and
-// about pages (black 'BITCOIN/FOR/THE' + orange 'Arts'). Same artist gives
-// the chrome a single, consistent voice instead of two competing
-// colorways across the site.
-const NAV_LOGO_SRC = '/BFTA-bug-square-cream-orange-2.png';
+// The "alt" cream-orange square (black BTA + orange "Arts") matches the
+// colorway of the main lockup used on the home and about pages, so the
+// chrome reads with a single voice across the site.
+//
+// All brand assets live in public/brand-kit/. See
+// public/brand-kit/README.md for the full directory.
+const NAV_LOGO_SRC = '/brand-kit/square-bugs/square-cream-orange-alt.png';
 
 type NavItem = {
   label: string;
