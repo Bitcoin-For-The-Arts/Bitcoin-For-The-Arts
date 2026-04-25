@@ -27,16 +27,20 @@ const downloads = [
     href: '/resources/donor-receipt-template.md',
   },
   {
-    name: 'Logo kit (SVG)',
-    href: '/resources/logos/bitcoin-for-the-arts-logo.svg',
+    name: 'BFTA Brand Guidelines (PDF)',
+    href: '/brand-kit/guidelines/BFTA-Brand-Guidelines.pdf',
   },
   {
-    name: 'Logo kit (PNG, gold)',
-    href: '/resources/logos/bitcoin-for-the-arts-logo-gold.png',
+    name: 'Main lockup — cream / orange (PNG)',
+    href: '/brand-kit/main-lockups/main-cream-orange.png',
   },
   {
-    name: 'Logo kit (PNG, white)',
-    href: '/resources/logos/bitcoin-for-the-arts-logo-white.png',
+    name: 'Main lockup — black / orange (PNG)',
+    href: '/brand-kit/main-lockups/main-black-orange.png',
+  },
+  {
+    name: 'BFTA bug — square (PNG)',
+    href: '/brand-kit/square-bugs/square-cream-orange-alt.png',
   },
 ];
  

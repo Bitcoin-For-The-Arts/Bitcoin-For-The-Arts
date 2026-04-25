@@ -25,7 +25,14 @@ import sharp from 'sharp';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
 const publicDir = path.join(projectRoot, 'public');
+const brandKitDir = path.join(publicDir, 'brand-kit');
+const mainLockupsDir = path.join(brandKitDir, 'main-lockups');
+const squareBugsDir = path.join(brandKitDir, 'square-bugs');
+const inlineBugsDir = path.join(brandKitDir, 'inline-bugs');
 const outDir = path.join(publicDir, 'social');
+
+// Variant `input` fields below are bare filenames; each builder resolves
+// them against the appropriate brand-kit subfolder for its variant family.
 
 // Brand palette
 const CREAM = { r: 255, g: 250, b: 240 }; // #FFFAF0
@@ -44,37 +51,37 @@ const LIME = { r: 179, g: 255, b: 72 };   // #B3FF48
 const variants = [
   {
     label: 'cream-orange',
-    input: 'BFTA-main-lockup-cream-orange-2.png',
+    input: 'main-cream-orange.png',
     background: CREAM,
   },
   {
     label: 'cream-orange-alt',
-    input: 'BFTA-main-lockup-cream-orange-1.png',
+    input: 'main-cream-orange-alt.png',
     background: CREAM,
   },
   {
     label: 'cream-black',
-    input: 'BFTA-main-lockup-cream-black.png',
+    input: 'main-cream-black.png',
     background: CREAM,
   },
   {
     label: 'black-cream',
-    input: 'BFTA-main-lockup-black-cream.png',
+    input: 'main-black-cream.png',
     background: BLACK,
   },
   {
     label: 'black-orange',
-    input: 'BFTA-main-lockup-black-orange.png',
+    input: 'main-black-orange.png',
     background: BLACK,
   },
   {
     label: 'orange',
-    input: 'BFTA-main-lockup-orange.png',
+    input: 'main-orange.png',
     background: ORANGE,
   },
   {
     label: 'green',
-    input: 'BFTA-main-lockup-green.png',
+    input: 'main-green.png',
     background: LIME,
   },
 ];
@@ -104,11 +111,11 @@ const SIZES = [2160, 1080];
 // inlineBugVariants set below so they all share consistent filename
 // namespacing (`-inline-` family prefix).
 const profileVariants = [
-  { label: 'green-main', input: 'BFTA-main-lockup-green.png', background: LIME },
-  { label: 'orange-main', input: 'BFTA-main-lockup-orange.png', background: ORANGE },
-  { label: 'black-orange-main', input: 'BFTA-main-lockup-black-orange.png', background: BLACK },
-  { label: 'black-cream-main', input: 'BFTA-main-lockup-black-cream.png', background: BLACK },
-  { label: 'cream-orange-alt-main', input: 'BFTA-main-lockup-cream-orange-1.png', background: CREAM },
+  { label: 'green-main', input: 'main-green.png', background: LIME },
+  { label: 'orange-main', input: 'main-orange.png', background: ORANGE },
+  { label: 'black-orange-main', input: 'main-black-orange.png', background: BLACK },
+  { label: 'black-cream-main', input: 'main-black-cream.png', background: BLACK },
+  { label: 'cream-orange-alt-main', input: 'main-cream-orange-alt.png', background: CREAM },
 ];
 
 // Circle-safe variants: same as profile mode (lockup at ~55% of canvas)
@@ -121,13 +128,13 @@ const profileVariants = [
 // We render circle-safe versions for every main lockup color so you can
 // pick whichever color matches the campaign or post.
 const circleSafeMainVariants = [
-  { label: 'cream-orange', input: 'BFTA-main-lockup-cream-orange-2.png', background: CREAM },
-  { label: 'cream-orange-alt', input: 'BFTA-main-lockup-cream-orange-1.png', background: CREAM },
-  { label: 'cream-black', input: 'BFTA-main-lockup-cream-black.png', background: CREAM },
-  { label: 'black-cream', input: 'BFTA-main-lockup-black-cream.png', background: BLACK },
-  { label: 'black-orange', input: 'BFTA-main-lockup-black-orange.png', background: BLACK },
-  { label: 'orange', input: 'BFTA-main-lockup-orange.png', background: ORANGE },
-  { label: 'green', input: 'BFTA-main-lockup-green.png', background: LIME },
+  { label: 'cream-orange', input: 'main-cream-orange.png', background: CREAM },
+  { label: 'cream-orange-alt', input: 'main-cream-orange-alt.png', background: CREAM },
+  { label: 'cream-black', input: 'main-cream-black.png', background: CREAM },
+  { label: 'black-cream', input: 'main-black-cream.png', background: BLACK },
+  { label: 'black-orange', input: 'main-black-orange.png', background: BLACK },
+  { label: 'orange', input: 'main-orange.png', background: ORANGE },
+  { label: 'green', input: 'main-green.png', background: LIME },
 ];
 
 // Square BFTA "bug" lockups (the 'BTA / FA' stacked square mark used as the
@@ -151,14 +158,14 @@ const circleSafeMainVariants = [
 //   green        (v1): orange BFT + black 'A' script
 //   green        (v2): black  BFT + orange 'A' script
 const inlineBugVariants = [
-  { label: 'cream-orange', input: 'BFTA-bug-inline-cream-orange-1.png', background: CREAM },
-  { label: 'cream-orange-alt', input: 'BFTA-bug-inline-cream-orange-2.png', background: CREAM },
-  { label: 'cream-white', input: 'BFTA-bug-inline-cream-white.png', background: CREAM },
-  { label: 'black-cream', input: 'BFTA-bug-inline-black-cream (1).png', background: BLACK },
-  { label: 'black-orange', input: 'BFTA-bug-inline-black-orange.png', background: BLACK },
-  { label: 'orange', input: 'BFTA-bug-inline-orange (1).png', background: ORANGE },
-  { label: 'green', input: 'BFTA-bug-inline-green-1.png', background: LIME },
-  { label: 'green-alt', input: 'BFTA-bug-inline-green-2.png', background: LIME },
+  { label: 'cream-orange', input: 'inline-cream-orange.png', background: CREAM },
+  { label: 'cream-orange-alt', input: 'inline-cream-orange-alt.png', background: CREAM },
+  { label: 'cream-white', input: 'inline-cream-white.png', background: CREAM },
+  { label: 'black-cream', input: 'inline-black-cream.png', background: BLACK },
+  { label: 'black-orange', input: 'inline-black-orange.png', background: BLACK },
+  { label: 'orange', input: 'inline-orange.png', background: ORANGE },
+  { label: 'green', input: 'inline-green.png', background: LIME },
+  { label: 'green-alt', input: 'inline-green-alt.png', background: LIME },
 ];
 
 // Two cream-orange and two green bug variants exist with inverted color
@@ -171,14 +178,14 @@ const inlineBugVariants = [
 //   green        (v1): orange BTA + black 'Arts' on lime
 //   green        (v2): black  BTA + orange 'Arts' on lime
 const squareBugVariants = [
-  { label: 'cream-orange', input: 'BFTA-bug-square-cream-orange-1.png', background: CREAM },
-  { label: 'cream-orange-alt', input: 'BFTA-bug-square-cream-orange-2.png', background: CREAM },
-  { label: 'cream-black', input: 'BFTA-bug-square-cream-black.png', background: CREAM },
-  { label: 'black-cream', input: 'BFTA-bug-square-black-cream.png', background: BLACK },
-  { label: 'black-orange', input: 'BFTA-bug-square-black-orange.png', background: BLACK },
-  { label: 'orange', input: 'BFTA-bug-square-orange.png', background: ORANGE },
-  { label: 'green', input: 'BFTA-bug-square-green-1.png', background: LIME },
-  { label: 'green-alt', input: 'BFTA-bug-square-green-2.png', background: LIME },
+  { label: 'cream-orange', input: 'square-cream-orange.png', background: CREAM },
+  { label: 'cream-orange-alt', input: 'square-cream-orange-alt.png', background: CREAM },
+  { label: 'cream-black', input: 'square-cream-black.png', background: CREAM },
+  { label: 'black-cream', input: 'square-black-cream.png', background: BLACK },
+  { label: 'black-orange', input: 'square-black-orange.png', background: BLACK },
+  { label: 'orange', input: 'square-orange.png', background: ORANGE },
+  { label: 'green', input: 'square-green.png', background: LIME },
+  { label: 'green-alt', input: 'square-green-alt.png', background: LIME },
 ];
 
 // Banner variants: wide cover photos with the inline lockup centered and a
@@ -195,10 +202,10 @@ const bannerSizes = [
 ];
 
 const bannerVariants = [
-  { label: 'green', input: 'BFTA-bug-inline-green-1.png', background: LIME },
-  { label: 'black-orange', input: 'BFTA-bug-inline-black-orange.png', background: BLACK },
-  { label: 'black-cream', input: 'BFTA-bug-inline-black-cream (1).png', background: BLACK },
-  { label: 'cream-orange', input: 'BFTA-bug-inline-cream-orange-1.png', background: CREAM },
+  { label: 'green', input: 'inline-green.png', background: LIME },
+  { label: 'black-orange', input: 'inline-black-orange.png', background: BLACK },
+  { label: 'black-cream', input: 'inline-black-cream.png', background: BLACK },
+  { label: 'cream-orange', input: 'inline-cream-orange.png', background: CREAM },
 ];
 
 // How wide the inline lockup should be inside a banner, as a fraction of
@@ -206,8 +213,8 @@ const bannerVariants = [
 // breathing room on left+right while keeping the type readable on mobile.
 const BANNER_LOCKUP_HEIGHT_FRACTION = 0.55;
 
-async function buildOne({ input, label, background, mode, family = '' }, size) {
-  const inputPath = path.join(publicDir, input);
+async function buildOne({ input, label, background, mode, family = '', sourceDir }, size) {
+  const inputPath = path.join(sourceDir ?? mainLockupsDir, input);
   const fraction = FRACTIONS[mode];
   const familySegment = family ? `${family}-` : '';
   const filename = `BFTA-social-${mode}-${familySegment}${label}-${size}.png`;
@@ -248,8 +255,8 @@ async function buildOne({ input, label, background, mode, family = '' }, size) {
 // (lockup centered at ~55% of canvas, brand color background) but with the
 // square corners masked out to full transparency. Result is a self-circle
 // PNG — drop directly into a platform that accepts transparent avatars.
-async function buildCircleSafe({ input, label, background, family = '' }, size) {
-  const inputPath = path.join(publicDir, input);
+async function buildCircleSafe({ input, label, background, family = '', sourceDir }, size) {
+  const inputPath = path.join(sourceDir ?? mainLockupsDir, input);
   const familySegment = family ? `${family}-` : '';
   const filename = `BFTA-social-circle-${familySegment}${label}-${size}.png`;
   const outputPath = path.join(outDir, filename);
@@ -296,8 +303,8 @@ async function buildCircleSafe({ input, label, background, family = '' }, size) 
   console.log(`[social] wrote ${path.relative(projectRoot, outputPath)} (${size}x${size}, circle)`);
 }
 
-async function buildBanner({ input, label, background }, banner) {
-  const inputPath = path.join(publicDir, input);
+async function buildBanner({ input, label, background, sourceDir }, banner) {
+  const inputPath = path.join(sourceDir ?? inlineBugsDir, input);
   const { name, width, height } = banner;
   const filename = `BFTA-social-banner-${name}-${label}.png`;
   const outputPath = path.join(outDir, filename);
@@ -363,8 +370,8 @@ async function main() {
   // collide with the main-lockup outputs above.
   for (const variant of squareBugVariants) {
     for (const size of SIZES) {
-      await buildOne({ ...variant, mode: 'profile', family: 'bug' }, size);
-      await buildCircleSafe({ ...variant, family: 'bug' }, size);
+      await buildOne({ ...variant, mode: 'profile', family: 'bug', sourceDir: squareBugsDir }, size);
+      await buildCircleSafe({ ...variant, family: 'bug', sourceDir: squareBugsDir }, size);
     }
   }
 
@@ -374,8 +381,8 @@ async function main() {
   // stays readable down to 32x32 in feed/notification rows.
   for (const variant of inlineBugVariants) {
     for (const size of SIZES) {
-      await buildOne({ ...variant, mode: 'profile', family: 'inline' }, size);
-      await buildCircleSafe({ ...variant, family: 'inline' }, size);
+      await buildOne({ ...variant, mode: 'profile', family: 'inline', sourceDir: inlineBugsDir }, size);
+      await buildCircleSafe({ ...variant, family: 'inline', sourceDir: inlineBugsDir }, size);
     }
   }
 

@@ -3,15 +3,17 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import watermarklogo from '../asset/FreedomLab Logo.jpeg';
 
-// BFTA 2026 brand assets:
-//   /BFTA-bug-square-cream-orange-2.png       — small BFTA "bug" used in the
-//     about hero card. v2 (black BTA + orange Arts) is the colorway match
-//     for the main lockup so the page reads as one consistent piece.
-//   /BFTA-main-lockup-transparent-light.png   — full main lockup with the
-//     cream rectangle knocked out so it drops cleanly onto the cream page
-//     with no visible card edge.
-const ABOUT_BUG_SRC = '/BFTA-bug-square-cream-orange-2.png';
-const MAIN_LOCKUP_SRC = '/BFTA-main-lockup-transparent-light.png';
+// BFTA 2026 brand assets — all live in public/brand-kit/, see
+// public/brand-kit/README.md for the full directory.
+//
+//   square-cream-orange-alt.png   Small BFTA bug used in the about hero
+//                                 card. Black BTA + orange Arts on cream —
+//                                 matches the main lockup's colorway.
+//   main-transparent-light.png    Full main lockup with the cream rectangle
+//                                 knocked out so it drops onto the cream
+//                                 page with no visible card edge.
+const ABOUT_BUG_SRC = '/brand-kit/square-bugs/square-cream-orange-alt.png';
+const MAIN_LOCKUP_SRC = '/brand-kit/derived/main-transparent-light.png';
 
 export const metadata: Metadata = {
   title: 'About',
