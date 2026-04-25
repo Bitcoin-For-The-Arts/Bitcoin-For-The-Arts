@@ -1,0 +1,12 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "build",
+  "framework": null,
+  "rewrites": [
+    { "source": "/artist-hub/_app/:path*", "destination": "/_app/:path*" },
+    { "source": "/artist-hub/bfta-logo.png", "destination": "/bfta-logo.png" },
+    { "source": "/artist-hub/bfta-logo.svg", "destination": "/bfta-logo.svg" },
+    { "source": "/artist-hub/:path*", "destination": "/index.html" },
+    { "source": "/artist-hub", "destination": "/index.html" }
+  ]
+}

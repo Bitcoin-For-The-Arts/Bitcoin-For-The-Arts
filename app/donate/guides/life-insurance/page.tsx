@@ -40,7 +40,7 @@ export default function LifeInsuranceGuidePage() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="mailto:donate@bitcoinforthearts.org?subject=Life%20Insurance%20Gift"
-                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                 >
                   Contact donate@
                 </a>

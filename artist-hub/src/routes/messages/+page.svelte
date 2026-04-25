@@ -1,0 +1,590 @@
+<script lang="ts">
+  import { onDestroy, onMount } from 'svelte';
+  import { nip04, nip19 } from 'nostr-tools';
+  import { ensureNdk } from '$lib/stores/ndk';
+  import { canSign, pubkey } from '$lib/stores/auth';
+  import { NOSTR_KINDS } from '$lib/nostr/constants';
+  import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
+  import DMComposer from '$lib/components/DMComposer.svelte';
+  import { profileHover } from '$lib/ui/profile-hover';
+  import { getLocalSecretKey } from '$lib/stores/local-signer';
+  import ContentBody from '$lib/components/ContentBody.svelte';
+  import { publishDeletion, publishDm } from '$lib/nostr/publish';
+  import Modal from '$lib/components/Modal.svelte';
+
+  type Msg = {
+    id: string;
+    from: string;
+    to: string;
+    at: number;
+    text: string; // plaintext when decrypted; placeholder otherwise
+    ciphertext?: string; // present if not yet decrypted (or kept for re-decrypt)
+    decrypted?: boolean;
+  };
+  type Thread = { with: string; lastAt: number; lastText: string };
+
+  let threads: Thread[] = [];
+  let selected: string | null = null;
+  let messages: Msg[] = [];
+  let error: string | null = null;
+  let loading = false;
+  let stop: (() => void) | null = null;
+
+  let newNpub = '';
+  let composerOpen = false;
+  let composerTo = '';
+  let composerLabel = '';
+
+  let deleted = new Set<string>();
+  let cleared: Record<string, number> = {}; // withPubkey -> unix seconds
+  let actionError: string | null = null;
+  let actionBusy = false;
+
+  let editOpen = false;
+  let editMsg: Msg | null = null;
+  let editText = '';
+  let editBusy = false;
+  let editError: string | null = null;
+
+  let decryptBusy = false;
+  let decryptError: string | null = null;
+
+  function deletedKey(me: string) {
+    return `bfta:dm:deleted:${me}`;
+  }
+  function clearedKey(me: string) {
+    return `bfta:dm:cleared:${me}`;
+  }
+  function loadLocalState(me: string) {
+    deleted = new Set<string>();
+    cleared = {};
+    actionError = null;
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = localStorage.getItem(deletedKey(me));
+      const arr = raw ? (JSON.parse(raw) as any) : [];
+      if (Array.isArray(arr)) for (const id of arr) if (typeof id === 'string') deleted.add(id);
+    } catch {
+      // ignore
+    }
+    try {
+      const raw = localStorage.getItem(clearedKey(me));
+      const obj = raw ? (JSON.parse(raw) as any) : null;
+      if (obj && typeof obj === 'object') cleared = obj as Record<string, number>;
+    } catch {
+      // ignore
+    }
+  }
+  function persistDeleted(me: string) {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(deletedKey(me), JSON.stringify(Array.from(deleted).slice(-2000)));
+    } catch {
+      // ignore
+    }
+  }
+  function persistCleared(me: string) {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(clearedKey(me), JSON.stringify(cleared));
+    } catch {
+      // ignore
+    }
+  }
+
+  function withPkFor(msg: Msg, me: string): string {
+    return msg.from === me ? msg.to : msg.from;
+  }
+
+  function rebuildThreads(me: string) {
+    const best = new Map<string, Msg>();
+    for (const m of messages) {
+      if (deleted.has(m.id)) continue;
+      const withPk = withPkFor(m, me);
+      const cutoff = cleared[withPk] || 0;
+      if (m.at <= cutoff) continue;
+      const prev = best.get(withPk);
+      if (!prev || m.at > prev.at) best.set(withPk, m);
+    }
+    threads = Array.from(best.entries())
+      .map(([withPk, m]) => ({
+        with: withPk,
+        lastAt: m.at,
+        lastText: (m.text || '🔒 Encrypted DM').slice(0, 140),
+      }))
+      .sort((a, b) => b.lastAt - a.lastAt)
+      .slice(0, 50);
+    if (selected && !threads.some((t) => t.with === selected)) selected = threads[0]?.with ?? null;
+  }
+
+  async function decryptText(counterparty: string, ciphertext: string): Promise<string | null> {
+    if (!ciphertext) return null;
+    if (window.nostr?.nip04?.decrypt) {
+      // NIP-07 decrypt: may trigger a permission popup; keep calls sequential.
+      return await window.nostr.nip04.decrypt(counterparty, ciphertext);
+    }
+    const sk = getLocalSecretKey();
+    if (!sk) return null;
+    return await nip04.decrypt(sk, counterparty, ciphertext);
+  }
+
+  function parseDmEnvelope(ev: any): { from: string; to: string; at: number; counterparty: string; ciphertext: string } | null {
+    const from = ev?.pubkey as string;
+    const to = ((ev?.tags as string[][]) || []).find((t) => t[0] === 'p')?.[1] as string | undefined;
+    if (!from || !to) return null;
+    const me = $pubkey;
+    if (!me) return null;
+    const counterparty = from === me ? to : from;
+    const at = Number(ev?.created_at || 0) || Math.floor(Date.now() / 1000);
+    const ciphertext = String(ev?.content || '');
+    return { from, to, at, counterparty, ciphertext };
+  }
+
+  async function decryptThread(withPk: string): Promise<void> {
+    if (!$pubkey) return;
+    if (!withPk) return;
+    decryptError = null;
+    if (decryptBusy) return;
+
+    const hasDecrypt = Boolean(window.nostr?.nip04?.decrypt) || Boolean(getLocalSecretKey());
+    if (!hasDecrypt) return;
+
+    const me = $pubkey;
+    const pending = messages
+      .filter((m) => withPkFor(m, me) === withPk && !deleted.has(m.id) && m.ciphertext && !m.decrypted)
+      .sort((a, b) => a.at - b.at)
+      .slice(-40);
+
+    if (pending.length === 0) return;
+
+    decryptBusy = true;
+    try {
+      for (const m of pending) {
+        try {
+          const counterparty = withPk;
+          const text = await decryptText(counterparty, m.ciphertext || '');
+          if (!text) continue;
+          messages = messages.map((x) =>
+            x.id === m.id
+              ? { ...x, text, decrypted: true }
+              : x,
+          );
+        } catch (e) {
+          // Stop early if signer is prompting / blocked.
+          decryptError = e instanceof Error ? e.message : String(e);
+          break;
+        }
+      }
+      rebuildThreads(me);
+    } finally {
+      decryptBusy = false;
+    }
+  }
+
+  async function start() {
+    if (!$pubkey) return;
+    error = null;
+    loading = true;
+    actionError = null;
+    decryptError = null;
+
+    const hasDecrypt = Boolean(window.nostr?.nip04?.decrypt) || Boolean(getLocalSecretKey());
+    if (!hasDecrypt) {
+      error = 'No NIP-04 decrypt available. Install Alby/nos2x, or sign in with an in-app key to use DMs.';
+      loading = false;
+      return;
+    }
+
+    const ndk = await ensureNdk();
+    const me = $pubkey;
+    loadLocalState(me);
+
+    const sub = ndk.subscribe(
+      [
+        { kinds: [NOSTR_KINDS.dm], authors: [me], limit: 50 },
+        { kinds: [NOSTR_KINDS.dm], '#p': [me], limit: 50 },
+      ] as any,
+      { closeOnEose: false },
+    );
+
+    sub.on('event', async (ev) => {
+      // IMPORTANT: do NOT auto-decrypt all messages.
+      // Auto-decrypt can trigger many concurrent NIP-07 permission popups and break Alby.
+      const env = parseDmEnvelope(ev);
+      if (!env) return;
+      const withPk = env.counterparty;
+      if (deleted.has(ev.id)) return;
+      const cutoff = cleared[withPk] || 0;
+      if (env.at <= cutoff) return;
+      void fetchProfileFor(withPk);
+
+      const baseMsg: Msg = {
+        id: ev.id,
+        from: env.from,
+        to: env.to,
+        at: env.at,
+        text: '🔒 Encrypted DM (click thread to decrypt)',
+        ciphertext: env.ciphertext,
+        decrypted: false,
+      };
+
+      // If user is using an in-app key (no popups), we can decrypt quietly.
+      if (!window.nostr?.nip04?.decrypt && getLocalSecretKey()) {
+        try {
+          const text = await decryptText(withPk, env.ciphertext);
+          if (text) {
+            baseMsg.text = text;
+            baseMsg.decrypted = true;
+          }
+        } catch {
+          // ignore
+        }
+      }
+
+      messages = [...messages.filter((m) => m.id !== baseMsg.id), baseMsg]
+        .sort((a, b) => a.at - b.at)
+        .slice(-200);
+      rebuildThreads(me);
+      if (!selected) selected = withPk;
+    });
+
+    // Listen for your deletion events (NIP-09) so deletions from other clients are respected.
+    const subDel = ndk.subscribe({ kinds: [NOSTR_KINDS.deletion], authors: [me], limit: 200 } as any, { closeOnEose: false });
+    subDel.on('event', (ev: any) => {
+      const tags = (ev?.tags as string[][]) || [];
+      const ids = tags.filter((t) => t[0] === 'e' && typeof t[1] === 'string').map((t) => t[1]);
+      let changed = false;
+      for (const id of ids) {
+        if (!deleted.has(id)) {
+          deleted.add(id);
+          changed = true;
+        }
+      }
+      if (!changed) return;
+      persistDeleted(me);
+      messages = messages.filter((m) => !deleted.has(m.id));
+      rebuildThreads(me);
+    });
+
+    stop = () => {
+      sub.stop();
+      subDel.stop();
+    };
+    loading = false;
+  }
+
+  async function removeMessage(m: Msg) {
+    if (!$pubkey) return;
+    const me = $pubkey;
+    actionError = null;
+    actionBusy = true;
+    try {
+      deleted.add(m.id);
+      persistDeleted(me);
+      messages = messages.filter((x) => x.id !== m.id);
+      rebuildThreads(me);
+
+      // If you authored it, publish a NIP-09 deletion event (best-effort).
+      if (m.from === me) {
+        await publishDeletion({ eventIds: [m.id], reason: 'deleted' });
+      }
+    } catch (e) {
+      actionError = e instanceof Error ? e.message : String(e);
+    } finally {
+      actionBusy = false;
+    }
+  }
+
+  function clearConversation(withPk: string) {
+    if (!$pubkey) return;
+    const me = $pubkey;
+    actionError = null;
+    const now = Math.floor(Date.now() / 1000);
+    cleared = { ...cleared, [withPk]: now };
+    persistCleared(me);
+    messages = messages.filter((m) => withPkFor(m, me) !== withPk || m.at > now);
+    rebuildThreads(me);
+  }
+
+  function openEditMsg(m: Msg) {
+    if (!$pubkey) return;
+    if (m.from !== $pubkey) return;
+    editMsg = m;
+    editText = m.text;
+    editError = null;
+    editOpen = true;
+  }
+
+  async function saveEdit() {
+    if (!$pubkey || !editMsg) return;
+    const me = $pubkey;
+    editError = null;
+    const body = editText.trim();
+    if (!body) return;
+    editBusy = true;
+    try {
+      // Best-effort "edit": delete old DM (kind 5) and send a corrected DM.
+      await publishDeletion({ eventIds: [editMsg.id], reason: 'edited' });
+      deleted.add(editMsg.id);
+      persistDeleted(me);
+      messages = messages.filter((x) => x.id !== editMsg.id);
+      rebuildThreads(me);
+
+      const id = await publishDm(editMsg.to, body);
+      const now = Math.floor(Date.now() / 1000);
+      const next: Msg = { id, from: me, to: editMsg.to, at: now, text: body };
+      messages = [...messages.filter((m) => m.id !== id), next].sort((a, b) => a.at - b.at).slice(-200);
+      rebuildThreads(me);
+      editOpen = false;
+      editMsg = null;
+      editText = '';
+    } catch (e) {
+      editError = e instanceof Error ? e.message : String(e);
+    } finally {
+      editBusy = false;
+    }
+  }
+
+  function openNew() {
+    error = null;
+    try {
+      const decoded = nip19.decode(newNpub.trim());
+      if (decoded.type !== 'npub') throw new Error('Not an npub');
+      composerTo = decoded.data as string;
+      composerLabel = ($profileByPubkey[composerTo]?.display_name || $profileByPubkey[composerTo]?.name || '').trim();
+      composerOpen = true;
+      selected = composerTo;
+      void decryptThread(composerTo);
+      newNpub = '';
+    } catch (e) {
+      error = e instanceof Error ? e.message : String(e);
+    }
+  }
+
+  $: selectedProfile = selected ? $profileByPubkey[selected] : undefined;
+  $: selectedName = selectedProfile?.display_name || selectedProfile?.name || (selected ? selected.slice(0, 10) + '…' : '');
+  $: if (selected) {
+    // Decrypt on-demand (user gesture happens when selecting a thread).
+    void decryptThread(selected);
+  }
+
+  onMount(() => {
+    if ($canSign) void start();
+  });
+
+  $: if ($canSign && $pubkey && !stop) {
+    void start();
+  }
+  $: if (!$canSign) {
+    threads = [];
+    messages = [];
+    selected = null;
+    if (stop) stop();
+    stop = null;
+    deleted = new Set();
+    cleared = {};
+    actionError = null;
+  }
+
+  onDestroy(() => {
+    if (stop) stop();
+  });
+</script>
+
+<div class="card" style="padding: 1rem;">
+  <div style="font-size: 1.25rem; font-weight: 900;">Messages</div>
+  <div class="muted" style="margin-top: 0.35rem; line-height: 1.5;">
+    Encrypted DMs via NIP-04. Decryption happens locally in your signer (no server).
+  </div>
+</div>
+
+{#if !$canSign}
+  <div class="card" style="margin-top: 1rem; padding: 1rem; border-color: rgba(179, 255, 72,0.35);">
+    <div class="muted">Connect your signer to decrypt and send DMs.</div>
+  </div>
+{:else}
+  {#if error}
+    <div class="card" style="margin-top: 1rem; padding: 1rem; border-color: rgba(251,113,133,0.35);">
+      <div class="muted">{error}</div>
+    </div>
+  {/if}
+
+  <div class="msg-layout" style="margin-top: 1rem;">
+    <div class="card threads-col" class:mobile-hidden={selected !== null} style="padding: 1rem;">
+      <div class="muted" style="margin-bottom: 0.35rem;">Start a new DM</div>
+      <div style="display:flex; gap:0.5rem; align-items:center;">
+        <input class="input" bind:value={newNpub} placeholder="Paste npub…" />
+        <button class="btn primary" on:click={openNew} disabled={!newNpub.trim()}>Open</button>
+      </div>
+
+      <div style="margin-top: 1rem; display:flex; align-items:center; justify-content:space-between;">
+        <div style="font-weight: 850;">Threads</div>
+        <div class="muted">{loading ? 'Loading…' : `${threads.length}`}</div>
+      </div>
+      <div style="margin-top: 0.75rem; display:grid; gap:0.5rem;">
+        {#each threads as t (t.with)}
+          {@const tp = $profileByPubkey[t.with]}
+          {@const tname = (tp?.display_name || tp?.name || t.with.slice(0, 12) + '…').trim()}
+          <button
+            class={`card thread ${selected === t.with ? 'active' : ''}`}
+            on:click={() => {
+              selected = t.with;
+              void decryptThread(t.with);
+            }}
+            style="padding: 0.75rem 0.85rem; text-align:left;"
+          >
+            <div style="display:flex; gap:0.6rem; align-items:center; min-width:0;">
+              {#if tp?.picture}
+                <img src={tp.picture} alt="" class="tAvatar" use:profileHover={t.with} />
+              {:else}
+                <div class="tAvatar ph" use:profileHover={t.with}></div>
+              {/if}
+              <div style="min-width:0;">
+                <div style="font-weight: 850; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" use:profileHover={t.with}>
+                  {tname}
+                </div>
+                <div class="muted" style="margin-top:0.25rem; line-height:1.35;">
+                  {t.lastText}
+                </div>
+              </div>
+            </div>
+          </button>
+        {/each}
+        {#if threads.length === 0}
+          <div class="muted">No DMs found yet on connected relays.</div>
+        {/if}
+      </div>
+    </div>
+
+    <div class="card convo-col" class:mobile-hidden={selected === null} style="padding: 1rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap: 0.75rem; flex-wrap:wrap;">
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <button class="btn back-btn" on:click={() => (selected = null)} title="Back to threads">← Back</button>
+          <div style="font-weight: 900;">Conversation</div>
+        </div>
+        {#if selected}
+          <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+            <button class="btn" disabled={decryptBusy} on:click={() => void decryptThread(selected!)}>
+              {decryptBusy ? 'Decrypting…' : 'Decrypt'}
+            </button>
+            <button class="btn" disabled={actionBusy} on:click={() => clearConversation(selected!)}>Clear</button>
+            <button
+              class="btn primary"
+              on:click={() => {
+                composerTo = selected!;
+                composerLabel = selectedName;
+                composerOpen = true;
+              }}
+            >
+              Send
+            </button>
+          </div>
+        {/if}
+      </div>
+      {#if selected}
+        <div style="margin-top:0.55rem; display:flex; gap:0.6rem; align-items:center;">
+          {#if selectedProfile?.picture}
+            <img class="tAvatar" src={selectedProfile.picture} alt="" use:profileHover={selected} />
+          {:else}
+            <div class="tAvatar ph" use:profileHover={selected}></div>
+          {/if}
+          <div class="muted">
+            With: <span class="pill" use:profileHover={selected}>{selectedName}</span>
+          </div>
+        </div>
+      {/if}
+
+      <div style="margin-top: 0.85rem; display:grid; gap:0.5rem;">
+        {#each messages.filter((m) => selected && (m.from === selected || m.to === selected) && !deleted.has(m.id)) as m (m.id)}
+          <div class="card" style="padding: 0.75rem 0.85rem; background: rgba(0,0,0,0.18);">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:0.75rem;">
+              <div class="muted" style="font-size: 0.86rem;">
+                {m.from === $pubkey ? 'You' : 'Them'} • {new Date(m.at * 1000).toLocaleString()}
+              </div>
+              <div style="display:flex; gap:0.35rem; align-items:center;">
+                {#if m.from === $pubkey && m.decrypted}
+                  <button class="pill muted" disabled={actionBusy} on:click={() => openEditMsg(m)} title="Edit (delete + resend)">
+                    ✎
+                  </button>
+                {/if}
+                <button class="pill muted" disabled={actionBusy} on:click={() => removeMessage(m)} title={m.from === $pubkey ? 'Delete (publish NIP-09)' : 'Remove from your inbox'}>
+                  🗑
+                </button>
+              </div>
+            </div>
+            <div style="margin-top:0.35rem; line-height: 1.5;"><ContentBody text={m.text} maxUrls={2} compactLinks={true} /></div>
+          </div>
+        {/each}
+        {#if !selected}
+          <div class="muted">Pick a thread to view messages.</div>
+        {/if}
+        {#if selected && messages.filter((m) => (m.from === selected || m.to === selected) && !deleted.has(m.id)).length === 0}
+          <div class="muted">No messages in this conversation.</div>
+        {/if}
+      </div>
+      {#if actionError}
+        <div class="muted" style="margin-top:0.65rem; color: var(--danger);">{actionError}</div>
+      {/if}
+      {#if decryptError}
+        <div class="muted" style="margin-top:0.65rem; color: var(--danger);">{decryptError}</div>
+      {/if}
+    </div>
+  </div>
+
+  <DMComposer open={composerOpen} toPubkey={composerTo} toLabel={composerLabel} onClose={() => (composerOpen = false)} />
+
+  <Modal open={editOpen} title="Edit message" onClose={() => ((editOpen = false), (editMsg = null))}>
+    <div class="muted" style="margin-bottom:0.65rem;">
+      This will publish a deletion for the old DM and send a new corrected DM.
+    </div>
+    <textarea class="textarea" bind:value={editText} placeholder="Edit your message…"></textarea>
+    <div style="margin-top:0.75rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+      <button class="btn primary" disabled={editBusy || !editText.trim()} on:click={saveEdit}>
+        {editBusy ? 'Saving…' : 'Save edit'}
+      </button>
+      <button class="btn" on:click={() => ((editOpen = false), (editMsg = null))}>Cancel</button>
+      {#if editError}<span class="muted" style="color:var(--danger);">{editError}</span>{/if}
+    </div>
+  </Modal>
+{/if}
+
+<style>
+  .msg-layout {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 768px) {
+    .msg-layout {
+      grid-template-columns: 1fr 1fr;
+    }
+    .back-btn {
+      display: none;
+    }
+    .mobile-hidden {
+      display: block !important;
+    }
+  }
+  @media (max-width: 767px) {
+    .mobile-hidden {
+      display: none !important;
+    }
+  }
+  .thread.active {
+    border-color: rgba(179, 255, 72, 0.35);
+    background: rgba(179, 255, 72, 0.08);
+  }
+  .tAvatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.22);
+    flex: 0 0 auto;
+  }
+  .tAvatar.ph {
+    display: block;
+    background: rgba(255, 255, 255, 0.06);
+  }
+</style>
+

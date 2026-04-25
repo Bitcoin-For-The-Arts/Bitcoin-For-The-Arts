@@ -14,11 +14,15 @@ const faqs = [
   },
   {
     q: 'Who can apply for a grant?',
-    a: 'Individual artists or small artist collectives who are legal US residents. We fund a wide range of disciplines, including visual arts, performing arts, music, literature, film/media, crafts, and multidisciplinary projects. Large organizations, commercial ventures, political activities, or non-artistic projects are not eligible.',
+    a: 'Applicants are open worldwide (individuals, collectives, and organizations). The key requirement is that the use of the grant produces a public benefit within the United States — for example, by presenting, performing, exhibiting, distributing, teaching, or otherwise delivering work to U.S. audiences or communities. The artist does not need to be a U.S. resident or citizen, and the underlying work may have been created anywhere. We fund a wide range of disciplines, including visual arts, performing arts, music, writing/storytelling, film/media, and interdisciplinary projects.',
   },
   {
     q: 'How much funding can I request?',
-    a: 'Grants range from $500 to $2,000 USD equivalent in Bitcoin (BTC). The amount is disbursed based on your project’s needs and our review.',
+    a: 'Grant sizes vary based on program capacity and reserves. Grants are disbursed in BTC to the wallet address you provide. We prioritize clear budgets, realistic timelines, and strong Bitcoin alignment.',
+  },
+  {
+    q: 'What if BTC value changes?',
+    a: 'Grants are fixed in BTC, so plan accordingly for volatility.',
   },
   {
     q: 'What types of projects do you fund?',
@@ -26,19 +30,31 @@ const faqs = [
   },
   {
     q: 'How do I apply?',
-    a: 'Submit our online application form (preferred) or download the printable PDF form and email it to grants@bitcoinforthearts.org along with your personal details, Bitcoin wallet address (required), links to your work, project description, and budget breakdown. Applications are simple—no lengthy proposals required.',
+    a: 'Submit our online application form. Applications are simple—no lengthy proposals required. If you have questions, email grants@bitcoinforthearts.org.',
   },
   {
     q: 'When are applications reviewed?',
-    a: 'We review applications quarterly. Submit anytime; we’ll notify selected applicants via email after each review cycle.',
+    a: 'We review applications quarterly. We are collecting applications now, but processing begins in Q3 2026.',
+  },
+  {
+    q: 'How are reviews conducted?',
+    a: 'Applications are reviewed by an expert panel using the published evaluation rubric.',
+  },
+  {
+    q: 'Can international artists apply?',
+    a: 'Yes. Applicants are open worldwide. The key requirement is that the use of the grant produces a public benefit within the United States — for example, by presenting, performing, exhibiting, distributing, teaching, or otherwise delivering work to U.S. audiences or communities. The artist does not need to be a U.S. resident or citizen, and the underlying work may have been created anywhere.',
+  },
+  {
+    q: 'What counts as “U.S. public benefit”?',
+    a: 'The use of the grant must deliver work to U.S. audiences or communities — for example, a U.S. exhibition, performance, screening, residency, or workshop, or U.S. distribution or teaching of an existing piece. The U.S. includes the 50 states, District of Columbia, and U.S. jurisdictions. Concrete examples: a U.S. screening of a film made abroad, a U.S. tour of an existing piece, a U.S. workshop taught by a non-U.S. artist, the U.S. release of a record produced overseas, or an installation premiered at a U.S. venue.',
   },
   {
     q: 'What if I’m selected?',
-    a: 'We’ll send the grant directly to your provided Bitcoin wallet address at the current market rate. No further action needed from you—enjoy creating!',
+    a: 'If selected, grants are paid in BTC to your provided wallet address. You’ll also commit to post-grant reporting (6 months + project end) to support radical transparency.',
   },
   {
     q: 'Do I need to report on how I use the grant?',
-    a: 'For current micro-grants ($500–$2,000), no reporting is required. However, if we introduce larger grants in the future, basic reporting on project outcomes may be needed—we’ll update applicants accordingly.',
+    a: 'Yes. Awardees commit to post-grant reporting for radical transparency. This includes a simple report at 6 months and at project completion, and maintaining records for audit/verification upon request.',
   },
   {
     q: 'Why pay grants in Bitcoin?',
@@ -53,13 +69,14 @@ const faqs = [
     a: 'Yes, but only one active application per quarter. If not selected, feel free to reapply with updates.',
   },
   {
+    q: 'Do you offer the guidelines as a PDF?',
+    a: 'We keep the website version of the guidelines as the source of truth. You can use your browser’s print dialog (“Print / Save as PDF”) from the guidelines page.',
+  },
+  {
     q: 'How is the program funded?',
-    a: 'Through donations in Bitcoin. Our treasury is transparent.',
+    a: 'Through donations in Bitcoin. We publish governance and policy documents plus aggregated reporting for transparency, while keeping sensitive reserves (like the HODL Vault) non-public for security.',
   },
 ] as const;
-
-const APPLY_FORM =
-  'https://docs.google.com/forms/d/e/1FAIpQLScErzhYqHskUF90oZegSW-Zlw82_P-khCpxzlgPFL_n6Y6FKw/viewform?usp=header';
 
 export default function GrantsFaqPage() {
   return (
@@ -113,14 +130,12 @@ export default function GrantsFaqPage() {
                       {f.q === 'How is the program funded?' ? (
                         <>
                           {f.a}{' '}
-                          <a
-                            href="https://github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <Link
+                            href="/about/governance"
                             className="font-semibold underline underline-offset-4"
                           >
-                            View it here
-                          </a>
+                            See governance & reporting
+                          </Link>
                           .
                         </>
                       ) : (
@@ -137,22 +152,14 @@ export default function GrantsFaqPage() {
                 <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                   Apply
                 </div>
-                <a
-                  href={APPLY_FORM}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/grants/apply"
                   className="mt-4 inline-flex min-h-12 w-full items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 border border-accent/60"
                 >
-                  Apply via Google Form
-                </a>
-                <a
-                  href="/resources/grants/grant-application.pdf"
-                  className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-background px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
-                >
-                  Download PDF application
-                </a>
+                  Apply online
+                </Link>
                 <div className="mt-4 text-xs leading-relaxed text-muted">
-                  Prefer email? Send your completed PDF to{' '}
+                  Questions? Email{' '}
                   <a
                     href="mailto:grants@bitcoinforthearts.org"
                     className="font-semibold underline underline-offset-4"
@@ -165,18 +172,33 @@ export default function GrantsFaqPage() {
 
               <div className="rounded-2xl border border-border bg-background p-6">
                 <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-                  Terms
+                  Guidelines
                 </div>
                 <p className="mt-2 text-sm leading-relaxed text-muted">
-                  For more details, review our grant terms and agreement.
+                  Want the full eligibility details, do’s & don’ts, and evaluation rubric?
+                </p>
+                <Link
+                  href="/grants/guidelines"
+                  className="mt-4 inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-surface px-6 py-3 text-sm font-semibold transition-colors hover:opacity-90"
+                >
+                  Read grant guidelines
+                </Link>
+              </div>
+
+              <div className="rounded-2xl border border-border bg-background p-6">
+                <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+                  Grant Terms & Conditions
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-muted">
+                  Review the Grant Terms & Conditions before applying.
                 </p>
                 <a
-                  href="/resources/grants/grant-terms.pdf"
+                  href="/resources/grants/grant-terms.pdf?v=20260109"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-4 inline-flex min-h-12 w-full items-center justify-center rounded-md border border-border bg-surface px-6 py-3 text-sm font-semibold transition-colors hover:opacity-90"
                 >
-                  View terms & agreement
+                  View Grant Terms & Conditions (PDF)
                 </a>
               </div>
             </aside>
