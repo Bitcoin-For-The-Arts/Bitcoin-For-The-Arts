@@ -9,10 +9,13 @@ import NewsletterSignupFooter from '@/components/NewsletterSignupFooter';
 // newsletter card and the social icon tiles, so the chrome reads as a
 // system of cream cards floating on lime.
 //
-// v2 cream-orange (black BTA + orange Arts) matches the colorway of the
-// main lockup used on the home and about pages so the chrome speaks with
-// one voice across the site.
-const FOOTER_LOGO_SRC = '/BFTA-bug-square-cream-orange-2.png';
+// The "alt" cream-orange square (black BTA + orange "Arts") matches the
+// colorway of the main lockup used on the home and about pages so the
+// chrome speaks with one voice across the site.
+//
+// All brand assets live in public/brand-kit/. See
+// public/brand-kit/README.md for the full directory.
+const FOOTER_LOGO_SRC = '/brand-kit/square-bugs/square-cream-orange-alt.png';
 
 export default function SiteFooter() {
   const hasSocials = socialLinks.length > 0;

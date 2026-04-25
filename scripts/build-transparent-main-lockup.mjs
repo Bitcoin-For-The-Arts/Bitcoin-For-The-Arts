@@ -3,9 +3,9 @@
 // background or the ember dark-mode background with no visible card edge
 // in either mode.
 //
-//   Source                                   -> Output                                       Use
-//   BFTA-main-lockup-cream-orange-2.png      -> BFTA-main-lockup-transparent-light.png       light mode
-//   BFTA-main-lockup-black-cream.png         -> BFTA-main-lockup-transparent-dark.png        dark mode
+//   Source                                              -> Output                                          Use
+//   brand-kit/main-lockups/main-cream-orange.png        -> brand-kit/derived/main-transparent-light.png   light mode
+//   brand-kit/main-lockups/main-black-cream.png         -> brand-kit/derived/main-transparent-dark.png    dark mode
 //
 // The "light" output keeps the original black wordmark + orange "Arts"
 // script; the cream rectangle is knocked out.
@@ -28,16 +28,16 @@ const publicDir = path.join(projectRoot, 'public');
 const jobs = [
   {
     label: 'light',
-    input: 'BFTA-main-lockup-cream-orange-2.png',
-    output: 'BFTA-main-lockup-transparent-light.png',
+    input: path.join('brand-kit', 'main-lockups', 'main-cream-orange.png'),
+    output: path.join('brand-kit', 'derived', 'main-transparent-light.png'),
     bgColor: { r: 255, g: 250, b: 240 }, // brand cream #FFFAF0
     minDist: 24,
     maxDist: 80,
   },
   {
     label: 'dark',
-    input: 'BFTA-main-lockup-black-cream.png',
-    output: 'BFTA-main-lockup-transparent-dark.png',
+    input: path.join('brand-kit', 'main-lockups', 'main-black-cream.png'),
+    output: path.join('brand-kit', 'derived', 'main-transparent-dark.png'),
     bgColor: { r: 0, g: 0, b: 0 }, // brand black #000000
     minDist: 28,
     maxDist: 90,

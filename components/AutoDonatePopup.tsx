@@ -4,10 +4,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
-// BFTA 2026 brand bug — same cream-orange-2 mark used in nav, footer, and
-// the home/about hero columns, so the popup reads as part of the same
+// BFTA 2026 brand bug — same cream-orange "alt" mark used in nav, footer,
+// and the home/about hero columns, so the popup reads as part of the same
 // brand system instead of dropping the old gold badge in.
-const POPUP_LOGO_SRC = '/BFTA-bug-square-cream-orange-2.png';
+const POPUP_LOGO_SRC = '/brand-kit/square-bugs/square-cream-orange-alt.png';
 
 const STORAGE_KEY = 'bfta_donate_popup_dismissed_session';
 const HOME_SCROLL_KEY = 'bfta_donate_popup_home_scrolled_session';
