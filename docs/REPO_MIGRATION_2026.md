@@ -226,9 +226,21 @@ Once production is stable on the new connection:
    (`ecf-partnership-proposal.md`,
    `sovereign-circle-membership-policy.md`, `proxy.ts`, the Substack
    drafts in `docs/`).
-5. Decide on the `Bitcoin-For-The-Arts/Artist-Hub` standalone repo —
-   the audit flagged it as a follow-up consolidation candidate
-   (probably archive or sync-from-monorepo).
+5. **`Bitcoin-For-The-Arts/Artist-Hub` stays as a separate repo.** Per
+   Dion's reply on PR #30, the standalone Artist-Hub repo is *not* a
+   consolidation target — it's intended to grow into its own website
+   eventually. The relationship is:
+   - The `artist-hub/` sub-folder in this monorepo is what builds and
+     deploys at `bitcoinforthearts.org/artist-hub/*` (via `proxy.ts`
+     middleware + the SvelteKit static build emitted to
+     `/public/artist-hub`).
+   - The standalone `Bitcoin-For-The-Arts/Artist-Hub` repo is the
+     long-term independent project. Keep them in sync via the
+     existing patch/upstream-sync workflow (see
+     [`docs/artist-hub-upstream-sync/`](./artist-hub-upstream-sync/)).
+   - Once Artist-Hub becomes its own deployed website, the sub-folder
+     here can be retired and replaced with an iframe / link out — but
+     that's a future call, not part of this migration.
 
 ---
 
@@ -249,6 +261,35 @@ Once production is stable on the new connection:
 - **CI minutes:** GitHub Actions on a public repo is free and
   unlimited, so the new CI workflow has no cost implications. If the
   org repo ever goes private, watch the Actions usage.
+
+## Decisions resolved (no longer open)
+
+These were live questions at the end of the Phase 1 audit. Dion
+resolved them on April 25, 2026:
+
+- **Migration strategy:** Option B (git history merge into this org
+  repo). No GitHub repo transfer. Decided so the live site and the
+  personal repo could stay completely undisturbed during the Bitcoin
+  conference week.
+- **Vercel re-point timing:** post-conference, the week of May 2.
+  Tracked by this doc.
+- **`DionWilson/bitcoinforthearts` after migration:** archive after
+  the Vercel re-point is verified stable.
+- **`ecf-partnership-proposal.md` and `sovereign-circle-membership-policy.md`**
+  at the repo root: keep public in this repo. No move needed.
+- **Substack drafts and interview-question .txt files in `docs/`:**
+  removed from this repo, kept only in the personal repo. (Done in
+  PR #31's chore commit.)
+- **`proxy.ts`:** keep — it's the Next.js 16 middleware, not a
+  one-off Cloudflare Worker draft as an earlier audit-doc draft
+  incorrectly stated. Critical infra (Basic Auth gate + artist-hub
+  SPA serving). The audit doc has been corrected.
+- **`Bitcoin-For-The-Arts/Artist-Hub` org repo:** keep as a separate
+  repo. It's intended to grow into its own deployed website. See
+  the "After the re-point" section above.
+- **Kenneth Burris's Advisory Board contact:**
+  `kennethmoonlanding@hotmail.com` (filled into `GOVERNANCE.md` in
+  PR #30).
 
 ---
 
