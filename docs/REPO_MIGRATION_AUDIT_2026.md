@@ -158,6 +158,27 @@ differences. Boiled down:
   - `public/BFTA-home-page.MOV` — same file is in the personal repo.
     Will be carried over.
 
+### 1.3.1 Note on `proxy.ts` (correction)
+
+An earlier draft of this audit described `proxy.ts` at the repo root as "a
+one-off Cloudflare Worker draft, not imported anywhere." That was wrong.
+
+`proxy.ts` is the **Next.js 16 middleware** for the site (Next.js renamed
+the conventional file from `middleware.ts` to `proxy.ts` in v16). It's
+auto-discovered and registered by the framework — there's no explicit
+import — and it actively does two essential things:
+
+1. Serves the artist-hub Svelte SPA from `/public/artist-hub` with
+   deep-link support (rewrite to `/artist-hub/index.html` for non-asset
+   paths).
+2. Enforces Basic Auth on `/admin/*`, `/api/admin/*`, and
+   `/api/grants/files/*` using `ADMIN_USER` / `ADMIN_PASS` env vars.
+   Returns 404 (not 401) when those env vars are not set, so the admin
+   surface vanishes entirely in non-admin environments.
+
+It's confirmed live in the personal-repo build output ("ƒ Proxy
+(Middleware)") and is critical infrastructure. Do not move or delete.
+
 ### 1.4 Files I want explicit guidance on
 
 | File / dir (org-only) | Recommendation | Need decision? |
