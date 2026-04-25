@@ -1,6 +1,7 @@
 <a href="https://bitcoinforthearts.org">
   <img src="https://bitcoinforthearts.org/brand-kit/main-lockups/main-cream-orange.png" alt="Bitcoin for the Arts" width="480" />
 </a>
+
 # Bitcoin For The Arts, Inc.
 
 **501(c)(3) Nonprofit | The first nonprofit paying artists in Bitcoin.**
