@@ -1,24 +1,32 @@
-![Bitcoin For The Arts](BITCOIN-ARTS-LOGO-Gold%20(3))
+<a href="https://bitcoinforthearts.org">
+  <img src="public/brand-kit/main-lockups/main-cream-orange.png" alt="Bitcoin for the Arts" width="480" />
+</a>
 
-# Bitcoin-For-The-Arts
+# Bitcoin for the Arts
 
-**Bitcoin For The Arts, Inc. – 501(c)(3) Nonprofit**  
-*The **first** nonprofit paying artists in Bitcoin.*  
-*55/30/10/5 Rule | 100% On-Chain | 100% Open-Source*
+**Bitcoin for the Arts, Inc. — 501(c)(3) Nonprofit**
+*The **first** nonprofit paying artists in Bitcoin.*
+*55/30/10/5 Rule · 100% On-Chain · 100% Open-Source*
+
+🌐 [bitcoinforthearts.org](https://bitcoinforthearts.org) ·
+💸 [Donate](https://bitcoinforthearts.org/donate) ·
+📝 [Apply for a grant](https://bitcoinforthearts.org/grants/apply) ·
+🤝 [Volunteer](https://bitcoinforthearts.org/get-involved/volunteer) ·
+🐦 [@Bitcoinfta](https://x.com/Bitcoinfta)
 
 ---
 
 ### **Our Mission**
-> **“In the sovereign spirit of Bitcoin—uncensorable money for uncensorable minds—we ignite a self-sustaining global renaissance in art.**  
-> **Through Bitcoin micro-grants, performance workshops, and live + digital productions, we back sovereign creators across visual arts, theater, dance, music, writing, storytelling, and film. We favor low time preference work—timeless craft that resists censorship and celebrates financial freedom through Bitcoin-aligned innovation. Every donation fuels direct support to creators, powers exhibitions and residencies, and plants a seed in a permanent Bitcoin reserve—building an endowment for human creativity that no institution or inflation can touch.”**
+> **"In the sovereign spirit of Bitcoin—uncensorable money for uncensorable minds—we ignite a self-sustaining global renaissance in art.**
+> **Through Bitcoin micro-grants, performance workshops, and live + digital productions, we back sovereign creators across visual arts, theater, dance, music, writing, storytelling, and film. We favor low time preference work—timeless craft that resists censorship and celebrates financial freedom through Bitcoin-aligned innovation. Every donation fuels direct support to creators, powers exhibitions and residencies, and plants a seed in a permanent Bitcoin reserve—building an endowment for human creativity that no institution or inflation can touch."**
 
 ---
 
 ### **What We Do**
-- **55%**Staking art on sound money
-- **30%** → **workshops, residencies, co-productions** with BAM, Whitney, Carnegie  
-- **10%** → **operations**  
-- **5%** → **HODL Vault** (secure, non-public endowment reserve)  
+- **55%** → **artist grants** — direct BTC to working creators
+- **30%** → **workshops, residencies, co-productions** with BAM, Whitney, Carnegie
+- **10%** → **operations**
+- **5%** → **HODL Vault** (secure, non-public endowment reserve)
 
 ---
 
@@ -26,7 +34,29 @@
 - **HODL Vault**: secure multisig endowment reserve (**address not public** for safety)
 - **Transparency**: we share **aggregated reporting** and publish governance/policy documents on the website
 
-**Donate**: see `bitcoinforthearts.org/donate`
+**Donate**: see [bitcoinforthearts.org/donate](https://bitcoinforthearts.org/donate)
+
+---
+
+### **Press & Brand**
+
+For press, partners, and anyone needing to use the BFTA brand:
+
+- 📘 **[Brand Guidelines (PDF)](public/brand-kit/guidelines/BFTA-Brand-Guidelines.pdf)** — the official kit from our agency.
+- 🎨 **[Brand kit folder](public/brand-kit/)** — every lockup variant, BFTA bug, and source file. See its [README](public/brand-kit/README.md) for the directory and a "pick the right asset" cheat sheet.
+- 🖼️ **Most-requested files**:
+  - Main lockup, cream / orange — [`main-cream-orange.png`](public/brand-kit/main-lockups/main-cream-orange.png)
+  - Main lockup, black / orange — [`main-black-orange.png`](public/brand-kit/main-lockups/main-black-orange.png)
+  - BFTA bug, square — [`square-cream-orange-alt.png`](public/brand-kit/square-bugs/square-cream-orange-alt.png)
+  - Vector source files — [`source-files/`](public/brand-kit/source-files/)
+- 📩 **Press contact**: hello@bitcoinforthearts.org
+
+---
+
+### **Featured Artists & Stories**
+
+Read about the artists BFTA has funded and worked with:
+[bitcoinforthearts.org/stories](https://bitcoinforthearts.org/stories)
 
 ---
 
@@ -118,8 +148,8 @@ Notes:
 ---
 
 ### **Donor Perks**
-- **All donors:** Named in [leaderboard.csv](donors/leaderboard.csv)  
-- **≥ 0.01 BTC:** Digital thank-you card  
+- **All donors:** publicly recognized on the [Transparency page](https://bitcoinforthearts.org/transparency)
+- **≥ 0.01 BTC:** Digital thank-you card
 - **≥ 1 BTC:** Name a grant + steel seed backup
 
 ---
@@ -142,8 +172,8 @@ Notes:
 
 ---
 
-**X:** [@Orangepillman](https://x.com/Orangepillman)  
-**Email:** hello@bitcoinforthearts.org  
+**X:** [@Bitcoinfta](https://x.com/Bitcoinfta)
+**Email:** hello@bitcoinforthearts.org
 
 ---
 
@@ -318,7 +348,13 @@ To email applications to reviewers **without giving them admin credentials**:
 
 - `REVIEW_LINK_SECRET` (required; any long random string)
 
-> **“The NEA of the Bitcoin Era.”**  
+---
+
+> **"The NEA of the Bitcoin Era."**
 > **First. Transparent. Unstoppable.**
 
-**November 16, 2025 | 12:40 AM EST | New York, NY**
+🌐 [bitcoinforthearts.org](https://bitcoinforthearts.org) ·
+💸 [Donate](https://bitcoinforthearts.org/donate) ·
+📩 hello@bitcoinforthearts.org
+
+Bitcoin for the Arts, Inc. — New York, NY — 501(c)(3) — EIN 41-2642260
