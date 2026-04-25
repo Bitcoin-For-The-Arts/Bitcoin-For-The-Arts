@@ -1,0 +1,57 @@
+name: CI
+
+# Runs on every pull request and on every push to main. The job that
+# blocks merges is `build` — wire that up as a required status check
+# under Settings → Branches → main → Branch protection rules.
+#
+# Why this matters: until April 2026 there was no CI here, so lint
+# regressions and broken builds only surfaced in Vercel deploy logs
+# after merge. This workflow catches them before merge.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Newer pushes to the same PR cancel the older still-running CI.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Lint & Build (Next.js)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        # `npm ci` is reproducible and fails loudly on package-lock drift.
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        # The prebuild step (configured in package.json) runs the home-intro
+        # video transcode, the public-image prep, and the artist-hub Svelte
+        # build before `next build`. CI exercises the same pipeline as Vercel.
+        run: npm run build
+        env:
+          # Build-time env vars. None of these are secret on their own;
+          # they only enable build-time feature flags. Real secrets stay
+          # in Vercel and are never needed for `next build` to succeed.
+          NEXT_TELEMETRY_DISABLED: '1'
