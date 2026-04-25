@@ -18,6 +18,8 @@ export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // Initial read from localStorage on mount (SSR-safe; getCookieConsent returns null on the server).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!getCookieConsent()) setVisible(true);
   }, []);
 

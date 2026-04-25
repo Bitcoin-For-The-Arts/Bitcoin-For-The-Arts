@@ -96,7 +96,7 @@ export default function PrivacyPolicyPage() {
             <h4>Cookie preferences</h4>
             <p>
               When you first visit our site, a cookie banner allows you to accept all cookies
-              or limit your browser to essential cookies only. If you choose "Essential only,"
+              or limit your browser to essential cookies only. If you choose &ldquo;Essential only,&rdquo;
               non-essential cookies (such as analytics) will not be loaded. You can also
               control cookie and storage behavior at any time through your browser settings.
               Common options include:

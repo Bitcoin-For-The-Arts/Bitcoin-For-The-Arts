@@ -9,6 +9,8 @@ export default function ConsentAnalytics() {
   const [consent, setConsent] = useState<CookieConsent>(null);
 
   useEffect(() => {
+    // Initial read from localStorage on mount (SSR-safe; getCookieConsent returns null on the server).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setConsent(getCookieConsent());
 
     function onConsentChange() {
