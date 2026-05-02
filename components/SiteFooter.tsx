@@ -1,30 +1,45 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { socialLinks } from '@/lib/socials';
-import logoImage from '../app/asset/BITCOIN-ARTS-LOGO-Gold.png';
 import SocialIconLinks from '@/components/SocialIconLinks';
+import NewsletterSignupFooter from '@/components/NewsletterSignupFooter';
+
+// BFTA 2026 brand bug. Footer is the lime brand surface, but we render the
+// cream-field bug as a small "branded sticker" — same pattern as the
+// newsletter card and the social icon tiles, so the chrome reads as a
+// system of cream cards floating on lime.
+//
+// The "alt" cream-orange square (black BTA + orange "Arts") matches the
+// colorway of the main lockup used on the home and about pages so the
+// chrome speaks with one voice across the site.
+//
+// All brand assets live in public/brand-kit/. See
+// public/brand-kit/README.md for the full directory.
+const FOOTER_LOGO_SRC = '/brand-kit/square-bugs/square-cream-orange-alt.png';
 
 export default function SiteFooter() {
   const hasSocials = socialLinks.length > 0;
 
   return (
-    <footer className="border-t border-white/15 bg-primary text-white sm:border-border sm:bg-background sm:text-foreground">
+    <footer className="border-t border-black/15 bg-brand-surface text-brand-surface-fg">
       <div className="mx-auto max-w-6xl px-6 py-10">
+        <NewsletterSignupFooter />
+
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-md">
             <div className="flex items-center gap-3">
               <Image
-                src={logoImage}
+                src={FOOTER_LOGO_SRC}
                 alt=""
                 width={28}
                 height={28}
-                className="rounded-full border border-white/20 sm:border-border"
+                className="rounded-md border border-black/15"
               />
               <div className="text-sm font-semibold uppercase tracking-wide">
                 Bitcoin for the Arts
               </div>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-white/80 sm:text-muted">
+            <p className="mt-3 text-sm leading-relaxed opacity-80">
               A nonprofit supporting artists with Bitcoin micro-grants, workshops,
               residencies, and productions — with radical transparency.
             </p>
@@ -32,22 +47,22 @@ export default function SiteFooter() {
 
           <div className={`grid grid-cols-2 gap-8 ${hasSocials ? 'sm:grid-cols-4' : 'sm:grid-cols-3'}`}>
             <div>
-              <div className="text-xs font-semibold uppercase tracking-wide text-white/80 sm:text-muted">
+              <div className="text-xs font-semibold uppercase tracking-wide opacity-80">
                 Organization
               </div>
               <ul className="mt-3 space-y-2 text-sm">
                 <li>
-                  <Link href="/about" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/about" className="hover:underline">
                     About
                   </Link>
                 </li>
                 <li>
-                  <Link href="/grants" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/grants" className="hover:underline">
                     Grants
                   </Link>
                 </li>
                 <li>
-                  <Link href="/programming" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/programming" className="hover:underline">
                     Programming
                   </Link>
                 </li>
@@ -55,22 +70,27 @@ export default function SiteFooter() {
             </div>
 
             <div>
-              <div className="text-xs font-semibold uppercase tracking-wide text-white/80 sm:text-muted">
+              <div className="text-xs font-semibold uppercase tracking-wide opacity-80">
                 Community
               </div>
               <ul className="mt-3 space-y-2 text-sm">
                 <li>
-                  <Link href="/events" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/events" className="hover:underline">
                     Events
                   </Link>
                 </li>
                 <li>
-                  <Link href="/stories" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/get-involved/feedback" className="hover:underline">
+                    Feedback
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/stories" className="hover:underline">
                     Stories
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/contact" className="hover:underline">
                     Contact
                   </Link>
                 </li>
@@ -78,17 +98,27 @@ export default function SiteFooter() {
             </div>
 
             <div>
-              <div className="text-xs font-semibold uppercase tracking-wide text-white/80 sm:text-muted">
+              <div className="text-xs font-semibold uppercase tracking-wide opacity-80">
                 Legal
               </div>
               <ul className="mt-3 space-y-2 text-sm">
                 <li>
-                  <Link href="/privacy-policy" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/transparency" className="hover:underline">
+                    Transparency
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy-policy" className="hover:underline">
                     Privacy policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/donate" className="hover:underline text-white/90 sm:text-foreground">
+                  <Link href="/terms" className="hover:underline">
+                    Terms of use
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/donate" className="hover:underline">
                     Donate
                   </Link>
                 </li>
@@ -97,7 +127,7 @@ export default function SiteFooter() {
 
             {hasSocials ? (
               <div>
-                <div className="text-xs font-semibold uppercase tracking-wide text-white/80 sm:text-muted">
+                <div className="text-xs font-semibold uppercase tracking-wide opacity-80">
                   Follow
                 </div>
                 <div className="mt-3">
@@ -108,15 +138,31 @@ export default function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-white/15 pt-6 text-xs text-white/80 sm:border-border sm:text-muted sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            © {new Date().getFullYear()} Bitcoin for the Arts. All rights reserved.
+        <div className="mt-10 flex flex-col gap-4 border-t border-black/15 pt-6 text-xs opacity-80 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <span>© {new Date().getFullYear()} Bitcoin for the Arts. All rights reserved.</span>
+            <a
+              href="https://app.candid.org/profile/16531141/bitcoin-for-the-arts-inc-41-2642260/?pkId=c5d73d72-2176-49f8-a0d2-9a25be9fb115"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View Bitcoin for the Arts on Candid"
+              className="shrink-0"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                alt="Candid transparency seal"
+                src="https://widgets.guidestar.org/prod/v1/pdp/transparency-seal/16531141/svg"
+                width={56}
+                height={56}
+                className="opacity-80 transition-opacity hover:opacity-100"
+              />
+            </a>
           </div>
           <div className="flex gap-4">
-            <a
-              href="mailto:hello@bitcoinforthearts.org"
-              className="hover:underline text-white/90 sm:text-inherit"
-            >
+            <Link href="/sitemap-page" className="hover:underline">
+              Site map
+            </Link>
+            <a href="mailto:hello@bitcoinforthearts.org" className="hover:underline">
               hello@bitcoinforthearts.org
             </a>
           </div>
@@ -125,4 +171,3 @@ export default function SiteFooter() {
     </footer>
   );
 }
-

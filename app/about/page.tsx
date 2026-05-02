@@ -1,8 +1,19 @@
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import logoImage from '../asset/BITCOIN-ARTS-LOGO-gold.jpg';
 import watermarklogo from '../asset/FreedomLab Logo.jpeg';
+
+// BFTA 2026 brand assets — all live in public/brand-kit/, see
+// public/brand-kit/README.md for the full directory.
+//
+//   square-cream-orange-alt.png   Small BFTA bug used in the about hero
+//                                 card. Black BTA + orange Arts on cream —
+//                                 matches the main lockup's colorway.
+//   main-transparent-light.png    Full main lockup with the cream rectangle
+//                                 knocked out so it drops onto the cream
+//                                 page with no visible card edge.
+const ABOUT_BUG_SRC = '/brand-kit/square-bugs/square-cream-orange-alt.png';
+const MAIN_LOCKUP_SRC = '/brand-kit/derived/main-transparent-light.png';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -44,16 +55,28 @@ export default function AboutPage() {
       </div>
 
       <div className="relative mx-auto max-w-6xl px-6 py-14">
+        {/* Main lockup — brand centerpiece at the top of the about page. */}
+        <div className="mb-10 flex justify-center">
+          <Image
+            src={MAIN_LOCKUP_SRC}
+            alt="Bitcoin for the Arts"
+            width={1024}
+            height={1024}
+            priority
+            className="h-auto w-full max-w-md sm:max-w-lg"
+          />
+        </div>
+
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start">
           <div className="lg:col-span-5">
             <div className="rounded-3xl border border-border bg-surface/80 p-6 shadow-sm">
               <div className="flex items-center gap-4">
                 <Image
-                  src={logoImage}
+                  src={ABOUT_BUG_SRC}
                   alt="Bitcoin for the Arts Logo"
                   width={96}
                   height={96}
-                  className="rounded-full border border-border bg-background"
+                  className="rounded-md border border-border bg-background"
                   priority
                 />
                 <div className="min-w-0">
@@ -99,7 +122,7 @@ export default function AboutPage() {
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/donate"
-                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                 >
                   Donate
                 </Link>
@@ -135,57 +158,51 @@ export default function AboutPage() {
                 </p>
               </div>
 
-              <section className="rounded-2xl border border-border bg-primary text-white p-6 shadow-sm">
+              <section className="rounded-2xl border border-black/15 bg-brand-surface text-brand-surface-fg p-6 shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="text-xs font-bold uppercase tracking-wide text-white">
+                  <div className="text-xs font-bold uppercase tracking-wide">
                     Mission
                   </div>
-                  <div className="text-xs font-semibold uppercase tracking-wide text-white/80">
+                  <div className="text-xs font-semibold uppercase tracking-wide opacity-80">
                     Uncensorable money • Uncensorable minds
                   </div>
                 </div>
 
                 <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-12 md:items-start">
                   <div className="md:col-span-4">
-                    <div className="rounded-xl border border-white/15 bg-black/15 p-5">
-                      <div className="text-xs font-semibold uppercase tracking-wide text-white/80">
+                    <div className="rounded-xl border border-black/15 bg-black/5 p-5">
+                      <div className="text-xs font-semibold uppercase tracking-wide opacity-80">
                         Our edge
                       </div>
-                      <ul className="mt-3 space-y-2 text-sm leading-relaxed text-white/85">
+                      <ul className="mt-3 space-y-2 text-sm leading-relaxed">
                         <li>
-                          <span className="font-semibold text-white">
-                            First:
-                          </span>{' '}
+                          <span className="font-semibold">First:</span>{' '}
                           paying artists exclusively in BTC.
                         </li>
                         <li>
-                          <span className="font-semibold text-white">
-                            Transparent:
-                          </span>{' '}
-                          open-source treasury culture.
+                          <span className="font-semibold">Transparent:</span>{' '}
+                          governance + aggregated reporting (without exposing sensitive addresses).
                         </li>
                         <li>
-                          <span className="font-semibold text-white">
-                            Long-term:
-                          </span>{' '}
-                          an endowment mindset (HODL Vault).
+                          <span className="font-semibold">Long-term:</span>{' '}
+                          a secure endowment mindset (HODL Vault; address not public).
                         </li>
                         <li>
-                          <span className="font-semibold text-white">Artist-first:</span>{' '}
+                          <span className="font-semibold">Artist-first:</span>{' '}
                           grants, workshops, residencies, productions.
                         </li>
                       </ul>
                     </div>
                   </div>
                   <div className="md:col-span-8">
-                    <blockquote className="relative overflow-hidden rounded-xl border border-white/15 bg-black/15 p-6">
+                    <blockquote className="relative overflow-hidden rounded-xl border border-black/15 bg-black/5 p-6">
                       <div
-                        className="pointer-events-none absolute -top-6 -left-3 text-[72px] font-semibold text-accent/35"
+                        className="pointer-events-none absolute -top-6 -left-3 text-[72px] font-semibold text-accent/60"
                         aria-hidden="true"
                       >
                         “
                       </div>
-                      <p className="relative text-base leading-relaxed text-white/95 sm:text-lg italic">
+                      <p className="relative text-base leading-relaxed sm:text-lg italic">
                         “In the sovereign spirit of Bitcoin—uncensorable money for
                         uncensorable minds—we ignite a self-sustaining global
                         renaissance in arts. Through Bitcoin micro-grants, performance
