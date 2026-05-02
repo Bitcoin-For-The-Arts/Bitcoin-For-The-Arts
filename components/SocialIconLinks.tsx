@@ -11,6 +11,15 @@ function Icon({
 }) {
   // Simple inline SVG icons (or monograms where needed).
   switch (name) {
+    case 'github':
+      return (
+        <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M12 2C6.48 2 2 6.6 2 12.27c0 4.53 2.87 8.37 6.84 9.72.5.1.68-.22.68-.48 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.38-3.37-1.38-.46-1.2-1.12-1.52-1.12-1.52-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.93.85.09-.67.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.08 0-1.12.39-2.04 1.03-2.76-.1-.26-.45-1.32.1-2.75 0 0 .84-.28 2.75 1.05A9.2 9.2 0 0 1 12 6.9c.85 0 1.71.12 2.51.35 1.91-1.33 2.75-1.05 2.75-1.05.55 1.43.2 2.49.1 2.75.64.72 1.03 1.64 1.03 2.76 0 3.95-2.34 4.82-4.57 5.08.36.32.68.95.68 1.92 0 1.38-.01 2.5-.01 2.84 0 .26.18.59.69.48A10.3 10.3 0 0 0 22 12.27C22 6.6 17.52 2 12 2Z"
+          />
+        </svg>
+      );
     case 'x':
       return (
         <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
@@ -45,8 +54,8 @@ function Icon({
           className={`inline-block ${className}`}
           aria-hidden="true"
           style={{
-            WebkitMaskImage: "url('/nostr.PNG')",
-            maskImage: "url('/nostr.PNG')",
+            WebkitMaskImage: "url('/brand-kit/social-icons/nostr.png')",
+            maskImage: "url('/brand-kit/social-icons/nostr.png')",
             WebkitMaskRepeat: 'no-repeat',
             maskRepeat: 'no-repeat',
             WebkitMaskPosition: 'center',
@@ -75,20 +84,29 @@ function Icon({
           />
         </svg>
       );
+    case 'substack':
+      return (
+        <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M22.54 6.42a2.78 2.78 0 0 1-1.13 2.34A2.77 2.77 0 0 1 22.54 6.42ZM3.46 6.42H20.54V8.76H3.46ZM3.46 1.84H20.54V4.18H3.46ZM3.46 11.08H20.54V22.16L12 16.92L3.46 22.16Z"
+          />
+        </svg>
+      );
     default:
       return null;
   }
 }
 
 export default function SocialIconLinks({ variant }: { variant: Variant }) {
-  const baseClass =
-    variant === 'footer'
-      ? 'text-white/90 hover:text-white sm:text-foreground sm:hover:text-foreground'
-      : 'text-foreground hover:text-foreground';
+  // Footer + contact both render onto light surfaces in the 2026 brand
+  // (footer = lime brand-surface, contact = cream background), so the
+  // icons can share a single black-on-light style.
+  const baseClass = 'text-foreground hover:text-foreground';
 
   const buttonClass =
     variant === 'footer'
-      ? 'inline-flex h-11 w-11 items-center justify-center rounded-md border border-white/20 bg-white/10 hover:bg-white/15 sm:border-border sm:bg-background sm:hover:bg-surface'
+      ? 'inline-flex h-11 w-11 items-center justify-center rounded-md border border-black/15 bg-background hover:bg-background/80 shadow-sm'
       : 'inline-flex min-h-12 min-w-12 items-center justify-center rounded-md border border-border bg-background hover:bg-surface';
 
   return (

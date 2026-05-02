@@ -1,0 +1,784 @@
+<script lang="ts">
+  import { onDestroy, onMount } from 'svelte';
+  import { page } from '$app/stores';
+  import { base } from '$app/paths';
+  import { nip19 } from 'nostr-tools';
+  import { ensureNdk } from '$lib/stores/ndk';
+  import { fetchProfileFor, profileByPubkey } from '$lib/stores/profiles';
+  import ListingCard from '$lib/components/ListingCard.svelte';
+  import type { Listing } from '$lib/nostr/types';
+  import { NOSTR_KINDS } from '$lib/nostr/constants';
+  import { eventToListing } from '$lib/nostr/parse';
+  import DMComposer from '$lib/components/DMComposer.svelte';
+  import ZapComposer from '$lib/components/ZapComposer.svelte';
+  import PulseFeed from '$lib/components/PulseFeed.svelte';
+  import RichText from '$lib/components/RichText.svelte';
+  import { parseZapReceipt } from '$lib/nostr/zap-receipts';
+  import { collectEventsWithDeadline } from '$lib/nostr/collect';
+  import { canSign, isAuthed, pubkey as myPubkey } from '$lib/stores/auth';
+  import { followingError, followingLoading, followingSet, toggleFollow } from '$lib/stores/follows';
+  import NpubShareModal from '$lib/components/NpubShareModal.svelte';
+  import ZapReceiptsList from '$lib/components/ZapReceiptsList.svelte';
+  import ProfileCard from '$lib/components/ProfileCard.svelte';
+
+  let pubkey = '';
+  let error: string | null = null;
+  let listings: Listing[] = [];
+  let stop: (() => void) | null = null;
+
+  let dmOpen = false;
+  let zapOpen = false;
+  let shareOpen = false;
+
+  let tab: 'posts' | 'replies' | 'zaps' | 'listings' | 'followers' = 'posts';
+
+  type Metrics = {
+    following: { value: number; approx: boolean } | null;
+    followers: { value: number; approx: boolean } | null;
+    posts: { value: number; approx: boolean } | null;
+    replies: { value: number; approx: boolean } | null;
+    reposts: { value: number; approx: boolean; plain: number; quotes: number } | null;
+    zaps: { sats: number; count: number; approx: boolean } | null;
+  };
+
+  let metrics: Metrics | null = null;
+  let metricsLoading = false;
+  let metricsError: string | null = null;
+
+  type Badge = { address: string; name: string; description?: string; image?: string; thumb?: string };
+  let badges: Badge[] = [];
+  let badgesLoading = false;
+  let badgesError: string | null = null;
+
+  function tagValue(tags: string[][], name: string): string | undefined {
+    return tags.find((t) => t[0] === name)?.[1];
+  }
+
+  function isReply(ev: any): boolean {
+    const tags = (ev.tags as string[][]) || [];
+    return tags.some((t) => t[0] === 'e');
+  }
+
+  function isQuote(ev: any): boolean {
+    const tags = (ev.tags as string[][]) || [];
+    return tags.some((t) => t[0] === 'q');
+  }
+
+  let metricsCancelled = false;
+
+  async function loadMetricsFor(pk: string) {
+    metricsError = null;
+    metricsLoading = true;
+    metrics = null;
+    metricsCancelled = false;
+
+    try {
+      const ndk = await ensureNdk();
+      const author = (pk || '').trim().toLowerCase();
+      if (!author) throw new Error('Missing pubkey');
+
+      const contactsRes = await collectEventsWithDeadline(
+        ndk as any,
+        { kinds: [NOSTR_KINDS.contacts], authors: [author], limit: 1 } as any,
+        { timeoutMs: 6000, maxEvents: 10 },
+      );
+      if (metricsCancelled) return;
+      const contacts = (contactsRes.events || []).sort((a: any, b: any) => (b.created_at || 0) - (a.created_at || 0))[0];
+      const followingSet = new Set<string>();
+      if (contacts?.tags) {
+        for (const t of (contacts.tags as any as string[][]) || []) {
+          if (t?.[0] !== 'p') continue;
+          const p = (t?.[1] || '').trim().toLowerCase();
+          if (p) followingSet.add(p);
+        }
+      }
+      const following = followingSet.size;
+
+      const followersLimit = 500;
+      const followerAuthors = new Set<string>();
+      const followerRes = await collectEventsWithDeadline(
+        ndk as any,
+        { kinds: [NOSTR_KINDS.contacts], '#p': [author], limit: followersLimit } as any,
+        { timeoutMs: 10_000, maxEvents: followersLimit },
+      );
+      if (metricsCancelled) return;
+      const followerArr = Array.from(followerRes.events || []);
+      for (const ev of followerArr as any[]) {
+        const p = typeof ev?.pubkey === 'string' ? ev.pubkey.trim().toLowerCase() : '';
+        if (!p || p === author) continue;
+        followerAuthors.add(p);
+      }
+      const followersSeen = followerArr.length;
+
+      const notesLimit = 300;
+      const repostLimit = 200;
+      const zapsLimit = 300;
+
+      const [notesRes, repostRes, zapRes] = await Promise.all([
+        collectEventsWithDeadline(
+          ndk as any,
+          { kinds: [NOSTR_KINDS.note], authors: [author], limit: notesLimit } as any,
+          { timeoutMs: 10_000, maxEvents: notesLimit },
+        ),
+        collectEventsWithDeadline(
+          ndk as any,
+          { kinds: [NOSTR_KINDS.repost], authors: [author], limit: repostLimit } as any,
+          { timeoutMs: 10_000, maxEvents: repostLimit },
+        ),
+        collectEventsWithDeadline(
+          ndk as any,
+          { kinds: [NOSTR_KINDS.nip57_zap_receipt], '#p': [author], limit: zapsLimit } as any,
+          { timeoutMs: 10_000, maxEvents: zapsLimit },
+        ),
+      ]);
+      if (metricsCancelled) return;
+
+      let posts = 0;
+      let replies = 0;
+      let quoteReposts = 0;
+      const noteArr = Array.from(notesRes.events || []);
+      let notesSeen = 0;
+      for (const ev of noteArr as any[]) {
+        notesSeen += 1;
+        if (isQuote(ev)) { quoteReposts += 1; continue; }
+        if (isReply(ev)) { replies += 1; continue; }
+        posts += 1;
+      }
+
+      const repostArr = Array.from(repostRes.events || []);
+      const repostsSeen = repostArr.length;
+      const plainReposts = repostArr.length;
+
+      let zapCount = 0;
+      let zapSats = 0;
+      const zapArr = Array.from(zapRes.events || []);
+      const zapsSeen = zapArr.length;
+      for (const ev of zapArr as any[]) {
+        const parsed = parseZapReceipt(ev);
+        if (!parsed) continue;
+        if ((parsed.recipientPubkey || '').trim().toLowerCase() !== author) continue;
+        zapCount += 1;
+        zapSats += parsed.amountSats ?? 0;
+      }
+
+      metrics = {
+        following: { value: following, approx: false },
+        followers: { value: followerAuthors.size, approx: followersSeen >= followersLimit || followerRes.timedOut },
+        posts: { value: posts, approx: notesSeen >= notesLimit || notesRes.timedOut },
+        replies: { value: replies, approx: notesSeen >= notesLimit || notesRes.timedOut },
+        reposts: {
+          value: plainReposts + quoteReposts,
+          approx: repostsSeen >= repostLimit || notesSeen >= notesLimit || repostRes.timedOut || notesRes.timedOut,
+          plain: plainReposts,
+          quotes: quoteReposts,
+        },
+        zaps: { sats: zapSats, count: zapCount, approx: zapsSeen >= zapsLimit || zapRes.timedOut },
+      };
+    } catch (e) {
+      if (!metricsCancelled) metricsError = e instanceof Error ? e.message : String(e);
+    } finally {
+      if (!metricsCancelled) metricsLoading = false;
+    }
+  }
+
+  function parseAddress(a: string): { kind: number; pubkey: string; d: string } | null {
+    if (!a || typeof a !== 'string') return null;
+    const parts = a.split(':');
+    if (parts.length < 3) return null;
+    const kind = Number(parts[0]);
+    if (!Number.isFinite(kind)) return null;
+    const pubkey = parts[1];
+    const d = parts.slice(2).join(':');
+    if (!pubkey || !d) return null;
+    return { kind, pubkey, d };
+  }
+
+  async function loadBadgesFor(pk: string) {
+    badgesError = null;
+    badgesLoading = true;
+    badges = [];
+
+    try {
+      const ndk = await ensureNdk();
+      const limit = 100;
+      const addresses = new Set<string>();
+
+      await new Promise<void>((resolve, reject) => {
+        let done = false;
+        const sub = ndk.subscribe({ kinds: [NOSTR_KINDS.nip58_badge_award], '#p': [pk], limit } as any, { closeOnEose: true });
+        const timeout = setTimeout(() => {
+          if (!done) { done = true; try { sub.stop(); } catch {} resolve(); }
+        }, 8000);
+        sub.on('event', (ev) => {
+          const tags = (ev.tags as string[][]) || [];
+          for (const t of tags) {
+            if (t[0] === 'a' && typeof t[1] === 'string') addresses.add(t[1]);
+          }
+        });
+        sub.on('eose', () => { if (!done) { done = true; clearTimeout(timeout); resolve(); } });
+      });
+
+      const toFetch = Array.from(addresses).slice(0, 15).map(parseAddress).filter(
+        (p): p is NonNullable<typeof p> => !!p && p.kind === NOSTR_KINDS.nip58_badge_definition
+      );
+
+      const BADGE_BATCH = 5;
+      const out: Badge[] = [];
+      for (let i = 0; i < toFetch.length; i += BADGE_BATCH) {
+        const batch = toFetch.slice(i, i + BADGE_BATCH);
+        const results = await Promise.allSettled(
+          batch.map((parsed) =>
+            ndk.fetchEvent({ kinds: [parsed.kind], authors: [parsed.pubkey], '#d': [parsed.d] } as any)
+          )
+        );
+        for (let j = 0; j < results.length; j++) {
+          const r = results[j];
+          if (r.status !== 'fulfilled' || !r.value) continue;
+          const tags = (r.value?.tags as any as string[][]) || [];
+          const name = tagValue(tags, 'name') || 'Badge';
+          const description = tagValue(tags, 'description');
+          const image = tagValue(tags, 'image');
+          const thumb = tagValue(tags, 'thumb') || image;
+          out.push({ address: `${batch[j].kind}:${batch[j].pubkey}:${batch[j].d}`, name, description, image, thumb });
+        }
+      }
+
+      badges = out;
+    } catch (e) {
+      badgesError = e instanceof Error ? e.message : String(e);
+    } finally {
+      badgesLoading = false;
+    }
+  }
+
+  async function start() {
+    if (!pubkey) return;
+    const ndk = await ensureNdk();
+    const sub = ndk.subscribe(
+      {
+        kinds: [NOSTR_KINDS.nip15_product, NOSTR_KINDS.nip99_classified],
+        authors: [pubkey],
+        limit: 100,
+      },
+      { closeOnEose: false },
+    );
+    sub.on('event', (ev) => {
+      const l = eventToListing(ev as any);
+      if (!l) return;
+      listings = [l, ...listings.filter((x) => x.eventId !== l.eventId)].sort((a, b) => b.createdAt - a.createdAt);
+    });
+    stop = () => sub.stop();
+  }
+
+  let metricsTimer: ReturnType<typeof setTimeout> | null = null;
+  let badgesTimer: ReturnType<typeof setTimeout> | null = null;
+
+  onMount(() => {
+    error = null;
+    listings = [];
+    const npub = String($page.params.npub || '');
+    try {
+      const decoded = nip19.decode(npub);
+      if (decoded.type !== 'npub') throw new Error('Not an npub');
+      pubkey = decoded.data as string;
+      void fetchProfileFor(pubkey);
+      void start();
+      metricsTimer = setTimeout(() => void loadMetricsFor(pubkey), 150);
+      badgesTimer = setTimeout(() => void loadBadgesFor(pubkey), 600);
+    } catch (e) {
+      error = e instanceof Error ? e.message : String(e);
+    }
+  });
+
+  onDestroy(() => {
+    metricsCancelled = true;
+    if (stop) stop();
+    if (metricsTimer) clearTimeout(metricsTimer);
+    if (badgesTimer) clearTimeout(badgesTimer);
+  });
+
+  $: prof = pubkey ? $profileByPubkey[pubkey] : undefined;
+  $: name = prof?.display_name || prof?.name || 'Artist';
+  $: about = (prof?.about || '').trim();
+  $: skills = (prof as any)?.skills as string[] | undefined;
+  $: hashtags = (prof as any)?.hashtags as string[] | undefined;
+  $: portfolio = (prof as any)?.portfolio as string[] | undefined;
+  $: nip05 = (prof as any)?.nip05 as string | undefined;
+  $: banner = ((prof as any)?.banner as string | undefined) || '';
+  $: website = (prof?.website || '').trim();
+  $: websiteIcon = (((prof as any)?.website_icon as string | undefined) || '').trim();
+  $: lud16 = ((prof as any)?.lud16 as string | undefined) || ((prof as any)?.lud06 as string | undefined) || '';
+  $: canFollow = $canSign && $myPubkey && pubkey && $myPubkey !== pubkey;
+  $: isFollowing = pubkey ? $followingSet.has(pubkey) : false;
+
+  // Followers list (best-effort)
+  let followersLoading = false;
+  let followersError: string | null = null;
+  let followersList: string[] = [];
+  let followersShowN = 80;
+  let followersPartial = false;
+  let stopFollowers: (() => void) | null = null;
+  let followersToken = 0;
+
+  function cancelFollowersLoad() {
+    followersToken++;
+    followersLoading = false;
+    try {
+      stopFollowers?.();
+    } catch {
+      // ignore
+    }
+    stopFollowers = null;
+  }
+
+  async function loadFollowers() {
+    cancelFollowersLoad();
+    const token = ++followersToken;
+    followersError = null;
+    followersLoading = true;
+    followersShowN = 40;
+    followersPartial = false;
+    try {
+      if (!pubkey) return;
+      const ndk = await ensureNdk();
+      const pk = pubkey.trim().toLowerCase();
+      const limit = 300;
+      const authors = new Set<string>();
+      let finished = false;
+      let emitTimer: ReturnType<typeof setTimeout> | null = null;
+
+      const emit = () => {
+        if (token !== followersToken) return;
+        followersList = Array.from(authors);
+      };
+
+      const finish = (opts?: { partial?: boolean }) => {
+        if (finished) return;
+        finished = true;
+        if (emitTimer) clearTimeout(emitTimer);
+        if (token !== followersToken) return;
+        followersPartial = Boolean(opts?.partial);
+        followersLoading = false;
+        try { stopFollowers?.(); } catch { /* ignore */ }
+        stopFollowers = null;
+        emit();
+        for (const a of followersList.slice(0, 12)) void fetchProfileFor(a);
+      };
+
+      const t = setTimeout(() => finish({ partial: true }), 10_000);
+
+      const sub = ndk.subscribe({ kinds: [NOSTR_KINDS.contacts], '#p': [pk], limit } as any, { closeOnEose: true });
+      stopFollowers = () => {
+        clearTimeout(t);
+        if (emitTimer) clearTimeout(emitTimer);
+        sub.stop();
+      };
+
+      sub.on('event', (ev: any) => {
+        if (token !== followersToken || finished) return;
+        const a = typeof ev?.pubkey === 'string' ? ev.pubkey.trim().toLowerCase() : '';
+        if (!a || a === pk) return;
+        authors.add(a);
+        if (authors.size >= limit) {
+          finish({ partial: true });
+          return;
+        }
+        if (!emitTimer) {
+          emitTimer = setTimeout(() => {
+            emitTimer = null;
+            emit();
+          }, 1200);
+        }
+      });
+      sub.on('eose', () => finish());
+    } catch (e) {
+      followersError = e instanceof Error ? e.message : String(e);
+    } finally {
+      if (token === followersToken) followersLoading = false;
+    }
+  }
+
+  $: if (tab === 'followers' && pubkey) {
+    if (!followersLoading && followersList.length === 0 && !followersError) void loadFollowers();
+  }
+  $: if (tab !== 'followers' && followersLoading) {
+    cancelFollowersLoad();
+  }
+
+  async function onToggleFollow() {
+    if (!pubkey) return;
+    await toggleFollow(pubkey);
+  }
+</script>
+
+{#if error}
+  <div class="card" style="padding: 1rem; border-color: rgba(251,113,133,0.35);">
+    <div class="muted">{error}</div>
+  </div>
+{:else}
+  <div class="card headCard">
+    <div class="banner" style={banner ? `background-image:url('${banner.replace(/'/g, '%27')}')` : ''}></div>
+    <div class="headInner">
+      <div class="topRow">
+        <div class="left">
+          {#if prof?.picture}
+            <img class="avatar" src={prof.picture} alt="" />
+          {:else}
+            <div class="avatar ph"></div>
+          {/if}
+          <div class="titles">
+            <div class="hName">{name}</div>
+            <div class="mono muted npub">{$page.params.npub}</div>
+            <div class="metaRow">
+              {#if nip05}
+                <span class="pill muted">NIP-05: {nip05}</span>
+              {/if}
+              {#if lud16}
+                <span class="pill muted" title="Lightning address">{lud16}</span>
+              {/if}
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" on:click={() => (dmOpen = true)}>Message</button>
+          <button class="btn primary" on:click={() => (zapOpen = true)}>Zap / Pay</button>
+          {#if canFollow}
+            <button class={`btn ${isFollowing ? '' : 'primary'}`} disabled={$followingLoading} on:click={onToggleFollow}>
+              {isFollowing ? 'Unfollow' : 'Follow'}
+            </button>
+          {/if}
+          {#if website}
+            {@const host = (() => { try { return new URL(website.startsWith('http') ? website : `https://${website}`).hostname; } catch { return ''; } })()}
+            {@const fav = host ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64` : ''}
+            <a class="btn websiteBtn" href={website.startsWith('http') ? website : `https://${website}`} target="_blank" rel="noreferrer">
+              {#if websiteIcon || fav}
+                <img class="wicon" src={websiteIcon || fav} alt="" />
+              {/if}
+              Website
+            </a>
+          {/if}
+          <button class="btn" on:click={() => (shareOpen = true)}>Copy npub</button>
+        </div>
+      </div>
+
+      {#if canFollow && $followingError}
+        <div class="muted" style="margin-top:0.65rem; color:var(--danger);">{$followingError}</div>
+      {/if}
+
+      {#if about}
+        <div class="about"><RichText text={about} /></div>
+      {/if}
+
+      <div style="margin-top: 0.9rem;">
+        <div class="muted" style="margin-bottom:0.35rem;">Overview</div>
+        <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
+          <span class="pill muted">Followers: {metricsLoading ? '…' : metrics?.followers ? `${metrics.followers.approx ? '≥' : ''}${metrics.followers.value.toLocaleString()}` : '—'}</span>
+          <span class="pill muted">Following: {metricsLoading ? '…' : metrics?.following ? `${metrics.following.approx ? '≥' : ''}${metrics.following.value.toLocaleString()}` : '—'}</span>
+          <span class="pill muted">Posts: {metricsLoading ? '…' : metrics?.posts ? `${metrics.posts.approx ? '≥' : ''}${metrics.posts.value.toLocaleString()}` : '—'}</span>
+          <span class="pill muted">Replies: {metricsLoading ? '…' : metrics?.replies ? `${metrics.replies.approx ? '≥' : ''}${metrics.replies.value.toLocaleString()}` : '—'}</span>
+          <span class="pill muted" title="Includes quote reposts">
+            🔁 Reposts: {metricsLoading ? '…' : metrics?.reposts ? `${metrics.reposts.approx ? '≥' : ''}${metrics.reposts.value.toLocaleString()}` : '—'}
+          </span>
+          <span class="pill" title="Total sats (zap receipts)">
+            ⚡ Zaps: {metricsLoading ? '…' : metrics?.zaps ? `${metrics.zaps.approx ? '≥' : ''}${metrics.zaps.sats.toLocaleString()} sats` : '—'}
+          </span>
+        </div>
+      </div>
+
+      {#if skills?.length}
+        <div style="margin-top: 0.9rem;">
+          <div class="muted" style="margin-bottom:0.35rem;">Skills</div>
+          <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
+            {#each skills.slice(0, 18) as s}
+              <span class="pill">{s}</span>
+            {/each}
+          </div>
+        </div>
+      {/if}
+
+      {#if hashtags?.length}
+        <div style="margin-top: 0.9rem;">
+          <div class="muted" style="margin-bottom:0.35rem;">Hashtags</div>
+          <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
+            {#each hashtags.slice(0, 18) as t}
+              <span class="pill muted">#{t}</span>
+            {/each}
+          </div>
+        </div>
+      {/if}
+
+      {#if portfolio?.length}
+        <div style="margin-top: 0.9rem;">
+          <div class="muted" style="margin-bottom:0.35rem;">Portfolio</div>
+          <div style="display:grid; gap:0.35rem;">
+            {#each portfolio.slice(0, 8) as url}
+              <a href={url} target="_blank" rel="noreferrer" class="pill">{url}</a>
+            {/each}
+          </div>
+        </div>
+      {/if}
+
+      <div style="margin-top: 0.9rem;">
+        <div style="font-weight: 950;">Badges</div>
+        {#if badgesError}
+          <div class="muted" style="margin-top:0.5rem; color:var(--danger);">{badgesError}</div>
+        {:else if badgesLoading}
+          <div class="muted" style="margin-top:0.5rem;">Loading badges…</div>
+        {:else if badges.length}
+          <div style="margin-top:0.55rem; display:flex; gap:0.35rem; flex-wrap:wrap;">
+            {#each badges as b (b.address)}
+              <span class="pill muted" title={b.description || b.address}>
+                {#if b.thumb}
+                  <img
+                    src={b.thumb}
+                    alt=""
+                    style="width:16px; height:16px; border-radius:6px; border:1px solid var(--border); object-fit:cover; margin-right:0.35rem; vertical-align:-3px;"
+                  />
+                {/if}
+                {b.name}
+              </span>
+            {/each}
+          </div>
+        {:else}
+          <div class="muted" style="margin-top:0.5rem;">No badges found yet.</div>
+        {/if}
+      </div>
+
+      <div class="tabs">
+        <button class={`tab ${tab === 'posts' ? 'active' : ''}`} on:click={() => (tab = 'posts')}>
+          Posts {metricsLoading ? '…' : metrics?.posts ? `(${metrics.posts.value})` : ''}
+        </button>
+        <button class={`tab ${tab === 'replies' ? 'active' : ''}`} on:click={() => (tab = 'replies')}>
+          Replies {metricsLoading ? '…' : metrics?.replies ? `(${metrics.replies.value})` : ''}
+        </button>
+        <button class={`tab ${tab === 'zaps' ? 'active' : ''}`} on:click={() => (tab = 'zaps')}>
+          Zaps {metricsLoading ? '…' : metrics?.zaps ? `(${metrics.zaps.count})` : ''}
+        </button>
+        <button class={`tab ${tab === 'followers' ? 'active' : ''}`} on:click={() => (tab = 'followers')}>
+          Followers {metricsLoading ? '…' : metrics?.followers ? `(${metrics.followers.value})` : ''}
+        </button>
+        <button class={`tab ${tab === 'listings' ? 'active' : ''}`} on:click={() => (tab = 'listings')}>
+          Listings {listings.length ? `(${listings.length})` : ''}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {#if tab === 'posts'}
+    <div style="margin-top: 1rem;">
+      <PulseFeed tags={[]} authors={[pubkey]} limit={50} showComposer={false} />
+    </div>
+  {:else if tab === 'replies'}
+    <div style="margin-top: 1rem;">
+      <PulseFeed tags={[]} authors={[pubkey]} limit={60} showComposer={false} onlyReplies={true} includeReplies={true} />
+    </div>
+  {:else if tab === 'zaps'}
+    <div style="margin-top: 1rem;">
+      <ZapReceiptsList recipientPubkey={pubkey} />
+    </div>
+  {:else if tab === 'followers'}
+    <div class="card" style="padding: 1rem; margin-top: 1rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+        <div>
+          <div style="font-size: 1.15rem; font-weight: 900;">Followers</div>
+          <div class="muted" style="margin-top:0.35rem; line-height:1.45;">
+            Best-effort follower list from connected relays (authors of kind:3 that include this pubkey).
+          </div>
+          {#if followersPartial}
+            <div class="muted" style="margin-top:0.35rem; line-height:1.35;">
+              Some relays are slow/unreachable — this list may be incomplete.
+            </div>
+          {/if}
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+          {#if followersLoading}
+            <button class="btn" on:click={cancelFollowersLoad}>Cancel</button>
+          {/if}
+          <button class="btn" disabled={followersLoading} on:click={() => void loadFollowers()}>
+            {followersLoading ? 'Loading…' : 'Refresh'}
+          </button>
+        </div>
+      </div>
+      {#if followersError}
+        <div class="muted" style="margin-top:0.65rem; color:var(--danger);">{followersError}</div>
+      {/if}
+    </div>
+
+    <div class="grid cols-2" style="margin-top: 1rem;">
+      {#each followersList.slice(0, followersShowN) as pk (pk)}
+        <ProfileCard pubkey={pk} />
+      {/each}
+      {#if followersLoading && followersList.length === 0}
+        <div class="card" style="padding: 1rem; grid-column: 1 / -1;">
+          <div class="muted">Loading followers…</div>
+        </div>
+      {/if}
+      {#if !followersLoading && followersList.length === 0 && !followersError}
+        <div class="card" style="padding: 1rem; grid-column: 1 / -1;">
+          <div class="muted">No followers found yet (depends on relays).</div>
+        </div>
+      {/if}
+      {#if followersList.length > followersShowN}
+        <div class="card" style="padding: 1rem; grid-column: 1 / -1;">
+          <div class="muted">Showing {followersShowN} of {followersList.length}.</div>
+          <button class="btn" style="margin-top:0.6rem;" on:click={() => {
+            const next = Math.min(followersList.length, followersShowN + 40);
+            for (const pk of followersList.slice(followersShowN, next)) void fetchProfileFor(pk);
+            followersShowN = next;
+          }}>
+            Load more
+          </button>
+        </div>
+      {/if}
+    </div>
+  {:else if tab === 'listings'}
+    <div class="card" style="padding: 1rem; margin-top: 1rem;">
+      <div style="font-size: 1.15rem; font-weight: 900;">Listings</div>
+      <div class="muted" style="margin-top: 0.35rem;">Services (NIP-15) and classifieds/collabs (NIP-99).</div>
+    </div>
+    <div class="grid cols-2" style="margin-top: 1rem;">
+      {#each listings as l (l.eventId)}
+        <ListingCard listing={l} />
+      {/each}
+      {#if listings.length === 0}
+        <div class="card" style="padding: 1rem; grid-column: 1 / -1;">
+          <div class="muted">No listings found on the connected relays yet.</div>
+        </div>
+      {/if}
+    </div>
+  {/if}
+
+  <DMComposer open={dmOpen} toPubkey={pubkey} toLabel={name} onClose={() => (dmOpen = false)} />
+  <ZapComposer
+    open={zapOpen}
+    recipientPubkey={pubkey}
+    recipientLabel={name}
+    onClose={() => (zapOpen = false)}
+  />
+  <NpubShareModal open={shareOpen} npub={$page.params.npub} label={name} onClose={() => (shareOpen = false)} />
+{/if}
+
+<style>
+  .headCard {
+    overflow: hidden;
+  }
+  .banner {
+    height: 140px;
+    background:
+      radial-gradient(900px 240px at 15% 30%, rgba(255, 79, 20, 0.35), transparent 60%),
+      radial-gradient(700px 240px at 85% 35%, rgba(179, 255, 72, 0.26), transparent 60%),
+      rgba(0, 0, 0, 0.18);
+    background-size: cover;
+    background-position: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .headInner {
+    padding: 1rem;
+  }
+  .topRow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .left {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    min-width: 0;
+  }
+  .avatar {
+    width: 86px;
+    height: 86px;
+    margin-top: -42px;
+    border-radius: 26px;
+    border: 1px solid var(--border);
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.22);
+    flex: 0 0 auto;
+  }
+  .avatar.ph {
+    display: block;
+  }
+  .titles {
+    min-width: 0;
+  }
+  .hName {
+    font-size: 1.45rem;
+    font-weight: 950;
+    line-height: 1.1;
+  }
+  .mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  }
+  .npub {
+    margin-top: 0.25rem;
+    font-size: 0.88rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 78ch;
+  }
+  .metaRow {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .websiteBtn {
+    gap: 0.45rem;
+  }
+  .wicon {
+    width: 16px;
+    height: 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    object-fit: cover;
+  }
+  .about {
+    margin-top: 0.9rem;
+    color: var(--muted);
+    line-height: 1.55;
+    max-width: 78ch;
+  }
+  .tabs {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+  }
+  .tab {
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 0.35rem 0.65rem;
+    cursor: pointer;
+    font-weight: 800;
+  }
+  .tab.active {
+    border-color: rgba(255, 79, 20, 0.35);
+    background: rgba(255, 79, 20, 0.16);
+  }
+  @media (max-width: 600px) {
+    .banner {
+      height: 120px;
+    }
+    .avatar {
+      width: 74px;
+      height: 74px;
+      margin-top: -36px;
+      border-radius: 22px;
+    }
+  }
+</style>
+

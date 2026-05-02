@@ -1,6 +1,18 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import logoImage from './asset/BITCOIN-ARTS-LOGO-gold.jpg';
+
+// BFTA 2026 brand assets — all live in public/brand-kit/, see
+// public/brand-kit/README.md for the full directory.
+//
+//   square-cream-orange-alt.png    Small BFTA bug used in the hero column.
+//                                  Black BTA + orange Arts on cream — matches
+//                                  the main lockup's colorway.
+//   main-transparent-light.png     Full main lockup with the cream rectangle
+//                                  knocked out so it drops onto the cream
+//                                  page with no visible card edge. Generated
+//                                  by: node scripts/build-transparent-main-lockup.mjs
+const HOME_BUG_SRC = '/brand-kit/square-bugs/square-cream-orange-alt.png';
+const MAIN_LOCKUP_SRC = '/brand-kit/derived/main-transparent-light.png';
 
 export default function Home() {
   // Easy toggle for the fullscreen intro video.
@@ -31,11 +43,11 @@ export default function Home() {
               muted
               loop
               playsInline
-              preload="metadata"
+              preload="none"
+              poster="/BFTA-home-page-poster.jpg"
             >
               <source src={introMp4} type="video/mp4" />
               {introMov ? <source src={introMov} type="video/quicktime" /> : null}
-              <source src="/BFTA-home-page.MOV" type="video/quicktime" />
             </video>
             <div className="absolute inset-0 bg-black/40" />
 
@@ -54,7 +66,7 @@ export default function Home() {
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
                   <a
                     href="#main"
-                    className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                    className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                   >
                     Enter
                   </a>
@@ -73,17 +85,30 @@ export default function Home() {
         </>
       ) : null}
 
+      {/* Main lockup — sits directly below the intro video as the brand
+          "centerpiece" before the rest of the home content. */}
+      <section className="mx-auto max-w-3xl px-6 pt-12 sm:pt-16">
+        <Image
+          src={MAIN_LOCKUP_SRC}
+          alt="Bitcoin for the Arts"
+          width={1024}
+          height={1024}
+          priority
+          className="mx-auto h-auto w-full max-w-md sm:max-w-lg"
+        />
+      </section>
+
       <section className="mx-auto max-w-6xl px-6 pb-16 pt-14 sm:pb-20 sm:pt-18">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center">
           <div className="lg:col-span-7">
             <div className="mb-6">
               <Image
-                src={logoImage}
+                src={HOME_BUG_SRC}
                 alt="Bitcoin for the Arts logo"
                 width={96}
                 height={96}
                 priority
-                className="rounded-full border border-border"
+                className="rounded-md border border-border"
               />
             </div>
             <div className="inline-flex items-center rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium tracking-wide">
@@ -107,7 +132,7 @@ export default function Home() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
                 href="/donate"
-                className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
               >
                 Donate Bitcoin
               </Link>
@@ -183,14 +208,12 @@ export default function Home() {
                 >
                   Explore grants
                 </Link>
-                <a
-                  href="https://github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/about/governance"
                   className="inline-flex items-center justify-center rounded-md border border-border px-4 py-2 text-sm font-semibold transition-colors hover:bg-background"
                 >
-                  View live treasury
-                </a>
+                  Governance & reporting
+                </Link>
               </div>
             </div>
           </div>

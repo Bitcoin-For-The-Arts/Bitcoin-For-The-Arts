@@ -19,6 +19,7 @@
 
 # production
 /build
+/public/artist-hub
 
 # misc
 .DS_Store

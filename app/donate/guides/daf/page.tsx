@@ -42,7 +42,7 @@ export default function DafGuidePage() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="mailto:donate@bitcoinforthearts.org?subject=DAF%20grant%20recommendation"
-                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                 >
                   Get help with your DAF (email us)
                 </a>
@@ -248,7 +248,7 @@ export default function DafGuidePage() {
               <div className="md:col-span-4 md:text-right">
                 <a
                   href="mailto:donate@bitcoinforthearts.org?subject=DAF%20grant%20recommendation"
-                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                 >
                   Contact donate@
                 </a>

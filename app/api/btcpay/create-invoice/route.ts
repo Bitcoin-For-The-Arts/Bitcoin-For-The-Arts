@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          'BTCPAY_URL is a .onion address. Vercel-hosted sites cannot reach Tor endpoints. Configure a public HTTPS BTCPay URL (e.g. https://pay.bitcoinforthearts.org).',
+          'BTCPAY_URL is a .onion address. Vercel-hosted sites cannot reach Tor endpoints. Configure a public HTTPS BTCPay URL.',
       },
       { status: 500 },
     );
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          'BTCPAY_URL is a .local address (LAN-only). Your public website cannot reach it. Configure a public HTTPS BTCPay URL (e.g. https://pay.bitcoinforthearts.org).',
+          'BTCPAY_URL is a .local address (LAN-only). Your public website cannot reach it. Configure a public HTTPS BTCPay URL.',
       },
       { status: 500 },
     );

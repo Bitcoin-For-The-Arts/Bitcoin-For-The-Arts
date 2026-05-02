@@ -6,7 +6,7 @@ import MobileCarousel from '@/components/MobileCarousel';
 export const metadata: Metadata = {
   title: 'Programming',
   description:
-    'Workshops, residencies, and productions connecting artists and the Bitcoin community.',
+    'Workshops, proposed residencies, and productions connecting artists and the Bitcoin community.',
 };
 
 export default function ProgrammingPage() {
@@ -20,9 +20,9 @@ export default function ProgrammingPage() {
       imageClassName: 'object-cover object-center',
     },
     {
-      title: 'Residencies',
+      title: 'Residencies (Proposed)',
       description:
-        'Time and space to create — with light-touch support and community connection.',
+        'A funding-dependent residency model currently shared as a transparency proposal.',
       imageSrc: '/amphitheater .jpg',
       imageAlt: 'Artists gathered in an outdoor amphitheater, representing residencies and collaborative creation.',
       imageClassName: 'object-cover object-[50%_30%]',
@@ -69,7 +69,7 @@ export default function ProgrammingPage() {
       <div className="relative mx-auto max-w-6xl px-8 py-14 sm:px-6">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Workshops • residencies • productions
+            Workshops • proposed residencies • productions
           </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
             Programming that brings Artists and Bitcoiners together.
@@ -77,6 +77,7 @@ export default function ProgrammingPage() {
           <p className="mt-5 text-base leading-relaxed text-muted sm:text-lg">
             Beyond grants, we build spaces for artists to learn, collaborate, and
             present work — from intimate workshops to public performances.
+            Residency programming is currently in proposal stage pending funding.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -87,11 +88,17 @@ export default function ProgrammingPage() {
               Upcoming events
             </Link>
             <a
-              href="mailto:hello@bitcoinforthearts.org?subject=Programming%20proposal"
+              href="mailto:programs@bitcoinforthearts.org?subject=Programming%20proposal"
               className="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
             >
               Propose a program
             </a>
+            <Link
+              href="/transparency/sovereign-artist-residency-proposal"
+              className="inline-flex items-center justify-center rounded-md border border-border bg-surface px-6 py-3 text-sm font-semibold transition-colors hover:bg-background"
+            >
+              Residency proposal (draft)
+            </Link>
           </div>
         </div>
 
@@ -121,6 +128,18 @@ export default function ProgrammingPage() {
               </div>
             ))}
           </MobileCarousel>
+        </div>
+
+        <div className="mt-8 rounded-2xl border border-border bg-background p-5 text-sm text-muted">
+          Looking for residency details? The Sovereign Artist Residency is currently
+          a funding-dependent proposal in Transparency. Read the draft{' '}
+          <Link
+            href="/transparency/sovereign-artist-residency-proposal"
+            className="font-semibold underline underline-offset-4"
+          >
+            here
+          </Link>
+          .
         </div>
 
         <div className="mt-12 rounded-2xl border border-border bg-surface p-6">

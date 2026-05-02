@@ -42,7 +42,7 @@ export default function EstatePlanningGuidePage() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="mailto:donate@bitcoinforthearts.org?subject=Bequest%20and%20estate%20planning"
-                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                 >
                   Get sample language (email us)
                 </a>
@@ -264,7 +264,7 @@ export default function EstatePlanningGuidePage() {
               <div className="md:col-span-4 md:text-right">
                 <a
                   href="mailto:donate@bitcoinforthearts.org?subject=Bequest%20and%20estate%20planning"
-                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                 >
                   Email donate@
                 </a>
