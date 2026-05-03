@@ -1,4 +1,4 @@
-name: Deploy to Vercel
+name: Sync to live deployment repo
 
 on:
   push:
@@ -6,9 +6,34 @@ on:
       - main
 
 jobs:
-  deploy:
+  sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Vercel deployment
+      - name: Checkout org repo
+        uses: actions/checkout@v4
+        with:
+          path: org-repo
+
+      - name: Checkout personal deployment repo
+        uses: actions/checkout@v4
+        with:
+          repository: dionwilson/bitcoinforthearts
+          token: ${{ secrets.DION_PAT }}
+          path: personal-repo
+
+      - name: Sync files from org repo to deployment repo
         run: |
-          curl -X POST "https://api.vercel.com/v1/integrations/deploy/prj_0fx7cdz23qeAxZxfzoutnVwPQEqO/F43G5hoBBx"
+          rsync -av --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            org-repo/ personal-repo/
+
+      - name: Commit and push to trigger Vercel deployment
+        working-directory: personal-repo
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add -A
+          git diff --cached --quiet && echo "No changes to sync" && exit 0
+          git commit -m "sync: ${{ github.event.head_commit.message }}"
+          git push
