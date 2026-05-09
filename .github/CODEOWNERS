@@ -1,0 +1,53 @@
+# CODEOWNERS — Bitcoin For The Arts
+#
+# Code owners are auto-requested for review on pull requests that change files
+# matching their patterns. They also work with branch protection's
+# "Require review from Code Owners" setting.
+#
+# Syntax: <pattern> <owner1> <owner2> ...
+# Patterns follow .gitignore rules. Last matching pattern wins.
+#
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-security/customizing-your-repository/about-code-owners
+
+# Default: Dion owns everything. As the team grows, route specific paths to
+# specific people by adding more-specific lines below this one.
+*       @DionWilson
+
+# ---- Future routing examples (uncomment and edit as the team grows) ----
+
+# Grants program code (apply, admin, terms, FAQ)
+# /app/grants/                @DionWilson @grants-team
+# /app/api/grants/            @DionWilson @grants-team
+# /app/admin/applications/    @DionWilson @grants-team
+# /components/GrantApplicationForm.tsx @DionWilson @grants-team
+
+# Brand assets and logo lockups
+# /public/brand-kit/          @DionWilson @brand-team
+
+# Artist Hub Svelte sub-project
+# /artist-hub/                @DionWilson @artist-hub-maintainer
+# /.github/workflows/publish-artist-hub.yml @DionWilson @artist-hub-maintainer
+
+# Stories / artist content pages
+# /app/stories/               @DionWilson @stories-team
+# /app/api/stories/           @DionWilson @stories-team
+
+# Donation infrastructure (Stripe + BTCPay)
+# /app/api/stripe/            @DionWilson
+# /app/api/btcpay/            @DionWilson
+# /components/BtcPayDonateWidget.tsx @DionWilson
+# /components/StripeCustomDonateForm.tsx @DionWilson
+
+# Governance / policy / leadership data
+# /lib/leadership.ts          @DionWilson
+# /app/about/                 @DionWilson
+# /app/governance/            @DionWilson
+# /GOVERNANCE.md              @DionWilson
+# /CODE_OF_CONDUCT.md         @DionWilson
+
+# Repo-wide docs and templates — usually high-trust, low-volume changes
+/.github/                    @DionWilson
+/CODEOWNERS                  @DionWilson
+/CONTRIBUTING.md             @DionWilson
+/SECURITY.md                 @DionWilson
+/LICENSE                     @DionWilson
