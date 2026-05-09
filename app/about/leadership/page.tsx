@@ -55,7 +55,7 @@ export default function LeadershipPage() {
                     src={p.imageSrc}
                     alt={p.imageAlt}
                     fill
-                    className="object-cover object-center"
+                    className={`object-cover ${p.slug === 'dion-wilson' ? 'object-center' : 'object-top'}`}
                     sizes="(max-width: 768px) 100vw, 50vw"
                     priority={p.slug === 'dion-wilson'}
                   />
@@ -78,7 +78,7 @@ export default function LeadershipPage() {
                   <div className="mt-6">
                     <Link
                       href={`/about/leadership/${p.slug}`}
-                      className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                      className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                     >
                       View full bio
                     </Link>
@@ -86,6 +86,37 @@ export default function LeadershipPage() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Board Advisors */}
+          <div className="mt-10 rounded-3xl border border-border bg-surface/80 p-8 shadow-sm">
+            <div className="text-xs font-semibold uppercase tracking-wide text-muted">
+              Advisory
+            </div>
+            <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+              Board Advisors
+            </h2>
+            <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {[
+                'Buttercup Roberts',
+                'Kyle Knight',
+                'Julie Costello',
+                'Camas Logue',
+                'Valerie Love',
+                'Kenneth Burris',
+              ].map((advisor) => (
+                <li
+                  key={advisor}
+                  className="flex items-center gap-3 rounded-xl border border-border bg-background p-4"
+                >
+                  <span
+                    className="h-2 w-2 shrink-0 rounded-full bg-accent"
+                    aria-hidden="true"
+                  />
+                  <span className="text-sm font-semibold">{advisor}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div className="mt-10">

@@ -1,10 +1,28 @@
 import type { Metadata } from "next";
+import { Roboto, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
+import ScrollToTop from "@/components/ScrollToTop";
 import SiteFooter from "@/components/SiteFooter";
 import SiteBackground from "@/components/SiteBackground";
 import { socialLinks } from "@/lib/socials";
 import AutoDonatePopup from "@/components/AutoDonatePopup";
+import CookieBanner from "@/components/CookieBanner";
+import ConsentAnalytics from "@/components/ConsentAnalytics";
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+  variable: "--font-roboto",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  display: "swap",
+  variable: "--font-playfair",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bitcoinforthearts.org"),
@@ -17,8 +35,9 @@ export const metadata: Metadata = {
   applicationName: "Bitcoin for the Arts",
   icons: {
     icon: [
+      { url: "/favicon-16.png", type: "image/png", sizes: "16x16" },
+      { url: "/favicon-32.png", type: "image/png", sizes: "32x32" },
       { url: "/favicon-48.png", type: "image/png", sizes: "48x48" },
-      { url: "/favicon.ico" },
     ],
     apple: "/apple-icon.png",
   },
@@ -33,10 +52,15 @@ export const metadata: Metadata = {
       "Supporting artists with Bitcoin micro-grants, workshops, residencies, and productions — with radical transparency.",
     images: [
       {
-        url: "/resources/logos/bitcoin-for-the-arts-logo-gold.png",
-        width: 512,
-        height: 512,
-        alt: "Bitcoin for the Arts logo",
+        // Square share preview that already lives in the social pack —
+        // black "BITCOIN FOR THE / ARTS" + orange Arts script on cream,
+        // with breathing room around the type so platform crops don't
+        // clip the corners. See public/brand-kit/README.md for the full
+        // social asset directory.
+        url: "/social/BFTA-social-post-cream-orange-2160.png",
+        width: 2160,
+        height: 2160,
+        alt: "Bitcoin for the Arts",
       },
     ],
   },
@@ -45,7 +69,7 @@ export const metadata: Metadata = {
     title: "Bitcoin for the Arts",
     description:
       "Supporting artists with Bitcoin micro-grants, workshops, residencies, and productions — with radical transparency.",
-    images: ["/resources/logos/bitcoin-for-the-arts-logo-gold.png"],
+    images: ["/social/BFTA-social-post-cream-orange-2160.png"],
   },
 };
 
@@ -63,12 +87,12 @@ export default function RootLayout({
     "@type": "Organization",
     name: "Bitcoin For The Arts, Inc.",
     url: "https://bitcoinforthearts.org",
-    logo: "https://bitcoinforthearts.org/resources/logos/bitcoin-for-the-arts-logo-gold.png",
+    logo: "https://bitcoinforthearts.org/brand-kit/square-bugs/square-cream-orange-alt.png",
     ...(socialLinks.length ? { sameAs: socialLinks.map((s) => s.href) } : {}),
   };
 
   return (
-    <html lang="en">
+    <html lang="en" className={`${roboto.variable} ${playfair.variable}`}>
       <body
         className={[
           'antialiased bg-background text-foreground relative',
@@ -80,10 +104,13 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
         <SiteBackground />
+        <ScrollToTop />
         <Navigation />
         <AutoDonatePopup />
         <div className="min-h-[calc(100svh-64px)]">{children}</div>
         <SiteFooter />
+        <CookieBanner />
+        <ConsentAnalytics />
       </body>
     </html>
   );

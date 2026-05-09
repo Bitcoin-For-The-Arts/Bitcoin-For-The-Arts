@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+**/node_modules
 /.pnp
 .pnp.*
 .yarn/*
@@ -19,6 +20,14 @@
 
 # production
 /build
+/public/artist-hub
+
+# artist-hub Svelte sub-project build artifacts
+# (the SvelteKit build emits to /public/artist-hub above; these are the
+# in-place build/cache directories inside the sub-project itself)
+/artist-hub/.svelte-kit
+/artist-hub/build
+/artist-hub/.vercel
 
 # misc
 .DS_Store

@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+
+    // Artist Hub (separate SvelteKit project + its static build output):
+    "artist-hub/**",
+    "public/artist-hub/**",
   ]),
 ]);
 

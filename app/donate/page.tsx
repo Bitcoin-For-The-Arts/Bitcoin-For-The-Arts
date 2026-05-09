@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import BtcPayDonateWidget from '@/components/BtcPayDonateWidget';
-import BitcoinDonationCard from '@/components/BitcoinDonationCard';
 import WaysToGive from '@/components/WaysToGive';
 import Link from 'next/link';
 import FullBleedHero from '@/components/FullBleedHero';
+import StripeCustomDonateForm from '@/components/StripeCustomDonateForm';
 
 export const metadata: Metadata = {
   title: 'Donate',
@@ -12,19 +12,31 @@ export const metadata: Metadata = {
 };
 
 export default function DonatePage({
-  searchParams,
 }: {
   searchParams?: { amount?: string };
 }) {
-  const address =
-    process.env.NEXT_PUBLIC_BTC_DONATION_ADDRESS ?? 'bc1qarts...';
   const heroImage = process.env.NEXT_PUBLIC_HERO_DONATE_IMAGE ?? '/bitcoin band.JPG';
-  const prefillAmountRaw = searchParams?.amount;
-  const prefillAmount = prefillAmountRaw ? Number(prefillAmountRaw) : undefined;
-  const defaultAmount =
-    Number.isFinite(prefillAmount) && (prefillAmount as number) > 0
-      ? (prefillAmount as number)
-      : undefined;
+  const ein = process.env.NEXT_PUBLIC_BFTA_EIN?.trim();
+  const normalizeStripeUrl = (value?: string) => {
+    const trimmed = value?.trim();
+    if (!trimmed) return undefined;
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed;
+    }
+    if (trimmed.startsWith('buy.stripe.com')) {
+      return `https://${trimmed}`;
+    }
+    return undefined;
+  };
+
+  const stripeOneTimeUrl = normalizeStripeUrl(
+    process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK,
+  );
+  const stripeOneTimeCoverFeesUrl = normalizeStripeUrl(
+    process.env.NEXT_PUBLIC_STRIPE_DONATION_LINK_COVER_FEES,
+  );
+  const hasStripeOneTime = Boolean(stripeOneTimeUrl);
+  const hasStripeCoverFees = Boolean(stripeOneTimeCoverFeesUrl);
 
   return (
     <main className="bg-background">
@@ -34,9 +46,11 @@ export default function DonatePage({
         label="Donate"
         title="Fund artists. Strengthen sovereign creativity."
         description="Give in Bitcoin, fiat, stocks, or planned gifts — and help build a long-term reserve for creators."
+        priority
       />
 
-      <div className="mx-auto max-w-6xl px-8 py-14 sm:px-6">
+      <div className="mx-auto max-w-6xl px-6 py-14">
+        {/* Intro */}
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">
             Support artists with Bitcoin
@@ -48,32 +62,114 @@ export default function DonatePage({
             Your donation helps fund artist micro-grants, workshops, residencies, and
             productions — and supports a long-term Bitcoin reserve.
           </p>
-
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/grants"
-              className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
-            >
-              Learn about grants
-            </Link>
-            <a
-              href="https://github.com/Bitcoin-For-The-Arts/bitcoinforthearts-treasury"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
-            >
-              View treasury
-            </a>
+          <div className="mt-5 rounded-2xl border border-border bg-surface/80 p-4 text-sm text-muted">
+            Bitcoin For The Arts, Inc. is a 501(c)(3) tax-exempt nonprofit. Donations
+            may be tax-deductible as allowed by law.
+            {ein ? (
+              <>
+                <br />
+                <span className="font-semibold text-foreground">EIN:</span> {ein}
+              </>
+            ) : null}
           </div>
         </div>
 
-        <WaysToGive />
-
-        <div id="bitcoin" className="mt-12 space-y-6 scroll-mt-28">
-          <BtcPayDonateWidget defaultAmount={defaultAmount} />
-          <BitcoinDonationCard address={address} />
+        {/* Sovereign Circle banner */}
+        <div className="mt-10 rounded-2xl border-2 border-primary/30 bg-[linear-gradient(135deg,rgba(126,87,194,0.08),rgba(247,147,26,0.06))] p-6 sm:p-8">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="max-w-xl">
+              <div className="text-xs font-semibold uppercase tracking-wide text-primary">
+                Monthly giving
+              </div>
+              <h3 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
+                Join the Sovereign Circle
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">
+                Become a monthly or annual member to provide stable, predictable funding for artist grants.
+                Members unlock community access, art drops, grant votes, and tenure milestones.
+              </p>
+            </div>
+            <Link
+              href="/donate/monthly"
+              className="inline-flex min-h-14 shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-8 py-3 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 hover:brightness-110"
+            >
+              Explore membership
+            </Link>
+          </div>
         </div>
 
+        {/* BTC donation — primary, featured */}
+        <section id="bitcoin" className="mt-10 scroll-mt-28">
+          <BtcPayDonateWidget />
+        </section>
+
+        {/* Card / Stripe donation */}
+        <div id="card" className="mt-10 rounded-2xl border border-border bg-background p-6">
+          <h2 className="text-xl font-semibold tracking-tight">Donate with Card</h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted">
+            Give securely with a one-time card payment via Stripe Checkout.
+          </p>
+
+          <StripeCustomDonateForm />
+
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+            {hasStripeOneTime ? (
+              <>
+                <a
+                  href={stripeOneTimeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
+                >
+                  Give once
+                </a>
+                {hasStripeCoverFees ? (
+                  <a
+                    href={stripeOneTimeCoverFeesUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-12 items-center justify-center rounded-md border border-border bg-background px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+                  >
+                    Give once (cover fees)
+                  </a>
+                ) : null}
+              </>
+            ) : (
+              <a
+                href="mailto:donate@bitcoinforthearts.org?subject=Credit%20card%20donation"
+                className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+              >
+                Email to donate
+              </a>
+            )}
+
+            <Link
+              href="/donate/monthly"
+              className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+            >
+              Join the Sovereign Circle
+            </Link>
+          </div>
+          {!hasStripeOneTime ? (
+            <p className="mt-3 text-xs leading-relaxed text-muted">
+              Add a Stripe payment link to enable instant card donations.
+            </p>
+          ) : null}
+          {hasStripeOneTime && !hasStripeCoverFees ? (
+            <p className="mt-3 text-xs leading-relaxed text-muted">
+              Want to offer a &ldquo;cover fees&rdquo; option? Add a second Stripe Payment Link and set{' '}
+              <span className="font-semibold text-foreground">
+                NEXT_PUBLIC_STRIPE_DONATION_LINK_COVER_FEES
+              </span>
+              .
+            </p>
+          ) : null}
+        </div>
+
+        {/* Ways to Give */}
+        <WaysToGive />
+
+        {/* Where the money goes */}
         <div className="mt-10 rounded-2xl border border-border bg-surface p-6">
           <h2 className="text-lg font-semibold tracking-tight">
             Where The Money Goes
@@ -109,8 +205,23 @@ export default function DonatePage({
             </div>
           </div>
         </div>
+
+        {/* Quick nav links */}
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <Link
+            href="/grants"
+            className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+          >
+            Learn about grants
+          </Link>
+          <Link
+            href="/about/governance"
+            className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-6 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+          >
+            Governance &amp; reporting
+          </Link>
+        </div>
       </div>
     </main>
   );
 }
-

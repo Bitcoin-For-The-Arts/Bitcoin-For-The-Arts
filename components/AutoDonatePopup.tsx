@@ -2,12 +2,16 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import logoImage from '@/app/asset/BITCOIN-ARTS-LOGO-Gold.png';
+// BFTA 2026 brand bug — same cream-orange "alt" mark used in nav, footer,
+// and the home/about hero columns, so the popup reads as part of the same
+// brand system instead of dropping the old gold badge in.
+const POPUP_LOGO_SRC = '/brand-kit/square-bugs/square-cream-orange-alt.png';
 
 const STORAGE_KEY = 'bfta_donate_popup_dismissed_session';
 const HOME_SCROLL_KEY = 'bfta_donate_popup_home_scrolled_session';
+const WEBINAR_PROMO_KEY = 'bfta_home_webinar_promo_dismissed_session';
 
 function isSuppressedPath(pathname: string) {
   // Don’t interrupt the donation flow or internal routes.
@@ -20,10 +24,21 @@ export default function AutoDonatePopup() {
   const pathname = usePathname() ?? '/';
   const enabled = process.env.NEXT_PUBLIC_SHOW_DONATE_POPUP !== '0';
   const homeHasIntro = process.env.NEXT_PUBLIC_SHOW_HOME_INTRO !== '0';
+  const suppressForWebinar = process.env.NEXT_PUBLIC_SUPPRESS_DONATE_POPUP_FOR_WEBINAR === '1';
+  const webinarPromoEnabled = process.env.NEXT_PUBLIC_SHOW_WEBINAR_PROMO === '1';
   const [open, setOpen] = useState(false);
   const closeBtnRef = useRef<HTMLButtonElement | null>(null);
 
-  const amounts = useMemo(() => [10, 25, 50, 100], []);
+  const amounts = useMemo(() => [11, 21, 51, 101], []);
+  const dismiss = useCallback(() => {
+    setOpen(false);
+    try {
+      window.sessionStorage.setItem(STORAGE_KEY, '1');
+    } catch {
+      // ignore
+    }
+  }, []);
+
   const popupImageSrc = useMemo(() => {
     const src =
       process.env.NEXT_PUBLIC_DONATE_POPUP_IMAGE ||
@@ -37,6 +52,16 @@ export default function AutoDonatePopup() {
     if (typeof window === 'undefined') return;
     if (isSuppressedPath(pathname)) return;
 
+    // If a webinar promo is running, avoid competing with it (especially on homepage).
+    // This is session-scoped: once the user dismisses the promo, the donation popup can appear on next visit.
+    if (suppressForWebinar && webinarPromoEnabled && pathname === '/') {
+      try {
+        if (window.sessionStorage.getItem(WEBINAR_PROMO_KEY) !== '1') return;
+      } catch {
+        return;
+      }
+    }
+
     try {
       if (window.sessionStorage.getItem(STORAGE_KEY) === '1') return;
     } catch {
@@ -48,7 +73,7 @@ export default function AutoDonatePopup() {
     const shouldWaitForScroll = pathname === '/' && homeHasIntro;
 
     const startTimer = () => {
-      const t = window.setTimeout(() => setOpen(true), 5000);
+      const t = window.setTimeout(() => setOpen(true), 30_000);
       return () => window.clearTimeout(t);
     };
 
@@ -66,29 +91,29 @@ export default function AutoDonatePopup() {
     }
 
     let cleanupTimer: (() => void) | null = null;
-    const onFirstScroll = () => {
+    const onFirstScroll: EventListener = () => {
       try {
         window.sessionStorage.setItem(HOME_SCROLL_KEY, '1');
       } catch {
         // ignore
       }
       window.removeEventListener('scroll', onFirstScroll);
-      window.removeEventListener('wheel', onFirstScroll as any);
-      window.removeEventListener('touchmove', onFirstScroll as any);
+      window.removeEventListener('wheel', onFirstScroll);
+      window.removeEventListener('touchmove', onFirstScroll);
       cleanupTimer = startTimer();
     };
 
     window.addEventListener('scroll', onFirstScroll, { passive: true });
-    window.addEventListener('wheel', onFirstScroll as any, { passive: true });
-    window.addEventListener('touchmove', onFirstScroll as any, { passive: true });
+    window.addEventListener('wheel', onFirstScroll, { passive: true });
+    window.addEventListener('touchmove', onFirstScroll, { passive: true });
 
     return () => {
       window.removeEventListener('scroll', onFirstScroll);
-      window.removeEventListener('wheel', onFirstScroll as any);
-      window.removeEventListener('touchmove', onFirstScroll as any);
+      window.removeEventListener('wheel', onFirstScroll);
+      window.removeEventListener('touchmove', onFirstScroll);
       cleanupTimer?.();
     };
-  }, [enabled, pathname, homeHasIntro]);
+  }, [enabled, pathname, homeHasIntro, suppressForWebinar, webinarPromoEnabled]);
 
   useEffect(() => {
     if (!open) return;
@@ -103,17 +128,7 @@ export default function AutoDonatePopup() {
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
-
-  const dismiss = () => {
-    setOpen(false);
-    try {
-      window.sessionStorage.setItem(STORAGE_KEY, '1');
-    } catch {
-      // ignore
-    }
-  };
+  }, [dismiss, open]);
 
   if (!enabled) return null;
   if (!open) return null;
@@ -136,7 +151,8 @@ export default function AutoDonatePopup() {
         className="absolute inset-0 flex items-end justify-center p-4 sm:items-center"
       >
         <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-border bg-background shadow-2xl">
-          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_30%_20%,rgba(126,87,194,0.18),transparent_55%),radial-gradient(circle_at_80%_0%,rgba(247,147,26,0.14),transparent_50%)]" />
+          {/* Subtle brand wash — orange + lime, matching SiteBackground. */}
+          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_30%_20%,rgba(255,79,20,0.16),transparent_55%),radial-gradient(circle_at_80%_0%,rgba(179,255,72,0.18),transparent_50%)]" />
 
           <div className="relative h-36 w-full">
             <Image
@@ -155,11 +171,11 @@ export default function AutoDonatePopup() {
               <div>
                 <div className="flex items-center gap-3">
                   <Image
-                    src={logoImage}
+                    src={POPUP_LOGO_SRC}
                     alt="Bitcoin For The Arts logo"
                     width={36}
                     height={36}
-                    className="rounded-full border border-white/15"
+                    className="rounded-md border border-border"
                   />
                   <div className="inline-flex items-center rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted">
                     Bitcoin For The Arts
@@ -193,7 +209,7 @@ export default function AutoDonatePopup() {
                 <Link
                   key={a}
                   href={`/donate?amount=${a}#bitcoin`}
-                  className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-4 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                  className="inline-flex min-h-12 items-center justify-center rounded-md bg-accent px-4 py-3 text-sm font-semibold text-accent-fg transition-colors hover:opacity-90"
                   onClick={dismiss}
                 >
                   {a}
