@@ -52,7 +52,7 @@ export default function Navigation() {
           { label: 'Share Your Story', href: '/stories/share-your-story' },
         ],
       },
-      { label: 'Research', href: '/artists/research' },
+      { label: 'Research', href: '/research' },
       {
         label: 'Grants',
         href: '/grants',
