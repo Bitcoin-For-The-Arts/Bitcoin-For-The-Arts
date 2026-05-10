@@ -42,6 +42,25 @@ export default function Navigation() {
         ],
       },
       {
+        label: 'Artists',
+        href: '/artists',
+        children: [
+          { label: 'Stories', href: '/stories' },
+          { label: 'Artist Hub', href: '/artist-hub' },
+          { label: 'Why Bitcoin', href: '/artists/why-bitcoin' },
+          { label: 'Share Your Story', href: '/stories/share-your-story' },
+        ],
+      },
+      { label: 'Research', href: '/artists/research' },
+      {
+        label: 'Grants',
+        href: '/grants',
+        children: [
+          { label: 'Guidelines', href: '/grants/guidelines' },
+          { label: 'FAQ', href: '/grants/faq' },
+        ],
+      },
+      {
         label: 'Get Involved',
         href: '/get-involved',
         children: [
@@ -50,33 +69,6 @@ export default function Navigation() {
           { label: 'Feedback', href: '/get-involved/feedback' },
         ],
       },
-      {
-        label: 'Grants',
-        href: '/grants',
-        children: [
-          { label: 'Why Bitcoin', href: '/artists/why-bitcoin' },
-          { label: 'Research', href: '/artists/research' },
-          { label: 'Guidelines', href: '/grants/guidelines' },
-          { label: 'FAQ', href: '/grants/faq' },
-        ],
-      },
-      {
-        label: 'Artists',
-        href: '/artists',
-        children: [
-          { label: 'Artist Hub', href: '/artist-hub' },
-        ],
-      },
-      {
-        label: 'Programming',
-        href: '/programming',
-        children: [
-          { label: 'Education', href: '/education' },
-          { label: 'Events', href: '/events' },
-        ],
-      },
-      { label: 'Stories', href: '/stories' },
-      { label: 'Contact', href: '/contact' },
       {
         label: 'Donate',
         href: '/donate',
