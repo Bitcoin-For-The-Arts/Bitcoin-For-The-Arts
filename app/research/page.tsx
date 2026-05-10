@@ -141,16 +141,9 @@ export default function ResearchPortalPage() {
           <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-3">
             {researchReports.map((report) => {
               const isPublished = report.status.toLowerCase().includes('published');
-              const CardTag = isPublished ? Link : 'article';
-              return (
-                <CardTag
-                  key={report.slug}
-                  {...(isPublished ? { href: report.href } : {})}
-                  className={[
-                    'rounded-2xl border border-border bg-surface p-6',
-                    isPublished ? 'transition-colors hover:border-accent/60' : '',
-                  ].join(' ')}
-                >
+
+              const cardContent = (
+                <>
                   <div className="flex items-center justify-between gap-3">
                     <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                       {report.kicker}
@@ -168,7 +161,28 @@ export default function ResearchPortalPage() {
                   <p className="mt-5 text-sm font-semibold text-accent">
                     {isPublished ? 'Read the report' : 'Report in production'}
                   </p>
-                </CardTag>
+                </>
+              );
+
+              if (isPublished) {
+                return (
+                  <Link
+                    key={report.slug}
+                    href={report.href}
+                    className="rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-accent/60"
+                  >
+                    {cardContent}
+                  </Link>
+                );
+              }
+
+              return (
+                <article
+                  key={report.slug}
+                  className="rounded-2xl border border-border bg-surface p-6"
+                >
+                  {cardContent}
+                </article>
               );
             })}
           </div>
