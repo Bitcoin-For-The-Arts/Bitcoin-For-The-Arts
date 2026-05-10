@@ -71,6 +71,16 @@ export default function Navigation() {
         ],
       },
       {
+        label: 'Programs',
+        href: '/programming',
+        children: [
+          { label: 'Education', href: '/education' },
+          { label: 'Events', href: '/events' },
+        ],
+      },
+      { label: 'Stories', href: '/stories' },
+      { label: 'Contact', href: '/contact' },
+      {
         label: 'Donate',
         href: '/donate',
         variant: 'cta',
